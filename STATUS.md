@@ -1,8 +1,8 @@
-15:00 CEST, GAME lane: PR 9 (render and animation audit) and PR 10 (keyed poses) merged into main, deployed
-GREEN: tests 251, typecheck clean; turns contract in; five lanes running: v1 arrows port, Space and touch, alternated turns, Turnstile Ninja at Chatelet, portrait camera
-RED: arrows, Space, turns, ninja, portrait not merged yet (next push ~15:45)
-PLAY: https://dylanmerigaud.github.io/aura/v2/ (root switch to v2 asked to INTEGRATION)
-NEED FROM DYLAN: nothing yet; play after the 15:45 push
+15:05 CEST, GAME lane: v1 arrows (one prompt at a time, vertical in portrait), Space and touch play zone, Turnstile Ninja at Chatelet with nameplates, portrait camera and toon look: all deployed at the ROOT
+GREEN: tests 276, typecheck clean; v2 is now the root build (v1 at /v1/)
+RED: alternated turns (YOUR MOVE / HIS MOVE) not merged yet; crowd diversity in progress; nothing seen on a real phone since these merges
+PLAY: https://dylanmerigaud.github.io/aura/ (add ?debug=1 for the fps counter)
+NEED FROM DYLAN: play level 1 on the phone: does SPACE / the swipe feel right, is the portrait framing readable, the fps
 
 14:05 CEST, v2 (3D) at /v2/ with the mood pass and mobile load fixes; live roast Worker up
 GREEN: v1 untouched at the root; v2: 3D ring, Mixamo fighters, camera director, VFX, HUD, map, menu, tempo rule, layered SFX, hero level on the Lyria club track, new cast (Gemini, evals) and 30 Gradium lines; review found and fixed 8 first-play bugs; Worker aura-proxy live (Gemini roast and Gradium voice tested with curl, 403 on foreign origins)
