@@ -1,7 +1,8 @@
 // Live partner calls through the aura-proxy Cloudflare Worker, with an offline fallback: the game never waits
 // on the network for more than a few seconds and never breaks without it.
 import type { LevelV2, Stats } from "../contracts";
-import { ctx, master } from "../../audio/engine";
+import { ctx } from "../../audio/engine";
+import { playVoice } from "../voicePlayer";
 
 export const PROXY = "https://aura-proxy.dylanmerigaud-pro.workers.dev";
 /** Gradium voice of the announcer (Marcus), the same one the bundled lines use. */
@@ -41,11 +42,8 @@ export async function speakLive(text: string): Promise<boolean> {
   if (!r) return false;
   try {
     const buf = await ctx.decodeAudioData(await r.arrayBuffer());
-    const s = ctx.createBufferSource();
-    s.buffer = buf;
-    s.connect(master);
-    s.start();
-    return true;
+    // Through the single voice queue: the roast waits for the win or lose line, never talks over it.
+    return playVoice(buf, "line", "roast", { gain: 1, maxWait: 8 });
   } catch {
     return false;
   }

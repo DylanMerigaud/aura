@@ -1,10 +1,11 @@
 // v2 battle driver: loads the Lyria track, counts in on the audio clock, runs the BattleCore on the song clock,
 // bends the music playbackRate with the tempo rule, plays the voices, fans events out to the listeners.
-import { ctx, heardTime, master, musicBus } from "../audio/engine";
+import { ctx, heardTime, musicBus } from "../audio/engine";
 import { sfx } from "../audio/sfx";
 import { getOffset } from "../game/latency";
 import { SongClock } from "./clock";
 import { BattleCore } from "./core";
+import { loadCalls, playVoice, stopVoices } from "./voicePlayer";
 import type { CoreEvent, GameApi, LevelV2, Listener, PlayInput, Stats, TrackInfo } from "./contracts";
 
 const COUNT_IN = 4;
@@ -13,6 +14,10 @@ const RESUME_COUNT_IN = 3;
 const FINISH = 3.2;
 /** The cast text version the taunt recordings must carry in voice/v2/index.json ("cast": CAST_TAG). */
 export const CAST_TAG = "roster-1625";
+/** The voice the battle lines must be recorded in (voice/v2/index.json "voice": VOICE_TAG). The flat,
+ * overlapping TTS lines recorded before the bake off carry no tag and stay silent (addendum 17:05 point 5)
+ * until the bake off winner's recordings land with it. */
+export const VOICE_TAG = "bakeoff-winner";
 /** A track still not decoded after this plays the battle on the clock alone (count in, SFX), never a black wait. */
 const TRACK_WAIT_MS = 12000;
 
@@ -90,6 +95,8 @@ export class Game implements GameApi {
         this.voices = {};
       }
     }
+    loadCalls(this.deps.base, this.voices ?? {}).catch(() => {});
+    if (!this.voicedIndex()) return;
     const ids = [`v2-l${level.id}-intro`, `v2-l${level.id}-win`, `v2-l${level.id}-lose`, ...level.taunts.map((_, i) => `v2-l${level.id}-taunt-${i}`)];
     await Promise.all(ids.map(async (id) => {
       const f = this.voices?.[id];
@@ -101,15 +108,16 @@ export class Game implements GameApi {
     }));
   }
 
-  private voice(id: string, at = ctx.currentTime) {
+  /** True when the voice index carries the bake off winner's recordings. */
+  private voicedIndex(): boolean {
+    return (this.voices as Record<string, string> | null)?.voice === VOICE_TAG;
+  }
+
+  /** A battle line through the single voice queue (one line at a time, a taunt never over a call). */
+  private voice(id: string, kind: "line" | "taunt", at?: number) {
+    if (!this.voicedIndex()) return;
     const b = this.voiceBufs.get(id);
-    if (!b) return;
-    const s = ctx.createBufferSource();
-    s.buffer = b;
-    const g = ctx.createGain();
-    g.gain.value = 1.2;
-    s.connect(g).connect(master);
-    s.start(at);
+    if (b) playVoice(b, kind, id, { at });
   }
 
   async play(level: LevelV2, windowScale: number): Promise<Stats> {
@@ -127,7 +135,7 @@ export class Game implements GameApi {
     this.endAt = -1;
     this.paused = false;
     this.startSource(buf, 0, COUNT_IN, 0.25);
-    this.voice(`v2-l${level.id}-intro`);
+    this.voice(`v2-l${level.id}-intro`, "line");
     return new Promise((res) => (this.done = res));
   }
 
@@ -231,6 +239,7 @@ export class Game implements GameApi {
   quit() {
     this.stopSource(0.15);
     this.deps.stopAll?.();
+    stopVoices();
     this.core = null;
     this.clock = null;
     this.done = null;
@@ -244,7 +253,7 @@ export class Game implements GameApi {
     // Taunt voices only once they were recorded from the current cast text (voice/v2/index.json "cast"),
     // so an old recording never speaks over a new subtitle.
     if (e.kind === "taunt") {
-      if ((this.voices as Record<string, string> | null)?.cast === CAST_TAG) this.voice(`v2-l${L.id}-taunt-${e.index}`);
+      if ((this.voices as Record<string, string> | null)?.cast === CAST_TAG) this.voice(`v2-l${L.id}-taunt-${e.index}`, "taunt");
     }
     else if (e.kind === "end") {
       this.endAt = ctx.currentTime + FINISH;
@@ -252,7 +261,7 @@ export class Game implements GameApi {
       // Lose: the tape slows to half speed under the one bar tail.
       if (!e.win && this.src) this.src.playbackRate.setTargetAtTime(this.setRate * 0.5, ctx.currentTime, bar / 3);
       this.stopSource(bar);
-      this.voice(`v2-l${L.id}-${e.win ? "win" : "lose"}`, ctx.currentTime + 0.4);
+      this.voice(`v2-l${L.id}-${e.win ? "win" : "lose"}`, "line", ctx.currentTime + 0.4);
     }
   }
 

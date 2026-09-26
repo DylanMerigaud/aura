@@ -6,7 +6,11 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("../src/v2/net/live", () => ({ fetchRoast: () => Promise.resolve(null), speakLive: () => Promise.resolve(false) }));
 vi.mock("../src/audio/engine", () => ({ initAudio: () => {}, ctx: null, heardTime: () => 0 }));
-vi.mock("../src/packs", () => ({ openPacks: () => Promise.resolve(), setPackHooks: () => {} }));
+const packs = vi.hoisted(() => ({ close: [] as (() => void)[] }));
+vi.mock("../src/packs", () => ({
+  openPacks: vi.fn(() => new Promise<void>((r) => packs.close.push(r))),
+  setPackHooks: () => {},
+}));
 vi.mock("../src/v2/ui/hud/index", () => ({
   buildHud: () => ({ root: document.createElement("div"), prepare: () => {}, listener: { event: () => {}, frame: () => {} } }),
 }));
@@ -19,6 +23,7 @@ vi.mock("../src/v2/ui/loadout", () => ({
 }));
 
 import { startApp } from "../src/v2/ui/app";
+import { openPacks } from "../src/packs";
 import type { GameApi, LevelV2, Stage, Stats } from "../src/v2/contracts";
 import { loadProgress } from "../src/v2/ui/progress";
 import { loadXp } from "../src/v2/xp";
@@ -43,7 +48,11 @@ function setup() {
 const q = (s: string) => document.querySelector(s) as HTMLElement;
 
 describe("app flow", () => {
-  beforeEach(() => localStorage.clear());
+  beforeEach(() => {
+    localStorage.clear();
+    vi.mocked(openPacks).mockClear();
+    packs.close.length = 0;
+  });
 
   it("loading, title, one battle per tap, the card shows the resolved stats, a win moves on", async () => {
     const { play, resolvers } = setup();
@@ -57,6 +66,12 @@ describe("app flow", () => {
     expect(play.mock.calls[0][0].id).toBe(1);
     resolvers[0](stats(true, 200));
     await flush();
+    // The pack pops first: progress is saved, the results card waits until the pack closed.
+    expect(openPacks).toHaveBeenCalledTimes(1);
+    expect(q(".results").classList.contains("active")).toBe(false);
+    expect(loadProgress().opp).toBe(1);
+    packs.close[0]();
+    for (let i = 0; i < 3; i++) await flush();
     expect(q(".results").classList.contains("active")).toBe(true);
     expect(q(".rc-num.score .rc-val").textContent).toBe("200");
     expect(q(".results-btn.retry").textContent).toBe("NEXT");
@@ -75,6 +90,8 @@ describe("app flow", () => {
     expect(play.mock.calls[0][1]).toBeCloseTo(0.9);
     resolvers[0](stats(false, 50));
     await flush();
+    expect(openPacks).not.toHaveBeenCalled();
+    expect(q(".results").classList.contains("active")).toBe(true);
     expect(q(".results-heading").textContent).toBe("HUMBLED");
     expect(loadProgress().opp).toBe(3);
     expect(q(".rc-next").classList.contains("locked")).toBe(true);
