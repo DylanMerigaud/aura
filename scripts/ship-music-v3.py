@@ -24,6 +24,7 @@ AM = importlib.util.module_from_spec(_spec2)
 _spec2.loader.exec_module(AM)
 
 ROLE = {
+    "title": "title screen loop",
     "level1": "level 1, Chatelet metro at 2am, against the Turnstile Ninja",
     "level2": "level 2, kebab shop at 4am",
     "boss3": "final boss, phase two (boss2 is phase one)",
@@ -72,12 +73,13 @@ def main():
             "first_beat_s": fb,
             "first_beat_method": f"phase of the strongest pulse of the onset envelope folded at the refined {refined} BPM, snapped to the latest onset_detect(backtrack=True) onset within 60 ms before it",
             "in_point_s": 0.0,
-            "in_point_rule": "first downbeat whose 2 bar mean energy reaches 60 percent of the loudest 2 bars; the shipped file is already cut there (raw clip cut at %.3f s), so playback starts at 0" % a["raw_in_point_s"],
+            "in_point_rule": ("16 whole bars cut on a downbeat of the onset fold grid, the window whose seam and steadiest 2 bars score best (raw clip cut at %.3f s), 5 ms edge fades, so the file loops end to start on the beat" if "loop" in a
+                              else "first downbeat whose 2 bar mean energy reaches 60 percent of the loudest 2 bars; the shipped file is already cut there (raw clip cut at %.3f s), so playback starts at 0") % a["raw_in_point_s"],
             "duration_s": a["duration_s"],
             "rms_db": a["rms_db"],
             "model": "lyria-3-pro-preview",
             "confidence": a["confidence"],
-            "confidence_note": (f"free tracker, {a['bpm_requested']} BPM hinted tracker and autocorrelation estimate agree at {a['bpm_measured']} BPM" if agree
+            "confidence_note": (f"librosa's trackers read {', '.join(str(v) for v in a['bpm_methods'][:3])} (whole onset frame tempo bins, 123.05 and 129.2 around 126, and the tamborzao's 3-3-2 can pull them to two thirds of the tempo); the sharpest onset fold within 7 percent of the request lands on {a['bpm_measured']} BPM" if "loop" in a else f"free tracker, {a['bpm_requested']} BPM hinted tracker and autocorrelation estimate agree at {a['bpm_measured']} BPM" if agree
                                 else f"hinted tracker and autocorrelation agree at {a['bpm_methods'][1]} BPM, the free tracker reads {a['bpm_methods'][0]}") + f"; the refined fold lands on {refined} BPM",
             "bpm_confidence": a["confidence"],
             "beats_s": beats,
@@ -91,6 +93,7 @@ def main():
                 "mood_judge": {"model": "gemini-3.1-pro-preview", "note": js[0]["note"],
                                "passes": [{k: j[k] for k in ("note_score", "beat_clarity", "loop_or_ending", "intelligible_words", "total")} for j in js]},
             },
+            **({"loop": a["loop"]} if "loop" in a else {}),
             "regeneration_note": f"regenerated on lyria-3-pro-preview after Dylan's note \"{js[0]['note']}\", five candidates, candidate c{n} ranked first on samples/music/BOARD.md",
             "prompt": prompt,
         }

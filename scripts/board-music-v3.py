@@ -1,7 +1,7 @@
 # Ranks the five Lyria 3 Pro candidates per track into samples/music/BOARD.md from c<N>.json (analysis, music gate)
 # and the judge passes c<N>.judge.json and c<N>.judge2.json (gemini-3.1-pro-preview). Rank: mean of the two passes'
 # totals (note, beat, loop or ending), minus 0.5 when a pass heard intelligible words (the brief says instrumental),
-# ties broken by no intelligible words, then the note score, then the music gate count. Two mechanical demotions, 0.5
+# ties broken by no intelligible words, then the note score, then the music gate count, then (title loop) the smaller seam. Two mechanical demotions, 0.5
 # each, read from the game's own analysis (scripts/analyze-music.py on the candidate): a level track whose weakest
 # 2 bars fall under 0.35 of its loudest beat or that spends over 6 s in breakdowns (a lull the chart has to fill),
 # and a measured BPM outside 8 percent of the request (the game grid would run at a half or double tempo). Prints the winners as JSON.
@@ -13,6 +13,7 @@ import numpy as np
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TRACKS = {
+    "title": ("title screen loop (funk)", "THE TITLE MUSIC IS FUNK"),
     "level1": ("level 1, Chatelet metro at 2am", "more funk, more bass"),
     "level2": ("level 2, kebab shop at 4am", "sidechain on the bass"),
     "boss3": ("final boss, phase two (new)", "heavier, faster, more intense than phase one"),
@@ -41,6 +42,8 @@ def load(track, n):
     mean = lambda k: sum(j[k] for j in js) / len(js)
     words = any(j["intelligible_words"] for j in js)
     low, brk = steady(track, n, a) if track != "victory" else (None, 0.0)
+    if track == "title":
+        brk = 0.0  # a steady loop has no breakdown by design; the weakest 2 bars still count
     lull = low is not None and (low < 0.35 or brk > 6.0)
     off = not a["checks"]["bpm_within_8pct"]["passed"]
     score = mean("total") - (0.5 if words else 0) - (0.5 if lull else 0) - (0.5 if off else 0)
@@ -60,7 +63,7 @@ def main():
            "their evidence judged an earlier cut that kept the raw clip's outro, superseded by the rows that carry it).", ""]
     winners = {}
     for t, (role, note) in TRACKS.items():
-        rows = sorted((load(t, n) for n in range(1, 6)), key=lambda r: (r["score"], not r["words"], r["note"], r["a"]["gate_passed"]), reverse=True)
+        rows = sorted((load(t, n) for n in range(1, 6)), key=lambda r: (r["score"], not r["words"], r["note"], r["a"]["gate_passed"], -r["a"].get("loop", {}).get("seam_mel_db", 0)), reverse=True)
         winners[t] = rows[0]["n"]
         out += [f"## {t}: {role}", "", f"Note: \"{note}\".", "",
                 "| rank | file | BPM measured | music gate | note (p1, p2) | beat (p1, p2) | loop or ending (p1, p2) | words | weakest 2 bars, breakdown s | score |",
@@ -71,6 +74,17 @@ def main():
             out.append(f"| {i + 1} | {name} | {r['a']['bpm_measured']} | {r['a']['gate_passed']}/5 | {p('note_score')} | {p('beat_clarity')} | {p('loop_or_ending')} | {'yes' if r['words'] else 'no'} | {'n/a' if r['low'] is None else f"{r['low']}, {r['brk']}"}{' (lull)' if r['lull'] else ''}{' (BPM off)' if r['off'] else ''} | {r['score']} |")
         w = rows[0]
         out += ["", f"Winner evidence (pass 1): {w['js'][0]['note_evidence']} {w['js'][0]['loop_evidence']}", ""]
+        if t == "title":
+            out += ["Each title candidate is cut to 16 whole bars on a downbeat of its onset fold grid (the tamborzao's 3-3-2 pulls",
+                    "librosa to two thirds of the tempo, so the BPM is the sharpest fold within 7 percent of the 123 request), 5 ms",
+                    "edge fades, and judged played twice back to back so the judge hears the seam. Last tie break for the title: the",
+                    "smaller seam distance.",
+                    "Seam distance (log mel dB, last beat vs the beat before the start) and BPM per candidate: " + ", ".join(
+                        f"c{r['n']} {r['a']['loop']['seam_mel_db']} dB at {r['a']['loop']['refined_bpm']}" for r in sorted(rows, key=lambda r: r['n'])) + ".",
+                    "",
+                    "Non generated alternative for comparison: `title/level4-intro.mp3`, level4's own opening, 8 bars (14.77 s) from",
+                    "0.104 s (the in point 1.95 s minus 1 bar: the in point sits under 8 bars into the file, so the window starts at",
+                    "its earliest downbeat), same 5 ms edge fades.", ""]
     open(os.path.join(ROOT, "samples", "music", "BOARD.md"), "w").write("\n".join(out))
     print(json.dumps(winners))
 

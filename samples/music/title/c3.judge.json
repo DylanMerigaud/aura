@@ -1,0 +1,14 @@
+{
+  "track": "title",
+  "candidate": "c3",
+  "model": "gemini-3.1-pro-preview",
+  "note": "the title music is funk: a Brazilian funk title loop",
+  "note_score": 5,
+  "note_evidence": "The track is a quintessential Brazilian funk montagem featuring a heavy 808 bass and classic tamborzao rhythm from 0:00 to 0:59, with aggressive vocal chops that perfectly fit a dark, confident dance battle arena.",
+  "beat_clarity": 5,
+  "beat_evidence": "A highly prominent and steady funk carioca beat begins immediately at 0:00 and provides an unmistakable, relentless pulse for tapping.",
+  "loop_or_ending": 5,
+  "loop_evidence": "The loop point at 29.54s is perfectly seamless, maintaining the exact same rhythmic energy and instrumentation without any gaps, clicks, or stumbles.",
+  "intelligible_words": true,
+  "total": 5
+}
