@@ -6,6 +6,13 @@ Built in one day at the {Tech: Europe} AI Gaming Hack, Paris, 2026-09-26, by tea
 
 Play in the browser: https://dylanmerigaud.github.io/aura/
 
+![A perfect aura release on the metro platform](docs/screenshots/l1-release.png)
+
+| | |
+|---|---|
+| ![Title](docs/screenshots/title.png) | ![Story card](docs/screenshots/story.png) |
+| ![Boss taunt](docs/screenshots/l5-taunt.png) | ![Victory freeze frame](docs/screenshots/l5-end.png) |
+
 ## The game
 
 You have zero aura. Fix that. Five aura battles, escalating from a deserted Paris metro platform at 2am to a boss on the final stage, crowd screaming the whole way. Each fight is a tug of war: land the rhythm QTEs on the beat and the aura bar slides toward you, miss and it slides toward your opponent. First side to push the bar to the edge, or whoever is ahead when the song ends, wins.

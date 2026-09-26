@@ -69,8 +69,9 @@ function beginBattle() {
     }
     const prev = progress.best[lvl.id];
     const r = rank(s.counts, s.win);
-    if (!prev || s.score > prev.score) progress.best[lvl.id] = { score: s.score, combo: Math.max(s.maxCombo, prev?.combo ?? 0), rank: r };
-    else prev.combo = Math.max(prev.combo, s.maxCombo);
+    const order = "SABCDF";
+    const bestRank = prev && order.indexOf(prev.rank) < order.indexOf(r) ? prev.rank : r;
+    progress.best[lvl.id] = { score: Math.max(s.score, prev?.score ?? 0), combo: Math.max(s.maxCombo, prev?.combo ?? 0), rank: bestRank };
     saveProgress(progress);
     screen = "results";
     screenT = 0;
@@ -168,7 +169,9 @@ function drawTitle(t: number) {
   text(g, "AURA", 0, 0, "#fff", 190);
   g.shadowBlur = 0;
   g.restore();
-  text(g, "you have zero aura. fix that.", W / 2, 380, "#35e0ff", 30, "center", 800);
+  const won = levels.filter((L) => progress.best[L.id]?.rank && progress.best[L.id].rank !== "F");
+  const title = won.length ? won[won.length - 1].title : null;
+  text(g, title ? `current title: ${title}` : "you have zero aura. fix that.", W / 2, 380, "#35e0ff", 30, "center", 800);
   if (Math.sin(t * 5) > -0.3) text(g, "PRESS SPACE OR TAP", W / 2, 540, "#fff36b", 40);
   text(g, "arrows / WASD, SPACE    |    down arrow: latency calibration", W / 2, 670, "#ccc", 18, "center", 700);
 }

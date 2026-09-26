@@ -13,6 +13,7 @@ import { Particles } from "./particles";
 import { Character, type Pose } from "./characters";
 import { img } from "./assets";
 import { getOffset } from "./latency";
+import { text as drawText } from "../ui/draw";
 import type { TouchMode } from "../qte/input";
 
 export interface BattleStats {
@@ -440,7 +441,7 @@ export class Battle {
     if (this.mashing) this.speedLines(g);
     if (this.taunt) this.bubble(g, this.taunt.text);
     // The QTE lane lives in screen space so it stays readable through every camera move.
-    this.lane(g, now, pulse);
+    if (this.endAt < 0) this.lane(g, now, pulse);
     this.drawPopups(g);
 
     // Letterbox, then the HUD on top of it.
@@ -671,7 +672,7 @@ export class Battle {
     g.beginPath();
     g.arc(cx, cy, r, 0, Math.PI * 2);
     g.stroke();
-    this.label(g, this.level.opponent.name.toUpperCase(), x + 70, y - 14, this.level.opponent.color || "#ff3df2", 20);
+    drawText(g, this.level.opponent.name.toUpperCase(), x + 56, y - 14, this.level.opponent.color || "#ff3df2", 20, "left");
   }
 
   private hud(g: CanvasRenderingContext2D, pulse: number) {
@@ -709,6 +710,8 @@ export class Battle {
     const win = this.stats!.win;
     g.fillStyle = "rgba(0,0,0,0.35)";
     g.fillRect(0, 0, W, H);
+    const ko = Math.abs(this.stats!.meter) >= 1;
+    if (ko) this.label(g, "AURA K.O.", W / 2, H / 2 - 120, "#fff", 44);
     this.label(g, win ? "AURA SECURED" : "YOU HAVE BEEN HUMBLED", W / 2, H / 2 - 30, win ? "#fff36b" : "#ff4d6d", win ? 96 : 72);
     if (win) this.label(g, `TITLE UNLOCKED: ${this.level.title.toUpperCase()}`, W / 2, H / 2 + 50, "#35e0ff", 32);
   }

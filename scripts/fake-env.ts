@@ -1,6 +1,10 @@
 // Headless stand-ins for the DOM and Web Audio so the real battle code runs in Node (snapshots and balance sims).
-import { createCanvas, Image as NImage } from "@napi-rs/canvas";
-import { readFileSync, existsSync } from "node:fs";
+import { createCanvas, loadImage } from "@napi-rs/canvas";
+import { readdirSync } from "node:fs";
+
+// Decode every art file up front so the first frames already have their images.
+const art = new Map<string, any>();
+for (const f of readdirSync("public/art")) art.set(`art/${f}`, await loadImage(`public/art/${f}`));
 
 // Minimal DOM and Web Audio stand-ins: every audio node is an inert proxy, the clock is driven by hand.
 const inert: any = new Proxy(function () {}, { get: (_t, k) => (k === Symbol.toPrimitive ? () => 0 : inert), apply: () => inert, set: () => true });
@@ -24,12 +28,10 @@ g.document = { createElement: () => createCanvas(64, 64) };
 g.Image = class {
   complete = false;
   naturalWidth = 0;
-  img: NImage | null = null;
+  img: any = null;
   set src(p: string) {
-    const f = `public/${p}`;
-    if (!existsSync(f)) return;
-    const i = new NImage();
-    i.src = readFileSync(f);
+    const i = art.get(p);
+    if (!i) return;
     this.img = i;
     this.complete = true;
     this.naturalWidth = i.width;

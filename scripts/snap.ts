@@ -29,6 +29,9 @@ const shots: [string, number, (bt: any) => void][] = [
 ];
 const mash = level.events.find((e: any) => e.type === "mash");
 if (mash) shots[2][1] = (mash.beat + mash.length * 0.6) * spb;
+if (mash) shots.push(["release", (mash.beat + mash.length) * spb + 0.25, () => {}]);
+shots.push(["end", (level.lengthBeats + 1) * spb + 0.6, () => {}]);
+shots.sort((a, b) => a[1] - b[1]);
 let t = -4 * spb;
 for (const [name, at] of shots) {
   while (t < at) {
@@ -38,6 +41,13 @@ for (const [name, at] of shots) {
     const cur = b.runner.current();
     if (cur && cur.ev.type === "mash" && Math.random() < 0.4) b.input({ kind: "dir", dir: Math.random() < 0.5 ? "left" : "right", t: (ctx as any).currentTime });
     else if (cur && cur.ev.type === "hit" && Math.abs(t - cur.ev.beat * spb) < 0.01) b.input({ kind: "dir", dir: cur.ev.dir, t: (ctx as any).currentTime });
+    if (cur && cur.ev.type === "mash" && Math.abs(t - (cur.ev.beat + cur.ev.length) * spb) < 0.01) b.input({ kind: "space", down: true, t: (ctx as any).currentTime });
+    if (cur && cur.ev.type === "hold" && Math.abs(t - cur.ev.beat * spb) < 0.01) b.input({ kind: "space", down: true, t: (ctx as any).currentTime });
+    if (cur && cur.ev.type === "hold" && Math.abs(t - (cur.ev.beat + cur.ev.length) * spb) < 0.01) b.input({ kind: "space", down: false, t: (ctx as any).currentTime });
+    if (cur && cur.ev.type === "combo") {
+      const n = cur.ev.dirs.length;
+      for (let i = 0; i < n; i++) if (Math.abs(t - (cur.ev.beat - (n - 1 - i) * 0.5) * spb) < 0.009) b.input({ kind: "dir", dir: cur.ev.dirs[i], t: (ctx as any).currentTime });
+    }
     b.update(1 / 60);
   }
   b.draw(c);
