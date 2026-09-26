@@ -1,3 +1,4 @@
+# esbuild and workerd ship prebuilt binaries that their install scripts unpack; wrangler dev needs both.
 allowBuilds:
-  esbuild: set this to true or false
-  workerd: set this to true or false
+  esbuild: true
+  workerd: true
