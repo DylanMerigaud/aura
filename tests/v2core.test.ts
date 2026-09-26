@@ -119,3 +119,59 @@ describe("BattleCore", () => {
     expect(s.stars).toBe(3);
   });
 });
+
+describe("BattleCore turns", () => {
+  const turns: LevelV2["turns"] = [
+    { who: "player", beat: 0, lengthBeats: 12 },
+    { who: "opponent", beat: 12, lengthBeats: 8, move: "boatSweep" },
+    { who: "player", beat: 20, lengthBeats: 12 },
+  ];
+  const make = (events: LevelV2["events"], extra: Partial<LevelV2> = {}) => {
+    const out: CoreEvent[] = [];
+    const core = new BattleCore(level(events, { turns, taunts: [], ...extra }), track, 1, (e) => out.push(e));
+    return { core, out };
+  };
+  const spb = 0.5;
+
+  it("emits a turn at each turn start and the opponent's move on his turn, Frame.turn follows", () => {
+    const { core, out } = make([{ type: "hit", beat: 8, dir: "up" }]);
+    core.update(0.01, 0.016);
+    expect(out.filter((e) => e.kind === "turn")).toEqual([{ kind: "turn", who: "player", beat: 0, lengthBeats: 12 }]);
+    expect(core.frame().turn).toBe("player");
+    core.update(12 * spb + 0.01, 0.016);
+    expect(out.filter((e) => e.kind === "turn").at(-1)).toEqual({ kind: "turn", who: "opponent", beat: 12, lengthBeats: 8 });
+    expect(out.find((e) => e.kind === "opponentMove")).toEqual({ kind: "opponentMove", move: "boatSweep", beat: 12, lengthBeats: 8 });
+    expect(core.frame().turn).toBe("opponent");
+    core.update(20 * spb + 0.01, 0.016);
+    expect(core.frame().turn).toBe("player");
+    expect(out.filter((e) => e.kind === "turn").map((e) => (e as { who: string }).who)).toEqual(["player", "opponent", "player"]);
+  });
+
+  it("the opponent farms a small scripted aura on his turn", () => {
+    const { core } = make([{ type: "hit", beat: 24, dir: "up" }]);
+    core.update(11 * spb, 0.016);
+    const before = core.meter;
+    core.update(12 * spb + 0.01, 0.016);
+    expect(before - core.meter).toBeCloseTo(0.04, 5);
+  });
+
+  it("ignores presses during his turn: no judgment, no cringe, no miss", () => {
+    const { core, out } = make([{ type: "hit", beat: 22, dir: "up" }]);
+    core.update(14 * spb, 0.016);
+    core.input({ kind: "dir", dir: "left", t: 14 * spb });
+    core.input({ kind: "space", down: true, t: 15 * spb });
+    expect(out.some((e) => e.kind === "judged")).toBe(false);
+    expect(core.counts.cringe + core.counts.miss).toBe(0);
+    core.update(22 * spb, 0.016);
+    core.input({ kind: "dir", dir: "up", t: 22 * spb });
+    expect(out.find((e) => e.kind === "judged")).toMatchObject({ grade: "perfect" });
+  });
+
+  it("the first 15 s cannot be lost", () => {
+    const events: LevelV2["events"] = [8, 10, 12, 14, 16, 18, 20, 22, 24, 26].map((beat) => ({ type: "hit" as const, beat, dir: "up" as const }));
+    const { core, out } = make(events, { turns: undefined, lengthBeats: 40 });
+    for (let t = 0; t < 14.9; t += 0.1) core.update(t, 0.1);
+    expect(core.meter).toBeGreaterThan(-1);
+    expect(out.some((e) => e.kind === "end")).toBe(false);
+  });
+});

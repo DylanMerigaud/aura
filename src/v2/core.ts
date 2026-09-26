@@ -4,7 +4,7 @@ import type { Dir } from "../qte/types";
 import { QteRunner, type Result } from "../qte/runner";
 import { comboMultiplier, releaseMultiplier, type Grade } from "../qte/judge";
 import { Tempo } from "./tempo";
-import { tierOf, type CoreEvent, type Frame, type LevelV2, type Stats, type TrackInfo } from "./contracts";
+import { tierOf, type CoreEvent, type Frame, type LevelV2, type Stats, type TrackInfo, type Turn, type TurnSpec } from "./contracts";
 
 /** Aura drained per beat by opponent pressure, per level. */
 const PRESSURE = [0, 0.003, 0.006, 0.009, 0.011];
@@ -16,6 +16,13 @@ const MIN_GAP = 0.03;
 const STRONG_ONSET = 0.6;
 const STRONG_WINDOW = 0.05;
 const BASE: Record<Grade, number> = { perfect: 300, great: 200, ok: 100, miss: 0 };
+/** Scripted aura the opponent farms at the start of each of his turns. */
+export const OPPONENT_TURN_AURA = 0.04;
+/** The onboarding: the meter cannot fall under ONBOARD_FLOOR before ONBOARD_S song seconds, so it cannot be lost. */
+export const ONBOARD_S = 15;
+const ONBOARD_FLOOR = -0.5;
+/** Presses this close before the end of an opponent turn still reach the runner (an early press on the first QTE after it). */
+const TURN_GRACE = 0.3;
 
 export class BattleCore {
   runner: QteRunner;
@@ -35,6 +42,8 @@ export class BattleCore {
   private dropIdx = 0;
   private dropSoonIdx = 0;
   private phase2Fired = false;
+  private turns: TurnSpec[];
+  private turnIdx = 0;
   private lastKey: Record<string, number> = {};
   private mashStarted = -1;
   private holdStarted = -1;
@@ -52,11 +61,25 @@ export class BattleCore {
     this.spb = 60 / level.bpm;
     this.runner = new QteRunner(level.events, this.spb, windowScale, (r) => this.onResult(r));
     this.gain = 1.15 / Math.max(8, level.events.length);
+    this.turns = [...(level.turns ?? [])].sort((a, b) => a.beat - b.beat);
+  }
+
+  /** The turn spec covering a beat position, or null (no turns, or between turns: the player's). */
+  turnSpecAt(beatPos: number): TurnSpec | null {
+    for (const x of this.turns) if (beatPos >= x.beat && beatPos < x.beat + x.lengthBeats) return x;
+    return null;
+  }
+
+  turnAt(beatPos: number): Turn {
+    return this.turnSpecAt(beatPos)?.who ?? "player";
   }
 
   /** A press at song time t (seconds from beat 0). */
   input(i: { kind: "dir"; dir: Dir; t: number } | { kind: "space"; down: boolean; t: number }) {
     if (this.ended) return;
+    // His move: presses are ignored, never judged (a miss would punish watching him).
+    const spec = this.turnSpecAt(i.t / this.spb);
+    if (spec && spec.who === "opponent" && i.t < (spec.beat + spec.lengthBeats) * this.spb - TURN_GRACE) return;
     const key = i.kind === "dir" ? i.dir : i.down ? "space" : "space-up";
     const prev = this.lastKey[key];
     if (prev !== undefined && i.t - prev < MIN_GAP && i.t >= prev) return;
@@ -77,7 +100,8 @@ export class BattleCore {
   }
 
   private push(d: number) {
-    this.meter = Math.max(-1, Math.min(1, this.meter + d));
+    const floor = this.songTime < ONBOARD_S ? ONBOARD_FLOOR : -1;
+    this.meter = Math.max(Math.min(this.meter, floor), Math.min(1, this.meter + d));
   }
 
   /** True when a strong onset of the track sits on the QTE's target time. */
@@ -143,6 +167,15 @@ export class BattleCore {
     if (b > this.lastBeat && b >= 0) {
       this.lastBeat = b;
       this.emit({ kind: "beat", beat: b, downbeat: b % 4 === 0, energy: this.energyAt(b), bar: Math.floor(b / 4) });
+    }
+    while (this.turnIdx < this.turns.length && beatPos >= this.turns[this.turnIdx].beat) {
+      const x = this.turns[this.turnIdx++];
+      if (beatPos >= x.beat + x.lengthBeats) continue;
+      this.emit({ kind: "turn", who: x.who, beat: x.beat, lengthBeats: x.lengthBeats });
+      if (x.who === "opponent") {
+        if (x.move) this.emit({ kind: "opponentMove", move: x.move, beat: x.beat, lengthBeats: x.lengthBeats });
+        this.push(-OPPONENT_TURN_AURA);
+      }
     }
     if (beatPos > 0 && beatPos < L.lengthBeats) this.push(-(realDt / this.spb) * PRESSURE[Math.min(4, L.id - 1)]);
     const ta = L.taunts[this.tauntIdx];
@@ -211,7 +244,7 @@ export class BattleCore {
       meter: this.meter, combo: this.combo, tier: tierOf(this.combo), score: this.score, rate: this.tempo.rate,
       energy: this.energyAt(Math.floor(beatPos)), beatsToDrop: nextDrop === undefined ? Infinity : nextDrop - beatPos,
       mashing, mashCount: mashing && cur ? Math.min(cur.progress, this.mashCap((cur.ev as { length: number }).length)) : 0,
-      holding, holdProgress, phase2: this.phase2Fired, turn: "player", ending: this.ended, win: this.win, prompts,
+      holding, holdProgress, phase2: this.phase2Fired, turn: this.turnAt(beatPos), ending: this.ended, win: this.win, prompts,
       showsAt: this.showsAt, targetAt: this.targetAt, level: this.level,
     };
   }

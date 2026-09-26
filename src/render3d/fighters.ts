@@ -4,6 +4,8 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import * as SkeletonUtils from "three/examples/jsm/utils/SkeletonUtils.js";
+import { buildClip, maskClip, rigFromObject } from "../anim/poses";
+import { GESTURES } from "../anim/gestures";
 
 export type ClipEvent =
   | "idle_groove" | "hit_up" | "hit_down" | "hit_left" | "hit_right" | "mash_charge" | "release" | "hold_freeze"
@@ -281,6 +283,19 @@ const tmp2 = new THREE.Vector3();
 /** Blend into a move, and back to the idle groove (slower, so a reaction never snaps home). */
 const FADE_IN_S = 0.12;
 const FADE_BACK_S = 0.3;
+/** Head and spine only gestures play additive over the idle (docs/anim-poses.md, "Play as"). */
+const ADDITIVE_GESTURES = new Set(["sigmaStare", "chinUpTaunt", "lookBack", "cookedCollapse"]);
+
+/** A keyed canon gesture on stage: what to fade back when it ends. */
+interface GestureRun {
+  action: THREE.AnimationAction;
+  /** Mask path: the idle's legs playing under the gesture, and the full clip it replaced. */
+  lower: THREE.AnimationAction | null;
+  base: THREE.AnimationAction | null;
+  /** Full layer: the gesture is `current` and the plain play() path fades it back. */
+  full: boolean;
+  left: number;
+}
 /** A clip this long is a dance phrase: it resumes where it left off. Shorter ones are poses and reactions. */
 export const PHRASE_S = 8;
 
@@ -311,6 +326,7 @@ export class Fighter {
   private knock = 0;
   private frozen = false;
   private height = 1.8;
+  private gest: GestureRun | null = null;
 
   constructor(model: THREE.Object3D, private clips: CastSource["clips"], private role: "player" | "enemy", tint?: THREE.Color) {
     toToon(model, tint);
@@ -384,6 +400,7 @@ export class Fighter {
    * time, only poses and reactions restart (restartsOnPlay), so a hit never snaps a dance to its first frame.
    */
   play(ev: ClipEvent | string, speed = 1): void {
+    this.endGesture(FADE_IN_S);
     this.frozen = false;
     const want = this.action(ev);
     const idle = this.action(this.idleName);
@@ -400,6 +417,81 @@ export class Fighter {
     if (prev && prev !== next) next.crossFadeFrom(prev, next === idle ? FADE_BACK_S : FADE_IN_S, false);
     next.play();
     this.current = next;
+  }
+
+  /** True while a keyed canon gesture (src/anim) plays. */
+  get gesturing(): boolean {
+    return this.gest !== null;
+  }
+
+  /**
+   * Perform a canon gesture of src/anim/gestures.ts for `seconds` (visual time), then cross fade back to the
+   * idle. Arm gestures go through the per bone mask (the idle's legs keep dancing, the upper body is exactly
+   * the gesture), head and spine ones play additive over the idle, full layer ones replace the idle.
+   * Unknown key: a plain squash, never a crash. Returns false when nothing was played.
+   */
+  gesture(key: string, bpm: number, seconds: number): boolean {
+    const g = GESTURES[key];
+    if (!g) {
+      this.bump();
+      return false;
+    }
+    this.endGesture(FADE_IN_S);
+    this.frozen = false;
+    const rig = rigFromObject(this.mixer.getRoot() as THREE.Object3D);
+    const additive = ADDITIVE_GESTURES.has(key) && g.layer === "upper";
+    const clip = buildClip(g, bpm, rig, { additive });
+    const a = this.mixer.clipAction(clip);
+    a.setLoop(g.loop ? THREE.LoopRepeat : THREE.LoopOnce, Infinity);
+    a.clampWhenFinished = !g.loop;
+    a.enabled = true;
+    a.paused = false;
+    a.setEffectiveTimeScale(1);
+    a.setEffectiveWeight(1);
+    a.reset();
+    if (additive) {
+      a.fadeIn(FADE_IN_S).play();
+      this.gest = { action: a, lower: null, base: null, full: false, left: seconds };
+      return true;
+    }
+    const base = this.current ?? this.action(this.idleName) ?? null;
+    if (g.layer === "full" || !base) {
+      if (base && base !== a) a.crossFadeFrom(base, FADE_IN_S, false);
+      a.play();
+      this.current = a;
+      this.gest = { action: a, lower: null, base: null, full: true, left: seconds };
+      return true;
+    }
+    const lower = this.mixer.clipAction(maskClip(base.getClip(), "lower"));
+    lower.enabled = true;
+    lower.setLoop(base.loop, Infinity);
+    lower.syncWith(base);
+    lower.setEffectiveWeight(1);
+    lower.fadeIn(FADE_IN_S).play();
+    base.fadeOut(FADE_IN_S);
+    a.fadeIn(FADE_IN_S).play();
+    this.gest = { action: a, lower, base, full: false, left: seconds };
+    return true;
+  }
+
+  /** Fade a running gesture out and the idle back in over `fade` seconds. */
+  private endGesture(fade = FADE_BACK_S): void {
+    const run = this.gest;
+    if (!run) return;
+    this.gest = null;
+    if (run.full) {
+      // play() cross fades from `current`, which is the gesture.
+      if (fade === FADE_BACK_S) this.play(this.idleName);
+      return;
+    }
+    run.action.fadeOut(fade);
+    if (run.lower) run.lower.fadeOut(fade);
+    if (run.base) {
+      run.base.enabled = true;
+      run.base.paused = false;
+      run.base.setEffectiveWeight(1);
+      run.base.fadeIn(fade).play();
+    }
   }
 
   /** HOLD: freeze the current pose (pause the action). */
@@ -422,6 +514,10 @@ export class Fighter {
     // The idle clip arrived after the fighter was built: leave the bind pose.
     if (!this.current && this.clips.has(this.idleName)) this.play(this.idleName);
     this.mixer.update(dt);
+    if (this.gest) {
+      this.gest.left -= dt;
+      if (this.gest.left <= 0) this.endGesture();
+    }
     this.squash = Math.max(0, this.squash - dt * 4);
     this.knock = Math.max(0, this.knock - dt * 3);
     const bob = this.frozen ? 0 : Math.pow(1 - beatPhase, 3) * (0.03 + 0.04 * energy);

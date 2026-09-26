@@ -44,6 +44,15 @@ export function pickShot(prev: ShotKind, rnd: () => number, ctx: { drop?: boolea
   return pick(options.length ? options : OTS_FAMILY, rnd());
 }
 
+/**
+ * The shot on a turn change: his turn cuts to an enemy family shot (the dolly, or stays on the enemy when
+ * already there), yours back to the behind shot (stays when already behind).
+ */
+export function turnShot(who: "player" | "opponent", prev: ShotKind): ShotKind {
+  if (who === "opponent") return FAMILY[prev] === "enemy" ? prev : "dollyEnemy";
+  return isOts(prev) ? prev : "ots";
+}
+
 function smoothstep(x: number): number {
   const t = Math.min(1, Math.max(0, x));
   return t * t * (3 - 2 * t);

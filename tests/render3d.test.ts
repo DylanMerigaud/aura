@@ -1,7 +1,7 @@
 // Pure parts of the 3D director: the shot picker never repeats a shot family, every shot moves on its own
 // clock without a jump, the drop ramp and punch zoom curves.
 import { describe, expect, it } from "vitest";
-import { FAMILY, LAYOUT, MOVE_S, PORTRAIT, isOts, pickShot, portraitFov, project, punchZoom, rampScale, shotPose, type ShotKind, type V3 } from "../src/render3d/director";
+import { FAMILY, LAYOUT, MOVE_S, PORTRAIT, isOts, pickShot, portraitFov, project, punchZoom, rampScale, shotPose, turnShot, type ShotKind, type V3 } from "../src/render3d/director";
 
 const KINDS: ShotKind[] = ["ots", "otsWide", "enemyClose", "heroLow", "topDown", "dollyEnemy", "hands"];
 
@@ -189,5 +189,16 @@ describe("portraitFov", () => {
   it("keeps the vertical field on a wider portrait and never exceeds 80 degrees", () => {
     expect(portraitFov(50, 0.75)).toBeCloseTo(50);
     expect(portraitFov(70, 0.3)).toBeLessThanOrEqual(80);
+  });
+});
+
+describe("turnShot", () => {
+  it("cuts to the enemy on his turn and back behind the hero on yours, staying when already there", () => {
+    expect(turnShot("opponent", "ots")).toBe("dollyEnemy");
+    expect(turnShot("opponent", "enemyClose")).toBe("enemyClose");
+    expect(FAMILY[turnShot("opponent", "topDown")]).toBe("enemy");
+    expect(turnShot("player", "dollyEnemy")).toBe("ots");
+    expect(turnShot("player", "otsWide")).toBe("otsWide");
+    expect(isOts(turnShot("player", "heroLow"))).toBe(true);
   });
 });
