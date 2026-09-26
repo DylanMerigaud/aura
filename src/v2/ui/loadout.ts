@@ -4,10 +4,9 @@
 import { el } from "./dom";
 
 const CARDS: [string, string][] = [
-  ["HIT", "press the arrow when it lands in the ring."],
-  ["COMBO", "type the sequence in order, the last one on the beat."],
-  ["HOLD", "press and hold, release exactly on time."],
-  ["MASH", "alternate left and right, then release for the burst."],
+  ["HIT", "tap anywhere when the note lands in the ring."],
+  ["HOLD", "press and hold anywhere, lift exactly on the beat."],
+  ["67", "tap fast, both thumbs, then one tap on the drop for the burst."],
 ];
 
 export function buildLoadout(onBack: () => void) {
@@ -22,7 +21,7 @@ export function buildLoadout(onBack: () => void) {
     grid.appendChild(card);
   }
   root.appendChild(grid);
-  root.appendChild(el("p", "results-prompt", "PRESS ESCAPE OR TAP TO GO BACK"));
+  root.appendChild(el("p", "results-prompt", "TAP TO GO BACK"));
   root.addEventListener("click", onBack);
 
   function onKey(e: KeyboardEvent) {

@@ -1,12 +1,50 @@
-// Results (amendment 10: under 1 s after the end, skippable with one input). Timing grade counts,
-// accuracy, best burst, stars, the title unlocked, then a live roast (fetchRoast, under 3 s) or
-// the level's own announcer line while it is not back yet.
+// Results (amendment 10 and addendum 15:20: under 1 s after the end, retry is one input). Timing grade
+// counts, accuracy, best burst, stars, the title unlocked, then a live roast (fetchRoast, under 3 s) or
+// the level's own announcer line while it is not back yet. Four big buttons: RETRY (the default: any
+// key or a tap on it), PACK (the Aura Packs opening, once per result), MAP (the world tour), SHARE
+// (Web Share, else the link copied).
 import type { LevelV2, Stats } from "../contracts";
 import { starGlyphs } from "./format";
-import { el } from "./dom";
+import { el, replay } from "./dom";
 import { fetchRoast, speakLive } from "../net/live";
+import { isTapKey, shareData, shareUrl, type ShareData } from "./flow";
 
-export function buildResults(onNext: () => void) {
+export interface ResultsHandlers {
+  retry(): void;
+  map(): void;
+  /** Opens the pack; resolves when its overlay closed. */
+  pack(stats: Stats, level: LevelV2): Promise<void>;
+}
+
+/** Hook for the later share card: return an image File to attach to the Web Share call, or null. */
+export let shareCard: ((stats: Stats, level: LevelV2) => Promise<File | null>) | null = null;
+export function setShareCard(fn: typeof shareCard) {
+  shareCard = fn;
+}
+
+async function share(data: ShareData, stats: Stats, level: LevelV2): Promise<"shared" | "copied" | "failed"> {
+  const nav = typeof navigator !== "undefined" ? navigator : null;
+  if (nav && typeof nav.share === "function") {
+    try {
+      const file = shareCard ? await shareCard(stats, level).catch(() => null) : null;
+      const payload: ShareData & { files?: File[] } = { ...data };
+      if (file && typeof nav.canShare === "function" && nav.canShare({ files: [file] })) payload.files = [file];
+      await nav.share(payload);
+      return "shared";
+    } catch (err) {
+      // The player closed the sheet: that is an answer, not a reason to copy behind their back.
+      if ((err as { name?: string })?.name === "AbortError") return "failed";
+    }
+  }
+  try {
+    await nav?.clipboard?.writeText(data.url);
+    return nav?.clipboard ? "copied" : "failed";
+  } catch {
+    return "failed";
+  }
+}
+
+export function buildResults(on: ResultsHandlers) {
   const root = el("section", "screen results");
   const heading = el("h1", "results-heading");
   root.appendChild(heading);
@@ -34,13 +72,56 @@ export function buildResults(onNext: () => void) {
   root.appendChild(roast);
   root.appendChild(roastTag);
 
-  const prompt = el("p", "results-prompt");
-  root.appendChild(prompt);
+  const buttons = el("div", "results-buttons");
+  root.appendChild(buttons);
+  const toast = el("p", "results-toast");
+  root.appendChild(toast);
 
   let armed = false;
   let genAtShow = 0;
-  root.addEventListener("click", () => {
-    if (armed) onNext();
+  let packOpen = false;
+  let packDone = false;
+  let cur: { stats: Stats; level: LevelV2 } | null = null;
+
+  function button(cls: string, label: string, act: () => void) {
+    const b = el("button", "results-btn " + cls, label);
+    b.type = "button";
+    b.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (!armed || packOpen) return;
+      act();
+    });
+    buttons.appendChild(b);
+    return b;
+  }
+
+  function say(text: string) {
+    toast.textContent = text;
+    replay(toast, "show");
+  }
+
+  const retryBtn = button("retry", "RETRY", () => on.retry());
+  const packBtn = button("pack", "PACK", () => {
+    if (!cur) return;
+    if (packDone) {
+      replay(packBtn, "shake");
+      say("pack opened: win again for the next one");
+      return;
+    }
+    packDone = true;
+    packOpen = true;
+    packBtn.classList.add("disabled");
+    on.pack(cur.stats, cur.level)
+      .catch(() => say("the pack got lost on the way"))
+      .finally(() => (packOpen = false));
+  });
+  button("map", "MAP", () => on.map());
+  button("share", "SHARE", () => {
+    if (!cur) return;
+    const { stats, level } = cur;
+    void share(shareData(stats, level, shareUrl(location)), stats, level).then((r) => {
+      if (r === "copied") say("link copied");
+    });
   });
 
   function row(el2: HTMLElement, label: string, value: string) {
@@ -67,8 +148,12 @@ export function buildResults(onNext: () => void) {
     row(rowEls.burst, "BEST BURST", String(stats.bestBurst));
     roast.textContent = stats.win ? level.announcer.win : level.announcer.lose;
     roastTag.classList.add("hidden");
-    const touch = typeof matchMedia === "function" && matchMedia("(pointer: coarse)").matches;
-    prompt.textContent = `${touch ? "TAP" : "PRESS SPACE"} TO ${stats.win ? "CONTINUE" : "RETRY"}`;
+    cur = { stats, level };
+    packDone = false;
+    packOpen = false;
+    packBtn.classList.remove("disabled");
+    toast.textContent = "";
+    // A last frantic battle tap must not land on RETRY: a short guard, still well under the 1 s rule.
     setTimeout(() => (armed = true), 300);
 
     fetchRoast(stats, level)
@@ -86,9 +171,12 @@ export function buildResults(onNext: () => void) {
       });
   }
 
+  // RETRY is the default: any key is the one input that restarts (the pack overlay owns keys while open).
   function onKey(e: KeyboardEvent) {
-    if (!armed) return;
-    if (e.code === "Enter" || e.code === "Space") onNext();
+    if (!armed || packOpen || !isTapKey(e)) return;
+    e.preventDefault();
+    replay(retryBtn, "pressed");
+    on.retry();
   }
 
   return { root, onKey, show };

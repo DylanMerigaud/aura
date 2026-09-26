@@ -73,10 +73,10 @@ export class Game implements GameApi {
     return p;
   }
 
-  /** Fetch and decode a level's track and voices ahead of time (the VS card calls this). */
-  preload(level: LevelV2) {
-    this.buffer(this.deps.trackInfo(level.track).file);
-    this.loadVoices(level);
+  /** Fetch and decode a level's track and voices ahead of time (the loading screen and the VS card call
+   * this; needs the AudioContext, created suspended during loading). Settles when both are in or failed. */
+  preload(level: LevelV2): Promise<void> {
+    return Promise.all([this.buffer(this.deps.trackInfo(level.track).file), this.loadVoices(level)]).then(() => {});
   }
 
   private async loadVoices(level: LevelV2) {
