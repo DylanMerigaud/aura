@@ -43,7 +43,7 @@ export function buildVsCard(base: string, onFight: () => void) {
     them.style.setProperty("--opp-color", level.opponent.color || "#ff3df2");
     name.textContent = level.opponent.name.toUpperCase();
     place.textContent = level.place;
-    bpm.textContent = `${level.bpm} BPM`;
+    bpm.textContent = `${Math.round(level.bpm)} BPM`;
     armed = false;
     setTimeout(() => (armed = true), 350);
   }

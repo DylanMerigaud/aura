@@ -107,6 +107,8 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
   let hitAlt = false;
   let time = 0;
   let idleAngle = 0;
+  /** True while battle VFX may be on screen; the first idle frame after a battle clears them. */
+  let battleFx = false;
 
   // Fps and adaptive quality.
   let quality = 1;
@@ -417,6 +419,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
     },
 
     frame(f: Frame, realDt: number) {
+      battleFx = true;
       const dt = Math.min(0.1, Math.max(0, realDt));
       time += dt;
       measure(dt);
@@ -460,6 +463,12 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
     },
 
     idle(realDt: number) {
+      if (battleFx) {
+        // Menus after a battle: no frozen flames, orb, sunglasses or loss grey behind the screens.
+        battleFx = false;
+        vfx.event({ kind: "countIn", n: 4, at: 0 }, anchors);
+        glasses.visible = false;
+      }
       const dt = Math.min(0.1, Math.max(0, realDt));
       time += dt;
       measure(dt);

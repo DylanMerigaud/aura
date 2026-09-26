@@ -33,7 +33,7 @@ interface ScreenCtl {
 }
 
 export function startApp(opts: StartOpts): { hud: Listener } {
-  const { game, levels, base, canvas, debug } = opts;
+  const { game, stage, levels, base, canvas, debug } = opts;
   const uiRoot = document.getElementById("ui")!;
   if (debug) uiRoot.classList.add("debug");
 
@@ -88,8 +88,18 @@ export function startApp(opts: StartOpts): { hud: Listener } {
     map.show();
     showScreen(map);
   }
+  // The stage builds the set and the fighters per level: started on the VS card, awaited by the battle,
+  // dropped after each battle so a retry gets a fresh director.
+  let staged: { level: LevelV2; ready: Promise<void> } | null = null;
+  function stageLevel(l: LevelV2): Promise<void> {
+    if (!staged || staged.level !== l) staged = { level: l, ready: stage.load(l).catch(() => {}) };
+    return staged.ready;
+  }
+
   function openVsCard(i: number) {
     levelIdx = i;
+    void stageLevel(levels[i]);
+    (game as GameApi & { preload?(l: LevelV2): void }).preload?.(levels[i]);
     vscard.show(levels[i]);
     showScreen(vscard);
   }
@@ -99,6 +109,8 @@ export function startApp(opts: StartOpts): { hud: Listener } {
     hudCtl.prepare(level);
     showScreen(battle);
     battleInput.show();
+    await stageLevel(level);
+    staged = null;
     const scale = WINDOW_SCALE[levelIdx] ?? 1;
     const stats = await game.play(level, scale);
     battleInput.hide();

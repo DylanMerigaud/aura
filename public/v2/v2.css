@@ -43,6 +43,8 @@ body {
   pointer-events: none;
   padding: var(--safe-t) var(--safe-r) var(--safe-b) var(--safe-l);
   overflow: hidden;
+  /* Above the stage's letterbox bars (z-index 2). */
+  z-index: 3;
 }
 
 #ui.debug .screen.active { outline: 1px dashed rgba(53, 224, 255, 0.4); }
@@ -230,6 +232,8 @@ h1, h2, h3, .logo, .screen-title, .vs-level-name, .grade-popup, .burst-num, .bur
 
 .hud {
   align-items: stretch;
+  /* Touches fall through to the canvas, where the battle input listens. */
+  pointer-events: none !important;
   justify-content: flex-start;
   padding: 0;
 }

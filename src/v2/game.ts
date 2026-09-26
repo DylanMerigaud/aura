@@ -38,6 +38,8 @@ export class Game implements GameApi {
   private endAt = -1;
   private done: ((s: Stats) => void) | null = null;
   private setRate = 1;
+  /** Count in clicks already scheduled on the audio clock, announced to the listeners as they are heard. */
+  private pendingCount: { n: number; at: number }[] = [];
 
   constructor(private deps: GameDeps) {}
 
@@ -129,8 +131,8 @@ export class Game implements GameApi {
       const at = tClick0 + k * spb;
       if (this.deps.countIn) this.deps.countIn(at, beats - k);
       else sfx.tick(at, k === beats - 1);
-      this.emit({ kind: "countIn", n: beats - k, at });
     }
+    this.pendingCount = Array.from({ length: beats }, (_, k) => ({ n: beats - k, at: tClick0 + k * spb }));
     if (!buf) return;
     const s = ctx.createBufferSource();
     s.buffer = buf;
@@ -186,6 +188,7 @@ export class Game implements GameApi {
   pause() {
     if (!this.core || !this.clock || this.paused || this.endAt > 0) return;
     this.paused = true;
+    this.pendingCount = [];
     this.pausePos = this.clock.pos(ctx.currentTime);
     this.stopSource();
   }
@@ -204,6 +207,7 @@ export class Game implements GameApi {
     this.core = null;
     this.clock = null;
     this.done = null;
+    this.pendingCount = [];
   }
 
   /** Voices and music side effects of core events (the audio layers handle the SFX). */
@@ -230,7 +234,12 @@ export class Game implements GameApi {
       this.src.playbackRate.setValueAtTime(r, now);
       this.setRate = r;
     }
-    core.update(this.songAt(heardTime()), realDt);
+    const heard = heardTime();
+    while (this.pendingCount.length && this.pendingCount[0].at <= heard) {
+      const c = this.pendingCount.shift()!;
+      this.emit({ kind: "countIn", n: c.n, at: c.at });
+    }
+    core.update(this.songAt(heard), realDt);
     const f = core.frame();
     for (const l of this.listeners) l.frame?.(f, realDt);
     if (this.endAt > 0 && now >= this.endAt && this.done) {

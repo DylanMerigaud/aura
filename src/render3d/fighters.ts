@@ -40,12 +40,48 @@ const LOOPING = new Set<string>(["idle_groove", "enemy_idle", "mash_charge", "vi
 export interface CastSource {
   player: THREE.Object3D;
   enemy: THREE.Object3D;
-  /** Clips by event name, shared by both (same rig). */
-  clips: Map<string, { clip: THREE.AnimationClip; loop: boolean }>;
+  /** Clips by event name, shared by both. `hipsY` is the rest height of the rig the clip was exported on. */
+  clips: Map<string, { clip: THREE.AnimationClip; loop: boolean; hipsY?: number }>;
   label: string;
 }
 
 const loader = new GLTFLoader();
+
+/** Mixamo prefixes bones per export (mixamorig:, mixamorig1:, sanitized by GLTFLoader to mixamorigHips, mixamorig1Hips). */
+const boneKey = (n: string) => n.replace(/^mixamorig\d*:?/, "");
+
+function hipsRestY(root: THREE.Object3D): number | undefined {
+  let y: number | undefined;
+  root.traverse((o) => {
+    if (y === undefined && boneKey(o.name) === "Hips") y = o.position.y;
+  });
+  return y;
+}
+
+const retargeted = new WeakMap<THREE.AnimationClip, Map<string, THREE.AnimationClip>>();
+/** Rename a clip's tracks onto this model's bone names (dropping bones it lacks) and scale the Hips
+ * translation from the clip rig's rest height to the model's, so feet stay on the floor. */
+function retarget(clip: THREE.AnimationClip, names: Map<string, string>, hipsK: number): THREE.AnimationClip {
+  // Every battle builds new fighters from the same cast: one retargeted copy per clip and rig is enough.
+  const key = `${names.get("Hips") ?? ""}|${hipsK}`;
+  let byRig = retargeted.get(clip);
+  if (!byRig) retargeted.set(clip, (byRig = new Map()));
+  const hit = byRig.get(key);
+  if (hit) return hit;
+  const tracks: THREE.KeyframeTrack[] = [];
+  for (const t of clip.tracks) {
+    const i = t.name.lastIndexOf(".");
+    const node = names.get(boneKey(t.name.slice(0, i)));
+    if (!node) continue;
+    const c = t.clone();
+    c.name = node + t.name.slice(i);
+    if (hipsK !== 1 && boneKey(node) === "Hips" && t.name.endsWith(".position")) for (let k = 0; k < c.values.length; k++) c.values[k] *= hipsK;
+    tracks.push(c);
+  }
+  const out = new THREE.AnimationClip(clip.name, clip.duration, tracks);
+  byRig.set(key, out);
+  return out;
+}
 
 async function loadGltf(url: string) {
   return loader.loadAsync(url);
@@ -60,13 +96,13 @@ async function fromManifest(base: string): Promise<CastSource> {
   const pc = byRole(/player|hero/i) ?? m.characters[0];
   const ec = byRole(/enemy|opponent|boss/i) ?? m.characters.find((c) => c !== pc) ?? pc;
   const [pg, eg] = await Promise.all([loadGltf(`${base}models/${pc.file}`), ec === pc ? null : loadGltf(`${base}models/${ec.file}`)]);
-  const clips = new Map<string, { clip: THREE.AnimationClip; loop: boolean }>();
+  const clips: CastSource["clips"] = new Map();
   await Promise.all(
     m.clips.map(async (c) => {
       try {
         const g = await loadGltf(`${base}models/${c.file}`);
         const clip = (c.name && g.animations.find((a) => a.name === c.name)) || g.animations[0];
-        if (clip) clips.set(c.event, { clip, loop: c.loop ?? LOOPING.has(c.event) });
+        if (clip) clips.set(c.event, { clip, loop: c.loop ?? LOOPING.has(c.event), hipsY: hipsRestY(g.scene) });
       } catch {
         // A broken clip file is a missing clip: the idle fallback covers it.
       }
@@ -199,8 +235,14 @@ export class Fighter {
     });
 
     this.mixer = new THREE.AnimationMixer(model);
-    for (const [ev, { clip, loop }] of clips) {
-      const a = this.mixer.clipAction(clip);
+    const names = new Map<string, string>();
+    model.traverse((o) => {
+      if (o.name && !names.has(boneKey(o.name))) names.set(boneKey(o.name), o.name);
+    });
+    const modelHips = hipsRestY(model);
+    for (const [ev, { clip, loop, hipsY }] of clips) {
+      const k = modelHips && hipsY ? modelHips / hipsY : 1;
+      const a = this.mixer.clipAction(retarget(clip, names, k));
       if (!loop) {
         a.setLoop(THREE.LoopOnce, 1);
         a.clampWhenFinished = true;
@@ -299,6 +341,14 @@ export class Fighter {
 
   dispose(): void {
     this.mixer.stopAllAction();
+    this.mixer.uncacheRoot(this.mixer.getRoot());
     this.root.removeFromParent();
+    // Materials are per fighter (toLambert, the blob); geometry is shared with the cast source, except the blob.
+    this.root.traverse((o) => {
+      const m = o as THREE.Mesh;
+      if (!m.isMesh) return;
+      for (const mat of Array.isArray(m.material) ? m.material : [m.material]) mat.dispose();
+      if (m.geometry.type === "PlaneGeometry") m.geometry.dispose();
+    });
   }
 }
