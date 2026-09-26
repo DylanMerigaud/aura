@@ -1,7 +1,7 @@
 // Shared plumbing of the mechanical evals (scripts/eval-pacing.ts, scripts/eval-animation.ts): the chart
 // interface both gates read, the loaders that turn whatever is on disk into it, the track analysis lookup,
 // the ledger writer, the table printer and the README count line. No DOM, no audio, no three.js.
-import { appendFileSync, existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
+import { appendFileSync, existsSync, mkdirSync, readFileSync, readdirSync, realpathSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
@@ -405,9 +405,14 @@ export function parseCli(argv = process.argv.slice(2)): Cli {
   return cli;
 }
 
-/** True when the module at `url` is the script node was started with. */
+/** True when the module at `url` is the script node was started with (symlinks resolved on both sides). */
 export function isMain(url: string): boolean {
-  return !!process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === url;
+  if (!process.argv[1]) return false;
+  try {
+    return realpathSync(resolve(process.argv[1])) === realpathSync(fileURLToPath(url));
+  } catch {
+    return false;
+  }
 }
 
 /** Writes the rows (unless --dry), refreshes the README line, prints the table; returns the exit code. */
