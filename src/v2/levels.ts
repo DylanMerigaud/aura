@@ -99,26 +99,27 @@ function base(id: number, track: string, stage: StageKey, artKey: string, neon: 
  * The first 15 s (to beat 32) cannot be lost: the core floors the meter there.
  */
 const HERO_EVENTS: QteEvent[] = [
-  // Onboarding (addendum 17:15): the first 4 bars one direction only, then two, then all four.
-  { type: "hit", beat: 4, dir: "up" },
-  { type: "hit", beat: 6, dir: "up" },
-  { type: "hit", beat: 8, dir: "up" },
-  { type: "hit", beat: 10, dir: "up" },
+  // Onboarding (addenda 17:15, 17:30): TAP notes first (any tap; `dir` is only the dance move), then arrows
+  // one direction at a time, then all four, with taps in between as breath.
+  { type: "hit", beat: 4, dir: "right", tap: true },
+  { type: "hit", beat: 6, dir: "left", tap: true },
+  { type: "hit", beat: 8, dir: "up", tap: true },
+  { type: "hit", beat: 10, dir: "right", tap: true },
   { type: "hit", beat: 12, dir: "up" },
-  { type: "hit", beat: 14, dir: "up" },
+  { type: "hit", beat: 14, dir: "down", tap: true },
   { type: "mash", beat: 24, length: 4 },
-  { type: "hit", beat: 30, dir: "left" },
+  { type: "hit", beat: 30, dir: "up" },
   { type: "hold", beat: 32, length: 4 },
-  { type: "hit", beat: 38, dir: "right" },
+  { type: "hit", beat: 38, dir: "left" },
   { type: "hold", beat: 48, length: 4 },
-  { type: "hit", beat: 53, dir: "left" },
-  { type: "hit", beat: 55, dir: "right" },
+  { type: "hit", beat: 53, dir: "up" },
+  { type: "hit", beat: 55, dir: "right", tap: true },
   { type: "mash", beat: 64, length: 4 },
   { type: "hit", beat: 70, dir: "up" },
   { type: "hit", beat: 72, dir: "left" },
-  { type: "hit", beat: 74, dir: "down" },
+  { type: "hit", beat: 74, dir: "down", tap: true },
   { type: "hit", beat: 76, dir: "right" },
-  { type: "hit", beat: 78, dir: "up" },
+  { type: "hit", beat: 78, dir: "down" },
 ];
 
 const HERO_TURNS: TurnSpec[] = [
@@ -165,6 +166,27 @@ const TURN_OFFSETS = Array.from({ length: 33 }, (_, i) => i + 8).sort((a, b) => 
  * where they cut no MASH (the 67 stays whole), always ending on a player turn. Any other event inside an
  * opponent turn is dropped.
  */
+/**
+ * No HIT twice in a row on the same direction (the animation eval k10: the same move twice reads as a loop),
+ * counting across the opponent turns that removed the events between them. Other events break the run.
+ */
+export function noRepeat(events: QteEvent[]): QteEvent[] {
+  let prev: Dir | null = null;
+  return events.map((e, i) => {
+    if (e.type !== "hit") {
+      prev = null;
+      return e;
+    }
+    let dir = e.dir;
+    if (dir === prev) {
+      const next = events.slice(i + 1).find((x) => x.type === "hit") as { dir: Dir } | undefined;
+      dir = DIRS.find((d) => d !== prev && d !== next?.dir) ?? dir;
+    }
+    prev = dir;
+    return dir === e.dir ? e : { ...e, dir };
+  });
+}
+
 export function alternate(events: QteEvent[], lengthBeats: number, seed: number): { events: QteEvent[]; turns: TurnSpec[] } {
   const turns: TurnSpec[] = [];
   const anchors = events.filter((e) => e.type === "mash");
@@ -395,7 +417,9 @@ function generated(
   const { info, c, level } = base(id, track, stage, artKey, neon, windowScale, L);
   // Boss phase 2 on the bar nearest the midpoint of the track (one track, see the lane report).
   const phase2Beat = boss ? Math.round(L / 8) * 4 : undefined;
-  const { events, turns } = alternate(generateChart(info, L, level.seed, { ...f, phase2: phase2Beat }), L, level.seed);
+  const alt = alternate(generateChart(info, L, level.seed, { ...f, phase2: phase2Beat }), L, level.seed);
+  const { turns } = alt;
+  const events = noRepeat(alt.events);
   return {
     ...level,
     turns,
@@ -419,11 +443,11 @@ export const LEVELS_V2: LevelV2[] = [
     mashes: 1, mashLen: 5, holdOnDrops: false, holdOnBreakdowns: false, combo: 0.12, hold: 0, gapMin: 2, gapMax: 4,
   }),
   // 4 La Parisienne: built on HOLD, freezes on the drops.
-  generated(4, "level3", "parvis", "rooftop", ["#ffe066", "#8ecbff"], 0.85, {
+  generated(4, "level3", "parvis", "rooftop", ["#ffe066", "#8ecbff"], 0.95, {
     mashes: 0, mashLen: 4, holdOnDrops: true, holdOnBreakdowns: true, combo: 0.1, hold: 0.45, gapMin: 2, gapMax: 4,
   }),
   // 5 Sporty Granny: everything, phase 2 at the midpoint of the boss track tightens the spacing.
-  generated(5, "boss", "stage", "stage", ["#ff007f", "#00e5ff"], 0.75, {
+  generated(5, "boss", "stage", "stage", ["#ff007f", "#00e5ff"], 0.9, {
     mashes: 2, mashLen: 5, holdOnDrops: false, holdOnBreakdowns: true, combo: 0.3, hold: 0.1, gapMin: 2, gapMax: 4,
   }, true),
 ];

@@ -38,7 +38,7 @@ export const BOTS: Bot[] = [
 /** Thresholds of the balance flags. */
 export const FLAGS = { averageWinMin: 0.35, averageWinMax: 0.85, masherWinMax: 0.1, perfectStars: 3 as const };
 
-export type SimInput = { kind: "dir"; dir: Dir; t: number } | { kind: "space"; down: boolean; t: number };
+export type SimInput = { kind: "dir"; dir: Dir; t: number } | { kind: "space"; down: boolean; t: number } | { kind: "tap"; down: boolean; t: number };
 
 /** mulberry32, the same family as the chart generator, so every bot is reproducible under a seed. */
 export function rng(seed: number) {
@@ -94,7 +94,8 @@ export function planInputs(level: LevelV2, bot: Bot, seed: number): SimInput[] {
   for (const ev of level.events) {
     if (bot.lapse > 0 && r() < bot.lapse) continue;
     const T = ev.beat * spb;
-    if (ev.type === "hit") out.push({ kind: "dir", dir: ev.dir, t: T + err() });
+    // A TAP note (v2) takes a tap, an arrow a swipe in its direction.
+    if (ev.type === "hit") out.push(ev.tap ? { kind: "tap", down: true, t: T + err() } : { kind: "dir", dir: ev.dir, t: T + err() });
     else if (ev.type === "combo") {
       ev.dirs.forEach((dir, i) => out.push({ kind: "dir", dir, t: T - (ev.dirs.length - 1 - i) * spb + err() }));
     } else if (ev.type === "hold") {

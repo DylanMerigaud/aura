@@ -26,7 +26,10 @@ export function bindBattleInput(canvas: HTMLCanvasElement, game: GameApi) {
 
   function send(d: Decision, ts: number) {
     if (!d) return;
-    game.input(d.kind === "dir" ? { kind: "dir", dir: d.dir, at: heardTime(ts) } : { kind: "space", down: d.down, at: heardTime(ts) });
+    const at = heardTime(ts);
+    if (d.kind === "tap") game.input({ kind: "tap", down: true, at });
+    else if (d.kind === "dir") game.input({ kind: "dir", dir: d.dir, at });
+    else game.input({ kind: "space", down: d.down, at });
   }
 
   function onDown(e: PointerEvent) {

@@ -93,8 +93,8 @@ describe("gesture routing (MOBILE ONLY)", () => {
     expect(swipeDir(0, -25)).toBe("up");
   });
 
-  it("HIT: the press fires nothing, the lift fires the swipe; a tap is nothing", () => {
-    expect(onPress("hit", 0.5)).toBeNull();
+  it("HIT: the press is a tap (for a TAP note), the lift fires the swipe (for an arrow); no swipe, nothing more", () => {
+    expect(onPress("hit", 0.5)).toEqual({ kind: "tap" });
     expect(onLift("hit", 40, 0, null)).toEqual({ kind: "dir", dir: "right" });
     expect(onLift("hit", 2, 3, null)).toBeNull();
   });

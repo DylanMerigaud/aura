@@ -121,6 +121,27 @@ export function buildArrows(host: HTMLElement) {
     g.restore();
   }
 
+  /** A TAP note: v1's arrow footprint (glow sprite, size, outline) as a round gem, any tap hits it. */
+  function note(x: number, y: number, size: number, color: string) {
+    g.save();
+    g.translate(x, y);
+    g.globalCompositeOperation = "lighter";
+    g.drawImage(sprites[color === YELLOW ? 2 : 0], -size * 1.8, -size * 1.8, size * 3.6, size * 3.6);
+    g.globalCompositeOperation = "source-over";
+    g.fillStyle = color;
+    g.beginPath();
+    g.arc(0, 0, size * 0.72, 0, Math.PI * 2);
+    g.fill();
+    g.strokeStyle = "#000";
+    g.lineWidth = 4;
+    g.stroke();
+    g.fillStyle = "rgba(0,0,0,0.35)";
+    g.beginPath();
+    g.arc(0, 0, size * 0.26, 0, Math.PI * 2);
+    g.fill();
+    g.restore();
+  }
+
   /** The visible lane the arrows travel along, from its spawn point into the ring. */
   function lane() {
     const [x, y] = lanePos(2.2);
@@ -202,12 +223,13 @@ export function buildArrows(host: HTMLElement) {
 
   /** Draw the ghost finger for a prompt kind the player has not landed yet. */
   function teach(s: EventState, f: Frame) {
-    const kind = s.ev.type;
+    const kind = s.ev.type === "hit" && s.ev.tap ? "tap" : s.ev.type;
     if (taught.has(kind)) return;
     watched.set(kind, s);
     const now = f.songTime;
     const T = s.ev.beat * f.spb;
-    if (kind === "hit" && s.ev.type === "hit") ghostSwipe(s.ev.dir, T - now);
+    if (kind === "tap") ghost(Math.exp(-Math.abs(T - now) * 9));
+    else if (kind === "hit" && s.ev.type === "hit") ghostSwipe(s.ev.dir, T - now);
     else if (kind === "mash" && f.mashing && s.progress < 4) ghost(Math.abs(Math.sin(now * Math.PI * 7)));
     else if (kind === "hold" && !s.held) ghost(now >= T - 0.05 ? 1 : Math.exp(-(T - now) * 9));
   }
@@ -220,7 +242,8 @@ export function buildArrows(host: HTMLElement) {
     const T = ev.beat * spb;
     if (ev.type === "hit") {
       const [x, y] = lanePos((T - now) / spb);
-      arrow(x, y, ev.dir, 38, CYAN);
+      if (ev.tap) note(x, y, 38, CYAN);
+      else arrow(x, y, ev.dir, 38, CYAN);
     } else if (ev.type === "combo") {
       const n = ev.dirs.length;
       const gap = portrait ? Math.min(84, 440 / Math.max(1, n)) : 84;

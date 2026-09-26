@@ -187,7 +187,7 @@ describe("mastery and reactive taunts", () => {
 
   it("FLOW after 8 Perfects in a row doubles the score and ends on the next non Perfect", () => {
     // 20 notes so 9 Perfects do not KO the opponent (the gain per note scales with the chart size).
-    const hits = Array.from({ length: 20 }, (_, i) => ({ type: "hit" as const, beat: 4 + i * 2, dir: (i % 2 ? "up" : "left") as "up" | "left" }));
+    const hits = Array.from({ length: 20 }, (_, i) => ({ type: "hit" as const, beat: 4 + i * 2, dir: (i % 2 ? "up" : "left") as "up" | "left", tap: true }));
     const lv = level(hits, { lengthBeats: 48, taunts: [] });
     const out: CoreEvent[] = [];
     const core = new BattleCore(lv, track, 1, (e) => out.push(e));
@@ -204,7 +204,7 @@ describe("mastery and reactive taunts", () => {
   });
 
   it("reacts: a miss streak and the combo 10 each make him say a line, never twice inside the cooldown", () => {
-    const hits = Array.from({ length: 24 }, (_, i) => ({ type: "hit" as const, beat: 4 + i * 2, dir: (i % 2 ? "up" : "left") as "up" | "left" }));
+    const hits = Array.from({ length: 24 }, (_, i) => ({ type: "hit" as const, beat: 4 + i * 2, dir: (i % 2 ? "up" : "left") as "up" | "left", tap: true }));
     const taunts = ["a", "b", "c", "d", "e", "f", "g", "h"].map((text) => ({ beat: 999, text }));
     const out: CoreEvent[] = [];
     const core = new BattleCore(level(hits, { lengthBeats: 60, taunts }), track, 1, (e) => out.push(e));

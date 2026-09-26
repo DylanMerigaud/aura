@@ -6,7 +6,7 @@ import { Tempo } from "./tempo";
 import { tierOf, type CoreEvent, type Frame, type LevelV2, type Stats, type TrackInfo, type Turn, type TurnSpec } from "./contracts";
 
 /** Aura drained per beat by opponent pressure, per level. */
-const PRESSURE = [0, 0.003, 0.006, 0.009, 0.011];
+const PRESSURE = [0, 0.002, 0.003, 0.004, 0.005];
 /** Mash presses per beat of the window that count toward the burst (amendment 6: no turbo key). */
 const MASH_CAP_PER_BEAT = 3;
 /** Presses under this gap on the same key are ignored. */

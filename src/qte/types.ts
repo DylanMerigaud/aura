@@ -4,7 +4,11 @@ export type Dir = "up" | "down" | "left" | "right";
 
 /** Every event lives on the beat grid (integer beats from the song start). */
 export type QteEvent =
-  | { type: "hit"; beat: number; dir: Dir }
+  /**
+   * `dir` is the arrow to swipe and the dance move played on the hit. `tap` (v2): a TAP note, any tap hits it,
+   * `dir` is then only the dance move.
+   */
+  | { type: "hit"; beat: number; dir: Dir; tap?: boolean }
   /** Alternate LEFT/RIGHT from `beat` for `length` beats, release with SPACE on beat + length. */
   | { type: "mash"; beat: number; length: number }
   /** Press SPACE on `beat`, release exactly on beat + length. */
