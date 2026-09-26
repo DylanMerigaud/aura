@@ -119,7 +119,7 @@ const HERO_EVENTS: QteEvent[] = [
 ];
 
 function hero(): LevelV2 {
-  const { c, level } = base(1, "level4", "club", "club", ["#b14dff", "#00e5ff"], 1, 86);
+  const { c, level } = base(1, "level4", "metro", "metro", ["#ffb347", "#35e0ff"], 1, 86);
   return {
     ...level,
     events: HERO_EVENTS,

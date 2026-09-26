@@ -24,6 +24,135 @@ function signTexture(text: string): THREE.CanvasTexture {
   return t;
 }
 
+
+/** White bevelled metro tiles with dark grout, repeated over the vault. */
+function tileTexture(): THREE.CanvasTexture {
+  const c = document.createElement("canvas");
+  c.width = 128;
+  c.height = 64;
+  const g = c.getContext("2d")!;
+  g.fillStyle = "#3a3a36";
+  g.fillRect(0, 0, 128, 64);
+  for (let row = 0; row < 2; row++) {
+    for (let col = -1; col < 2; col++) {
+      const x = col * 64 + (row % 2) * 32 + 2;
+      const y = row * 32 + 2;
+      const grd = g.createLinearGradient(x, y, x, y + 28);
+      grd.addColorStop(0, "#f4f1e8");
+      grd.addColorStop(1, "#cfcabd");
+      g.fillStyle = grd;
+      g.fillRect(x, y, 60, 28);
+    }
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  t.repeat.set(26, 10);
+  return t;
+}
+
+/** The blue enamel station plate. */
+function plateTexture(text: string): THREE.CanvasTexture {
+  const c = document.createElement("canvas");
+  c.width = 512;
+  c.height = 96;
+  const g = c.getContext("2d")!;
+  g.fillStyle = "#16307a";
+  g.fillRect(0, 0, 512, 96);
+  g.strokeStyle = "#e9e4d4";
+  g.lineWidth = 5;
+  g.strokeRect(6, 6, 500, 84);
+  g.fillStyle = "#f4f1e8";
+  g.font = "bold 58px sans-serif";
+  g.textAlign = "center";
+  g.textBaseline = "middle";
+  g.fillText(text, 256, 52);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+
+/**
+ * Chatelet at 2am, primitives only: the tiled vault behind the enemy, the platform edge with its yellow
+ * strip over the track pit and rails, the blue enamel CHATELET plate, two warm lit poster frames,
+ * cool fluorescent tubes on the vault, and two rows of turnstiles flanking the rival.
+ */
+function metroSet(): THREE.Group {
+  const g = new THREE.Group();
+  const VR = 9.5;
+  const VZ = -2;
+  // Far side of the vault: a quarter cylinder along x, seen from inside only (invisible from behind).
+  const vault = new THREE.Mesh(
+    new THREE.CylinderGeometry(VR, VR, 26, 24, 1, true, 0, Math.PI / 2),
+    new THREE.MeshLambertMaterial({ map: tileTexture(), side: THREE.BackSide }),
+  );
+  vault.rotation.z = Math.PI / 2;
+  vault.rotation.y = Math.PI;
+  vault.position.set(0, 0, VZ);
+  g.add(vault);
+  const wallZ = (y: number) => VZ - Math.sqrt(VR * VR - y * y) + 0.15;
+
+  const edgeZ = -8.6;
+  const pit = new THREE.Mesh(new THREE.PlaneGeometry(26, 3.2), new THREE.MeshLambertMaterial({ color: 0x0b0a0c }));
+  pit.rotation.x = -Math.PI / 2;
+  pit.position.set(0, 0.012, edgeZ - 1.6);
+  g.add(pit);
+  const strip = new THREE.Mesh(new THREE.PlaneGeometry(26, 0.28), new THREE.MeshBasicMaterial({ color: 0xd8b300 }));
+  strip.rotation.x = -Math.PI / 2;
+  strip.position.set(0, 0.03, edgeZ + 0.14);
+  g.add(strip);
+  const railMat = new THREE.MeshLambertMaterial({ color: 0x8a8a90 });
+  for (const dz of [-0.9, -2.3]) {
+    const rail = new THREE.Mesh(new THREE.BoxGeometry(26, 0.06, 0.07), railMat);
+    rail.position.set(0, 0.05, edgeZ + dz);
+    g.add(rail);
+  }
+
+  const plate = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 0.64), new THREE.MeshBasicMaterial({ map: plateTexture("CHATELET") }));
+  plate.position.set(0, 2.8, wallZ(2.8));
+  g.add(plate);
+  const posterMat = new THREE.MeshBasicMaterial({ color: 0xffc070 });
+  for (const x of [-4.6, 4.6]) {
+    const frame = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 1.5), posterMat);
+    frame.position.set(x, 1.9, wallZ(1.9));
+    g.add(frame);
+  }
+  const tubeMat = new THREE.MeshBasicMaterial({ color: 0xcff4ff });
+  for (const x of [-7, 0, 7]) {
+    const tube = new THREE.Mesh(new THREE.BoxGeometry(3, 0.08, 0.08), tubeMat);
+    tube.position.set(x, 6, wallZ(6) + 0.1);
+    g.add(tube);
+  }
+
+  // Turnstiles: steel body, a tripod arm, a red and a green lamp.
+  const body = new THREE.BoxGeometry(0.28, 1, 0.9);
+  const bodyMat = new THREE.MeshLambertMaterial({ color: 0x9aa0a8 });
+  const arm = new THREE.CylinderGeometry(0.025, 0.025, 0.55, 5);
+  const armMat = new THREE.MeshLambertMaterial({ color: 0xd0d4da });
+  const lamp = new THREE.BoxGeometry(0.1, 0.06, 0.12);
+  const red = new THREE.MeshBasicMaterial({ color: 0xff3030 });
+  const green = new THREE.MeshBasicMaterial({ color: 0x30ff70 });
+  for (const side of [-1, 1]) {
+    for (let i = 0; i < 3; i++) {
+      const t = new THREE.Group();
+      const b = new THREE.Mesh(body, bodyMat);
+      b.position.y = 0.5;
+      t.add(b);
+      const a = new THREE.Mesh(arm, armMat);
+      a.rotation.z = Math.PI / 2;
+      a.position.set(0.4 * -side, 0.85, 0);
+      t.add(a);
+      const l = new THREE.Mesh(lamp, i === 1 ? green : red);
+      l.position.set(0, 1.03, 0.3);
+      t.add(l);
+      t.position.set(side * (2.5 + i * 0.85), 0, -5.4);
+      g.add(t);
+    }
+  }
+  g.visible = false;
+  return g;
+}
+
 export class RingSet {
   readonly group = new THREE.Group();
   private rim: THREE.MeshBasicMaterial;
@@ -36,10 +165,12 @@ export class RingSet {
   private neon: [THREE.Color, THREE.Color] = [new THREE.Color("#00e5ff"), new THREE.Color("#ff2bd6")];
   private loader = new THREE.TextureLoader();
   private artKey = "";
+  private metro = metroSet();
 
   constructor(private scene: THREE.Scene, private base: string) {
     scene.fog = new THREE.Fog(0x0a0614, 9, 30);
     scene.add(this.group);
+    this.group.add(this.metro);
 
     this.floor = new THREE.MeshLambertMaterial({ color: 0x15121c });
     const floor = new THREE.Mesh(new THREE.CircleGeometry(RING_R, 40), this.floor);
@@ -110,6 +241,7 @@ export class RingSet {
   setLevel(level: LevelV2): void {
     this.neon = [new THREE.Color(level.neon[0]), new THREE.Color(level.neon[1])];
     this.applyColors();
+    this.metro.visible = level.stage === "metro";
     const key = level.stage === "parvis" ? "rooftop" : level.artKey || level.stage;
     if (key !== this.artKey) {
       this.artKey = key;

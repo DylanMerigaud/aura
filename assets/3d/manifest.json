@@ -13,7 +13,8 @@
       "name": "Ninja",
       "role": "enemy",
       "height_m": 1.75,
-      "source": "Mixamo (ninja, with skin, FBX Binary, 512px textures)"
+      "source": "Mixamo (ninja, with skin, FBX Binary, 512px textures)",
+      "preferred": true
     },
     {
       "file": "characters/kaya_crowd.glb",
@@ -35,8 +36,7 @@
       "name": "Abe (elder, His Holiness)",
       "role": "enemy",
       "height_m": 1.78,
-      "source": "Mixamo (abe, with skin, FBX Binary, 512px textures)",
-      "preferred": true
+      "source": "Mixamo (abe, with skin, FBX Binary, 512px textures)"
     },
     {
       "file": "characters/sophie_crowd_casual.glb",

@@ -13,6 +13,7 @@ import { Fighter, loadCast, type CastSource, type ClipEvent } from "./fighters";
 import { LAYOUT, isOts, pickShot, punchZoom, rampScale, sameFamily, shotPose, type Pose, type ShotKind } from "./director";
 import { Vfx } from "./vfx";
 import { createComposite } from "./vfx/composite";
+import { Nameplates } from "./nameplates";
 
 const WHIP = 0.1;
 
@@ -67,6 +68,8 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(48, 16 / 9, 0.1, 120);
   const set = new RingSet(scene, opts.base);
+  const plates = new Nameplates(canvas);
+  const enemyHead = { x: 0, y: 0, z: 0 };
   const crowd = new Crowd();
   scene.add(crowd.group);
   const vfx = new Vfx(scene, camera);
@@ -364,6 +367,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
       player.root.rotation.y = Math.PI;
       enemy.root.position.set(...LAYOUT.enemy);
       scene.add(player.root, enemy.root);
+      plates.enemyHandle = (lv.opponent as { handle?: string }).handle ?? "@" + lv.opponent.name.toLowerCase().replace(/\W+/g, "_");
       // Fresh director for the battle.
       cut("ots");
       ending = false;
@@ -539,6 +543,8 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
       computeAnchors();
       placeGlasses();
       applyCamera(f, dt, vdt);
+      enemy?.headPos(enemyHead);
+      plates.update(camera, player ? anchors.playerHead : null, enemy ? enemyHead : null, f.meter, !ending);
       vfx.update(vdt, f, anchors);
       render(dt);
     },
@@ -561,6 +567,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
       crowd.update(dt, beatPos, 0.4, 0.6);
       set.update(beatPos % 1, 0.4, time);
       setLetterbox(false);
+      plates.hide();
       camera.position.set(Math.sin(idleAngle) * 8.5, 3.2, Math.cos(idleAngle) * 8.5);
       camera.lookAt(0, 0.9, 0);
       const fov = camera.aspect < 1 ? 70 : 50;
