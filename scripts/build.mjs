@@ -16,6 +16,8 @@ function syncMedia() {
     const skip = new Set();
     // The loadout's fighter pool ships too: the player may pick any of them (src/loadout/state.ts).
     const pool = new Set([...readFileSync("src/loadout/state.ts", "utf8").matchAll(/file: "([^"]+)"/g)].map((m) => `assets/3d/${m[1]}`));
+    // Every opponent's own rig ships too (src/v2/cast.json opponent.rig, the stage loads it per level).
+    for (const l of JSON.parse(readFileSync("src/v2/cast.json", "utf8")).levels ?? []) if (l.opponent?.rig) pool.add(`assets/3d/characters/${l.opponent.rig}`);
     try {
       const m = JSON.parse(readFileSync("assets/3d/manifest.json", "utf8"));
       for (const c of m.characters ?? []) {

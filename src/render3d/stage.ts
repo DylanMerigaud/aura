@@ -10,7 +10,8 @@ import type { Anchors, CoreEvent, Frame, LevelV2, Stage } from "../v2/contracts"
 import { RIM_COLOR, RingSet } from "./set";
 import { Crowd } from "./crowd";
 import { crowdBudget } from "./crowdRoster";
-import { Fighter, loadCast, type CastSource, type ClipEvent } from "./fighters";
+import { Fighter, loadCast, loadRig, type CastSource, type ClipEvent } from "./fighters";
+import { cosmeticsFor, dress, opponentLook } from "./dress";
 import { LAYOUT, MOVE_S, SUBJECT, pickShot, punchZoom, rampScale, sameFamily, shotPose, turnShot, type Pose, type ShotKind } from "./director";
 import { Vfx } from "./vfx";
 import { createComposite } from "./vfx/composite";
@@ -424,12 +425,25 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
         }
       }
       if (!cast) return;
+      // His own rig for this opponent (cast.json opponent.rig); a missing or broken file keeps the current one.
+      const rig = lv.opponent.rig ? `characters/${lv.opponent.rig}` : undefined;
+      if (rig && cast.enemyFile && rig !== cast.enemyFile) {
+        try {
+          cast = { ...cast, enemy: await loadRig(opts.base, rig), enemyFile: rig };
+        } catch {
+          // Keep the manifest's enemy.
+        }
+      }
       // The animated crowd streams in after the fighters (once, cached); the capsules hold the ring until then.
       void crowd.load(opts.base);
       player?.dispose();
       enemy?.dispose();
       player = new Fighter(SkeletonUtils.clone(cast.player), cast.clips, "player");
-      enemy = new Fighter(SkeletonUtils.clone(cast.enemy), cast.clips, "enemy", new THREE.Color(lv.opponent.color || "#ff3366"));
+      const look = opponentLook(cast.enemyFile === rig ? lv.opponent : { color: lv.opponent.color });
+      enemy = new Fighter(SkeletonUtils.clone(cast.enemy), cast.clips, "enemy", look.tint, look.height);
+      // Kevin wears his rank (the lanyard, then the sunglasses, then the chain); the Boat Kid his sunglasses.
+      dress(player.root, cosmeticsFor(playerRank()));
+      dress(enemy.root, look.cosmetics, look.height);
       player.root.position.set(...LAYOUT.player);
       player.root.rotation.y = Math.PI;
       enemy.root.position.set(...LAYOUT.enemy);
