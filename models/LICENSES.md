@@ -58,6 +58,10 @@ One line per source file below, all Mixamo, same license as stated above.
 
 - mocap/boat_arm_sweep.glb, mocap/over_shoulder_look.glb, mocap/chinup_stare.glb: our own motion capture, not Mixamo. Real reference footage (the original Pacu Jalur boat dancer TikTok and two real aura-battle recreation TikToks, credited in `mocap/manifest.json`'s `source` field per clip) run through MediaPipe Pose to extract 3D body landmarks, retargeted by hand onto the `mixamorig:` bone names and rest pose of `characters/mannequin_player.glb`. The reference video files themselves were never copied into this repo, only the motion (joint rotations) derived from them, on our own rig. See `mocap/manifest.json` for the `quality` note on each clip (jitter, approximation, what is and is not animated).
 
+## Motion capture clips (our own capture)
+
+- mocap/boat_arm_sweep.glb, mocap/over_shoulder_look.glb, mocap/chinup_stare.glb: our own motion capture, not Mixamo. Real reference footage (the original Pacu Jalur boat dancer TikTok and two real aura-battle recreation TikToks, credited in `mocap/manifest.json`'s `source` field per clip) run through MediaPipe Pose to extract 3D body landmarks, retargeted by hand onto the `mixamorig:` bone names and rest pose of `characters/mannequin_player.glb`. The reference video files themselves were never copied into this repo, only the motion (joint rotations) derived from them, on our own rig. See `mocap/manifest.json` for the `quality` note on each clip (jitter, approximation, what is and is not animated).
+
 ## Notes
 
 - All characters downloaded "with skin", FBX Binary, then resized to 512x512 textures during glb conversion to fit the size budget (a purely technical resize, license unaffected). Two characters (adam_crowd_sporty.glb, sportygranny_crowd_older.glb) also got webp texture compression on top to clear the 4 MB cap, same technical note.
