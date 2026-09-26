@@ -462,7 +462,8 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
         case "beat":
           if (e.downbeat && !ending) {
             const jump = lastBarEnergy >= 0 && e.energy - lastBarEnergy > 0.3;
-            if (jump) flash(1, Math.random() < 0.4);
+            // A downbeat energy jump: a short, subtle WHITE pulse (addendum 16:40 item 6), never black nor tinted.
+            if (jump) flash(0.3, false);
             lastBarEnergy = e.energy;
             const free = whipT < 0 || whipT > WHIP;
             if (!turnClosed && turnLen >= 8 && e.beat >= turnEnd - 4 && e.beat < turnEnd) {

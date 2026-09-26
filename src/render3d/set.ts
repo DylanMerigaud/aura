@@ -24,6 +24,7 @@ export const ARENA_LIGHT: Record<StageKey, string> = {
   stage: "#fff1dc",
 };
 export const RIM_COLOR = "#7fa6ff";
+const WHITE = new THREE.Color(1, 1, 1);
 
 /** Soft round dot for the dust motes. */
 function dotTexture(): THREE.CanvasTexture | null {
@@ -187,6 +188,11 @@ export class RingSet {
     this.key.intensity = this.baseSpot * (0.94 + 0.14 * kick * e);
     this.pool.uniforms.k.value = 0.09 + 0.05 * kick * e;
     this.beam.uniforms.k.value = 0.04 + 0.025 * kick * e;
+    // The beat pulse is WHITE (decisions addendum 16:40 item 6): on the kick the light goes toward pure white,
+    // whatever the level's light color, and settles back to it by mid beat. Never a tint.
+    this.key.color.copy(this.light).lerp(WHITE, kick * e);
+    (this.pool.uniforms.color.value as THREE.Color).copy(this.key.color);
+    (this.beam.uniforms.color.value as THREE.Color).copy(this.key.color);
     this.ring.color.setScalar(1.05 + 0.9 * kick * e);
     const d = Math.min(0.1, Math.max(0, dt));
     for (let i = 0; i < DUST_N; i++) {

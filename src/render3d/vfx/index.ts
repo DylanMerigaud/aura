@@ -6,7 +6,7 @@ import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeom
 import type { Anchors, CoreEvent, Frame } from "../../v2/contracts";
 import { ParticleSystem } from "./particles";
 import { enemyFlameRate, flameRate, tierColor } from "./pool";
-import { kickPulse, ScreenDriver, type ScreenFx } from "./screen";
+import { ScreenDriver, type ScreenFx } from "./screen";
 
 type V3 = { x: number; y: number; z: number };
 
@@ -415,7 +415,8 @@ export class Vfx {
     this.leak.scale.setScalar(halfH * 2.2);
     const [r, g, b] = tierColor(f.tier);
     this.leakMat.uniforms.uColor.value.setRGB(0.55 + 0.45 * r, 0.45 + 0.4 * g, 0.35 + 0.3 * b);
-    this.leakMat.uniforms.uOpacity.value = k * (0.35 + 0.25 * kickPulse(f.beatPhase));
+    // Steady: the tinted leak never throbs on the beat, the beat pulse is the white light (addendum 16:40 item 6).
+    this.leakMat.uniforms.uOpacity.value = k * 0.45;
     this.leak.visible = true;
   }
 }

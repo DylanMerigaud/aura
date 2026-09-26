@@ -5,7 +5,7 @@ import * as THREE from "three";
 import { getLoadout } from "../loadout/state";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import * as SkeletonUtils from "three/examples/jsm/utils/SkeletonUtils.js";
-import { buildClip, maskClip, rigFromObject } from "../anim/poses";
+import { buildClip, rigFromObject } from "../anim/poses";
 import { GESTURES } from "../anim/gestures";
 
 export type ClipEvent =
@@ -38,7 +38,7 @@ const ROBOT: Record<ClipEvent, string> = {
   enemy_cringe: "No",
   enemy_victory: "Dance",
 };
-const LOOPING = new Set<string>(["idle_groove", "enemy_idle", "mash_charge", "victory", "enemy_victory", "hold_freeze"]);
+export const LOOPING = new Set<string>(["idle_groove", "enemy_idle", "mash_charge", "victory", "enemy_victory", "hold_freeze"]);
 
 export interface CastSource {
   player: THREE.Object3D;
@@ -342,20 +342,32 @@ export async function loadCrowdKit(base: string, files: (chars: Manifest["charac
 const tmp = new THREE.Vector3();
 const tmp2 = new THREE.Vector3();
 
-/** Blend into a move, and back to the idle groove (slower, so a reaction never snaps home). */
-const FADE_IN_S = 0.12;
-const FADE_BACK_S = 0.3;
+/**
+ * Blend into a move, and back to the idle groove (slower, so a reaction never snaps home). Both at least
+ * 150 ms (decisions addendum 16:40 item 5; tests/fluidity.test.ts is the door).
+ */
+export const FADE_IN_S = 0.18;
+export const FADE_BACK_S = 0.3;
 /** Head and spine only gestures play additive over the idle (docs/anim-poses.md, "Play as"). */
 const ADDITIVE_GESTURES = new Set(["sigmaStare", "chinUpTaunt", "lookBack", "cookedCollapse"]);
+/** Most of the pose the layers above the idle may take: the weights divide by what is left to the idle. */
+const MAX_SHARE = 0.995;
+/** Instances per clip: a move replayed while its last take still fades out gets a fresh take, never a reset. */
+const TAKES = 3;
 
-/** A keyed canon gesture on stage: what to fade back when it ends. */
-interface GestureRun {
+/**
+ * One layer over the idle. `w` is its share of the pose (0 to 1), ramped linearly toward `target` over
+ * `fade` seconds. "clip": a Mixamo clip of an event, over the idle. "gesture": a keyed canon gesture over
+ * the idle and the clips, only on the bones it keys (the per bone mask). "additive": a head and spine
+ * gesture added on top of whatever plays.
+ */
+interface Layer {
   action: THREE.AnimationAction;
-  /** Mask path: the idle's legs playing under the gesture, and the full clip it replaced. */
-  lower: THREE.AnimationAction | null;
-  base: THREE.AnimationAction | null;
-  /** Full layer: the gesture is `current` and the plain play() path fades it back. */
-  full: boolean;
+  kind: "clip" | "gesture" | "additive";
+  w: number;
+  target: 0 | 1;
+  fade: number;
+  /** Visual seconds before a gesture fades back (Infinity for clips). */
   left: number;
 }
 /** A clip this long is a dance phrase: it resumes where it left off. Shorter ones are poses and reactions. */
@@ -377,8 +389,13 @@ export class Fighter {
   /** Squash and stretch and knockback live here, above the normalized model. */
   readonly body = new THREE.Group();
   private mixer: THREE.AnimationMixer;
-  private actions = new Map<string, THREE.AnimationAction>();
-  private current: THREE.AnimationAction | null = null;
+  /** Takes per event (see TAKES), built on first use. */
+  private takes = new Map<string, THREE.AnimationAction[]>();
+  /** Clones of gesture clips, so a gesture replayed over its own fade out gets its own action. */
+  private gestureTakes = new Map<THREE.AnimationClip, THREE.AnimationClip[]>();
+  /** The base layer: always playing at full weight under everything, never stopped nor reset. */
+  private idle: THREE.AnimationAction | null = null;
+  private layers: Layer[] = [];
   private names: Map<string, string>;
   private modelHips: number | undefined;
   private head: THREE.Object3D | null = null;
@@ -388,7 +405,7 @@ export class Fighter {
   private knock = 0;
   private frozen = false;
   private height = 1.8;
-  private gest: GestureRun | null = null;
+  private gest: Layer | null = null;
 
   constructor(model: THREE.Object3D, private clips: CastSource["clips"], private role: "player" | "enemy", tint?: THREE.Color) {
     toToon(model, tint);
@@ -417,26 +434,33 @@ export class Fighter {
     this.mixer = new THREE.AnimationMixer(model);
     this.names = boneNames(model);
     this.modelHips = hipsRestY(model);
-    this.mixer.addEventListener("finished", (e) => {
-      if (e.action === this.current) this.play(this.idleName);
-    });
-    this.play(this.idleName);
+    this.startIdle();
   }
 
-  /** The action of an event, built on first use: clips keep streaming into the shared map after the battle starts. */
-  private action(ev: string): THREE.AnimationAction | undefined {
-    let a = this.actions.get(ev);
-    if (a) return a;
+  /** A take of an event's clip that is free to (re)start: the least weighted of its takes, a new one while under TAKES. */
+  private take(ev: string, restartable: (a: THREE.AnimationAction) => boolean): THREE.AnimationAction | undefined {
     const src = this.clips.get(ev);
     if (!src) return undefined;
-    const k = this.modelHips && src.hipsY ? this.modelHips / src.hipsY : 1;
-    a = this.mixer.clipAction(retarget(src.clip, this.names, k));
-    if (!src.loop) {
-      a.setLoop(THREE.LoopOnce, 1);
-      a.clampWhenFinished = true;
+    let list = this.takes.get(ev);
+    if (!list) this.takes.set(ev, (list = []));
+    const shareOf = (a: THREE.AnimationAction) => this.layers.find((l) => l.action === a)?.w ?? 0;
+    // A take that keeps its time (a loop, a phrase) is reused as it is: it resumes, nothing restarts.
+    const keep = list.find((a) => !restartable(a));
+    if (keep) return keep;
+    const free = list.find((a) => shareOf(a) === 0);
+    if (free) return free;
+    if (list.length < TAKES) {
+      const k = this.modelHips && src.hipsY ? this.modelHips / src.hipsY : 1;
+      const clip = retarget(src.clip, this.names, k);
+      const a = this.mixer.clipAction(list.length ? clip.clone() : clip);
+      if (!src.loop) {
+        a.setLoop(THREE.LoopOnce, 1);
+        a.clampWhenFinished = true;
+      }
+      list.push(a);
+      return a;
     }
-    this.actions.set(ev, a);
-    return a;
+    return list.reduce((m, a) => (shareOf(a) < shareOf(m) ? a : m));
   }
 
   private get idleName(): string {
@@ -444,28 +468,67 @@ export class Fighter {
   }
 
   /**
-   * Cross fade from the pose on screen to the clip of an event (0.12 s in, 0.3 s back to the idle); a missing
-   * clip is idle plus a squash. Actions are persistent: a loop or a long dance phrase resumes from its own
-   * time, only poses and reactions restart (restartsOnPlay), so a hit never snaps a dance to its first frame.
+   * Start the base layer. Its clip is padded with the rest pose of every bone it does not key (the Standing
+   * Idle has no fingers): the mixer then always has the idle under a bone, never the bind pose, and a clip
+   * fading out lands linearly instead of snapping when its weight falls under 1.
+   */
+  private startIdle(): void {
+    if (this.idle) return;
+    const src = this.clips.get(this.idleName);
+    if (!src) return;
+    const k = this.modelHips && src.hipsY ? this.modelHips / src.hipsY : 1;
+    const clip = retarget(src.clip, this.names, k).clone();
+    const keyed = new Set(clip.tracks.map((t) => t.name));
+    (this.mixer.getRoot() as THREE.Object3D).traverse((o) => {
+      if (!(o as THREE.Bone).isBone || keyed.has(`${o.name}.quaternion`)) return;
+      clip.tracks.push(new THREE.QuaternionKeyframeTrack(`${o.name}.quaternion`, [0], o.quaternion.toArray()));
+    });
+    const a = this.mixer.clipAction(clip);
+    a.setLoop(THREE.LoopRepeat, Infinity);
+    a.enabled = true;
+    a.setEffectiveWeight(1);
+    a.play();
+    this.idle = a;
+  }
+
+  /** Ramp a layer toward a share, from where it is now. */
+  private ramp(l: Layer, target: 0 | 1, fade: number): void {
+    l.target = target;
+    l.fade = Math.max(1e-3, fade);
+  }
+
+  private unfreeze(): void {
+    this.frozen = false;
+    for (const l of this.layers) l.action.paused = false;
+    if (this.idle) this.idle.paused = false;
+  }
+
+  /**
+   * Cross fade from the pose on screen to the clip of an event (FADE_IN_S in, FADE_BACK_S back to the idle
+   * near its end); the idle event, or a missing clip, fades every clip back to the idle (plus a squash when
+   * missing). Loops and long dance phrases resume from their own time, only poses and reactions restart
+   * (restartsOnPlay), and a restart takes a fresh take while the last one fades out: nothing ever snaps.
    */
   play(ev: ClipEvent | string, speed = 1): void {
-    this.endGesture(FADE_IN_S);
-    this.frozen = false;
-    const want = this.action(ev);
-    const idle = this.action(this.idleName);
-    const next = want ?? idle ?? null;
-    if (!want) this.squash = 1;
-    if (!next) return;
-    const prev = this.current;
-    const restart = restartsOnPlay(next.loop === THREE.LoopOnce, next.getClip().duration, next.time);
-    next.enabled = true;
-    next.paused = false;
-    next.setEffectiveTimeScale(speed);
-    next.setEffectiveWeight(1);
-    if (restart) next.reset();
-    if (prev && prev !== next) next.crossFadeFrom(prev, next === idle ? FADE_BACK_S : FADE_IN_S, false);
-    next.play();
-    this.current = next;
+    this.releaseGesture(FADE_IN_S);
+    this.unfreeze();
+    this.startIdle();
+    const wantsIdle = ev === this.idleName;
+    const a = wantsIdle ? undefined : this.take(ev, (x) => restartsOnPlay(x.loop === THREE.LoopOnce, x.getClip().duration, x.time));
+    if (!a && !wantsIdle && !this.clips.has(ev)) this.squash = 1;
+    for (const l of this.layers) if (l.kind === "clip" && l.action !== a) this.ramp(l, 0, a ? FADE_IN_S : FADE_BACK_S);
+    if (!a) return;
+    let l = this.layers.find((x) => x.action === a);
+    if (!l || l.w === 0) {
+      if (restartsOnPlay(a.loop === THREE.LoopOnce, a.getClip().duration, a.time)) a.reset();
+    }
+    if (!l) this.layers.push((l = { action: a, kind: "clip", w: 0, target: 1, fade: FADE_IN_S, left: Infinity }));
+    this.ramp(l, 1, FADE_IN_S);
+    a.enabled = true;
+    a.paused = false;
+    a.setEffectiveTimeScale(speed);
+    a.play();
+    this.applyWeights();
   }
 
   /** True while a keyed canon gesture (src/anim) plays. */
@@ -474,10 +537,9 @@ export class Fighter {
   }
 
   /**
-   * Perform a canon gesture of src/anim/gestures.ts for `seconds` (visual time), then cross fade back to the
-   * idle. Arm gestures go through the per bone mask (the idle's legs keep dancing, the upper body is exactly
-   * the gesture), head and spine ones play additive over the idle, full layer ones replace the idle.
-   * Unknown key: a plain squash, never a crash. Returns false when nothing was played.
+   * Perform a canon gesture of src/anim/gestures.ts for `seconds` (visual time), then fade back to what plays
+   * under it. A gesture only overrides the bones it keys (the idle's legs keep dancing), head and spine ones
+   * play additive. Unknown key: a plain squash, never a crash. Returns false when nothing was played.
    */
   gesture(key: string, bpm: number, seconds: number): boolean {
     const g = GESTURES[key];
@@ -485,68 +547,96 @@ export class Fighter {
       this.bump();
       return false;
     }
-    this.endGesture(FADE_IN_S);
-    this.frozen = false;
+    this.releaseGesture(FADE_IN_S);
+    this.unfreeze();
+    this.startIdle();
     const rig = rigFromObject(this.mixer.getRoot() as THREE.Object3D);
     const additive = ADDITIVE_GESTURES.has(key) && g.layer === "upper";
     const clip = buildClip(g, bpm, rig, { additive });
-    const a = this.mixer.clipAction(clip);
+    // The same gesture again while its last take still fades out: a clone of the clip, its own action.
+    let pool = this.gestureTakes.get(clip);
+    if (!pool) this.gestureTakes.set(clip, (pool = [clip]));
+    const busy = (c: THREE.AnimationClip) => this.layers.some((l) => l.action.getClip() === c);
+    let c = pool.find((x) => !busy(x));
+    if (!c) pool.push((c = clip.clone()));
+    const a = this.mixer.clipAction(c);
     a.setLoop(g.loop ? THREE.LoopRepeat : THREE.LoopOnce, Infinity);
     a.clampWhenFinished = !g.loop;
     a.enabled = true;
     a.paused = false;
     a.setEffectiveTimeScale(1);
-    a.setEffectiveWeight(1);
     a.reset();
-    if (additive) {
-      a.fadeIn(FADE_IN_S).play();
-      this.gest = { action: a, lower: null, base: null, full: false, left: seconds };
-      return true;
-    }
-    const base = this.current ?? this.action(this.idleName) ?? null;
-    if (g.layer === "full" || !base) {
-      if (base && base !== a) a.crossFadeFrom(base, FADE_IN_S, false);
-      a.play();
-      this.current = a;
-      this.gest = { action: a, lower: null, base: null, full: true, left: seconds };
-      return true;
-    }
-    const lower = this.mixer.clipAction(maskClip(base.getClip(), "lower"));
-    lower.enabled = true;
-    lower.setLoop(base.loop, Infinity);
-    lower.syncWith(base);
-    lower.setEffectiveWeight(1);
-    lower.fadeIn(FADE_IN_S).play();
-    base.fadeOut(FADE_IN_S);
-    a.fadeIn(FADE_IN_S).play();
-    this.gest = { action: a, lower, base, full: false, left: seconds };
+    a.play();
+    const l: Layer = { action: a, kind: additive ? "additive" : "gesture", w: 0, target: 1, fade: FADE_IN_S, left: seconds };
+    this.layers.push(l);
+    this.gest = l;
+    this.applyWeights();
     return true;
   }
 
-  /** Fade a running gesture out and the idle back in over `fade` seconds. */
-  private endGesture(fade = FADE_BACK_S): void {
-    const run = this.gest;
-    if (!run) return;
+  /** Fade the running gesture back out over `fade` seconds; what plays under it shows again. */
+  private releaseGesture(fade = FADE_BACK_S): void {
+    const l = this.gest;
+    if (!l) return;
     this.gest = null;
-    if (run.full) {
-      // play() cross fades from `current`, which is the gesture.
-      if (fade === FADE_BACK_S) this.play(this.idleName);
-      return;
-    }
-    run.action.fadeOut(fade);
-    if (run.lower) run.lower.fadeOut(fade);
-    if (run.base) {
-      run.base.enabled = true;
-      run.base.paused = false;
-      run.base.setEffectiveWeight(1);
-      run.base.fadeIn(fade).play();
-    }
+    this.ramp(l, 0, fade);
   }
 
-  /** HOLD: freeze the current pose (pause the action). */
+  /** HOLD: freeze the pose on screen (pause the top clip, the idle when none). Resumes on false, no reset. */
   freeze(on: boolean): void {
-    this.frozen = on;
-    if (this.current) this.current.paused = on;
+    if (!on) return this.unfreeze();
+    this.frozen = true;
+    const top = [...this.layers].reverse().find((l) => l.kind === "clip" && l.target === 1);
+    const a = top?.action ?? this.idle;
+    if (a) a.paused = true;
+  }
+
+  /**
+   * The mixer weights from the layer shares. The idle always weighs 1; clips of total share T weigh
+   * w / (1 - T), so the idle keeps 1 - T of the pose and no bone ever falls back to the bind pose. A gesture
+   * weighs w / (1 - w) times everything under it, so it takes w of the pose on the bones it keys and nothing
+   * elsewhere; each gesture on its own, so two gestures crossing on different bones never jump.
+   */
+  private applyWeights(): void {
+    let t = 0;
+    for (const l of this.layers) if (l.kind === "clip") t += l.w;
+    const kt = t > MAX_SHARE ? MAX_SHARE / t : 1;
+    t *= kt;
+    const under = this.idle ? 1 / (1 - t) : 1;
+    for (const l of this.layers) {
+      const g = Math.min(l.w, MAX_SHARE);
+      const w = l.kind === "clip" ? (this.idle ? (l.w * kt) / (1 - t) : l.w) : l.kind === "gesture" ? (g / (1 - g)) * under : l.w;
+      l.action.enabled = true;
+      l.action.setEffectiveWeight(w);
+    }
+    this.idle?.setEffectiveWeight(1);
+  }
+
+  /** Ramps, gesture timers, the fade back before a clip's end, then the mixer. */
+  private animate(dt: number): void {
+    for (const l of this.layers) {
+      if (l.kind !== "clip") {
+        if (l === this.gest) {
+          l.left -= dt;
+          if (l.left <= 0) this.releaseGesture();
+        }
+      } else if (l.target === 1 && l.action.loop === THREE.LoopOnce) {
+        // Back to the idle while the move still moves, so it lands through the idle and never holds a frame.
+        const rate = Math.abs(l.action.getEffectiveTimeScale()) || 1;
+        if ((l.action.getClip().duration - l.action.time) / rate <= FADE_BACK_S) this.ramp(l, 0, FADE_BACK_S);
+      }
+      const step = dt / l.fade;
+      l.w = l.target === 1 ? Math.min(1, l.w + step) : Math.max(0, l.w - step);
+    }
+    // A layer faded to nothing leaves the stack, paused where it is (a phrase resumes from there).
+    this.layers = this.layers.filter((l) => {
+      if (l.w > 0 || l.target === 1) return true;
+      l.action.setEffectiveWeight(0);
+      l.action.paused = true;
+      return false;
+    });
+    this.applyWeights();
+    this.mixer.update(dt);
   }
 
   knockback(amount: number): void {
@@ -561,12 +651,8 @@ export class Fighter {
   /** dt is visual (time scaled); beatPhase drives the groove bob. */
   update(dt: number, beatPhase: number, energy: number): void {
     // The idle clip arrived after the fighter was built: leave the bind pose.
-    if (!this.current && this.clips.has(this.idleName)) this.play(this.idleName);
-    this.mixer.update(dt);
-    if (this.gest) {
-      this.gest.left -= dt;
-      if (this.gest.left <= 0) this.endGesture();
-    }
+    this.startIdle();
+    this.animate(dt);
     this.squash = Math.max(0, this.squash - dt * 4);
     this.knock = Math.max(0, this.knock - dt * 3);
     // No squash and no beat bob (Dylan, 16:00): the bodies never change size, the beat lives in the light,
