@@ -1,6 +1,6 @@
-15:15 CEST, INTEGRATION lane: PR 2 (release scripts), 3 (mechanical evals), 8 (Gen Z SFX) merged; the latest build (v2) is now the Pages root and the itch zip root, v1 at /v1/
-GREEN: tests 430, typecheck clean, release:check ALL PASS, release:itch ALL PASS (128 files, 18.2 MB zip)
-RED: Devin PRs 4, 5, 7, 6 and the packs branch not merged yet (next); voices and music regeneration not started
+15:20 CEST, INTEGRATION lane: PRs 2, 3, 4, 5, 6, 7, 8 and the packs branch merged; the latest build (v2) is now the Pages root and the itch zip root, v1 at /v1/
+GREEN: tests 620, typecheck clean, release:check ALL PASS, release:itch ALL PASS (128 files, 18.2 MB zip)
+RED: modules merged but not wired into the game yet (next); voices and music regeneration not started
 PLAY: https://dylanmerigaud.github.io/aura/ (v2 at the root; /v2/ redirects there; 2D at /v1/)
 NEED FROM DYLAN: nothing yet
 
