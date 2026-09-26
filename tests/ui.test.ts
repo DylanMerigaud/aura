@@ -2,7 +2,7 @@
 // No DOM here on purpose (see src/v2/ui/progress.ts): these run in plain Node.
 import { describe, expect, it } from "vitest";
 import { battleWindow, loadProgress, nextProgress, opponentSlot, saveProgress, type ProgressV2 } from "../src/v2/ui/progress";
-import { isTapKey, lift, newTapState, press, routeKey, zoneMode, type KeyLike } from "../src/v2/ui/touch";
+import { onLift, onPress, swipeDir, zoneMode } from "../src/v2/ui/touch";
 import { approach, clamp, pct, starGlyphs } from "../src/v2/ui/format";
 import { newGate, visiblePrompts } from "../src/v2/ui/hud/queue";
 import type { EventState } from "../src/qte/runner";
@@ -85,92 +85,45 @@ describe("format", () => {
   });
 });
 
-describe("tap routing (TAP ONLY)", () => {
-  it("every press is a tap down, a second thumb included", () => {
-    const s = newTapState();
-    expect(press(s, "p1")).toBe(true);
-    expect(press(s, "p2")).toBe(true);
+describe("gesture routing (MOBILE ONLY)", () => {
+  it("a swipe past 24 px fires its dominant axis, screen y grows down", () => {
+    expect(swipeDir(5, 5)).toBeNull();
+    expect(swipeDir(-30, 5)).toBe("left");
+    expect(swipeDir(5, 40)).toBe("down");
+    expect(swipeDir(0, -25)).toBe("up");
   });
 
-  it("the tap up comes with the last finger lifted, never without a press", () => {
-    const s = newTapState();
-    expect(lift(s, "p1")).toBe(false);
-    press(s, "p1");
-    press(s, "p2");
-    expect(lift(s, "p1")).toBe(false);
-    expect(lift(s, "p2")).toBe(true);
-    expect(lift(s, "p2")).toBe(false);
+  it("HIT: the press fires nothing, the lift fires the swipe; a tap is nothing", () => {
+    expect(onPress("hit", 0.5)).toBeNull();
+    expect(onLift("hit", 40, 0, null)).toEqual({ kind: "dir", dir: "right" });
+    expect(onLift("hit", 2, 3, null)).toBeNull();
+  });
+
+  it("67: taps on the left and right halves alternate, a swipe up releases", () => {
+    expect(onPress("mash", 0.2)).toEqual({ kind: "dir", dir: "left" });
+    expect(onPress("mash", 0.8)).toEqual({ kind: "dir", dir: "right" });
+    expect(onPress("release", 0.8)).toEqual({ kind: "dir", dir: "right" });
+    expect(onLift("release", 0, -60, { kind: "dir", dir: "right" })).toEqual({ kind: "space", down: true });
+    expect(onLift("mash", 0, 60, null)).toBeNull();
+  });
+
+  it("HOLD: press down, the same pointer's lift lifts", () => {
+    const p = onPress("hold", 0.5);
+    expect(p).toEqual({ kind: "space", down: true });
+    expect(onLift("hold", 0, 0, p)).toEqual({ kind: "space", down: false });
+  });
+
+  it("the opponent turn and no QTE fire nothing", () => {
+    expect(onPress("opponent", 0.5)).toBeNull();
+    expect(onLift("opponent", 50, 0, null)).toBeNull();
+    expect(onPress("none", 0.5)).toBeNull();
   });
 
   it("zoneMode: the opponent turn wins, mash turns into release as the ring closes", () => {
     expect(zoneMode("mash", "opponent", true)).toBe("opponent");
-    expect(zoneMode("hit", "opponent", false)).toBe("opponent");
     expect(zoneMode("mash", "player", false)).toBe("mash");
     expect(zoneMode("mash", "player", true)).toBe("release");
     expect(zoneMode("hold", "player", true)).toBe("hold");
-  });
-});
-
-describe("battle keyboard routing (any key is a tap)", () => {
-  const k = (type: string, code: string, timeStamp = 0, repeat = false): KeyLike => ({ type, code, timeStamp, repeat });
-
-  it("a key press and release reach the game as a tap, with their own timestamps", () => {
-    const s = newTapState();
-    expect(routeKey(s, k("keydown", "Space", 100))).toEqual({ prevent: true, input: { kind: "tap", down: true, at: 100 } });
-    expect(routeKey(s, k("keyup", "Space", 350))).toEqual({ prevent: true, input: { kind: "tap", down: false, at: 350 } });
-  });
-
-  it("letters, arrows and Enter are taps too; system keys are left alone", () => {
-    for (const c of ["KeyJ", "ArrowLeft", "Enter", "Digit6"]) expect(isTapKey(c)).toBe(true);
-    for (const c of ["Escape", "Tab", "MetaLeft", "ShiftRight", "F5"]) expect(isTapKey(c)).toBe(false);
-    expect(routeKey(newTapState(), k("keydown", "Escape"))).toEqual({ prevent: false, input: null });
-  });
-
-  it("two keys alternated during a mash are two taps", () => {
-    const s = newTapState();
-    expect(routeKey(s, k("keydown", "KeyF")).input).toMatchObject({ kind: "tap", down: true });
-    expect(routeKey(s, k("keydown", "KeyJ")).input).toMatchObject({ kind: "tap", down: true });
-    expect(routeKey(s, k("keyup", "KeyF")).input).toBeNull();
-    expect(routeKey(s, k("keyup", "KeyJ")).input).toMatchObject({ kind: "tap", down: false });
-  });
-
-  it("auto repeat is ignored but still prevented", () => {
-    const s = newTapState();
-    routeKey(s, k("keydown", "Space"));
-    expect(routeKey(s, k("keydown", "Space", 50, true))).toEqual({ prevent: true, input: null });
-  });
-
-  it("never a release without a press in the same battle", () => {
-    expect(routeKey(newTapState(), k("keyup", "Space"))).toEqual({ prevent: true, input: null });
-  });
-
-  it("maps the event timestamp through the clock", () => {
-    const r = routeKey(newTapState(), k("keydown", "ArrowRight", 1000), (t) => t / 1000);
-    expect(r.input).toMatchObject({ at: 1 });
-  });
-
-  it("a fake window: capture listener feeds game.input and stops the event from reaching screens", () => {
-    const inputs: unknown[] = [];
-    const screenSaw: string[] = [];
-    const s = newTapState();
-    const fire = (type: string, code: string) => {
-      let stopped = false;
-      let prevented = false;
-      const ev = { ...k(type, code), preventDefault: () => (prevented = true), stopImmediatePropagation: () => (stopped = true) };
-      const r = routeKey(s, ev);
-      if (r.prevent) {
-        ev.preventDefault();
-        ev.stopImmediatePropagation();
-      }
-      if (r.input) inputs.push(r.input);
-      if (!stopped) screenSaw.push(code);
-      return prevented;
-    };
-    expect(fire("keydown", "Space")).toBe(true);
-    expect(fire("keyup", "Space")).toBe(true);
-    fire("keydown", "Escape");
-    expect(inputs).toHaveLength(2);
-    expect(screenSaw).toEqual(["Escape"]);
   });
 });
 

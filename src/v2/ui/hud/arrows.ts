@@ -1,11 +1,13 @@
 // The QTE prompt layer: v1's prompt presentation (git tag v1-2d, src/game/battle.ts lane(),
-// timerRing(), label(), mashOrb()) on a transparent 2D canvas over the 3D stage, TAP ONLY: a HIT is a
-// round NOTE (v1's travel, size, glow and timing, no direction glyph) flying into the ring, tap when it
-// lands. Same colors, glow sprites, beat pulse on the ring, timer rings and Arial Black labels.
+// timerRing(), label(), mashOrb()) on a transparent 2D canvas over the 3D stage, MOBILE ONLY (addendum
+// 17:15): a HIT is v1's ARROW flying along a visible lane into the ring, swipe its direction when it lands;
+// the hold is a long bar with an arrow head, the 67 a cluster of small left and right arrows, released
+// with a swipe up. v1's travel, size, glow and timing; same colors, glow sprites, beat pulse on the ring, timer rings and Arial Black labels.
 // Drawing happens in v1 units (the 1280x720 canvas) around the ring at (0, 0), scaled to the
 // viewport: landscape keeps v1's horizontal lane, portrait turns it vertical (arrows fall from the
 // top into a ring at 60 percent of the height, inside the safe width).
 import type { EventState } from "../../../qte/runner";
+import type { Dir } from "../../../qte/types";
 import type { Frame } from "../../contracts";
 import { el } from "../dom";
 import { newGate, visiblePrompts } from "./queue";
@@ -29,6 +31,9 @@ function glowSprite(color: string, size = 64): HTMLCanvasElement {
   g.fillRect(0, 0, size, size);
   return c;
 }
+
+const ROT: Record<Dir, number> = { right: 0, down: Math.PI / 2, left: Math.PI, up: -Math.PI / 2 };
+const STEP: Record<Dir, [number, number]> = { right: [1, 0], down: [0, 1], left: [-1, 0], up: [0, -1] };
 
 /** Prompt kinds the player has landed once this session: their ghost finger never shows again. */
 const taught = new Set<string>();
@@ -89,28 +94,47 @@ export function buildArrows(host: HTMLElement) {
   window.addEventListener("resize", resize);
   window.addEventListener("orientationchange", resize);
 
-  /** A note: v1's arrow footprint (glow sprite, size, white outline) as a round gem, no direction. */
-  function note(x: number, y: number, size: number, color: string, alpha = 1) {
+  /** v1's arrow glyph: glow sprite, the arrow shape, a white outline. */
+  function arrow(x: number, y: number, dir: Dir, size: number, color: string, alpha = 1) {
     g.save();
     g.translate(x, y);
+    g.rotate(ROT[dir]);
     g.globalAlpha = alpha;
     g.globalCompositeOperation = "lighter";
     g.drawImage(sprites[color === CYAN || color === CYAN_DIM ? 0 : color === YELLOW ? 2 : 1], -size * 1.8, -size * 1.8, size * 3.6, size * 3.6);
     g.globalCompositeOperation = "source-over";
     g.fillStyle = color;
     g.beginPath();
-    g.arc(0, 0, size * 0.72, 0, Math.PI * 2);
+    const k = size;
+    g.moveTo(k, 0);
+    g.lineTo(0, -k * 0.8);
+    g.lineTo(0, -k * 0.35);
+    g.lineTo(-k * 0.85, -k * 0.35);
+    g.lineTo(-k * 0.85, k * 0.35);
+    g.lineTo(0, k * 0.35);
+    g.lineTo(0, k * 0.8);
+    g.closePath();
     g.fill();
-    g.strokeStyle = "#fff";
+    g.strokeStyle = "#000";
     g.lineWidth = 4;
     g.stroke();
-    // A white core so the note reads as a button to hit, not a dot.
-    g.fillStyle = "rgba(255,255,255,0.85)";
-    g.beginPath();
-    g.arc(0, 0, size * 0.26, 0, Math.PI * 2);
-    g.fill();
     g.restore();
   }
+
+  /** The visible lane the arrows travel along, from its spawn point into the ring. */
+  function lane() {
+    const [x, y] = lanePos(2.2);
+    g.strokeStyle = "rgba(255,255,255,0.14)";
+    g.lineWidth = 64;
+    g.lineCap = "round";
+    g.beginPath();
+    g.moveTo(0, 0);
+    g.lineTo(x, y);
+    g.stroke();
+    g.lineCap = "butt";
+  }
+
+
 
   function timerRing(x: number, y: number, t: number, color: string) {
     t = Math.max(0, Math.min(1, t));
@@ -166,6 +190,16 @@ export function buildArrows(host: HTMLElement) {
     g.restore();
   }
 
+  /** The ghost finger swiping `dir` through the ring as the arrow lands (dt = seconds to the target). */
+  function ghostSwipe(dir: Dir, dt: number) {
+    const p = Math.max(0, Math.min(1, 0.5 - dt * 2.5));
+    const [sx, sy] = STEP[dir];
+    g.save();
+    g.translate(sx * (p - 0.5) * 140, sy * (p - 0.5) * 140 + 40);
+    ghost(0, 0.4 + 0.5 * Math.exp(-Math.abs(dt) * 6));
+    g.restore();
+  }
+
   /** Draw the ghost finger for a prompt kind the player has not landed yet. */
   function teach(s: EventState, f: Frame) {
     const kind = s.ev.type;
@@ -173,7 +207,7 @@ export function buildArrows(host: HTMLElement) {
     watched.set(kind, s);
     const now = f.songTime;
     const T = s.ev.beat * f.spb;
-    if (kind === "hit") ghost(Math.exp(-Math.abs(T - now) * 9));
+    if (kind === "hit" && s.ev.type === "hit") ghostSwipe(s.ev.dir, T - now);
     else if (kind === "mash" && f.mashing && s.progress < 4) ghost(Math.abs(Math.sin(now * Math.PI * 7)));
     else if (kind === "hold" && !s.held) ghost(now >= T - 0.05 ? 1 : Math.exp(-(T - now) * 9));
   }
@@ -186,21 +220,34 @@ export function buildArrows(host: HTMLElement) {
     const T = ev.beat * spb;
     if (ev.type === "hit") {
       const [x, y] = lanePos((T - now) / spb);
-      note(x, y, 38, CYAN);
+      arrow(x, y, ev.dir, 38, CYAN);
     } else if (ev.type === "combo") {
       const n = ev.dirs.length;
       const gap = portrait ? Math.min(84, 440 / Math.max(1, n)) : 84;
       const x0 = -((n - 1) * gap) / 2;
       for (let i = 0; i < n; i++) {
         const done = i < s.progress;
-        note(x0 + i * gap, -110, done ? 30 : 34, done ? YELLOW : MAGENTA, done ? 0.5 : 1);
+        arrow(x0 + i * gap, -110, ev.dirs[i], done ? 30 : 34, done ? YELLOW : MAGENTA, done ? 0.5 : 1);
       }
       timerRing(0, 0, (T - now) / ((n + 2) * spb), MAGENTA);
-      label("TAP x" + n, 0, 8, MAGENTA, 26);
+      label("COMBO", 0, 8, MAGENTA, 26);
     } else if (ev.type === "hold") {
       if (!s.held) {
-        timerRing(0, 0, (T - now) / (2 * spb), YELLOW);
-        if (!taught.has("hold")) label("HOLD", 0, 10, YELLOW, 28);
+        // A long bar with an arrow head flying in: the head lands on the press, the tail is the hold length.
+        const [hx, hy] = lanePos(Math.max(0, (T - now) / spb));
+        const [tx, ty] = lanePos(Math.max(0, (T - now) / spb) + ev.length * 0.5);
+        g.strokeStyle = YELLOW;
+        g.globalAlpha = 0.75;
+        g.lineWidth = 26;
+        g.lineCap = "round";
+        g.beginPath();
+        g.moveTo(hx, hy);
+        g.lineTo(tx, ty);
+        g.stroke();
+        g.lineCap = "butt";
+        g.globalAlpha = 1;
+        arrow(hx, hy, portrait ? "down" : "left", 34, YELLOW);
+        if (!taught.has("hold")) label("HOLD", 0, 70, YELLOW, 28);
       } else {
         const p = f.holdProgress;
         g.strokeStyle = YELLOW;
@@ -216,6 +263,12 @@ export function buildArrows(host: HTMLElement) {
         const wob = Math.sin(performance.now() / 1000 * 30);
         const closing = R - now < spb;
         mashOrb(f.mashCount, wob);
+        // The cluster of small arrows: left and right, the side to tap next lit.
+        const nextLeft = s.lastDir !== "left";
+        for (let i = 0; i < 3; i++) {
+          arrow(-80 - i * 30, (i - 1) * 34, "left", 20, nextLeft ? CYAN : CYAN_DIM, nextLeft ? 1 : 0.5);
+          arrow(80 + i * 30, (i - 1) * 34, "right", 20, nextLeft ? CYAN_DIM : CYAN, nextLeft ? 0.5 : 1);
+        }
         label(`${f.mashCount}`, 0, 4, "#fff", 44 + Math.min(30, f.mashCount));
         label("67", 0, -96, YELLOW, 56 + (closing ? 0 : wob * 4));
         // The ring closes onto the note ring over the last beat: tap when they meet.
@@ -226,10 +279,11 @@ export function buildArrows(host: HTMLElement) {
           g.beginPath();
           g.arc(0, 0, 50 + c * 90, 0, Math.PI * 2);
           g.stroke();
-          if (!taught.has("mash")) label("TAP ON THE DROP!", 0, 130, YELLOW, (portrait ? 26 : 34) + wob * 3);
+          arrow(0, -150, "up", 40, YELLOW);
+          if (!taught.has("mash")) label("SWIPE UP ON THE DROP!", 0, 130, YELLOW, (portrait ? 24 : 32) + wob * 3);
         } else {
           timerRing(0, 0, (R - now) / (R - T), CYAN);
-          if (!taught.has("mash")) label("TAP TAP TAP", 0, 130, CYAN, portrait ? 26 : 32);
+          if (!taught.has("mash")) label("LEFT RIGHT LEFT RIGHT", 0, 130, CYAN, portrait ? 22 : 30);
         }
       } else {
         label("67 INCOMING", 0, 0, YELLOW, 30);
@@ -271,6 +325,7 @@ export function buildArrows(host: HTMLElement) {
       watched.delete(kind);
       if (st.result && st.result.grade !== "miss" && !st.result.cringe) taught.add(kind);
     }
+    lane();
     for (const p of visiblePrompts(f.prompts, f.songTime, f.spb, gate, shown)) {
       prompt(p, f);
       teach(p, f);

@@ -1,4 +1,4 @@
-// The visible, contextual play zone over the bottom of the screen, TAP ONLY: nothing on a HIT (the note
+// The visible, contextual play zone over the bottom of the screen, MOBILE ONLY: nothing on a HIT (the arrow
 // flying to the ring is the cue), one big pad for the 67 mash, the same pad asking for the drop tap as
 // the ring closes, the HOLD pad, dimmed with "HIS MOVE" on the opponent turn. Purely visual
 // (pointer-events none): the canvas under it takes every tap anywhere on the screen.
@@ -43,9 +43,9 @@ export function buildPlayZone(game: GameApi) {
   root.setAttribute("aria-hidden", "true");
   const mash = el("div", "pz-pad pz-mash");
   mash.appendChild(el("span", "pz-big", "67"));
-  mash.appendChild(el("span", "pz-small", "TAP TAP TAP"));
+  mash.appendChild(el("span", "pz-small", "TAP LEFT RIGHT"));
   const release = el("div", "pz-pad pz-release");
-  release.appendChild(el("span", "pz-big", "TAP"));
+  release.appendChild(el("span", "pz-big", "SWIPE UP"));
   release.appendChild(el("span", "pz-small", "ON THE DROP"));
   const hold = el("div", "pz-pad pz-hold");
   hold.appendChild(el("span", "pz-big", "HOLD"));

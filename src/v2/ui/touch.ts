@@ -1,15 +1,20 @@
 // Pure input routing for the battle screen, no DOM dependency so it is directly unit testable.
-// INPUT IS TAP ONLY (decisions, addendum 15:40): the whole game is taps. A press anywhere on the
-// screen, any key or any mouse button is a tap down; the lift of the last thing held is the tap up.
-// HIT = tap on the note, 67 MASH = tap fast (every press counts, two thumbs allowed), RELEASE = one tap
-// on the drop, HOLD = press and hold, lift on the beat. The opponent turn ignores taps (the core does).
+// MOBILE ONLY INPUT (decisions, addendum 17:15): gestures, no physical keys.
+// HIT = a SWIPE in the arrow's direction anywhere on the screen, 24 px minimum, dominant axis, judged on
+// the pointerup timestamp. 67 MASH = rapid alternating taps on the left and right halves (two thumbs),
+// RELEASE = a swipe UP on the drop as the ring closes. HOLD = press and hold, lift on the beat.
+// Desktop (testing only): mouse drag = swipe, click = tap, mouse down = hold. The opponent turn ignores
+// everything (the core does).
+import type { Dir } from "../../qte/types";
 
 export type TouchMode = "hit" | "mash" | "hold" | "none";
 /** What the play zone shows right now. */
 export type ZoneMode = "hit" | "mash" | "release" | "hold" | "none" | "opponent";
+export type Decision = { kind: "dir"; dir: Dir } | { kind: "space"; down: boolean } | null;
 
-/** Beats before the mash target during which the pad shows the release (the ring closes). */
+/** Beats before the mash target during which the pad asks for the release swipe (the ring closes). */
 export const RELEASE_BEATS = 1;
+export const SWIPE_PX = 24;
 
 /** Resolve the zone mode from the game's QTE mode, whose turn it is, and the release beat flag. */
 export function zoneMode(mode: TouchMode, turn: "player" | "opponent", releasing: boolean): ZoneMode {
@@ -18,59 +23,28 @@ export function zoneMode(mode: TouchMode, turn: "player" | "opponent", releasing
   return mode;
 }
 
-/** Everything currently pressed: pointer ids ("p1") and key codes ("kSpace"). */
-export interface TapState {
-  held: Set<string>;
+/** A swipe past the threshold (px) on its dominant axis, or null when under it. Screen y grows down. */
+export function swipeDir(dx: number, dy: number, threshold = SWIPE_PX): Dir | null {
+  if (dx * dx + dy * dy < threshold * threshold) return null;
+  return Math.abs(dx) > Math.abs(dy) ? (dx < 0 ? "left" : "right") : dy < 0 ? "up" : "down";
 }
 
-export function newTapState(): TapState {
-  return { held: new Set() };
+/** What a pointerdown at fx (0..1 of the width) fires right away: a mash tap on its half, a hold press. */
+export function onPress(mode: ZoneMode, fx: number): Decision {
+  if (mode === "mash" || mode === "release") return { kind: "dir", dir: fx < 0.5 ? "left" : "right" };
+  if (mode === "hold") return { kind: "space", down: true };
+  return null;
 }
 
-/** A press: always a tap down (a second thumb or a second key during a mash counts). */
-export function press(s: TapState, id: string): boolean {
-  s.held.add(id);
-  return true;
-}
-
-/** A lift: a tap up only when it was held and nothing else is (a HOLD ends with the last finger). */
-export function lift(s: TapState, id: string): boolean {
-  if (!s.held.delete(id)) return false;
-  return s.held.size === 0;
-}
-
-// ---------------------------------------------------------------- keyboard
-
-export interface KeyLike {
-  code: string;
-  repeat: boolean;
-  type: string;
-  timeStamp: number;
-}
-
-export type KeyInput = { kind: "tap"; down: boolean; at: number };
-
-/** Keys that stay the browser's or the system's: never a tap. */
-const NOT_TAP = /^(Escape|Tab|Meta|Alt|Control|Shift|CapsLock|ContextMenu|OS|F\d+)/;
-
-export function isTapKey(code: string): boolean {
-  return code !== "" && !NOT_TAP.test(code);
-}
-
-/** Route one key event. `prevent` asks the caller to preventDefault and stop propagation (the key
- * belongs to the battle); `input` is what reaches game.input, timestamped by `clock`. */
-export function routeKey(s: TapState, e: KeyLike, clock: (ts: number) => number = (t) => t): { prevent: boolean; input: KeyInput | null } {
-  if (!isTapKey(e.code)) return { prevent: false, input: null };
-  const id = `k${e.code}`;
-  if (e.type === "keydown") {
-    if (e.repeat || s.held.has(id)) return { prevent: true, input: null };
-    press(s, id);
-    return { prevent: true, input: { kind: "tap", down: true, at: clock(e.timeStamp) } };
-  }
-  if (e.type === "keyup") {
-    // Never a release without a press seen in this battle.
-    if (!lift(s, id)) return { prevent: true, input: null };
-    return { prevent: true, input: { kind: "tap", down: false, at: clock(e.timeStamp) } };
-  }
-  return { prevent: true, input: null };
+/**
+ * What a pointerup fires, from the travel since its press and the mode at the press. A HIT swipe fires its
+ * direction; during the 67 a swipe UP is the release; a hold press lifts. A tap on a HIT fires nothing.
+ */
+export function onLift(mode: ZoneMode, dx: number, dy: number, pressed: Decision): Decision {
+  if (pressed?.kind === "space") return { kind: "space", down: false };
+  const dir = swipeDir(dx, dy);
+  if (!dir) return null;
+  if (mode === "hit") return { kind: "dir", dir };
+  if ((mode === "mash" || mode === "release") && dir === "up") return { kind: "space", down: true };
+  return null;
 }

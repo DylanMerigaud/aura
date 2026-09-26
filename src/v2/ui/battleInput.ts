@@ -1,11 +1,10 @@
-// Battle input, TAP ONLY. Keyboard: keydown AND keyup on window in the capture phase while the battle
-// runs, independent of focus (the focused button is blurred at battle start) and stopped there so no
-// screen handler or focused button eats the key: any key is a tap. Touch and mouse: a press anywhere
-// on the full window canvas is a tap down, the lift of the last finger the tap up (./touch).
-// Pauses on visibilitychange; the game resumes with its own count in.
+// Battle input, MOBILE ONLY (addendum 17:15): pointer gestures on the full window canvas, no keys.
+// A press records its start and its mode; a mash tap and a hold press fire on the press, a swipe (HIT,
+// or the 67's release swipe up) fires on the lift with the pointerup timestamp, a hold ends on its lift.
+// Desktop is for testing only: the mouse drives the same pointer path. Pauses on visibilitychange.
 import type { GameApi } from "../contracts";
 import { heardTime } from "../../audio/engine";
-import { lift, newTapState, press, RELEASE_BEATS, routeKey, zoneMode, type ZoneMode } from "./touch";
+import { onLift, onPress, RELEASE_BEATS, zoneMode, type Decision, type ZoneMode } from "./touch";
 
 /** Optional getters the v2 Game exposes beyond GameApi (turn, mash release beat). */
 type ZoneGame = GameApi & { turn?(): "player" | "opponent"; releasing?(beats: number): boolean };
@@ -21,27 +20,32 @@ function vibrate(ms: number) {
 }
 
 export function bindBattleInput(canvas: HTMLCanvasElement, game: GameApi) {
-  let taps = newTapState();
+  /** Live pointers: where and in which mode they pressed, and what the press fired. */
+  const presses = new Map<number, { x: number; y: number; mode: ZoneMode; fired: Decision }>();
   let bound = false;
 
-  function onKeyEvent(e: KeyboardEvent) {
-    const r = routeKey(taps, e, heardTime);
-    if (!r.prevent) return;
-    e.preventDefault();
-    e.stopImmediatePropagation();
-    if (r.input) game.input(r.input);
+  function send(d: Decision, ts: number) {
+    if (!d) return;
+    game.input(d.kind === "dir" ? { kind: "dir", dir: d.dir, at: heardTime(ts) } : { kind: "space", down: d.down, at: heardTime(ts) });
   }
 
   function onDown(e: PointerEvent) {
     e.preventDefault();
     try { canvas.setPointerCapture(e.pointerId); } catch { /* synthetic pointer */ }
-    press(taps, `p${e.pointerId}`);
-    if (currentZone(game) === "mash") vibrate(8);
-    game.input({ kind: "tap", down: true, at: heardTime(e.timeStamp) });
+    const r = canvas.getBoundingClientRect();
+    const mode = currentZone(game);
+    const fired = onPress(mode, (e.clientX - r.left) / Math.max(1, r.width));
+    presses.set(e.pointerId, { x: e.clientX, y: e.clientY, mode, fired });
+    if (fired?.kind === "dir") vibrate(8);
+    send(fired, e.timeStamp);
   }
   function onUp(e: PointerEvent) {
-    if (!lift(taps, `p${e.pointerId}`)) return;
-    game.input({ kind: "tap", down: false, at: heardTime(e.timeStamp) });
+    const p = presses.get(e.pointerId);
+    if (!p) return;
+    presses.delete(e.pointerId);
+    const d = onLift(p.mode, e.clientX - p.x, e.clientY - p.y, p.fired);
+    if (d?.kind === "dir") vibrate(8);
+    send(d, e.timeStamp);
   }
   function onVisibility() {
     if (document.hidden) game.pause();
@@ -51,15 +55,12 @@ export function bindBattleInput(canvas: HTMLCanvasElement, game: GameApi) {
   function show() {
     if (bound) return;
     bound = true;
-    taps = newTapState();
-    // A focused menu button would turn a key into a click: nothing keeps focus in battle.
+    presses.clear();
     const a = document.activeElement;
     if (a instanceof HTMLElement) a.blur();
     canvas.addEventListener("pointerdown", onDown);
     canvas.addEventListener("pointerup", onUp);
     canvas.addEventListener("pointercancel", onUp);
-    addEventListener("keydown", onKeyEvent, true);
-    addEventListener("keyup", onKeyEvent, true);
     document.addEventListener("visibilitychange", onVisibility);
   }
   function hide() {
@@ -68,10 +69,8 @@ export function bindBattleInput(canvas: HTMLCanvasElement, game: GameApi) {
     canvas.removeEventListener("pointerdown", onDown);
     canvas.removeEventListener("pointerup", onUp);
     canvas.removeEventListener("pointercancel", onUp);
-    removeEventListener("keydown", onKeyEvent, true);
-    removeEventListener("keyup", onKeyEvent, true);
     document.removeEventListener("visibilitychange", onVisibility);
-    taps = newTapState();
+    presses.clear();
   }
 
   return { show, hide };

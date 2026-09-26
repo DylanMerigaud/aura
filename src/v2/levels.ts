@@ -99,25 +99,26 @@ function base(id: number, track: string, stage: StageKey, artKey: string, neon: 
  * The first 15 s (to beat 32) cannot be lost: the core floors the meter there.
  */
 const HERO_EVENTS: QteEvent[] = [
-  { type: "hit", beat: 4, dir: "right" },
-  { type: "hit", beat: 6, dir: "left" },
+  // Onboarding (addendum 17:15): the first 4 bars one direction only, then two, then all four.
+  { type: "hit", beat: 4, dir: "up" },
+  { type: "hit", beat: 6, dir: "up" },
   { type: "hit", beat: 8, dir: "up" },
-  { type: "hit", beat: 10, dir: "right" },
-  { type: "hit", beat: 12, dir: "down" },
-  { type: "hit", beat: 14, dir: "left" },
+  { type: "hit", beat: 10, dir: "up" },
+  { type: "hit", beat: 12, dir: "up" },
+  { type: "hit", beat: 14, dir: "up" },
   { type: "mash", beat: 24, length: 4 },
-  { type: "hit", beat: 30, dir: "up" },
+  { type: "hit", beat: 30, dir: "left" },
   { type: "hold", beat: 32, length: 4 },
   { type: "hit", beat: 38, dir: "right" },
   { type: "hold", beat: 48, length: 4 },
   { type: "hit", beat: 53, dir: "left" },
-  { type: "hit", beat: 55, dir: "up" },
+  { type: "hit", beat: 55, dir: "right" },
   { type: "mash", beat: 64, length: 4 },
-  { type: "hit", beat: 70, dir: "right" },
-  { type: "hit", beat: 72, dir: "down" },
-  { type: "hit", beat: 74, dir: "left" },
-  { type: "hit", beat: 76, dir: "up" },
-  { type: "hit", beat: 78, dir: "right" },
+  { type: "hit", beat: 70, dir: "up" },
+  { type: "hit", beat: 72, dir: "left" },
+  { type: "hit", beat: 74, dir: "down" },
+  { type: "hit", beat: 76, dir: "right" },
+  { type: "hit", beat: 78, dir: "up" },
 ];
 
 const HERO_TURNS: TurnSpec[] = [
