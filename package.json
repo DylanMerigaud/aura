@@ -21,6 +21,7 @@
     "release:pages": "bash scripts/release/deploy-pages.sh",
     "release:check": "tsx scripts/check-release.ts",
     "sim": "tsx scripts/sim.ts",
+    "balance": "tsx scripts/balance-sim.ts",
     "snap": "tsx scripts/snap.ts",
     "sfx:render": "tsx scripts/render-sfx.ts",
     "evals:pacing": "tsx scripts/eval-pacing.ts",
