@@ -9,23 +9,36 @@ const DECAY_PER_S = 0.01;
 /** Exponential ease rate: 95 percent of a step is reached in 250 ms. */
 const EASE = 12;
 
+/**
+ * `base` is the level's playback rate the rule bends around (1, or under 1 when a level plays its track slower,
+ * see LevelTuning.playRate) and `maxUp` caps the speed up relative to it (TEMPO_MAX by default).
+ */
 export class Tempo {
-  target = 1;
-  rate = 1;
+  target: number;
+  rate: number;
+  readonly min: number;
+  readonly max: number;
+
+  constructor(public readonly base = 1, maxUp = TEMPO_MAX) {
+    this.target = this.rate = base;
+    this.min = TEMPO_MIN * base;
+    this.max = Math.min(TEMPO_MAX, maxUp) * base;
+  }
 
   nudge(grade: Grade, cringe = false) {
-    const d = cringe ? NUDGE.miss : NUDGE[grade];
-    this.target = Math.min(TEMPO_MAX, Math.max(TEMPO_MIN, this.target + d));
+    const d = (cringe ? NUDGE.miss : NUDGE[grade]) * this.base;
+    this.target = Math.min(this.max, Math.max(this.min, this.target + d));
   }
 
   update(dt: number) {
-    if (this.target > 1) this.target = Math.max(1, this.target - DECAY_PER_S * dt);
-    else if (this.target < 1) this.target = Math.min(1, this.target + DECAY_PER_S * dt);
+    const b = this.base;
+    if (this.target > b) this.target = Math.max(b, this.target - DECAY_PER_S * b * dt);
+    else if (this.target < b) this.target = Math.min(b, this.target + DECAY_PER_S * b * dt);
     this.rate += (this.target - this.rate) * (1 - Math.exp(-EASE * dt));
-    this.rate = Math.min(TEMPO_MAX, Math.max(TEMPO_MIN, this.rate));
+    this.rate = Math.min(this.max, Math.max(this.min, this.rate));
   }
 
   reset() {
-    this.target = this.rate = 1;
+    this.target = this.rate = this.base;
   }
 }

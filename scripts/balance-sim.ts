@@ -10,8 +10,6 @@ import { tierOf, type LevelV2, type Stats, type TrackInfo } from "../src/v2/cont
 import { LEVELS_V2 } from "../src/v2/levels";
 import { trackInfo } from "../src/v2/tracks";
 
-/** Per level timing window scale used by the battle screen (src/v2/ui/app.ts WINDOW_SCALE, by campaign index). */
-export const WINDOW_SCALE = [1, 0.9, 0.8, 0.7, 0.6];
 /** Simulation step in seconds (120 Hz frame loop). */
 export const STEP = 1 / 120;
 export const RUNS = 500;
@@ -76,13 +74,17 @@ function endTime(level: LevelV2): number {
 export function planInputs(level: LevelV2, bot: Bot, seed: number): SimInput[] {
   const r = rng(seed);
   const spb = 60 / level.bpm;
+  // Bots live in real seconds, the core in song seconds: a track played at playRate stretches real time.
+  const rate = level.tuning?.playRate ?? 1;
   const out: SimInput[] = [];
   if (bot.randomHz) {
-    const gap = 1 / bot.randomHz;
+    const gap = rate / bot.randomHz;
     let space = false;
     for (let t = 0; t < endTime(level); t += gap) {
-      const roll = Math.floor(r() * 5);
+      // A phone masher taps the screen too, which hits any TAP note in its window.
+      const roll = Math.floor(r() * 6);
       if (roll < 4) out.push({ kind: "dir", dir: DIRS[roll], t });
+      else if (roll === 5) out.push({ kind: "tap", down: true, t });
       else {
         space = !space;
         out.push({ kind: "space", down: space, t });
@@ -90,7 +92,7 @@ export function planInputs(level: LevelV2, bot: Bot, seed: number): SimInput[] {
     }
     return out;
   }
-  const err = () => (bot.sigma > 0 ? gaussian(r) * bot.sigma : 0);
+  const err = () => (bot.sigma > 0 ? gaussian(r) * bot.sigma * rate : 0);
   for (const ev of level.events) {
     if (bot.lapse > 0 && r() < bot.lapse) continue;
     const T = ev.beat * spb;
@@ -103,7 +105,7 @@ export function planInputs(level: LevelV2, bot: Bot, seed: number): SimInput[] {
       out.push({ kind: "space", down: false, t: T + ev.length * spb + err() });
     } else {
       const R = T + ev.length * spb;
-      const gap = 1 / Math.max(1, bot.mashHz);
+      const gap = rate / Math.max(1, bot.mashHz);
       let side: Dir = "left";
       for (let t = T + err() * 0.5; t < R - gap / 2; t += gap) {
         out.push({ kind: "dir", dir: side, t: Math.max(T - 0.2, t) });
@@ -202,7 +204,7 @@ export function simulateChart(level: LevelV2, bot: Bot, runs = RUNS, windowScale
 }
 
 /** Balance flags for one chart from its four bot reports. Empty = balanced. */
-export function flagChart(reports: Report[]): string[] {
+export function flagChart(reports: Report[], onboarding = false): string[] {
   const by = (name: string) => reports.find((r) => r.bot === name);
   const avg = by("average");
   const masher = by("masher");
@@ -210,7 +212,8 @@ export function flagChart(reports: Report[]): string[] {
   const out: string[] = [];
   const pct = (x: number) => `${Math.round(x * 100)} percent`;
   if (avg && avg.winRate < FLAGS.averageWinMin) out.push(`too hard: average bot wins ${pct(avg.winRate)} (under ${pct(FLAGS.averageWinMin)})`);
-  if (avg && avg.winRate > FLAGS.averageWinMax) out.push(`too easy: average bot wins ${pct(avg.winRate)} (over ${pct(FLAGS.averageWinMax)})`);
+  // An onboarding level (LevelV2.tuning, level 1) is meant to be won: only the masher and the floor apply.
+  if (avg && !onboarding && avg.winRate > FLAGS.averageWinMax) out.push(`too easy: average bot wins ${pct(avg.winRate)} (over ${pct(FLAGS.averageWinMax)})`);
   if (masher && masher.winRate > FLAGS.masherWinMax) out.push(`mashable: button masher wins ${pct(masher.winRate)} (over ${pct(FLAGS.masherWinMax)})`);
   if (perfect && perfect.stars < FLAGS.perfectStars) out.push(`no top tier: perfect bot reaches ${perfect.stars} stars, not ${FLAGS.perfectStars}`);
   return out;
@@ -225,10 +228,11 @@ export interface ChartReport {
 }
 
 export function simulateAll(levels: LevelV2[] = LEVELS_V2, runs = RUNS, bots = BOTS): ChartReport[] {
-  return levels.map((level, idx) => {
-    const scale = WINDOW_SCALE[idx] ?? level.windowScale;
+  return levels.map((level) => {
+    // The v2 app plays each level at its own windowScale (src/v2/ui/progress.ts battleWindow, first loop).
+    const scale = level.windowScale;
     const reports = bots.map((bot) => simulateChart(level, bot, runs, scale));
-    return { chart: reports[0]?.chart ?? `L${level.id}`, events: level.events.length, seconds: (level.lengthBeats * 60) / level.bpm, reports, flags: flagChart(reports) };
+    return { chart: reports[0]?.chart ?? `L${level.id}`, events: level.events.length, seconds: (level.lengthBeats * 60) / level.bpm, reports, flags: flagChart(reports, !!level.tuning) };
   });
 }
 
@@ -274,6 +278,14 @@ export function renderMarkdown(charts: ChartReport[], runs = RUNS): string {
     lines.push(c.flags.length ? `Flags: ${c.flags.map((f) => `**${f}**`).join("; ")}` : "Flags: none, balanced.");
     lines.push("");
   }
+  lines.push("## Level 1 is the onboarding");
+  lines.push("");
+  lines.push("Level 1 carries LevelV2.tuning (src/v2/levels.ts heroTuning): the 130 BPM hero track plays at 110 BPM, Ok 330 ms");
+  lines.push("of real time (Perfect 114, Great 229) with no tightening before combo 25, the meter floored at 0 over the first");
+  lines.push("15 s, the tempo speed up capped at 1.05, opponent aura 0.02 per turn. The bots time in real seconds, scaled");
+  lines.push("into song seconds by the play rate. Target: the average bot wins at least 80 percent, the masher under 10; the");
+  lines.push("too easy flag does not apply to it.");
+  lines.push("");
   lines.push("## Flag rules");
   lines.push("");
   lines.push(`- too hard: the average bot wins under ${Math.round(FLAGS.averageWinMin * 100)} percent of runs.`);

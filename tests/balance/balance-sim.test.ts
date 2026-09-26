@@ -76,11 +76,13 @@ describe("bots", () => {
     expect(g).toBeGreaterThan(a);
     expect(a).toBeGreaterThan(m);
   });
-  it("the masher ignores the chart and fires ten keys a second", () => {
+  it("the masher ignores the chart and fires ten keys a real second (song time runs at the level's playRate)", () => {
     const inputs = planInputs(hero, bot("masher"), 3);
+    const rate = hero.tuning?.playRate ?? 1;
     const seconds = ((hero.lengthBeats + 2) * 60) / hero.bpm;
-    expect(inputs.length).toBe(Math.ceil(seconds * 10));
-    for (let i = 1; i < inputs.length; i++) expect(inputs[i].t - inputs[i - 1].t).toBeCloseTo(0.1, 6);
+    expect(Math.abs(inputs.length - (seconds * 10) / rate)).toBeLessThanOrEqual(1);
+    for (let i = 1; i < inputs.length; i++) expect(inputs[i].t - inputs[i - 1].t).toBeCloseTo(0.1 * rate, 6);
+    expect(inputs.some((i) => i.kind === "tap")).toBe(true);
   });
   it("rng is mulberry32 in [0, 1) and seed stable", () => {
     const r1 = rng(123), r2 = rng(123);

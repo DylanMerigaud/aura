@@ -4,7 +4,8 @@
 // generated from their track's analysis by a seeded, deterministic chart generator. A win moves to the next
 // opponent, the roster loops when exhausted with the difficulty raised each loop (rosterLevel).
 import type { Dir, QteEvent, Taunt } from "../qte/types";
-import type { LevelV2, StageKey, TrackInfo, TurnSpec } from "./contracts";
+import type { LevelTuning, LevelV2, StageKey, TrackInfo, TurnSpec } from "./contracts";
+import { WINDOWS } from "../qte/judge";
 import { toBeat, trackInfo } from "./tracks";
 import cast from "./cast.json";
 
@@ -80,40 +81,35 @@ function base(id: number, track: string, stage: StageKey, artKey: string, neon: 
  * 44, 52, 60); THE DROP on beat 68 (energy 0.38 on 64 to 67, then 0.95 for the rest, the largest rise of the
  * track); full section to the end.
  *
- * Dance battle turns (the player, then him), MOBILE ONLY (swipe, alternate taps, hold), difficulty ramping 0.2 to 0.8 over
- * the 40 s through density, windows (tighter with the combo, src/v2/core.ts) and the tempo rule. HIT pairs stay at
- * least 2 beats apart and never repeat a move (scripts/eval-animation.ts k7, k10): `dir` is the dance move the hero
- * plays on the hit, not an input.
- *   beats   turn       inputs                                              note
- *   0-16    player     HIT 4, 6, 8, 10, 12, 14                             onboarding: the first on the groove slam
- *                                                                          (4), wide windows, a ghost tap on the first
- *   16-24   opponent   boatSweep (every opponent turn)                      the Boat Kid rows, calm
- *   24-40   player     THE 67 24-28, HIT 30, HOLD 32-36, HIT 38            the 67 released on the 808 slam of 28, the
- *                                                                          hold lifted on the slam of 36
- *   40-48   opponent   boatSweep                                            the breakdown
- *   48-56   player     HOLD 48-52, HIT 53, HIT 55                           hold through the breakdown onto the slam
- *   56-64   opponent   palmPush                                             the build before the drop
- *   64-80   player     THE 67 64-68, HIT 70, 72, 74, 76, 78                 THE 67 released on THE DROP (68), then
- *                                                                          a note every 2 beats at full energy
- *   80-86   opponent   chinUpTaunt                                          his last word before the verdict
- * The first 15 s (to beat 32) cannot be lost: the core floors the meter there.
+ * Dance battle turns (the player, then him), MOBILE ONLY (swipe, alternate taps, hold). Level 1 IS the onboarding
+ * (Dylan rated the 17:45 build 2 out of 10, level 1 too fast): the track plays at 110 BPM (heroTuning),
+ * a note shows two beats before the ring, the windows are Perfect 114, Great 229, Ok 330 ms real time and do not
+ * tighten before combo 25, the first 15 s cannot be lost, the opponent barely farms. HIT pairs stay at least 2
+ * beats apart (scripts/eval-animation.ts k7) and after the onboarding never repeat a move (k10).
+ *   beats   bars    turn       inputs                                   note
+ *   0-16    1-4     player     TAP 4, 8, 12                             taps only, one per bar, on the downbeat
+ *   16-24   5-6     opponent   boatSweep (every opponent turn)          the Boat Kid rows, calm
+ *   24-40   7-10    player     ARROW right 24, TAP 28, THE 67 32-36,    the first arrow, one direction; the 67
+ *                              ARROW left 38                            (bar 9) released on the 808 slam of 36
+ *   40-48   11-12   opponent   boatSweep                                the breakdown
+ *   48-56   13-14   player     HOLD 48-52, ARROW right 54               the first hold (bar 13) onto the slam of 52
+ *   56-64   15-16   opponent   boatSweep                                the build before the drop
+ *   64-80   17-20   player     THE 67 64-68, ARROW up 70, left 72,      THE 67 released on THE DROP (68), then a
+ *                              TAP 74, ARROW right 76, down 78          note every 2 beats, up then down arrive
+ *   80-86   21-22   opponent   boatSweep                                his last word before the verdict
+ * Arrows enter one direction at a time: right (24), left (38), up (70), down (78).
  */
 const HERO_EVENTS: QteEvent[] = [
-  // Onboarding (addenda 17:15, 17:30): TAP notes first (any tap; `dir` is only the dance move), then arrows
-  // one direction at a time, then all four, with taps in between as breath.
+  // Bars 1 to 8: at most one note per bar, on the downbeat. TAP notes first (any tap; `dir` is only the dance move).
   { type: "hit", beat: 4, dir: "right", tap: true },
-  { type: "hit", beat: 6, dir: "left", tap: true },
-  { type: "hit", beat: 8, dir: "up", tap: true },
-  { type: "hit", beat: 10, dir: "right", tap: true },
-  { type: "hit", beat: 12, dir: "up" },
-  { type: "hit", beat: 14, dir: "down", tap: true },
-  { type: "mash", beat: 24, length: 4 },
-  { type: "hit", beat: 30, dir: "up" },
-  { type: "hold", beat: 32, length: 4 },
+  { type: "hit", beat: 8, dir: "left", tap: true },
+  { type: "hit", beat: 12, dir: "up", tap: true },
+  { type: "hit", beat: 24, dir: "right" },
+  { type: "hit", beat: 28, dir: "up", tap: true },
+  { type: "mash", beat: 32, length: 4 },
   { type: "hit", beat: 38, dir: "left" },
   { type: "hold", beat: 48, length: 4 },
-  { type: "hit", beat: 53, dir: "up" },
-  { type: "hit", beat: 55, dir: "right", tap: true },
+  { type: "hit", beat: 54, dir: "right" },
   { type: "mash", beat: 64, length: 4 },
   { type: "hit", beat: 70, dir: "up" },
   { type: "hit", beat: 72, dir: "left" },
@@ -121,6 +117,21 @@ const HERO_EVENTS: QteEvent[] = [
   { type: "hit", beat: 76, dir: "right" },
   { type: "hit", beat: 78, dir: "down" },
 ];
+
+/** Level 1 plays its track at this tempo when the track is faster (the grid follows the song clock). */
+export const HERO_PLAY_BPM = 110;
+/** Real time Ok window of level 1 (ms); Perfect and Great keep the judge's ratios (114 and 229 ms). */
+export const HERO_OK_MS = 330;
+
+/** Level 1 director parameters: the onboarding, for a track on a `bpm` grid. */
+export function heroTuning(bpm: number): LevelTuning {
+  return { playRate: Math.min(1, HERO_PLAY_BPM / bpm), tempoMax: 1.05, flatWindowsUntilCombo: 25, onboardFloor: 0 };
+}
+
+/** windowScale giving `okMs` of real time: the judge runs on song time, which plays at playRate. */
+export function realWindowScale(okMs: number, playRate: number): number {
+  return (okMs * playRate) / (WINDOWS.ok * 1000);
+}
 
 const HERO_TURNS: TurnSpec[] = [
   { who: "player", beat: 0, lengthBeats: 16 },
@@ -135,18 +146,20 @@ const HERO_TURNS: TurnSpec[] = [
 ];
 
 function hero(): LevelV2 {
-  const { c, level } = base(1, "level4", "metro", "metro", ["#ffb347", "#35e0ff"], 1, 86);
+  const tuning = heroTuning(trackInfo("level4").bpm);
+  const { c, level } = base(1, "level4", "metro", "metro", ["#ffb347", "#35e0ff"], realWindowScale(HERO_OK_MS, tuning.playRate), 86);
   return {
     ...level,
     events: HERO_EVENTS,
     // Taunts on his turns only, never over a player prompt: one per turn for a short cast, two per turn for 8 lines.
     taunts: taunts(HERO_EVENTS, c.taunts, c.taunts.length <= 4 ? [17, 41, 57, 81] : [17, 21, 41, 45, 57, 61, 81, 84]),
-    // 28 is the 808 slam the first 67 releases on (the pacing eval's release_on_drop).
-    dropBeats: [4, 28, 68],
+    // 36 is the 808 slam the first 67 releases on (the pacing eval's release_on_drop).
+    dropBeats: [4, 36, 68],
     breakdownBeats: [[37, 44], [45, 52], [53, 60], [61, 68]],
     turns: HERO_TURNS,
-    // Tuned with pnpm balance: the average bot wins about 75 percent (flags at 35 and 85).
-    opponentAura: 0.08,
+    // Opponent pressure at the minimum (docs/balance.md).
+    opponentAura: 0.02,
+    tuning,
   };
 }
 
