@@ -293,6 +293,9 @@ export class Crowd {
   private cheer(mb: Member): void {
     mb.reactLeft = 1 + Math.random();
     if (mb.react || !mb.reacts.length) return;
+    // Still settling from the last cheer (the reaction fading out, the loops fading in): a new fade now would
+    // restart a weighted action from its first frame and jump the loops' weights. The member keeps settling.
+    if (mb.reacts.some((r) => r.getEffectiveWeight() > 0) || mb.main.getEffectiveWeight() < (mb.alt ? MAIN_W : 1) - 1e-3) return;
     const a = mb.reacts[Math.random() < 0.7 ? 0 : Math.floor(Math.random() * mb.reacts.length)];
     a.enabled = true;
     a.setEffectiveTimeScale(mb.speed);
