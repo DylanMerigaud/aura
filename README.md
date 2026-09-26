@@ -107,6 +107,12 @@ pnpm pages    # build then force-push dist/ to the gh-pages branch
 
 Regenerating content (`pnpm gen:campaign`, `pnpm gen:art`, `pnpm gen:voices`) needs API keys, but never from the repo: they are read from the macOS keychain (`gemini-api-key-hackathon`, falling back to `gemini-api-key`, and `gradium-api-key`) at generation time only. The shipped build never talks to any of these services.
 
+## Evals
+
+Every generated thing passes a gate before it ships, and every gate writes a row to `evals/ledger.jsonl`. `pnpm evals` runs the two mechanical gates, pacing (every chart: overlaps, dead spans, first QTE, level length, on screen text, the 69 release on a drop) and animation (every Mixamo clip: beat windows, root drift, loop seams, and the mechanical half of the ten instant cringe kills), prints a table, exits 1 on any fail and rewrites the line below. What each gate checks and why: [docs/evals.md](docs/evals.md).
+
+Evals: 329 checks, 270 pass, 59 fail, last run 2026-09-26T11:10:45.943Z
+
 ## Assets and credits
 
 All music and sound effects are synthesized in Web Audio at runtime, oscillators, filters and noise buffers, no samples anywhere, so there is nothing to clear. Art by Gemini 3.1 Flash Image ("Nano Banana 2"). Voices by Gradium. Fonts are system fonts (Arial Black, Impact, sans-serif fallback).
