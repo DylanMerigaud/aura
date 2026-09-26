@@ -215,3 +215,11 @@
 {"ts":"2026-09-26T14:56:55.449Z","call":"post/speech/tts","key":"ninja/taunt-4/v8","credits":12,"note":"1 credit per character (docs/credits)"}
 {"ts":"2026-09-26T14:58:52.159Z","call":"post/speech/tts","key":"ninja/taunt-5/v8","credits":11,"note":"1 credit per character (docs/credits)"}
 {"ts":"2026-09-26T14:59:46.034Z","call":"post/speech/tts","key":"ninja/taunt-6/v8","credits":14,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T15:02:45.171Z","call":"post/speech/tts","key":"ninja/taunt-4/v8","credits":12,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T15:03:12.805Z","call":"post/speech/tts","key":"ninja/taunt-7/v8","credits":17,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T15:03:41.274Z","call":"post/speech/tts","key":"opp-papi-raleur/l3-taunt-1/v8","credits":13,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T15:04:00.229Z","call":"post/speech/tts","key":"opp-papi-raleur/l3-taunt-2/v8","credits":12,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T15:04:24.431Z","call":"post/speech/tts","key":"opp-papi-raleur/l3-taunt-4/v8","credits":10,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T15:04:45.174Z","call":"post/speech/tts","key":"opp-sporty-granny/l5-taunt-3/v8","credits":8,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T15:05:04.808Z","call":"post/speech/tts","key":"opp-sporty-granny/l5-taunt-5/v8","credits":13,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T15:05:25.004Z","call":"post/speech/tts","key":"opp-sporty-granny/l5-taunt-6/v8","credits":14,"note":"1 credit per character (docs/credits)"}
