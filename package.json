@@ -19,9 +19,12 @@
     "release:check": "tsx scripts/check-release.ts",
     "sim": "tsx scripts/sim.ts",
     "snap": "tsx scripts/snap.ts",
-    "evals:pacing": "tsx scripts/eval-pacing.ts"
+    "evals:pacing": "tsx scripts/eval-pacing.ts",
+    "evals:animation": "tsx scripts/eval-animation.ts",
+    "evals": "tsx scripts/eval-pacing.ts; p=$?; tsx scripts/eval-animation.ts; a=$?; [ $p -eq 0 ] && [ $a -eq 0 ]"
   },
   "devDependencies": {
+    "@gltf-transform/core": "^4.5.0",
     "@google/genai": "^2.24.0",
     "@napi-rs/canvas": "^1.0.9",
     "@types/node": "^26.6.3",
