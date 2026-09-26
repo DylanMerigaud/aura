@@ -1,6 +1,6 @@
 // Character loading and animation: the Mixamo manifest (assets/3d/manifest.json) when it exists, the
 // three.js RobotExpressive (MIT) as the fallback. Clips are addressed by event name (amendment 8 section 2),
-// a missing clip falls back to the idle groove with a squash and stretch, never a crash.
+// a missing clip falls back to the idle groove, never a crash.
 import * as THREE from "three";
 import { getLoadout } from "../loadout/state";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
@@ -360,8 +360,23 @@ export const FADE_BACK_S = 0.3;
 export const KNOCK_IN_S = 0.15;
 /** Head and spine only gestures play additive over the idle (docs/anim-poses.md, "Play as"). */
 const ADDITIVE_GESTURES = new Set(["sigmaStare", "chinUpTaunt", "lookBack", "cookedCollapse"]);
-/** Most of the pose the layers above the idle may take: the weights divide by what is left to the idle. */
-const MAX_SHARE = 0.995;
+/**
+ * The idle's floor: the moves over it never take more than 1 - IDLE_FLOOR of the base pose, so the idle
+ * is always playing under them (lane10 anim: its weight never falls under 0.2) and a move always lands on it.
+ */
+export const IDLE_FLOOR = 0.2;
+/** Most of the pose the clips above the idle may take: the weights divide by what is left to the idle. */
+const MAX_SHARE = 1 - IDLE_FLOOR;
+/**
+ * A clip whose Hips turn more than FLIP_DEG away from the idle's at some pair of times (a backflip, a spin) cannot be blended
+ * with a standing pose: the blend takes the short way round and flips 80 degrees in one frame when the body
+ * passes upside down. Such a clip takes the whole base pose (FLIP_SHARE) while it plays; the idle still runs
+ * under it at a tiny share, and the floor comes back continuously as the clip fades out.
+ */
+const FLIP_DEG = 150;
+const FLIP_SHARE = 0.995;
+/** Most of the pose a masked gesture takes on the bones it keys (it never touches the others). */
+const GESTURE_MAX = 0.995;
 /** Instances per clip: a move replayed while its last take still fades out gets a fresh take, never a reset. */
 const TAKES = 3;
 
@@ -379,6 +394,8 @@ interface Layer {
   fade: number;
   /** Visual seconds before a gesture fades back (Infinity for clips). */
   left: number;
+  /** Most of the base pose this clip may take (MAX_SHARE, FLIP_SHARE for a flip). */
+  cap: number;
 }
 /** A clip this long is a dance phrase: it resumes where it left off. Shorter ones are poses and reactions. */
 export const PHRASE_S = 8;
@@ -396,7 +413,7 @@ export function restartsOnPlay(loopOnce: boolean, duration: number, time: number
 /** One fighter: normalized to 1.8 m, facing +z inside `root`, with a mixer, a blob shadow and bone anchors. */
 export class Fighter {
   readonly root = new THREE.Group();
-  /** Squash and stretch and knockback live here, above the normalized model. */
+  /** The knockback lives here, above the normalized model (a push and a tilt, never a scale). */
   readonly body = new THREE.Group();
   private mixer: THREE.AnimationMixer;
   /** Takes per event (see TAKES), built on first use. */
@@ -411,13 +428,14 @@ export class Fighter {
   private head: THREE.Object3D | null = null;
   private hands: THREE.Object3D[] = [];
   private feet: THREE.Object3D[] = [];
-  private squash = 0;
   private knock = 0;
   /** Knockback still to come in: it eases in over KNOCK_IN_S, never a one frame jump. */
   private knockGoal = 0;
   private frozen = false;
   private height = 1.8;
   private gest: Layer | null = null;
+  /** capOf() per clip, measured once. */
+  private caps = new WeakMap<THREE.AnimationClip, number>();
 
   constructor(model: THREE.Object3D, private clips: CastSource["clips"], private role: "player" | "enemy", tint?: THREE.Color, height = 1.8) {
     this.height = height;
@@ -504,6 +522,37 @@ export class Fighter {
     this.idle = a;
   }
 
+  /** The share cap of a clip: FLIP_SHARE when its Hips turn more than FLIP_DEG from the idle's, else MAX_SHARE. */
+  private capOf(clip: THREE.AnimationClip): number {
+    let cap = this.caps.get(clip);
+    if (cap === undefined) this.caps.set(clip, (cap = this.measureCap(clip)));
+    return cap;
+  }
+
+  private measureCap(clip: THREE.AnimationClip): number {
+    const hips = this.names.get("Hips");
+    const ref = hips && this.idle?.getClip().tracks.find((t) => t.name === `${hips}.quaternion`);
+    const tr = ref && clip.tracks.find((t) => t.name === ref.name);
+    if (!ref || !tr) return MAX_SHARE;
+    // Any Hips key of the clip against any Hips key of the idle: whatever the two times, the pair may meet.
+    const qi = new THREE.Quaternion();
+    const q = new THREE.Quaternion();
+    const lim = THREE.MathUtils.degToRad(FLIP_DEG);
+    for (let i = 0; i + 4 <= ref.values.length; i += 4) {
+      qi.fromArray(ref.values, i);
+      for (let k = 0; k + 4 <= tr.values.length; k += 4) if (q.fromArray(tr.values, k).angleTo(qi) > lim) return FLIP_SHARE;
+    }
+    return MAX_SHARE;
+  }
+
+  /** The clips' total share of the base pose, capped by their weighted caps (continuous through a fade). */
+  private clipShare(): { t: number; cap: number } {
+    let t = 0;
+    let c = 0;
+    for (const l of this.layers) if (l.kind === "clip") (t += l.w), (c += l.w * l.cap);
+    return { t, cap: t > 0 ? c / t : MAX_SHARE };
+  }
+
   /** Ramp a layer toward a share, from where it is now. */
   private ramp(l: Layer, target: 0 | 1, fade: number): void {
     l.target = target;
@@ -518,8 +567,7 @@ export class Fighter {
 
   /**
    * Cross fade from the pose on screen to the clip of an event (FADE_IN_S in, FADE_BACK_S back to the idle
-   * near its end); the idle event, or a missing clip, fades every clip back to the idle (plus a squash when
-   * missing). Loops and long dance phrases resume from their own time, only poses and reactions restart
+   * near its end); the idle event, or a missing clip, fades every clip back to the idle. Loops and long dance phrases resume from their own time, only poses and reactions restart
    * (restartsOnPlay), and a restart takes a fresh take while the last one fades out: nothing ever snaps.
    */
   play(ev: ClipEvent | string, speed = 1): void {
@@ -528,14 +576,13 @@ export class Fighter {
     this.startIdle();
     const wantsIdle = ev === this.idleName;
     const a = wantsIdle ? undefined : this.take(ev, (x) => restartsOnPlay(x.loop === THREE.LoopOnce, x.getClip().duration, x.time));
-    if (!a && !wantsIdle && !this.clips.has(ev)) this.squash = 1;
     for (const l of this.layers) if (l.kind === "clip" && l.action !== a) this.ramp(l, 0, a ? FADE_IN_S : FADE_BACK_S);
     if (!a) return;
     let l = this.layers.find((x) => x.action === a);
     if (!l || l.w === 0) {
       if (restartsOnPlay(a.loop === THREE.LoopOnce, a.getClip().duration, a.time)) a.reset();
     }
-    if (!l) this.layers.push((l = { action: a, kind: "clip", w: 0, target: 1, fade: FADE_IN_S, left: Infinity }));
+    if (!l) this.layers.push((l = { action: a, kind: "clip", w: 0, target: 1, fade: FADE_IN_S, left: Infinity, cap: this.capOf(a.getClip()) }));
     this.ramp(l, 1, FADE_IN_S);
     a.enabled = true;
     a.paused = false;
@@ -552,14 +599,11 @@ export class Fighter {
   /**
    * Perform a canon gesture of src/anim/gestures.ts for `seconds` (visual time), then fade back to what plays
    * under it. A gesture only overrides the bones it keys (the idle's legs keep dancing), head and spine ones
-   * play additive. Unknown key: a plain squash, never a crash. Returns false when nothing was played.
+   * play additive. Unknown key: nothing plays, never a crash. Returns false when nothing was played.
    */
   gesture(key: string, bpm: number, seconds: number): boolean {
     const g = GESTURES[key];
-    if (!g) {
-      this.bump();
-      return false;
-    }
+    if (!g) return false;
     this.releaseGesture(FADE_IN_S);
     this.unfreeze();
     this.startIdle();
@@ -580,7 +624,7 @@ export class Fighter {
     a.setEffectiveTimeScale(1);
     a.reset();
     a.play();
-    const l: Layer = { action: a, kind: additive ? "additive" : "gesture", w: 0, target: 1, fade: FADE_IN_S, left: seconds };
+    const l: Layer = { action: a, kind: additive ? "additive" : "gesture", w: 0, target: 1, fade: FADE_IN_S, left: seconds, cap: GESTURE_MAX };
     this.layers.push(l);
     this.gest = l;
     this.applyWeights();
@@ -611,13 +655,14 @@ export class Fighter {
    * elsewhere; each gesture on its own, so two gestures crossing on different bones never jump.
    */
   private applyWeights(): void {
-    let t = 0;
-    for (const l of this.layers) if (l.kind === "clip") t += l.w;
-    const kt = t > MAX_SHARE ? MAX_SHARE / t : 1;
+    const share = this.clipShare();
+    const cap = share.cap;
+    let t = share.t;
+    const kt = t > cap ? cap / t : 1;
     t *= kt;
     const under = this.idle ? 1 / (1 - t) : 1;
     for (const l of this.layers) {
-      const g = Math.min(l.w, MAX_SHARE);
+      const g = Math.min(l.w, GESTURE_MAX);
       const w = l.kind === "clip" ? (this.idle ? (l.w * kt) / (1 - t) : l.w) : l.kind === "gesture" ? (g / (1 - g)) * under : l.w;
       l.action.enabled = true;
       l.action.setEffectiveWeight(w);
@@ -654,11 +699,21 @@ export class Fighter {
 
   knockback(amount: number): void {
     this.knockGoal = Math.max(this.knockGoal, this.knock, amount);
-    this.squash = Math.max(this.squash, 0.6);
   }
 
-  bump(): void {
-    this.squash = Math.max(this.squash, 0.5);
+  /** A mash step. The bodies never squash nor scale (Dylan, 16:00): kept for the callers, it moves nothing. */
+  bump(): void {}
+
+  /** True while a flip clip (see FLIP_DEG) is part of the base pose: the idle floor is lifted for it. */
+  get flipping(): boolean {
+    return this.layers.some((l) => l.kind === "clip" && l.cap === FLIP_SHARE && l.w > 0);
+  }
+
+  /** The idle's share of the base pose: 1 with no move over it, never under IDLE_FLOOR (under a flip clip, 1 - FLIP_SHARE). */
+  get idleShare(): number {
+    if (!this.idle) return 0;
+    const { t, cap } = this.clipShare();
+    return 1 - Math.min(t, cap);
   }
 
   /** dt is visual (time scaled); beatPhase drives the groove bob. */
@@ -666,7 +721,6 @@ export class Fighter {
     // The idle clip arrived after the fighter was built: leave the bind pose.
     this.startIdle();
     this.animate(dt);
-    this.squash = Math.max(0, this.squash - dt * 4);
     if (this.knockGoal > this.knock) {
       this.knock = Math.min(this.knockGoal, this.knock + (dt * this.knockGoal) / KNOCK_IN_S);
       if (this.knock >= this.knockGoal) this.knockGoal = 0;
