@@ -147,3 +147,11 @@ describe("results", () => {
     expect(q(".rc-rank")).toBe("NPC");
   });
 });
+
+describe("play zone", () => {
+  it("never says YOUR MOVE or HIS MOVE: the camera shows the turn (addendum 17:05 point 2)", async () => {
+    const { buildPlayZone } = await import("../src/v2/ui/playzone");
+    const z = buildPlayZone({} as never);
+    expect(z.root.textContent).not.toMatch(/your move|his move/i);
+  });
+});

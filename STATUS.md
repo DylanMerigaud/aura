@@ -1,3 +1,9 @@
+17:16 CEST, GAME lane, fix from the phone capture of 55d37cf
+GREEN: the grey HIS MOVE panel over the bottom third on his turn is gone (addendum 17:05 point 2: the camera shows the turn, never text); the floor is confirmed on the phone (near black, warm pool fading to black at the ring); items 1 to 5 live; tests green
+RED: the capture's script cannot see arrows (they are drawn on the canvas, not in the DOM), so swipes are only judged by a human; level 1's first arrow (up) is at 5.5 s
+PLAY: https://dylanmerigaud.github.io/aura/
+NEED FROM DYLAN: the first 40 seconds on the phone, sound on: taps, the up arrow at 5.5 s, the 67 at 11 s, the hold at 15 s
+
 16:54 CEST, GAME lane, freeze item 5: NO VOICES
 GREEN: no voice plays in the root build: the recorded lines and calls stay silent (voice/v2/index.json is empty, no bake off winner in INTEGRATION's STATUS), and the live Gradium roast on the results card is now read only, never spoken (a DOM test holds it); the crowd bed, the SFX and the music carry the sound; tests green
 RED: nothing seen on a phone for items 2 to 5 yet
