@@ -4,10 +4,14 @@ export const ALLOWED_ORIGINS = [
   "https://html.itch.zone",
   "https://v6p9d9t4.ssl.hwcdn.net",
   "http://localhost:8080",
+  "http://localhost:5173",
 ];
 
+/** itch.io serves HTML games from per game subdomains of itch.zone. */
+const ITCH_ZONE = /^https:\/\/[a-z0-9-]+\.itch\.zone$/;
+
 export function isAllowedOrigin(origin: string | null): boolean {
-  return origin !== null && ALLOWED_ORIGINS.includes(origin);
+  return origin !== null && (ALLOWED_ORIGINS.includes(origin) || ITCH_ZONE.test(origin));
 }
 
 // Headers echo the request origin only when it is allowed, so a browser on any other origin

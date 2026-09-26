@@ -4,7 +4,7 @@
 import type { LevelV2, Stats } from "../contracts";
 import { starGlyphs } from "./format";
 import { el } from "./dom";
-import { fetchRoast } from "../net/live";
+import { fetchRoast, speakLive } from "../net/live";
 
 export function buildResults(onNext: () => void) {
   const root = el("section", "screen results");
@@ -74,7 +74,11 @@ export function buildResults(onNext: () => void) {
       .then((r) => {
         if (myGen !== genAtShow || !r) return;
         roast.textContent = r.roast;
+        roastTag.textContent = "roast written live by Gemini";
         roastTag.classList.remove("hidden");
+        return speakLive(r.roast).then((ok) => {
+          if (ok && myGen === genAtShow) roastTag.textContent = "roast written live by Gemini, voiced live by Gradium";
+        });
       })
       .catch(() => {
         /* offline or the worker is down: the announcer line already shown stands */

@@ -43,14 +43,17 @@ function geminiResponse(roast: string, title: string): Response {
 }
 
 describe("CORS", () => {
-  it("allows exactly the four game origins", () => {
+  it("allows exactly the game origins and itch.zone subdomains", () => {
     for (const origin of ALLOWED_ORIGINS) expect(isAllowedOrigin(origin)).toBe(true);
     expect(ALLOWED_ORIGINS).toEqual([
       "https://dylanmerigaud.github.io",
       "https://html.itch.zone",
       "https://v6p9d9t4.ssl.hwcdn.net",
       "http://localhost:8080",
+      "http://localhost:5173",
     ]);
+    expect(isAllowedOrigin("https://html-classic.itch.zone")).toBe(true);
+    expect(isAllowedOrigin("https://evil.itch.zone.example.com")).toBe(false);
   });
 
   it("rejects look alike origins, other schemes and null", () => {
