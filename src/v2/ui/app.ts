@@ -16,7 +16,9 @@ import { buildLoading } from "./loading";
 import { trackSettled } from "./flow";
 import { buildSettings } from "./settings";
 import { buildLoadout } from "./loadout";
-import { buildResults } from "./results";
+import { buildResults, setShareCard } from "./results";
+import { shareCardFile } from "./sharecard";
+import { playerRank } from "../xp";
 import { buildHud } from "./hud/index";
 import { bindBattleInput } from "./battleInput";
 import { buildPlayZone } from "./playzone";
@@ -80,6 +82,7 @@ export function startApp(opts: StartOpts): { hud: Listener } {
   const settings = buildSettings(() => goScene());
   let loadoutBack: () => void = () => goScene();
   const loadout = buildLoadout(() => loadoutBack(), base);
+  setShareCard((stats, level) => shareCardFile({ stats, level, rank: playerRank(), url: location.href.split("?")[0] }));
   const results = buildResults({
     retry: () => void startBattle(slot),
     next: () => void startBattle(opponentSlot(progress.opp ?? 0, levels.length)),

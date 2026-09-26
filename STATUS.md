@@ -1,3 +1,9 @@
+16:25 CEST, GAME lane: the results card, the XP bar and the one tap flow at the ROOT
+GREEN: tests 680, typecheck clean; LOADING, then the TITLE over the arena (chrome AURA, TAP TO PLAY, small LOADOUT and SETTINGS buttons), then tap, count in, battle, results; no map, VS card, menu or multiplayer on the way; results card AURA FARMED / HUMBLED with score, accuracy, best combo, stars, roast, RETRY (NEXT after a win) and SHARE (a 1080x1920 PNG card); XP bar with RANK UP; a win moves to the next opponent; a double start that could show SCORE 0 is now refused
+RED: the Boat Kid as level 1, Kevin as the player, fixed opponent ranks and the head speech bubble (roster lane), the animation smoothness test; nothing seen on a phone since 15:35
+PLAY: https://dylanmerigaud.github.io/aura/
+NEED FROM DYLAN: nothing yet
+
 16:00 CEST, GAME lane: mastery, reactive taunts, the like / dislike bar at the ROOT
 GREEN: tests 666, typecheck clean; windows tighten with the combo (110 to 70 ms, the ring shrinks), FLOW x2 at 8 Perfects, ghost finger teaches tap, 67 and hold until first success, the ninja reacts on 8 triggers; like / dislike bar, flat white and black UI with one accent (#ffd400), hints retire; pnpm balance: average bot wins 74 percent on Chatelet (was 93)
 GREEN (16:05): the black playground (no metro set, one warm spot pool, white ring, dust, silhouette crowd with a cool rim), the camera frames the performer of each turn, two shot in profile on big moments, one failure reaction for every miss

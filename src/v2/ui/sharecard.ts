@@ -100,3 +100,10 @@ export async function shareCard(d: CardData): Promise<"shared" | "downloaded" | 
     return "failed";
   }
 }
+
+/** The card as a File for the results SHARE hook (src/v2/ui/results.ts setShareCard). */
+export async function shareCardFile(d: CardData): Promise<File | null> {
+  const c = drawShareCard(d);
+  const blob = await new Promise<Blob | null>((res) => c.toBlob(res, "image/png"));
+  return blob ? new File([blob], "aura.png", { type: "image/png" }) : null;
+}
