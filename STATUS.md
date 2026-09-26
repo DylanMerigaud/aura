@@ -1,3 +1,9 @@
+16:49 CEST, GAME lane, freeze item 2: THE FLOOR
+GREEN: item 1 checked against the deployed code (no loading screen, v1 cyan arrows for swipes only, round tap note, 67 pad and meter with no arrows, hold ring with a press icon, one prompt at a time, judgments 20 px above the ring); floor now near black (#0e0d0c, was the beige #3a3632), the warm pool fades to black exactly at the ring, the spot cone ends on the ring; no lane line is drawn at all; tests green
+RED: nothing seen on a phone for this push yet
+PLAY: https://dylanmerigaud.github.io/aura/
+NEED FROM DYLAN: look at the floor in the first seconds: dark, one warm pool, black outside the white ring
+
 16:45 CEST, GAME lane: Dylan's calls up to 17:50 at the ROOT
 GREEN: tests 700, typecheck clean; no loading screen: the title shows at once over the lit arena, the fighters grow in when their rigs land, LOADOUT and SETTINGS centered under TAP TO PLAY; prompts: TAP note round (any tap), SWIPE note = v1's cyan arrow exactly, the 67 = big 67, pulsing pad and a mash meter (no arrows), HOLD = a filling ring with a press icon, RELEASE = the closing ring with a swipe up hint; level 1 opens on taps then arrows one direction at a time; pack first after a win; one voice queue; render follows the real canvas size
 RED: recorded voices silent until the bake off winner lands (index.json "voice": "bakeoff-winner", "cast": "roster-1625"); pnpm balance flags levels 4 and 5 too hard (level 1 is at 74 percent); nothing seen on a phone since 15:35

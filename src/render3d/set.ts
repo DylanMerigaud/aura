@@ -1,5 +1,5 @@
-// The black playground (addendum 16:00 point 1): a black void, one round floor lit by a warm white
-// spotlight from above (a soft pool with a hard falloff), the ring as a thin white line, a faint light beam
+// The black playground (addendum 16:00 point 1): a black void, a dark floor with one warm pool of light
+// from above that falls off to black at the ring (never a lit beige disc, freeze item 2), the ring as a thin white line, a faint light beam
 // with dust motes floating in it. No decor, no neon: the aura VFX and the characters' own colors are the
 // only color on screen. Every stage key renders this same arena; a level only changes the light color.
 // Lights: a dim hemisphere (the pool's warm bounce from below), the spot (the one shadow caster) and a
@@ -10,8 +10,12 @@ import { LAYOUT } from "./director";
 
 /** Radius of the ring line on the floor (the fighters stand at about 3 m from the centre). */
 const RING_R = 4.8;
-/** Radius of the light pool on the floor, just outside the ring. */
-const POOL_R = 5.6;
+/** Radius of the light pool on the floor: the pool reaches black at the ring line. */
+const POOL_R = RING_R;
+/** The floor's own color: near black, so outside the pool it IS the void and inside it only the light shows. */
+export const FLOOR_COLOR = 0x0e0d0c;
+/** Spot cone: its edge lands on the ring, the penumbra (a share of the cone) makes the soft falloff to it. */
+export const SPOT_PENUMBRA = 0.3;
 const SPOT_Y = 11;
 const DUST_N = 220;
 
@@ -59,20 +63,20 @@ export class RingSet {
   private dustPos: Float32Array;
   private dustSeed: Float32Array;
   private light = new THREE.Color(ARENA_LIGHT.club);
-  private baseSpot = 3.4;
+  private baseSpot = 3.8;
 
   constructor(private scene: THREE.Scene) {
     scene.background = new THREE.Color(0x000000);
     scene.fog = new THREE.Fog(0x000000, 14, 34);
     scene.add(this.group);
 
-    // The floor: dark enough that outside the pool it reads as the void.
-    const floor = new THREE.Mesh(new THREE.CircleGeometry(16, 48), new THREE.MeshLambertMaterial({ color: 0x3a3632 }));
+    // The floor: near black, so the spot and the pool are the only light on it.
+    const floor = new THREE.Mesh(new THREE.CircleGeometry(16, 48), new THREE.MeshLambertMaterial({ color: FLOOR_COLOR }));
     floor.receiveShadow = true;
     floor.rotation.x = -Math.PI / 2;
     this.group.add(floor);
 
-    // The pool itself as an additive radial decal: the spot's cone draws the hard edge, the decal the glow.
+    // The pool itself as an additive radial decal, brightest under the spot and fading to zero at the ring.
     this.pool = new THREE.ShaderMaterial({
       transparent: true,
       depthWrite: false,
@@ -81,7 +85,7 @@ export class RingSet {
       uniforms: { color: { value: this.light.clone() }, k: { value: 0.1 } },
       vertexShader: "varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }",
       fragmentShader:
-        "uniform vec3 color; uniform float k; varying vec2 vUv; void main(){ float r = length(vUv - 0.5) * 2.0; float a = (1.0 - smoothstep(0.78, 0.98, r)) * (0.55 + 0.45 * (1.0 - r * r)); gl_FragColor = vec4(color * a * k, 1.0); }",
+        "uniform vec3 color; uniform float k; varying vec2 vUv; void main(){ float r = length(vUv - 0.5) * 2.0; float a = pow(1.0 - smoothstep(0.0, 1.0, r), 1.5); gl_FragColor = vec4(color * a * k, 1.0); }",
     });
     const pool = new THREE.Mesh(new THREE.PlaneGeometry(POOL_R * 2, POOL_R * 2), this.pool);
     pool.rotation.x = -Math.PI / 2;
@@ -149,7 +153,7 @@ export class RingSet {
     this.hemi = new THREE.HemisphereLight(0x2a3040, 0x6b5a46, 0.9);
     this.scene.add(this.hemi);
 
-    const key = new THREE.SpotLight(this.light, this.baseSpot, 0, Math.atan(POOL_R / SPOT_Y), 0.28, 0);
+    const key = new THREE.SpotLight(this.light, this.baseSpot, 0, Math.atan(RING_R / SPOT_Y), SPOT_PENUMBRA, 0);
     key.position.set(0, SPOT_Y, (LAYOUT.player[2] + LAYOUT.enemy[2]) / 2);
     key.target.position.set(0, 0, key.position.z);
     key.castShadow = true;
@@ -186,7 +190,7 @@ export class RingSet {
     const kick = Math.pow(1 - Math.min(1, beatPhase * 2), 3);
     const e = 0.35 + 0.65 * energy;
     this.key.intensity = this.baseSpot * (0.94 + 0.14 * kick * e);
-    this.pool.uniforms.k.value = 0.09 + 0.05 * kick * e;
+    this.pool.uniforms.k.value = 0.12 + 0.05 * kick * e;
     this.beam.uniforms.k.value = 0.04 + 0.025 * kick * e;
     // The beat pulse is WHITE (decisions addendum 16:40 item 6): on the kick the light goes toward pure white,
     // whatever the level's light color, and settles back to it by mid beat. Never a tint.
