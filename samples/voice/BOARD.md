@@ -2,7 +2,7 @@
 
 Judge gemini-3.1-pro-preview, 1 to 5 on energy (E), emotion (Em), stereotype (S), Gen Z hype (G). Ship at 4 on every axis. Winner: highest min axis, then mean.
 
-Shipped winners at or above threshold: 47; below: 16.
+Shipped winners at or above threshold: 50; below: 13.
 
 Below threshold:
 - announcer/l2-win (min 3: The slang is there but the delivery feels too restrained for a true underground hype MC.)
@@ -15,12 +15,9 @@ Below threshold:
 - ninja/taunt-5 (min 2: The French accent is okay, but the delivery completely misses the fake confused to smug transition and ends up sounding flat.)
 - ninja/taunt-6 (min 2: It hits the right words but completely lacks the smug Parisian street swagger needed to avoid sounding like cringe corporate slop.)
 - ninja/taunt-7 (min 3: It hits the French street vibe but lacks the theatrical, cocky movie-trailer energy needed to be truly meme-worthy.)
-- opp-papi-raleur/l3-taunt-1 (min 1: The actor completely missed the Parisian grandpa direction. There is zero French accent, making it sound like a generic angry American neighbor instead of a caricatural Papi Raleur. Additionally, there is a massive, jarring crash sound effect at the end of the file that renders the audio unusable. We need a thick, funny French accent and clean audio.)
-- opp-papi-raleur/l3-taunt-2 (min 2: It lacks the exaggerated French accent and heavy scoffing required to make this character truly meme-worthy.)
+- opp-papi-raleur/l3-taunt-1 (min 2: The actor said 'Johnny down' instead of 'Turn it down'. Since the words are wrong, all scores are strictly capped at 2. Even if this was a heavy accent, it is completely unintelligible as the target line and lacks the requested grumpy French caricature.)
 - opp-papi-raleur/l3-taunt-4 (min 1: Sounds more like a giant brute than a frail Parisian grandpa, completely missing the requested character archetype.)
-- opp-sporty-granny/l5-taunt-3 (min 1: This sounds like a bored young guy instead of a merciless eighty-year-old fitness granny.)
-- opp-sporty-granny/l5-taunt-5 (min 2: It sounds like a regular grandmother rather than a merciless, high-octane fitness caricature.)
-- opp-sporty-granny/l5-taunt-6 (min 2: The delivery sounds too frail and lacks the aggressive cardio energy needed for a merciless fitness granny.)
+- opp-sporty-granny/l5-taunt-3 (min 3: Good punch and bossy tone but could use a bit more raspy granny exaggeration to be truly meme-worthy.)
 
 ## announcer / your-move: "YOUR MOVE!"
 
@@ -204,8 +201,10 @@ Winner note: The slang is there but the delivery feels too restrained for a true
 | v2.mp3 | gemini-3.8-flash-tts | Fenrir | E2 Em3 S2 G2 (mean 2.25) | 2 |  |
 | v3.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E3 Em2 S2 G2 (mean 2.25) | 2 |  |
 | v6.mp3 | gemini-3.8-flash-tts | Fenrir | E3 Em3 S2 G2 (mean 2.5) | 2 | WINNER |
+| v7.mp3 | gemini-2.5-pro-preview-tts | Sadachbia | E1 Em1 S1 G1 (mean 1) | 1 |  |
 | v8.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E2 Em2 S2 G2 (mean 2) | 2 |  |
 | v9.mp3 | gemini-3.8-flash-tts | Fenrir | E2 Em1 S1 G1 (mean 1.25) | 1 |  |
+| v10.mp3 | gemini-2.5-pro-preview-tts | Sadachbia | E4 Em2 S2 G2 (mean 2.5) | 2 |  |
 
 Winner note: The delivery lacks the explosive hype of a battle rap host and feels too generic for a Gen Z audience.
 
@@ -471,6 +470,7 @@ Winner note: You completely missed the smug Parisian accent and the dismissive l
 | v3.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em2 S2 G2 (mean 2) | 2 |  |
 | v6.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em2 S2 G2 (mean 2) | 2 |  |
 | v7.mp3 | gemini-2.5-pro-preview-tts | Algenib | E2 Em2 S2 G2 (mean 2) | 2 |  |
+| v8.mp3 | gradium-default (voice design) | designed ninja-3 vox_emb_fDfTMIAGrwZmE0jG | E3 Em2 S2 G2 (mean 2.25) | 2 |  |
 | v9.mp3 | gemini-3.8-flash-tts | Algenib | E1 Em1 S1 G1 (mean 1) | 1 |  |
 | v10.mp3 | gemini-2.5-pro-preview-tts | Algenib | E3 Em4 S4 G3 (mean 3.5) | 3 | WINNER |
 
@@ -500,6 +500,8 @@ Winner note: The French accent is okay, but the delivery completely misses the f
 | v6.mp3 | gemini-3.8-flash-tts | Algenib | E1 Em2 S2 G1 (mean 1.5) | 1 |  |
 | v7.mp3 | gemini-2.5-pro-preview-tts | Algenib | E3 Em2 S2 G1 (mean 2) | 1 |  |
 | v8.mp3 | gradium-default (voice design) | designed ninja-3 vox_emb_fDfTMIAGrwZmE0jG | E3 Em3 S2 G2 (mean 2.5) | 2 | WINNER |
+| v9.mp3 | gemini-3.8-flash-tts | Algenib | E1 Em1 S1 G1 (mean 1) | 1 |  |
+| v10.mp3 | gemini-2.5-pro-preview-tts | Algenib | E3 Em2 S1 G1 (mean 1.75) | 1 |  |
 
 Winner note: It hits the right words but completely lacks the smug Parisian street swagger needed to avoid sounding like cringe corporate slop.
 
@@ -510,6 +512,11 @@ Winner note: It hits the right words but completely lacks the smug Parisian stre
 | v1.mp3 | gemini-3.8-flash-tts | Algenib | E3 Em3 S4 G3 (mean 3.25) | 3 | WINNER |
 | v2.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em2 S3 G2 (mean 2.25) | 2 |  |
 | v3.mp3 | gemini-3.8-flash-tts | Algenib | E1 Em1 S1 G1 (mean 1) | 1 |  |
+| v6.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em2 S2 G2 (mean 2) | 2 |  |
+| v7.mp3 | gemini-2.5-pro-preview-tts | Algenib | E3 Em3 S4 G3 (mean 3.25) | 3 |  |
+| v8.mp3 | gradium-default (voice design) | designed ninja-3 vox_emb_fDfTMIAGrwZmE0jG | E2 Em2 S3 G2 (mean 2.25) | 2 |  |
+| v9.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em2 S2 G2 (mean 2) | 2 |  |
+| v10.mp3 | gemini-2.5-pro-preview-tts | Algenib | E3 Em3 S3 G2 (mean 2.75) | 2 |  |
 
 Winner note: It hits the French street vibe but lacks the theatrical, cocky movie-trailer energy needed to be truly meme-worthy.
 
@@ -527,21 +534,31 @@ Winner note: Great raspy delivery that perfectly nails the grumpy boomer trope f
 
 | variant | model | voice | scores | min | |
 |---|---|---|---|---|---|
-| v1.mp3 | gemini-3.8-flash-tts | Charon | E2 Em2 S1 G1 (mean 1.5) | 1 | WINNER |
+| v1.mp3 | gemini-3.8-flash-tts | Charon | E2 Em2 S1 G1 (mean 1.5) | 1 |  |
 | v2.mp3 | gradium-default (voice design) | designed opp-papi-raleur vox_emb_nQWxGMwmtwpBqwaJ | E2 Em2 S1 G1 (mean 1.5) | 1 |  |
 | v3.mp3 | gemini-3.8-flash-tts | Charon | E2 Em2 S1 G1 (mean 1.5) | 1 |  |
+| v6.mp3 | gemini-3.8-flash-tts | Charon | E2 Em2 S1 G1 (mean 1.5) | 1 |  |
+| v7.mp3 | gemini-2.5-pro-preview-tts | Charon | E2 Em2 S1 G1 (mean 1.5) | 1 |  |
+| v8.mp3 | gradium-default (voice design) | designed opp-papi-raleur vox_emb_nQWxGMwmtwpBqwaJ | E2 Em2 S1 G1 (mean 1.5) | 1 |  |
+| v9.mp3 | gemini-3.8-flash-tts | Charon | E2 Em2 S2 G2 (mean 2) | 2 | WINNER |
+| v10.mp3 | gemini-2.5-pro-preview-tts | Charon | E2 Em2 S1 G1 (mean 1.5) | 1 |  |
 
-Winner note: The actor completely missed the Parisian grandpa direction. There is zero French accent, making it sound like a generic angry American neighbor instead of a caricatural Papi Raleur. Additionally, there is a massive, jarring crash sound effect at the end of the file that renders the audio unusable. We need a thick, funny French accent and clean audio.
+Winner note: The actor said 'Johnny down' instead of 'Turn it down'. Since the words are wrong, all scores are strictly capped at 2. Even if this was a heavy accent, it is completely unintelligible as the target line and lacks the requested grumpy French caricature.
 
 ## opp-papi-raleur / l3-taunt-2: "In my day..."
 
 | variant | model | voice | scores | min | |
 |---|---|---|---|---|---|
 | v1.mp3 | gemini-3.8-flash-tts | Charon | E2 Em2 S2 G1 (mean 1.75) | 1 |  |
-| v2.mp3 | gradium-default (voice design) | designed opp-papi-raleur vox_emb_nQWxGMwmtwpBqwaJ | E3 Em3 S2 G2 (mean 2.5) | 2 | WINNER |
+| v2.mp3 | gradium-default (voice design) | designed opp-papi-raleur vox_emb_nQWxGMwmtwpBqwaJ | E3 Em3 S2 G2 (mean 2.5) | 2 |  |
 | v3.mp3 | gemini-3.8-flash-tts | Charon | E2 Em2 S1 G1 (mean 1.5) | 1 |  |
+| v6.mp3 | gemini-3.8-flash-tts | Charon | E2 Em2 S1 G1 (mean 1.5) | 1 |  |
+| v7.mp3 | gemini-2.5-pro-preview-tts | Charon | E3 Em3 S2 G2 (mean 2.5) | 2 |  |
+| v8.mp3 | gradium-default (voice design) | designed opp-papi-raleur vox_emb_nQWxGMwmtwpBqwaJ | E3 Em3 S2 G2 (mean 2.5) | 2 |  |
+| v9.mp3 | gemini-3.8-flash-tts | Charon | E2 Em2 S1 G1 (mean 1.5) | 1 |  |
+| v10.mp3 | gemini-2.5-pro-preview-tts | Charon | E4 Em4 S5 G4 (mean 4.25) | 4 | WINNER |
 
-Winner note: It lacks the exaggerated French accent and heavy scoffing required to make this character truly meme-worthy.
+Winner note: The exaggerated French accent and grumpy delivery perfectly capture the meme-worthy boomer energy we need.
 
 ## opp-papi-raleur / l3-taunt-3: "Pfff."
 
@@ -560,6 +577,11 @@ Winner note: A perfectly executed and highly memeable Parisian scoff that drips 
 | v1.mp3 | gemini-3.8-flash-tts | Charon | E1 Em1 S1 G1 (mean 1) | 1 |  |
 | v2.mp3 | gradium-default (voice design) | designed opp-papi-raleur vox_emb_nQWxGMwmtwpBqwaJ | E2 Em2 S1 G1 (mean 1.5) | 1 |  |
 | v3.mp3 | gemini-3.8-flash-tts | Charon | E3 Em2 S1 G2 (mean 2) | 1 | WINNER |
+| v6.mp3 | gemini-3.8-flash-tts | Charon | E2 Em2 S1 G2 (mean 1.75) | 1 |  |
+| v7.mp3 | gemini-2.5-pro-preview-tts | Charon | E2 Em2 S1 G1 (mean 1.5) | 1 |  |
+| v8.mp3 | gradium-default (voice design) | designed opp-papi-raleur vox_emb_nQWxGMwmtwpBqwaJ | E2 Em2 S1 G1 (mean 1.5) | 1 |  |
+| v9.mp3 | gemini-3.8-flash-tts | Charon | E2 Em2 S1 G1 (mean 1.5) | 1 |  |
+| v10.mp3 | gemini-2.5-pro-preview-tts | Charon | E2 Em2 S1 G1 (mean 1.5) | 1 |  |
 
 Winner note: Sounds more like a giant brute than a frail Parisian grandpa, completely missing the requested character archetype.
 
@@ -707,11 +729,16 @@ Winner note: This patronizing delivery perfectly nails the merciless fitness gra
 
 | variant | model | voice | scores | min | |
 |---|---|---|---|---|---|
-| v1.mp3 | gemini-3.8-flash-tts | Kore | E2 Em2 S1 G1 (mean 1.5) | 1 | WINNER |
+| v1.mp3 | gemini-3.8-flash-tts | Kore | E2 Em2 S1 G1 (mean 1.5) | 1 |  |
 | v2.mp3 | gradium-default (voice design) | designed opp-sporty-granny vox_emb_s8E2imDiahks9xis | E2 Em2 S1 G1 (mean 1.5) | 1 |  |
 | v3.mp3 | gemini-3.8-flash-tts | Kore | E2 Em2 S1 G1 (mean 1.5) | 1 |  |
+| v6.mp3 | gemini-3.8-flash-tts | Kore | E2 Em2 S2 G2 (mean 2) | 2 |  |
+| v7.mp3 | gemini-2.5-pro-preview-tts | Kore | E3 Em2 S2 G2 (mean 2.25) | 2 |  |
+| v8.mp3 | gradium-default (voice design) | designed opp-sporty-granny vox_emb_s8E2imDiahks9xis | E4 Em4 S4 G3 (mean 3.75) | 3 | WINNER |
+| v9.mp3 | gemini-3.8-flash-tts | Kore | E2 Em2 S1 G1 (mean 1.5) | 1 |  |
+| v10.mp3 | gemini-2.5-pro-preview-tts | Kore | E1 Em1 S1 G1 (mean 1) | 1 |  |
 
-Winner note: This sounds like a bored young guy instead of a merciless eighty-year-old fitness granny.
+Winner note: Good punch and bossy tone but could use a bit more raspy granny exaggeration to be truly meme-worthy.
 
 ## opp-sporty-granny / l5-taunt-4: "Knees of steel."
 
@@ -727,21 +754,31 @@ Winner note: The raspy delivery is punchy and fits the merciless fitness granny 
 
 | variant | model | voice | scores | min | |
 |---|---|---|---|---|---|
-| v1.mp3 | gemini-3.8-flash-tts | Kore | E2 Em2 S3 G2 (mean 2.25) | 2 | WINNER |
+| v1.mp3 | gemini-3.8-flash-tts | Kore | E2 Em2 S3 G2 (mean 2.25) | 2 |  |
 | v2.mp3 | gradium-default (voice design) | designed opp-sporty-granny vox_emb_s8E2imDiahks9xis | E2 Em2 S2 G2 (mean 2) | 2 |  |
 | v3.mp3 | gemini-3.8-flash-tts | Kore | E2 Em2 S1 G2 (mean 1.75) | 1 |  |
+| v6.mp3 | gemini-3.8-flash-tts | Kore | E2 Em2 S3 G2 (mean 2.25) | 2 |  |
+| v7.mp3 | gemini-2.5-pro-preview-tts | Kore | E5 Em5 S5 G4 (mean 4.75) | 4 | WINNER |
+| v8.mp3 | gradium-default (voice design) | designed opp-sporty-granny vox_emb_s8E2imDiahks9xis | E2 Em2 S2 G2 (mean 2) | 2 |  |
+| v9.mp3 | gemini-3.8-flash-tts | Kore | E4 Em4 S2 G2 (mean 3) | 2 |  |
+| v10.mp3 | gemini-2.5-pro-preview-tts | Kore | E2 Em2 S2 G2 (mean 2) | 2 |  |
 
-Winner note: It sounds like a regular grandmother rather than a merciless, high-octane fitness caricature.
+Winner note: The theatrical and sharp delivery makes this a highly memeable taunt that perfectly fits the character.
 
 ## opp-sporty-granny / l5-taunt-6: "Again, faster."
 
 | variant | model | voice | scores | min | |
 |---|---|---|---|---|---|
 | v1.mp3 | gemini-3.8-flash-tts | Kore | E3 Em3 S1 G2 (mean 2.25) | 1 |  |
-| v2.mp3 | gradium-default (voice design) | designed opp-sporty-granny vox_emb_s8E2imDiahks9xis | E2 Em2 S3 G2 (mean 2.25) | 2 | WINNER |
+| v2.mp3 | gradium-default (voice design) | designed opp-sporty-granny vox_emb_s8E2imDiahks9xis | E2 Em2 S3 G2 (mean 2.25) | 2 |  |
 | v3.mp3 | gemini-3.8-flash-tts | Kore | E1 Em1 S1 G1 (mean 1) | 1 |  |
+| v6.mp3 | gemini-3.8-flash-tts | Kore | E2 Em2 S1 G1 (mean 1.5) | 1 |  |
+| v7.mp3 | gemini-2.5-pro-preview-tts | Kore | E5 Em5 S5 G5 (mean 5) | 5 | WINNER |
+| v8.mp3 | gradium-default (voice design) | designed opp-sporty-granny vox_emb_s8E2imDiahks9xis | E2 Em2 S2 G1 (mean 1.75) | 1 |  |
+| v9.mp3 | gemini-3.8-flash-tts | Kore | E4 Em3 S1 G1 (mean 2.25) | 1 |  |
+| v10.mp3 | gemini-2.5-pro-preview-tts | Kore | E2 Em2 S1 G1 (mean 1.5) | 1 |  |
 
-Winner note: The delivery sounds too frail and lacks the aggressive cardio energy needed for a merciless fitness granny.
+Winner note: Perfectly captures the merciless and raspy energy of a tryhard fitness granny.
 
 ## opp-sporty-granny / l5-taunt-7: "Granny mogs."
 
@@ -765,3 +802,10 @@ Winner note: The raspy delivery perfectly nails the merciless boomer-using-slang
 | public/voice/v2/crowd-boat-kid-1.mp3 | Aura! Aura! / Boat kid! Boat kid! (8 voices, one hit) |
 | public/voice/v2/crowd-boat-kid-2.mp3 | Aura! Aura! / Boat kid! Boat kid! (8 voices, x3, rising) |
 
+
+## Dropped from the shipped index after the rescue round (17:10)
+
+Four lines scored 1 or 2 for a reason a listener would hear at once, so the game shows their subtitle
+with no voice rather than play them: the level 3 intro (an extra word), the level 4 intro (a cartoon
+voice, not a battle host), Papi Raleur taunt 1 (the words came out as "Johnny down") and taunt 4 (a
+brute, not a frail grandpa). Their renders stay in this folder.
