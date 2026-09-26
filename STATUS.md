@@ -4,11 +4,11 @@ RED: the black playground, the performer camera and the like/dislike bar (Dylan 
 PLAY: https://dylanmerigaud.github.io/aura/
 NEED FROM DYLAN: nothing yet
 
-15:20 CEST, INTEGRATION lane: all 7 PRs and the packs branch merged; Gen Z SFX, the LIVE overlay, the 3D world tour map, Aura Packs wired into the game; v2 is the Pages root
-GREEN: tests 622, typecheck clean, release:check and release:itch ALL PASS; voice bake off and Lyria regeneration running in their own branches (samples ~15:45)
-RED: nobody has seen the LIVE overlay, the map or the packs render on a phone yet; balance flags Chatelet too easy (average bot wins 96 percent), handed to the GAME lane; input module (src/input) merged but not used, the GAME lane's battleInput stays the handler
-PLAY: https://dylanmerigaud.github.io/aura/ (v2 at the root; /v2/ redirects there; 2D at /v1/)
-NEED FROM DYLAN: nothing yet; voice and music samples land in samples/ around 15:45
+15:40 CEST, INTEGRATION lane: first voice and music samples on the review board; all modules wired and on main
+GREEN: voice sample: Gradium Voice Design announcer judged 5/5/5/5, gemini-3.8-flash-tts Ninja 4/5/5/4; Lyria 3 Pro boss phase 2 and victory judged 5/5/5; tests 622, release checks pass
+RED: level1 music candidate 1 runs 107.7 BPM (asked 100) and scores 3 on "more funk, more bass"; level2 candidate 1 scores 2 on loop; four more candidates per track coming
+PLAY: https://dylanmerigaud.github.io/aura/ (v2 at the root, 2D at /v1/); REVIEW BOARD: https://claude.ai/artifact/71W8b3KRLnEyrcmHrDNbmb
+NEED FROM DYLAN: open the review board on your phone, tap PICK or REDO per voice and track (the five variant batch runs meanwhile, your picks override the judge)
 
 15:05 CEST, GAME lane: v1 arrows (one prompt at a time, vertical in portrait), Space and touch play zone, Turnstile Ninja at Chatelet with nameplates, portrait camera and toon look: all deployed at the ROOT
 GREEN: tests 276, typecheck clean; v2 is now the root build (v1 at /v1/)
