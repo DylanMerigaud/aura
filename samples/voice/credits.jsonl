@@ -117,3 +117,29 @@
 {"ts":"2026-09-26T14:03:15.746Z","call":"post/speech/tts","key":"announcer/combo/v1","credits":6,"note":"1 credit per character (docs/credits)"}
 {"ts":"2026-09-26T14:03:33.326Z","call":"post/speech/tts","key":"announcer/l1-win/v3","credits":22,"note":"1 credit per character (docs/credits)"}
 {"ts":"2026-09-26T14:03:35.020Z","call":"post/speech/tts","key":"announcer/his-move/v5","credits":9,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T14:06:45.659Z","call":"post/speech/tts","key":"announcer/combo/v1","credits":6,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T14:06:46.179Z","call":"post/speech/tts","key":"announcer/l1-win/v3","credits":22,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T14:06:48.795Z","call":"post/speech/tts","key":"announcer/his-move/v5","credits":9,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T14:09:05.518Z","call":"post/speech/tts","key":"announcer/his-move/v8","credits":9,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T14:09:30.314Z","call":"post/speech/tts","key":"announcer/perfect/v8","credits":8,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T14:09:53.873Z","call":"post/speech/tts","key":"ninja/taunt-0/v8","credits":32,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T14:10:19.742Z","call":"post/speech/tts","key":"ninja/taunt-1/v8","credits":28,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T14:11:02.357Z","call":"post/speech/tts","key":"ninja/taunt-2/v8","credits":36,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T14:11:25.976Z","call":"post/speech/tts","key":"ninja/taunt-3/v8","credits":29,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T14:16:54.322Z","call":"post/speech/tts","key":"chant/crowd-fr-2","credits":19,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T14:16:54.863Z","call":"post/speech/tts","key":"chant/crowd-fr-1","credits":11,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T14:16:56.634Z","call":"post/speech/tts","key":"chant/crowd-pt-1","credits":19,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T14:16:56.726Z","call":"voice-generator/generate","key":"boatkid-2","credits":49,"balance":137769,"note":"credits = balance delta"}
+{"ts":"2026-09-26T14:16:57.000Z","call":"post/speech/tts","key":"chant/crowd-fr-3","credits":11,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T14:16:58.528Z","call":"post/speech/tts","key":"boatkid/bk-taunt-2/v0","credits":14,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T14:16:58.534Z","call":"post/speech/tts","key":"chant/crowd-pt-3","credits":19,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T14:17:00.302Z","call":"post/speech/tts","key":"chant/announcer-2","credits":11,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T14:17:00.628Z","call":"voice-generator/generate","key":"boatkid","credits":93,"balance":137725,"note":"credits = balance delta"}
+{"ts":"2026-09-26T14:17:01.351Z","call":"post/speech/tts","key":"chant/crowd-pt-2","credits":11,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T14:17:02.250Z","call":"post/speech/tts","key":"chant/announcer-3","credits":19,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T14:17:02.733Z","call":"post/speech/tts","key":"boatkid/bk-taunt-2/v0","credits":14,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T14:17:02.938Z","call":"voice-generator/generate","key":"boatkid-3","credits":148,"balance":137670,"note":"credits = balance delta"}
+{"ts":"2026-09-26T14:17:04.614Z","call":"post/speech/tts","key":"boatkid/bk-taunt-2/v0","credits":14,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T14:20:31.057Z","call":"post/speech/tts","key":"boatkid/bk-taunt-0/v3","credits":4,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T14:20:49.845Z","call":"post/speech/tts","key":"boatkid/bk-taunt-1/v3","credits":11,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T14:21:08.430Z","call":"post/speech/tts","key":"boatkid/bk-taunt-2/v3","credits":14,"note":"1 credit per character (docs/credits)"}

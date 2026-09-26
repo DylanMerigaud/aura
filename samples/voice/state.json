@@ -5,7 +5,10 @@
   "announcer:gemini-pro": "Sadachbia",
   "ninja:gradium": "ninja-3",
   "ninja:gemini-flash": "Algenib",
-  "ninja:gemini-pro": "Algenib"
+  "ninja:gemini-pro": "Algenib",
+  "boatkid:gradium": "boatkid-2",
+  "boatkid:gemini-flash": "Achernar",
+  "boatkid:gemini-pro": "Achernar"
  },
  "voices": {
   "announcer": {
@@ -67,6 +70,21 @@
    "embedding_id": "vox_emb_Sp3XSSSRHTuxngya",
    "prompt": "Young Brazilian man from Rio, hyped street crowd voice, raspy, yelling, playful.",
    "language": "pt"
+  },
+  "boatkid-2": {
+   "embedding_id": "vox_emb_dzfDWNCFz7TtcGvo",
+   "prompt": "Calm kid, 11 to 13, soft low voice, speaks barely above a whisper, perfectly composed, unbothered, mysterious and confident, slow and gentle pacing.",
+   "language": "en"
+  },
+  "boatkid": {
+   "embedding_id": "vox_emb_qG47Ci0gUeZyXYY9",
+   "prompt": "Young boy, around 12, calm and quiet, almost whispering, confident and serene, soft breathy voice, slow unhurried pacing, never excited, a knowing little smile.",
+   "language": "en"
+  },
+  "boatkid-3": {
+   "embedding_id": "vox_emb_ek9gorWnNSVjG1yx",
+   "prompt": "Young teenage boy, 13, relaxed and serene, hushed intimate voice, breathy, deadpan confidence, slow pacing, zen and unimpressed.",
+   "language": "en"
   }
  },
  "sample": [
@@ -119,6 +137,57 @@
     "stereotype": 5,
     "genz": 5,
     "note": "The energy is absolutely explosive and perfectly captures that unhinged esports caster hype."
+   }
+  },
+  {
+   "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/sample/boatkid-bk-taunt-2-gemini-flash.mp3",
+   "role": "boatkid",
+   "line": "bk-taunt-2",
+   "text": "Aura is quiet.",
+   "candidate": "gemini-flash",
+   "model": "gemini-3.8-flash-tts",
+   "voice": "Achernar",
+   "direction": "# AUDIO PROFILE: THE BOAT KID\nTHE BOAT KID, a calm young kid, the boss of aura maxing, standing at the front of a racing boat, eyes half closed, serene, never impressed, speaks calm and quiet, almost a whisper, supremely confident.\n### DIRECTOR'S NOTES\nStyle: serene, a soft whisper, like sharing a secret truth, confident.\nAccent: neutral, soft, young.\nPacing: slow, calm, unhurried, a breath of silence feels natural.\n#### TRANSCRIPT\nAura is quiet.",
+   "scores": {
+    "energy": 5,
+    "emotion": 5,
+    "stereotype": 5,
+    "genz": 5,
+    "note": "The slow pacing and soft whisper perfectly capture that supreme aura-maxing energy."
+   }
+  },
+  {
+   "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/sample/boatkid-bk-taunt-2-gemini-pro.mp3",
+   "role": "boatkid",
+   "line": "bk-taunt-2",
+   "text": "Aura is quiet.",
+   "candidate": "gemini-pro",
+   "model": "gemini-2.5-pro-preview-tts",
+   "voice": "Achernar",
+   "direction": "# AUDIO PROFILE: THE BOAT KID\nTHE BOAT KID, a calm young kid, the boss of aura maxing, standing at the front of a racing boat, eyes half closed, serene, never impressed, speaks calm and quiet, almost a whisper, supremely confident.\n### DIRECTOR'S NOTES\nStyle: serene, a soft whisper, like sharing a secret truth, confident.\nAccent: neutral, soft, young.\nPacing: slow, calm, unhurried, a breath of silence feels natural.\n#### TRANSCRIPT\nAura is quiet.",
+   "scores": {
+    "energy": 5,
+    "emotion": 5,
+    "stereotype": 5,
+    "genz": 5,
+    "note": "This perfectly captures that unbothered, aura-maxing energy the kids will absolutely eat up."
+   }
+  },
+  {
+   "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/sample/boatkid-bk-taunt-2-gradium.mp3",
+   "role": "boatkid",
+   "line": "bk-taunt-2",
+   "text": "Aura is quiet.",
+   "candidate": "gradium",
+   "model": "gradium-default (voice design)",
+   "voice": "designed boatkid-2 vox_emb_dzfDWNCFz7TtcGvo",
+   "direction": "voice design: Calm kid, 11 to 13, soft low voice, speaks barely above a whisper, perfectly composed, unbothered, mysterious and confident, slow and gentle pacing. (temp 1.2, padding_bonus -2)",
+   "scores": {
+    "energy": 5,
+    "emotion": 5,
+    "stereotype": 5,
+    "genz": 5,
+    "note": "The whispered delivery perfectly captures the serene aura-maxing vibe and is incredibly meme-ready."
    }
   },
   {
@@ -329,6 +398,108 @@
      "genz": 1,
      "note": "You clearly said 'piss move' instead of 'his move', making this an automatic fail."
     }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/his-move/v5.mp3",
+    "role": "announcer",
+    "line": "his-move",
+    "text": "HIS MOVE!",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The actor said the wrong word so it is an automatic fail."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/his-move/v6.mp3",
+    "role": "announcer",
+    "line": "his-move",
+    "text": "HIS MOVE!",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: pointing across the stage, teasing, suspense and excitement. Push it further, more caricatural. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nHIS MOVE!",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 3,
+     "genz": 2,
+     "note": "It lacks the explosive, meme-worthy hype needed for a Gen Z underground dance battle and sounds too much like a generic corporate announcer."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/his-move/v9.mp3",
+    "role": "announcer",
+    "line": "his-move",
+    "text": "HIS MOVE!",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: pointing across the stage, teasing, suspense and excitement. Make it iconic, like a meme sound. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nHIS MOVE!",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "The extreme energy and punchy delivery make this perfectly meme-worthy and hyped for a Gen Z audience."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/his-move/v8.mp3",
+    "role": "announcer",
+    "line": "his-move",
+    "text": "HIS MOVE!",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 1,
+     "emotion": 1,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "Way too flat and low energy for a hype MC because it sounds like you are reading a grocery list instead of hosting a dance battle."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/his-move/v10.mp3",
+    "role": "announcer",
+    "line": "his-move",
+    "text": "HIS MOVE!",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Sadachbia",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: pointing across the stage, teasing, suspense and excitement. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nHIS MOVE!",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "The blown-out, over-the-top delivery is absolutely perfect for a memeable esports announcer."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/his-move/v7.mp3",
+    "role": "announcer",
+    "line": "his-move",
+    "text": "HIS MOVE!",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Sadachbia",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: pointing across the stage, teasing, suspense and excitement. Even more attitude, exaggerate the character. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nHIS MOVE!",
+    "scores": {
+     "energy": 4,
+     "emotion": 4,
+     "stereotype": 4,
+     "genz": 3,
+     "note": "Great classic fighting game energy, but it sounds more like a traditional announcer than a modern Gen Z hype MC."
+    }
    }
   ],
   "announcer/perfect": [
@@ -415,6 +586,91 @@
      "stereotype": 2,
      "genz": 1,
      "note": "It sounds like a generic corporate voiceover instead of an explosive underground hype MC."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/perfect/v6.mp3",
+    "role": "announcer",
+    "line": "perfect",
+    "text": "PERFECT!",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: explosive, ecstatic, the crowd erupts, stretch the first syllable. Push it further, more caricatural. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nPERFECT!",
+    "scores": {
+     "energy": 4,
+     "emotion": 4,
+     "stereotype": 4,
+     "genz": 3,
+     "note": "Great explosive energy, but it sounds more like a classic arcade announcer than a modern Gen Z hype beast."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/perfect/v7.mp3",
+    "role": "announcer",
+    "line": "perfect",
+    "text": "PERFECT!",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Sadachbia",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: explosive, ecstatic, the crowd erupts, stretch the first syllable. Even more attitude, exaggerate the character. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nPERFECT!",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 1,
+     "note": "This delivery is completely flat and lacks the explosive, stretched-out hype required for a Gen Z battle MC."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/perfect/v8.mp3",
+    "role": "announcer",
+    "line": "perfect",
+    "text": "PERFECT!",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 1,
+     "note": "This is way too flat and corporate; I need you to absolutely blow out the mic and stretch that first syllable to make it meme-worthy."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/perfect/v9.mp3",
+    "role": "announcer",
+    "line": "perfect",
+    "text": "PERFECT!",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: explosive, ecstatic, the crowd erupts, stretch the first syllable. Make it iconic, like a meme sound. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nPERFECT!",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 4,
+     "genz": 4,
+     "note": "Great explosive energy and the stretched syllable works perfectly for a rhythm game announcer even if it borders slightly on campy."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/perfect/v10.mp3",
+    "role": "announcer",
+    "line": "perfect",
+    "text": "PERFECT!",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Sadachbia",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: explosive, ecstatic, the crowd erupts, stretch the first syllable. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nPERFECT!",
+    "scores": {
+     "energy": 3,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "Way too standard and flat, you completely ignored the direction to stretch the first syllable for that esports hype."
     }
    }
   ],
@@ -659,6 +915,23 @@
      "stereotype": 5,
      "genz": 5,
      "note": "Perfectly captures the explosive and meme-worthy hype of a modern fighting game announcer."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/combo/v1.mp3",
+    "role": "announcer",
+    "line": "combo",
+    "text": "COMBO!",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 1,
+     "note": "The delivery is way too generic and lacks the blown-out hype required for a modern Gen Z audience."
     }
    }
   ],
@@ -1948,6 +2221,23 @@
      "genz": 1,
      "note": "The delivery is far too formal and robotic, completely missing the ecstatic esports caster energy required for a Gen Z audience."
     }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l1-win/v3.mp3",
+    "role": "announcer",
+    "line": "l1-win",
+    "text": "Aura strictly secured.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 1,
+     "emotion": 1,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "The delivery is completely flat and robotic, lacking any of the requested hype or ecstatic energy."
+    }
    }
   ],
   "announcer/l1-lose": [
@@ -2122,6 +2412,91 @@
      "genz": 2,
      "note": "The Parisian street vibe is there but the delivery is way too sleepy and lacks the biting smirk required for a hype rhythm game."
     }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-0/v6.mp3",
+    "role": "ninja",
+    "line": "taunt-0",
+    "text": "Wesh, you validated your ticket?",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: fake concerned, mocking the player, a smug smirk in the voice. Push it further, more caricatural. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nWesh, you validated your ticket?",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 3,
+     "genz": 2,
+     "note": "The French accent is present, but the delivery is far too flat and lacks the smug, mocking attitude required."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-0/v7.mp3",
+    "role": "ninja",
+    "line": "taunt-0",
+    "text": "Wesh, you validated your ticket?",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: fake concerned, mocking the player, a smug smirk in the voice. Even more attitude, exaggerate the character. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nWesh, you validated your ticket?",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 3,
+     "genz": 2,
+     "note": "The delivery is way too stiff and lacks the smug mocking street attitude needed to make this line hit hard."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-0/v8.mp3",
+    "role": "ninja",
+    "line": "taunt-0",
+    "text": "Wesh, you validated your ticket?",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed ninja-3 vox_emb_fDfTMIAGrwZmE0jG",
+    "direction": "voice design: Young man from Paris, 19, strong French accent, cocky trash talker, smirking, nasal and raspy, chill but provocative, playful arrogance, medium pace, street slang attitude. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 4,
+     "genz": 3,
+     "note": "The French accent is decent but it lacks the punchy mocking smirk needed to be truly meme worthy."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-0/v9.mp3",
+    "role": "ninja",
+    "line": "taunt-0",
+    "text": "Wesh, you validated your ticket?",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: fake concerned, mocking the player, a smug smirk in the voice. Make it iconic, like a meme sound. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nWesh, you validated your ticket?",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 4,
+     "genz": 3,
+     "note": "Good accent and use of slang, but the delivery is a bit too flat and casual. Needs more of a mocking, smug smirk to hit the fake concern direction."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-0/v10.mp3",
+    "role": "ninja",
+    "line": "taunt-0",
+    "text": "Wesh, you validated your ticket?",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: fake concerned, mocking the player, a smug smirk in the voice. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nWesh, you validated your ticket?",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The delivery is way too flat and lacks the smug mocking tone needed for a cocky Parisian street character."
+    }
    }
   ],
   "ninja/taunt-1": [
@@ -2208,6 +2583,91 @@
      "stereotype": 2,
      "genz": 2,
      "note": "The extra vocalization at the start violates the script and caps all scores at two."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-1/v7.mp3",
+    "role": "ninja",
+    "line": "taunt-1",
+    "text": "T'es cuit, your aura's gone.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: slow and cold, delivering a verdict, satisfied. Even more attitude, exaggerate the character. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nT'es cuit, your aura's gone.",
+    "scores": {
+     "energy": 3,
+     "emotion": 4,
+     "stereotype": 4,
+     "genz": 4,
+     "note": "The delivery is appropriately cold and the slang hits, but it needs a bit more arrogant Parisian flair to be truly meme-worthy."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-1/v8.mp3",
+    "role": "ninja",
+    "line": "taunt-1",
+    "text": "T'es cuit, your aura's gone.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed ninja-3 vox_emb_fDfTMIAGrwZmE0jG",
+    "direction": "voice design: Young man from Paris, 19, strong French accent, cocky trash talker, smirking, nasal and raspy, chill but provocative, playful arrogance, medium pace, street slang attitude. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 1,
+     "note": "This sounds like a generic robotic read instead of a smug Parisian street kid."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-1/v9.mp3",
+    "role": "ninja",
+    "line": "taunt-1",
+    "text": "T'es cuit, your aura's gone.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: slow and cold, delivering a verdict, satisfied. Make it iconic, like a meme sound. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nT'es cuit, your aura's gone.",
+    "scores": {
+     "energy": 3,
+     "emotion": 4,
+     "stereotype": 3,
+     "genz": 4,
+     "note": "The cold delivery hits the verdict direction well, but the French pronunciation of 'cuit' is a bit too anglicized."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-1/v10.mp3",
+    "role": "ninja",
+    "line": "taunt-1",
+    "text": "T'es cuit, your aura's gone.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: slow and cold, delivering a verdict, satisfied. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nT'es cuit, your aura's gone.",
+    "scores": {
+     "energy": 3,
+     "emotion": 4,
+     "stereotype": 4,
+     "genz": 5,
+     "note": "Good slang but it needs way more of that smug Parisian superiority to truly hit."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-1/v6.mp3",
+    "role": "ninja",
+    "line": "taunt-1",
+    "text": "T'es cuit, your aura's gone.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: slow and cold, delivering a verdict, satisfied. Push it further, more caricatural. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nT'es cuit, your aura's gone.",
+    "scores": {
+     "energy": 4,
+     "emotion": 5,
+     "stereotype": 4,
+     "genz": 5,
+     "note": "The cold delivery perfectly nails the smug Parisian vibe and makes the aura line hit hard."
     }
    }
   ],
@@ -2366,6 +2826,108 @@
      "genz": 4,
      "note": "The thick French accent and bored delivery perfectly capture that smug Parisian street attitude."
     }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-2/v4.mp3",
+    "role": "ninja",
+    "line": "taunt-2",
+    "text": "Controllers literally fear my jumps.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: bragging, relaxed, almost bored, proud. Make it iconic, like a meme sound.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nControllers literally fear my jumps.",
+    "scores": {
+     "energy": 2,
+     "emotion": 1,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "This sounds like a placeholder robot voice instead of a smug Parisian street ninja."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-2/v6.mp3",
+    "role": "ninja",
+    "line": "taunt-2",
+    "text": "Controllers literally fear my jumps.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: bragging, relaxed, almost bored, proud. Push it further, more caricatural. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nControllers literally fear my jumps.",
+    "scores": {
+     "energy": 1,
+     "emotion": 1,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "wrong words (heard \"The turnstile ninja, a young Parisian fare dodger from the banlieue, speaking En\"), capped at 2. The actor read the entire character description and stage directions instead of just the line, making it completely unusable."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-2/v7.mp3",
+    "role": "ninja",
+    "line": "taunt-2",
+    "text": "Controllers literally fear my jumps.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: bragging, relaxed, almost bored, proud. Even more attitude, exaggerate the character. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nControllers literally fear my jumps.",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 4,
+     "genz": 2,
+     "note": "The accent is way too cartoonish and lacks the effortless unbothered cool required for a modern audience."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-2/v8.mp3",
+    "role": "ninja",
+    "line": "taunt-2",
+    "text": "Controllers literally fear my jumps.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed ninja-3 vox_emb_fDfTMIAGrwZmE0jG",
+    "direction": "voice design: Young man from Paris, 19, strong French accent, cocky trash talker, smirking, nasal and raspy, chill but provocative, playful arrogance, medium pace, street slang attitude. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 3,
+     "genz": 2,
+     "note": "The French accent is present but the delivery is too flat and lacks the smug street swagger required."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-2/v9.mp3",
+    "role": "ninja",
+    "line": "taunt-2",
+    "text": "Controllers literally fear my jumps.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: bragging, relaxed, almost bored, proud. Make it iconic, like a meme sound. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nControllers literally fear my jumps.",
+    "scores": {
+     "energy": 4,
+     "emotion": 4,
+     "stereotype": 5,
+     "genz": 4,
+     "note": "The thick French accent and bored arrogance perfectly capture the smug fare dodger vibe."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-2/v10.mp3",
+    "role": "ninja",
+    "line": "taunt-2",
+    "text": "Controllers literally fear my jumps.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: bragging, relaxed, almost bored, proud. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nControllers literally fear my jumps.",
+    "scores": {
+     "energy": 3,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The French accent sounds too robotic and lacks the effortless unbothered swagger needed for a street-smart character."
+    }
    }
   ],
   "ninja/taunt-3": [
@@ -2452,6 +3014,91 @@
      "stereotype": 4,
      "genz": 4,
      "note": "The smug Parisian vibe is spot on and the laugh on frerot hits the Gen Z slang perfectly, though the energy is slightly too laid back for a rhythm battle."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-3/v6.mp3",
+    "role": "ninja",
+    "line": "taunt-3",
+    "text": "Tickets are for NPCs, frerot.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: condescending, dismissive, a little laugh on frerot. Push it further, more caricatural. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nTickets are for NPCs, frerot.",
+    "scores": {
+     "energy": 3,
+     "emotion": 4,
+     "stereotype": 4,
+     "genz": 4,
+     "note": "The condescending scoff is great, but the French accent could be a bit thicker for that authentic Parisian street vibe."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-3/v7.mp3",
+    "role": "ninja",
+    "line": "taunt-3",
+    "text": "Tickets are for NPCs, frerot.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: condescending, dismissive, a little laugh on frerot. Even more attitude, exaggerate the character. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nTickets are for NPCs, frerot.",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 3,
+     "genz": 2,
+     "note": "The accent is passable but the delivery lacks the effortless Parisian swagger and genuine laugh needed to be truly memeable."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-3/v8.mp3",
+    "role": "ninja",
+    "line": "taunt-3",
+    "text": "Tickets are for NPCs, frerot.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed ninja-3 vox_emb_fDfTMIAGrwZmE0jG",
+    "direction": "voice design: Young man from Paris, 19, strong French accent, cocky trash talker, smirking, nasal and raspy, chill but provocative, playful arrogance, medium pace, street slang attitude. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 3,
+     "emotion": 4,
+     "stereotype": 4,
+     "genz": 4,
+     "note": "The accent is decent but it needs a bit more of that arrogant Parisian scoff at the end."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-3/v9.mp3",
+    "role": "ninja",
+    "line": "taunt-3",
+    "text": "Tickets are for NPCs, frerot.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: condescending, dismissive, a little laugh on frerot. Make it iconic, like a meme sound. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nTickets are for NPCs, frerot.",
+    "scores": {
+     "energy": 3,
+     "emotion": 4,
+     "stereotype": 4,
+     "genz": 4,
+     "note": "The French accent and condescending tone are solid but the energy could be a bit punchier to really sell the street attitude."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-3/v10.mp3",
+    "role": "ninja",
+    "line": "taunt-3",
+    "text": "Tickets are for NPCs, frerot.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: condescending, dismissive, a little laugh on frerot. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nTickets are for NPCs, frerot.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The delivery is way too flat and completely misses the smug Parisian attitude and requested laugh."
     }
    }
   ],
@@ -2697,6 +3344,23 @@
      "genz": 5,
      "note": "The deadpan French delivery perfectly captures the smug Parisian attitude and makes the slang genuinely funny."
     }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-6/v1.mp3",
+    "role": "ninja",
+    "line": "taunt-6",
+    "text": "No pass, just sigma energy.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: cool and low, swagger, chin up. Push it further, more caricatural.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nNo pass, just sigma energy.",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 1,
+     "genz": 2,
+     "note": "You completely missed the French accent, making him sound like a bored American instead of a cocky Parisian."
+    }
    }
   ],
   "ninja/taunt-7": [
@@ -2715,6 +3379,335 @@
      "stereotype": 2,
      "genz": 2,
      "note": "The delivery is way too flat and lacks the theatrical French arrogance needed for this character."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-7/v2.mp3",
+    "role": "ninja",
+    "line": "taunt-7",
+    "text": "Gate hopping is main character.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: proud, theatrical, like a movie trailer hero, cocky. Even more attitude, exaggerate the character.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nGate hopping is main character.",
+    "scores": {
+     "energy": 4,
+     "emotion": 4,
+     "stereotype": 5,
+     "genz": 4,
+     "note": "The French accent is spot on and the smug delivery perfectly captures that Gen Z main character energy."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-7/v1.mp3",
+    "role": "ninja",
+    "line": "taunt-7",
+    "text": "Gate hopping is main character.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: proud, theatrical, like a movie trailer hero, cocky. Push it further, more caricatural.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nGate hopping is main character.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 3,
+     "genz": 2,
+     "note": "The French accent is decent but the delivery is way too flat and lacks the theatrical cocky punch required."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-7/v4.mp3",
+    "role": "ninja",
+    "line": "taunt-7",
+    "text": "Gate hopping is main character.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: proud, theatrical, like a movie trailer hero, cocky. Make it iconic, like a meme sound.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nGate hopping is main character.",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 4,
+     "genz": 3,
+     "note": "The French accent is solid but the delivery feels a bit too slow and stiff to be truly hype."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-7/v5.mp3",
+    "role": "ninja",
+    "line": "taunt-7",
+    "text": "Gate hopping is main character.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: proud, theatrical, like a movie trailer hero, cocky.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nGate hopping is main character.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The delivery is far too flat and lacks the theatrical Parisian street attitude required to make this slang hit."
+    }
+   }
+  ],
+  "boatkid/bk-taunt-0": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/boatkid/bk-taunt-0/v2.mp3",
+    "role": "boatkid",
+    "line": "bk-taunt-0",
+    "text": "...",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Achernar",
+    "direction": "# AUDIO PROFILE: THE BOAT KID\nTHE BOAT KID, a calm young kid, the boss of aura maxing, standing at the front of a racing boat, eyes half closed, serene, never impressed, speaks calm and quiet, almost a whisper, supremely confident.\n### DIRECTOR'S NOTES\nStyle: a calm slow exhale through the nose, then a short low hum, unbothered.\nAccent: neutral, soft, young.\nPacing: slow, calm, unhurried, a breath of silence feels natural.\n#### TRANSCRIPT\nHmm.",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "This low and unbothered hum perfectly captures the supreme aura-maxing confidence we need for this character."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/boatkid/bk-taunt-0/v1.mp3",
+    "role": "boatkid",
+    "line": "bk-taunt-0",
+    "text": "...",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Achernar",
+    "direction": "# AUDIO PROFILE: THE BOAT KID\nTHE BOAT KID, a calm young kid, the boss of aura maxing, standing at the front of a racing boat, eyes half closed, serene, never impressed, speaks calm and quiet, almost a whisper, supremely confident.\n### DIRECTOR'S NOTES\nStyle: a calm slow exhale through the nose, then a short low hum, unbothered.\nAccent: neutral, soft, young.\nPacing: slow, calm, unhurried, a breath of silence feels natural.\n#### TRANSCRIPT\nHmm.",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "The unbothered aura is off the charts with this perfectly executed sigh."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/boatkid/bk-taunt-0/v4.mp3",
+    "role": "boatkid",
+    "line": "bk-taunt-0",
+    "text": "...",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Achernar",
+    "direction": "# AUDIO PROFILE: THE BOAT KID\nTHE BOAT KID, a calm young kid, the boss of aura maxing, standing at the front of a racing boat, eyes half closed, serene, never impressed, speaks calm and quiet, almost a whisper, supremely confident.\n### DIRECTOR'S NOTES\nStyle: a calm slow exhale through the nose, then a short low hum, unbothered.\nAccent: neutral, soft, young.\nPacing: slow, calm, unhurried, a breath of silence feels natural.\n#### TRANSCRIPT\nHmm.",
+    "scores": {
+     "energy": 4,
+     "emotion": 4,
+     "stereotype": 4,
+     "genz": 5,
+     "note": "This perfectly captures the effortless and unbothered aura required for the character."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/boatkid/bk-taunt-0/v3.mp3",
+    "role": "boatkid",
+    "line": "bk-taunt-0",
+    "text": "...",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed boatkid-2 vox_emb_dzfDWNCFz7TtcGvo",
+    "direction": "voice design: Calm kid, 11 to 13, soft low voice, speaks barely above a whisper, perfectly composed, unbothered, mysterious and confident, slow and gentle pacing. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 4,
+     "emotion": 4,
+     "stereotype": 5,
+     "genz": 4,
+     "note": "The hum delivers that unbothered aura perfectly but could be just a fraction quieter to really sell the serene vibe."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/boatkid/bk-taunt-0/v5.mp3",
+    "role": "boatkid",
+    "line": "bk-taunt-0",
+    "text": "...",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Achernar",
+    "direction": "# AUDIO PROFILE: THE BOAT KID\nTHE BOAT KID, a calm young kid, the boss of aura maxing, standing at the front of a racing boat, eyes half closed, serene, never impressed, speaks calm and quiet, almost a whisper, supremely confident.\n### DIRECTOR'S NOTES\nStyle: a calm slow exhale through the nose, then a short low hum, unbothered.\nAccent: neutral, soft, young.\nPacing: slow, calm, unhurried, a breath of silence feels natural.\n#### TRANSCRIPT\nHmm.",
+    "scores": {
+     "energy": 4,
+     "emotion": 4,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "This quiet and unbothered hum perfectly captures the supreme aura of the character."
+    }
+   }
+  ],
+  "boatkid/bk-taunt-1": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/boatkid/bk-taunt-1/v2.mp3",
+    "role": "boatkid",
+    "line": "bk-taunt-1",
+    "text": "Stay still.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Achernar",
+    "direction": "# AUDIO PROFILE: THE BOAT KID\nTHE BOAT KID, a calm young kid, the boss of aura maxing, standing at the front of a racing boat, eyes half closed, serene, never impressed, speaks calm and quiet, almost a whisper, supremely confident.\n### DIRECTOR'S NOTES\nStyle: quiet command, almost a whisper, total control, a little amused.\nAccent: neutral, soft, young.\nPacing: slow, calm, unhurried, a breath of silence feels natural.\n#### TRANSCRIPT\nStay still.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "Way too old and loud; this sounds like a generic soccer mom, not a young kid with infinite aura."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/boatkid/bk-taunt-1/v3.mp3",
+    "role": "boatkid",
+    "line": "bk-taunt-1",
+    "text": "Stay still.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed boatkid-2 vox_emb_dzfDWNCFz7TtcGvo",
+    "direction": "voice design: Calm kid, 11 to 13, soft low voice, speaks barely above a whisper, perfectly composed, unbothered, mysterious and confident, slow and gentle pacing. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "Immaculate aura and perfect delivery that nails the quiet confident archetype for a modern audience."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/boatkid/bk-taunt-1/v1.mp3",
+    "role": "boatkid",
+    "line": "bk-taunt-1",
+    "text": "Stay still.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Achernar",
+    "direction": "# AUDIO PROFILE: THE BOAT KID\nTHE BOAT KID, a calm young kid, the boss of aura maxing, standing at the front of a racing boat, eyes half closed, serene, never impressed, speaks calm and quiet, almost a whisper, supremely confident.\n### DIRECTOR'S NOTES\nStyle: quiet command, almost a whisper, total control, a little amused.\nAccent: neutral, soft, young.\nPacing: slow, calm, unhurried, a breath of silence feels natural.\n#### TRANSCRIPT\nStay still.",
+    "scores": {
+     "energy": 5,
+     "emotion": 4,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "This whispered, unbothered delivery perfectly nails the infinite aura vibe we need."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/boatkid/bk-taunt-1/v4.mp3",
+    "role": "boatkid",
+    "line": "bk-taunt-1",
+    "text": "Stay still.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Achernar",
+    "direction": "# AUDIO PROFILE: THE BOAT KID\nTHE BOAT KID, a calm young kid, the boss of aura maxing, standing at the front of a racing boat, eyes half closed, serene, never impressed, speaks calm and quiet, almost a whisper, supremely confident.\n### DIRECTOR'S NOTES\nStyle: quiet command, almost a whisper, total control, a little amused.\nAccent: neutral, soft, young.\nPacing: slow, calm, unhurried, a breath of silence feels natural.\n#### TRANSCRIPT\nStay still.",
+    "scores": {
+     "energy": 4,
+     "emotion": 4,
+     "stereotype": 2,
+     "genz": 3,
+     "note": "The quiet command has excellent aura but the voice sounds too mature for a kid archetype."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/boatkid/bk-taunt-1/v5.mp3",
+    "role": "boatkid",
+    "line": "bk-taunt-1",
+    "text": "Stay still.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Achernar",
+    "direction": "# AUDIO PROFILE: THE BOAT KID\nTHE BOAT KID, a calm young kid, the boss of aura maxing, standing at the front of a racing boat, eyes half closed, serene, never impressed, speaks calm and quiet, almost a whisper, supremely confident.\n### DIRECTOR'S NOTES\nStyle: quiet command, almost a whisper, total control, a little amused.\nAccent: neutral, soft, young.\nPacing: slow, calm, unhurried, a breath of silence feels natural.\n#### TRANSCRIPT\nStay still.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The delivery is too generic and flat. It lacks the whispered serene confidence and aura maxing presence required for the character. Needs to be much quieter and more amused to hit that Gen Z hype."
+    }
+   }
+  ],
+  "boatkid/bk-taunt-2": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/boatkid/bk-taunt-2/v2.mp3",
+    "role": "boatkid",
+    "line": "bk-taunt-2",
+    "text": "Aura is quiet.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Achernar",
+    "direction": "# AUDIO PROFILE: THE BOAT KID\nTHE BOAT KID, a calm young kid, the boss of aura maxing, standing at the front of a racing boat, eyes half closed, serene, never impressed, speaks calm and quiet, almost a whisper, supremely confident.\n### DIRECTOR'S NOTES\nStyle: serene, a soft whisper, like sharing a secret truth, confident.\nAccent: neutral, soft, young.\nPacing: slow, calm, unhurried, a breath of silence feels natural.\n#### TRANSCRIPT\nAura is quiet.",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "Nailed it. The whisper is perfectly serene and confident. The deadpan delivery of 'aura' is exactly what the Gen Z audience will eat up. Ship it."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/boatkid/bk-taunt-2/v3.mp3",
+    "role": "boatkid",
+    "line": "bk-taunt-2",
+    "text": "Aura is quiet.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed boatkid-2 vox_emb_dzfDWNCFz7TtcGvo",
+    "direction": "voice design: Calm kid, 11 to 13, soft low voice, speaks barely above a whisper, perfectly composed, unbothered, mysterious and confident, slow and gentle pacing. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 4,
+     "emotion": 4,
+     "stereotype": 4,
+     "genz": 4,
+     "note": "Solid whisper that hits the aura-maxing vibe well but could use just a fraction more magnetic confidence."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/boatkid/bk-taunt-2/v4.mp3",
+    "role": "boatkid",
+    "line": "bk-taunt-2",
+    "text": "Aura is quiet.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Achernar",
+    "direction": "# AUDIO PROFILE: THE BOAT KID\nTHE BOAT KID, a calm young kid, the boss of aura maxing, standing at the front of a racing boat, eyes half closed, serene, never impressed, speaks calm and quiet, almost a whisper, supremely confident.\n### DIRECTOR'S NOTES\nStyle: serene, a soft whisper, like sharing a secret truth, confident.\nAccent: neutral, soft, young.\nPacing: slow, calm, unhurried, a breath of silence feels natural.\n#### TRANSCRIPT\nAura is quiet.",
+    "scores": {
+     "energy": 4,
+     "emotion": 4,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "Nailed the aura maxing vibe. The delivery is appropriately hushed and serene, giving it that magnetic, secret-truth quality without sounding forced. Gen Z will eat this up."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/boatkid/bk-taunt-2/v5.mp3",
+    "role": "boatkid",
+    "line": "bk-taunt-2",
+    "text": "Aura is quiet.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Achernar",
+    "direction": "# AUDIO PROFILE: THE BOAT KID\nTHE BOAT KID, a calm young kid, the boss of aura maxing, standing at the front of a racing boat, eyes half closed, serene, never impressed, speaks calm and quiet, almost a whisper, supremely confident.\n### DIRECTOR'S NOTES\nStyle: serene, a soft whisper, like sharing a secret truth, confident.\nAccent: neutral, soft, young.\nPacing: slow, calm, unhurried, a breath of silence feels natural.\n#### TRANSCRIPT\nAura is quiet.",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "The whispered delivery perfectly captures the calm kid archetype and makes the aura maxing concept highly memeable."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/boatkid/bk-taunt-2/v1.mp3",
+    "role": "boatkid",
+    "line": "bk-taunt-2",
+    "text": "Aura is quiet.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Achernar",
+    "direction": "# AUDIO PROFILE: THE BOAT KID\nTHE BOAT KID, a calm young kid, the boss of aura maxing, standing at the front of a racing boat, eyes half closed, serene, never impressed, speaks calm and quiet, almost a whisper, supremely confident.\n### DIRECTOR'S NOTES\nStyle: serene, a soft whisper, like sharing a secret truth, confident.\nAccent: neutral, soft, young.\nPacing: slow, calm, unhurried, a breath of silence feels natural.\n#### TRANSCRIPT\nAura is quiet.",
+    "scores": {
+     "energy": 1,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 1,
+     "note": "The soft delivery had potential, but the deafening crash at the end completely destroys the serene vibe and renders the take unusable."
     }
    }
   ]
@@ -2762,6 +3755,18 @@
    "file": "/Users/dylanmerigaud/Code/aura-voice/public/voice/v2/crowd-six-seven-2.mp3",
    "shouts": [
     "six seven x3, rising (8 voices)"
+   ]
+  },
+  {
+   "file": "/Users/dylanmerigaud/Code/aura-voice/public/voice/v2/crowd-boat-kid-1.mp3",
+   "shouts": [
+    "Aura! Aura! / Boat kid! Boat kid! (8 voices, one hit)"
+   ]
+  },
+  {
+   "file": "/Users/dylanmerigaud/Code/aura-voice/public/voice/v2/crowd-boat-kid-2.mp3",
+   "shouts": [
+    "Aura! Aura! / Boat kid! Boat kid! (8 voices, x3, rising)"
    ]
   }
  ],
@@ -2962,6 +3967,105 @@
     "stereotype": 2,
     "genz": 2,
     "note": "This is way too tame for an underground battle, I need you to blow out the mic like a real esports caster."
+   }
+  },
+  {
+   "file": "samples/voice/sample/audition/boatkid-gradium-boatkid-2.mp3",
+   "voice": "designed boatkid-2 vox_emb_dzfDWNCFz7TtcGvo",
+   "scores": {
+    "energy": 5,
+    "emotion": 5,
+    "stereotype": 5,
+    "genz": 5,
+    "note": "The whispered delivery perfectly captures the serene aura-maxing vibe and is incredibly meme-ready."
+   }
+  },
+  {
+   "file": "samples/voice/sample/audition/boatkid-gradium-boatkid.mp3",
+   "voice": "designed boatkid vox_emb_qG47Ci0gUeZyXYY9",
+   "scores": {
+    "energy": 5,
+    "emotion": 5,
+    "stereotype": 5,
+    "genz": 5,
+    "note": "The whispered delivery perfectly captures the serene and confident aura-maxing vibe required for this character."
+   }
+  },
+  {
+   "file": "samples/voice/sample/audition/boatkid-gradium-boatkid-3.mp3",
+   "voice": "designed boatkid-3 vox_emb_ek9gorWnNSVjG1yx",
+   "scores": {
+    "energy": 3,
+    "emotion": 3,
+    "stereotype": 4,
+    "genz": 3,
+    "note": "The words are right but the delivery is a bit too generic. It needs to sound like he is literally maxing his aura with a true soft whisper that commands the room. Right now it is just a guy talking quietly. Give me more magnetic drip."
+   }
+  },
+  {
+   "file": "samples/voice/sample/audition/boatkid-gemini-flash-Enceladus.mp3",
+   "voice": "Enceladus",
+   "scores": {
+    "energy": 2,
+    "emotion": 2,
+    "stereotype": 1,
+    "genz": 1,
+    "note": "The voice sounds like a middle-aged man instead of a young kid, completely missing the required archetype."
+   }
+  },
+  {
+   "file": "samples/voice/sample/audition/boatkid-gemini-flash-Achernar.mp3",
+   "voice": "Achernar",
+   "scores": {
+    "energy": 5,
+    "emotion": 5,
+    "stereotype": 5,
+    "genz": 5,
+    "note": "The slow pacing and soft whisper perfectly capture that supreme aura-maxing energy."
+   }
+  },
+  {
+   "file": "samples/voice/sample/audition/boatkid-gemini-pro-Enceladus.mp3",
+   "voice": "Enceladus",
+   "scores": {
+    "energy": 3,
+    "emotion": 3,
+    "stereotype": 4,
+    "genz": 4,
+    "note": "The pacing is solid, but it needs a breathier whisper to be truly meme-worthy."
+   }
+  },
+  {
+   "file": "samples/voice/sample/audition/boatkid-gemini-pro-Achernar.mp3",
+   "voice": "Achernar",
+   "scores": {
+    "energy": 5,
+    "emotion": 5,
+    "stereotype": 5,
+    "genz": 5,
+    "note": "This perfectly captures that unbothered, aura-maxing energy the kids will absolutely eat up."
+   }
+  },
+  {
+   "file": "samples/voice/sample/audition/boatkid-gemini-pro-Vindemiatrix.mp3",
+   "voice": "Vindemiatrix",
+   "scores": {
+    "energy": 4,
+    "emotion": 4,
+    "stereotype": 5,
+    "genz": 5,
+    "note": "The delivery perfectly captures that effortless aura-maxing energy without trying too hard."
+   }
+  },
+  {
+   "file": "samples/voice/sample/audition/boatkid-gemini-flash-Vindemiatrix.mp3",
+   "voice": "Vindemiatrix",
+   "scores": {
+    "energy": 5,
+    "emotion": 5,
+    "stereotype": 5,
+    "genz": 5,
+    "note": "The delivery perfectly captures the serene aura-maxing vibe with a magnetic and confident whisper."
    }
   }
  ]

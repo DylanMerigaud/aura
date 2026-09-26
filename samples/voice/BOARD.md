@@ -2,16 +2,11 @@
 
 Judge gemini-3.1-pro-preview, 1 to 5 on energy (E), emotion (Em), stereotype (S), Gen Z hype (G). Ship at 4 on every axis. Winner: highest min axis, then mean.
 
-Shipped winners at or above threshold: 24; below: 7.
+Shipped winners at or above threshold: 32; below: 2.
 
 Below threshold:
-- announcer/his-move (min 2: Good energy, but it sounds like a retro arcade announcer instead of a modern Gen Z hype MC.)
-- announcer/perfect (min 2: It sounds like a generic retro arcade announcer instead of a modern hype beast.)
-- ninja/taunt-0 (min 2: The Parisian street vibe is there but the delivery is way too sleepy and lacks the biting smirk required for a hype rhythm game.)
-- ninja/taunt-1 (min 3: The deadpan, cold delivery is exactly what was asked for, and the sudden bass-boosted explosion at the end elevates this into peak Gen Z shitpost territory. The French accent is solid and smug. Ship it.)
-- ninja/taunt-2 (min 3: The thick French accent perfectly nails the smug Parisian vibe making it highly memeable.)
+- ninja/taunt-0 (min 3: The French accent is decent but it lacks the punchy mocking smirk needed to be truly meme worthy.)
 - ninja/taunt-3 (min 3: The smug Parisian vibe is spot on and the laugh on frerot hits the Gen Z slang perfectly, though the energy is slightly too laid back for a rhythm battle.)
-- ninja/taunt-7 (min 2: The delivery is way too flat and lacks the theatrical French arrogance needed for this character.)
 
 ## announcer / your-move: "YOUR MOVE!"
 
@@ -30,11 +25,17 @@ Winner note: The delivery is loud, punchy, and perfectly captures the over-the-t
 | variant | model | voice | scores | min | |
 |---|---|---|---|---|---|
 | v1.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E2 Em2 S2 G1 (mean 1.75) | 1 |  |
-| v2.mp3 | gemini-3.8-flash-tts | Fenrir | E4 Em3 S3 G2 (mean 3) | 2 | WINNER |
+| v2.mp3 | gemini-3.8-flash-tts | Fenrir | E4 Em3 S3 G2 (mean 3) | 2 |  |
 | v3.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E2 Em2 S2 G1 (mean 1.75) | 1 |  |
 | v4.mp3 | gemini-3.8-flash-tts | Fenrir | E2 Em2 S2 G1 (mean 1.75) | 1 |  |
+| v5.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E2 Em2 S2 G2 (mean 2) | 2 |  |
+| v6.mp3 | gemini-3.8-flash-tts | Fenrir | E3 Em3 S3 G2 (mean 2.75) | 2 |  |
+| v7.mp3 | gemini-2.5-pro-preview-tts | Sadachbia | E4 Em4 S4 G3 (mean 3.75) | 3 |  |
+| v8.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E1 Em1 S1 G1 (mean 1) | 1 |  |
+| v9.mp3 | gemini-3.8-flash-tts | Fenrir | E5 Em5 S5 G5 (mean 5) | 5 | WINNER |
+| v10.mp3 | gemini-2.5-pro-preview-tts | Sadachbia | E5 Em5 S5 G5 (mean 5) | 5 |  |
 
-Winner note: Good energy, but it sounds like a retro arcade announcer instead of a modern Gen Z hype MC.
+Winner note: The extreme energy and punchy delivery make this perfectly meme-worthy and hyped for a Gen Z audience.
 
 ## announcer / perfect: "PERFECT!"
 
@@ -43,15 +44,21 @@ Winner note: Good energy, but it sounds like a retro arcade announcer instead of
 | v1.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E2 Em2 S2 G2 (mean 2) | 2 |  |
 | v2.mp3 | gemini-3.8-flash-tts | Fenrir | E3 Em2 S1 G2 (mean 2) | 1 |  |
 | v3.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E2 Em2 S2 G1 (mean 1.75) | 1 |  |
-| v4.mp3 | gemini-3.8-flash-tts | Fenrir | E3 Em3 S2 G2 (mean 2.5) | 2 | WINNER |
+| v4.mp3 | gemini-3.8-flash-tts | Fenrir | E3 Em3 S2 G2 (mean 2.5) | 2 |  |
 | v5.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E2 Em2 S2 G1 (mean 1.75) | 1 |  |
+| v6.mp3 | gemini-3.8-flash-tts | Fenrir | E4 Em4 S4 G3 (mean 3.75) | 3 |  |
+| v7.mp3 | gemini-2.5-pro-preview-tts | Sadachbia | E2 Em2 S2 G1 (mean 1.75) | 1 |  |
+| v8.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E2 Em2 S2 G1 (mean 1.75) | 1 |  |
+| v9.mp3 | gemini-3.8-flash-tts | Fenrir | E5 Em5 S4 G4 (mean 4.5) | 4 | WINNER |
+| v10.mp3 | gemini-2.5-pro-preview-tts | Sadachbia | E3 Em2 S2 G2 (mean 2.25) | 2 |  |
 
-Winner note: It sounds like a generic retro arcade announcer instead of a modern hype beast.
+Winner note: Great explosive energy and the stretched syllable works perfectly for a rhythm game announcer even if it borders slightly on campy.
 
 ## announcer / combo: "COMBO!"
 
 | variant | model | voice | scores | min | |
 |---|---|---|---|---|---|
+| v1.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E2 Em2 S2 G1 (mean 1.75) | 1 |  |
 | v2.mp3 | gemini-3.8-flash-tts | Fenrir | E5 Em5 S5 G5 (mean 5) | 5 | WINNER |
 | v3.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E5 Em4 S5 G4 (mean 4.5) | 4 |  |
 | v4.mp3 | gemini-3.8-flash-tts | Fenrir | E5 Em5 S5 G5 (mean 5) | 5 |  |
@@ -125,6 +132,7 @@ Winner note: The aggressive and over-the-top delivery perfectly captures the esp
 |---|---|---|---|---|---|
 | v1.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E5 Em5 S5 G5 (mean 5) | 5 | WINNER |
 | v2.mp3 | gemini-3.8-flash-tts | Fenrir | E2 Em2 S2 G2 (mean 2) | 2 |  |
+| v3.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E1 Em1 S1 G1 (mean 1) | 1 |  |
 | v4.mp3 | gemini-3.8-flash-tts | Fenrir | E5 Em5 S5 G5 (mean 5) | 5 |  |
 | v5.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E2 Em2 S1 G1 (mean 1.5) | 1 |  |
 
@@ -293,33 +301,49 @@ Winner note: The delivery is incredibly punchy and perfectly captures that ruthl
 | v1.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em2 S1 G1 (mean 1.5) | 1 |  |
 | v2.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em2 S3 G2 (mean 2.25) | 2 |  |
 | v3.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em1 S1 G1 (mean 1.25) | 1 |  |
-| v4.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em2 S4 G2 (mean 2.5) | 2 | WINNER |
+| v4.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em2 S4 G2 (mean 2.5) | 2 |  |
 | v5.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em2 S2 G2 (mean 2) | 2 |  |
+| v6.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em2 S3 G2 (mean 2.25) | 2 |  |
+| v7.mp3 | gemini-2.5-pro-preview-tts | Algenib | E2 Em2 S3 G2 (mean 2.25) | 2 |  |
+| v8.mp3 | gradium-default (voice design) | designed ninja-3 vox_emb_fDfTMIAGrwZmE0jG | E3 Em3 S4 G3 (mean 3.25) | 3 | WINNER |
+| v9.mp3 | gemini-3.8-flash-tts | Algenib | E3 Em3 S4 G3 (mean 3.25) | 3 |  |
+| v10.mp3 | gemini-2.5-pro-preview-tts | Algenib | E2 Em2 S2 G2 (mean 2) | 2 |  |
 
-Winner note: The Parisian street vibe is there but the delivery is way too sleepy and lacks the biting smirk required for a hype rhythm game.
+Winner note: The French accent is decent but it lacks the punchy mocking smirk needed to be truly meme worthy.
 
 ## ninja / taunt-1: "T'es cuit, your aura's gone."
 
 | variant | model | voice | scores | min | |
 |---|---|---|---|---|---|
 | v1.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em2 S2 G2 (mean 2) | 2 |  |
-| v2.mp3 | gemini-3.8-flash-tts | Algenib | E3 Em4 S4 G5 (mean 4) | 3 | WINNER |
+| v2.mp3 | gemini-3.8-flash-tts | Algenib | E3 Em4 S4 G5 (mean 4) | 3 |  |
 | v3.mp3 | gemini-3.8-flash-tts | Algenib | E3 Em4 S5 G4 (mean 4) | 3 |  |
 | v4.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em2 S2 G2 (mean 2) | 2 |  |
 | v5.mp3 | gemini-3.8-flash-tts | Algenib | E1 Em1 S1 G1 (mean 1) | 1 |  |
+| v6.mp3 | gemini-3.8-flash-tts | Algenib | E4 Em5 S4 G5 (mean 4.5) | 4 | WINNER |
+| v7.mp3 | gemini-2.5-pro-preview-tts | Algenib | E3 Em4 S4 G4 (mean 3.75) | 3 |  |
+| v8.mp3 | gradium-default (voice design) | designed ninja-3 vox_emb_fDfTMIAGrwZmE0jG | E2 Em2 S2 G1 (mean 1.75) | 1 |  |
+| v9.mp3 | gemini-3.8-flash-tts | Algenib | E3 Em4 S3 G4 (mean 3.5) | 3 |  |
+| v10.mp3 | gemini-2.5-pro-preview-tts | Algenib | E3 Em4 S4 G5 (mean 4) | 3 |  |
 
-Winner note: The deadpan, cold delivery is exactly what was asked for, and the sudden bass-boosted explosion at the end elevates this into peak Gen Z shitpost territory. The French accent is solid and smug. Ship it.
+Winner note: The cold delivery perfectly nails the smug Parisian vibe and makes the aura line hit hard.
 
 ## ninja / taunt-2: "Controllers literally fear my jumps."
 
 | variant | model | voice | scores | min | |
 |---|---|---|---|---|---|
-| v1.mp3 | gemini-3.8-flash-tts | Algenib | E3 Em4 S5 G4 (mean 4) | 3 | WINNER |
+| v1.mp3 | gemini-3.8-flash-tts | Algenib | E3 Em4 S5 G4 (mean 4) | 3 |  |
 | v2.mp3 | gemini-3.8-flash-tts | Algenib | E3 Em3 S3 G2 (mean 2.75) | 2 |  |
 | v3.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em2 S3 G2 (mean 2.25) | 2 |  |
+| v4.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em1 S1 G1 (mean 1.25) | 1 |  |
 | v5.mp3 | gemini-3.8-flash-tts | Algenib | E3 Em4 S5 G4 (mean 4) | 3 |  |
+| v6.mp3 | gemini-3.8-flash-tts | Algenib | E1 Em1 S1 G1 (mean 1) | 1 |  |
+| v7.mp3 | gemini-2.5-pro-preview-tts | Algenib | E3 Em3 S4 G2 (mean 3) | 2 |  |
+| v8.mp3 | gradium-default (voice design) | designed ninja-3 vox_emb_fDfTMIAGrwZmE0jG | E2 Em2 S3 G2 (mean 2.25) | 2 |  |
+| v9.mp3 | gemini-3.8-flash-tts | Algenib | E4 Em4 S5 G4 (mean 4.25) | 4 | WINNER |
+| v10.mp3 | gemini-2.5-pro-preview-tts | Algenib | E3 Em2 S2 G2 (mean 2.25) | 2 |  |
 
-Winner note: The thick French accent perfectly nails the smug Parisian vibe making it highly memeable.
+Winner note: The thick French accent and bored arrogance perfectly capture the smug fare dodger vibe.
 
 ## ninja / taunt-3: "Tickets are for NPCs, frerot."
 
@@ -330,6 +354,11 @@ Winner note: The thick French accent perfectly nails the smug Parisian vibe maki
 | v3.mp3 | gemini-3.8-flash-tts | Algenib | E3 Em3 S3 G3 (mean 3) | 3 |  |
 | v4.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em2 S2 G1 (mean 1.75) | 1 |  |
 | v5.mp3 | gemini-3.8-flash-tts | Algenib | E3 Em4 S4 G4 (mean 3.75) | 3 |  |
+| v6.mp3 | gemini-3.8-flash-tts | Algenib | E3 Em4 S4 G4 (mean 3.75) | 3 |  |
+| v7.mp3 | gemini-2.5-pro-preview-tts | Algenib | E3 Em3 S3 G2 (mean 2.75) | 2 |  |
+| v8.mp3 | gradium-default (voice design) | designed ninja-3 vox_emb_fDfTMIAGrwZmE0jG | E3 Em4 S4 G4 (mean 3.75) | 3 |  |
+| v9.mp3 | gemini-3.8-flash-tts | Algenib | E3 Em4 S4 G4 (mean 3.75) | 3 |  |
+| v10.mp3 | gemini-2.5-pro-preview-tts | Algenib | E2 Em2 S2 G2 (mean 2) | 2 |  |
 
 Winner note: The smug Parisian vibe is spot on and the laugh on frerot hits the Gen Z slang perfectly, though the energy is slightly too laid back for a rhythm battle.
 
@@ -361,6 +390,7 @@ Winner note: The French accent and smug delivery perfectly capture the unbothere
 
 | variant | model | voice | scores | min | |
 |---|---|---|---|---|---|
+| v1.mp3 | gemini-3.8-flash-tts | Algenib | E3 Em3 S1 G2 (mean 2.25) | 1 |  |
 | v2.mp3 | gemini-3.8-flash-tts | Algenib | E4 Em5 S5 G5 (mean 4.75) | 4 | WINNER |
 | v3.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em2 S2 G2 (mean 2) | 2 |  |
 | v4.mp3 | gemini-3.8-flash-tts | Algenib | E4 Em4 S5 G5 (mean 4.5) | 4 |  |
@@ -372,9 +402,49 @@ Winner note: The smug French accent and unbothered delivery make this line absol
 
 | variant | model | voice | scores | min | |
 |---|---|---|---|---|---|
-| v3.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em2 S2 G2 (mean 2) | 2 | WINNER |
+| v1.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em2 S3 G2 (mean 2.25) | 2 |  |
+| v2.mp3 | gemini-3.8-flash-tts | Algenib | E4 Em4 S5 G4 (mean 4.25) | 4 | WINNER |
+| v3.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em2 S2 G2 (mean 2) | 2 |  |
+| v4.mp3 | gemini-3.8-flash-tts | Algenib | E3 Em3 S4 G3 (mean 3.25) | 3 |  |
+| v5.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em2 S2 G2 (mean 2) | 2 |  |
 
-Winner note: The delivery is way too flat and lacks the theatrical French arrogance needed for this character.
+Winner note: The French accent is spot on and the smug delivery perfectly captures that Gen Z main character energy.
+
+## boatkid / bk-taunt-0: "..."
+
+| variant | model | voice | scores | min | |
+|---|---|---|---|---|---|
+| v1.mp3 | gemini-3.8-flash-tts | Achernar | E5 Em5 S5 G5 (mean 5) | 5 | WINNER |
+| v2.mp3 | gemini-2.5-pro-preview-tts | Achernar | E5 Em5 S5 G5 (mean 5) | 5 |  |
+| v3.mp3 | gradium-default (voice design) | designed boatkid-2 vox_emb_dzfDWNCFz7TtcGvo | E4 Em4 S5 G4 (mean 4.25) | 4 |  |
+| v4.mp3 | gemini-3.8-flash-tts | Achernar | E4 Em4 S4 G5 (mean 4.25) | 4 |  |
+| v5.mp3 | gemini-2.5-pro-preview-tts | Achernar | E4 Em4 S5 G5 (mean 4.5) | 4 |  |
+
+Winner note: The unbothered aura is off the charts with this perfectly executed sigh.
+
+## boatkid / bk-taunt-1: "Stay still."
+
+| variant | model | voice | scores | min | |
+|---|---|---|---|---|---|
+| v1.mp3 | gemini-3.8-flash-tts | Achernar | E5 Em4 S5 G5 (mean 4.75) | 4 |  |
+| v2.mp3 | gemini-2.5-pro-preview-tts | Achernar | E2 Em2 S1 G1 (mean 1.5) | 1 |  |
+| v3.mp3 | gradium-default (voice design) | designed boatkid-2 vox_emb_dzfDWNCFz7TtcGvo | E5 Em5 S5 G5 (mean 5) | 5 | WINNER |
+| v4.mp3 | gemini-3.8-flash-tts | Achernar | E4 Em4 S2 G3 (mean 3.25) | 2 |  |
+| v5.mp3 | gemini-2.5-pro-preview-tts | Achernar | E2 Em2 S2 G2 (mean 2) | 2 |  |
+
+Winner note: Immaculate aura and perfect delivery that nails the quiet confident archetype for a modern audience.
+
+## boatkid / bk-taunt-2: "Aura is quiet."
+
+| variant | model | voice | scores | min | |
+|---|---|---|---|---|---|
+| v1.mp3 | gemini-3.8-flash-tts | Achernar | E1 Em2 S2 G1 (mean 1.5) | 1 |  |
+| v2.mp3 | gemini-2.5-pro-preview-tts | Achernar | E5 Em5 S5 G5 (mean 5) | 5 | WINNER |
+| v3.mp3 | gradium-default (voice design) | designed boatkid-2 vox_emb_dzfDWNCFz7TtcGvo | E4 Em4 S4 G4 (mean 4) | 4 |  |
+| v4.mp3 | gemini-3.8-flash-tts | Achernar | E4 Em4 S5 G5 (mean 4.5) | 4 |  |
+| v5.mp3 | gemini-2.5-pro-preview-tts | Achernar | E5 Em5 S5 G5 (mean 5) | 5 |  |
+
+Winner note: Nailed it. The whisper is perfectly serene and confident. The deadpan delivery of 'aura' is exactly what the Gen Z audience will eat up. Ship it.
 
 ## Crowd beds (Gradium Voice Design, fr and pt, layered and panned)
 
@@ -385,4 +455,6 @@ Winner note: The delivery is way too flat and lacks the theatrical French arroga
 | public/voice/v2/crowd-mix.mp3 | Vas-y, frappe ! / Trop facile, ça ! / C'est grave chaud ! / Franchement énorme ! / Il est cuit ! / Isso aí! / Bora, é nosso! / Que aura, cara! |
 | public/voice/v2/crowd-six-seven-1.mp3 | six seven (8 voices, one hit) |
 | public/voice/v2/crowd-six-seven-2.mp3 | six seven x3, rising (8 voices) |
+| public/voice/v2/crowd-boat-kid-1.mp3 | Aura! Aura! / Boat kid! Boat kid! (8 voices, one hit) |
+| public/voice/v2/crowd-boat-kid-2.mp3 | Aura! Aura! / Boat kid! Boat kid! (8 voices, x3, rising) |
 

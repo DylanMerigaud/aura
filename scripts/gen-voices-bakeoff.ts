@@ -13,6 +13,7 @@
 // samples/voice/credits.jsonl and the script refuses a Gradium call past 55,000 credits spent.
 
 import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { appendFileSync, copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -24,7 +25,8 @@ const STATE_PATH = path.join(OUT, "state.json");
 const CREDITS_PATH = path.join(OUT, "credits.jsonl");
 const LEDGER_PATH = path.join(ROOT, "evals/ledger.jsonl");
 const VOICE_DIR = path.join(ROOT, "public/voice/v2");
-const CAST_PATH = path.join(ROOT, "src/v2/cast.json");
+const CAST_ARG = process.argv.find((x) => x.startsWith("--cast="));
+const CAST_PATH = CAST_ARG ? path.resolve(CAST_ARG.slice(7)) : path.join(ROOT, "src/v2/cast.json");
 const TMP = path.join(ROOT, ".cache/voice-bakeoff");
 
 const GRADIUM = "https://api.gradium.ai/api";
@@ -81,20 +83,80 @@ function saveState(s: State) {
 // ---------------------------------------------------------------------------------------------
 // Roles, lines, per line directions
 
-type Role = "announcer" | "ninja";
+// A role is a character: announcer, ninja, boatkid, or opp-<name> for any other cast opponent.
+type Role = string;
 interface Line {
   role: Role;
   slug: string;
   text: string;
+  spoken?: string; // what the TTS says when the text itself is not speakable ("...")
   indexId: string; // key in public/voice/v2/index.json
   big: boolean; // gets the sub thump
   direction: string;
 }
 
-const ANNOUNCER_BASE =
-  "a Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy";
-const NINJA_BASE =
-  "THE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp";
+interface Profile {
+  title: string;
+  base: string; // Gemini audio profile
+  accent: string;
+  pacing: string;
+  who: string; // what the judge listens for
+  energy: string; // what "energy" means for this character
+}
+const LOUD = "loudness, drive, punch";
+const PROFILES: Record<string, Profile> = {
+  announcer: {
+    title: "THE ANNOUNCER",
+    base: "a Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy",
+    accent: "American, young, Gen Z slang cadence",
+    pacing: "fast, punchy, no pause before the line",
+    who: "THE ANNOUNCER: a Gen Z hype MC at an underground dance battle, should sound loud, hyped, caricatural, like an esports caster or battle rap host",
+    energy: LOUD,
+  },
+  ninja: {
+    title: "THE TURNSTILE NINJA",
+    base: "THE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp",
+    accent: "strong French accent, Parisian street",
+    pacing: "fast, punchy, no pause before the line",
+    who: "THE TURNSTILE NINJA: a cocky Parisian metro fare dodger, should sound smug, chin up, unbothered, with a clear French accent and street attitude",
+    energy: LOUD,
+  },
+  boatkid: {
+    title: "THE BOAT KID",
+    base: "THE BOAT KID, a calm young kid, the boss of aura maxing, standing at the front of a racing boat, eyes half closed, serene, never impressed, speaks calm and quiet, almost a whisper, supremely confident",
+    accent: "neutral, soft, young",
+    pacing: "slow, calm, unhurried, a breath of silence feels natural",
+    who: "THE BOAT KID: a calm kid archetype, the boss of aura maxing, should sound quiet, almost whispered, serene, young and supremely confident, never shouting",
+    energy: "presence and intensity: magnetic, controlled calm scores high, shouting scores low",
+  },
+};
+function profileFor(role: Role, persona?: string, name?: string): Profile {
+  if (PROFILES[role]) return PROFILES[role];
+  const p: Profile = {
+    title: name ?? role,
+    base: `${name}, ${persona ?? "a rival dancer"}`,
+    accent: "French touch, Paris",
+    pacing: "punchy, in character",
+    who: `${name}: ${persona ?? "a rival dancer"}, should sound exactly like this character, caricatural and memorable`,
+    energy: LOUD,
+  };
+  PROFILES[role] = p;
+  return p;
+}
+function roleForOpponent(name: string): Role {
+  if (/NINJA/i.test(name)) return "ninja";
+  if (/BOAT KID/i.test(name)) return "boatkid";
+  return `opp-${name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`;
+}
+
+// The Boat Kid's taunts before the cast file carries him (decision 16:40); a provisional key, the
+// cast rerun re-keys the same text to v2-l1-taunt-<i> without a new render.
+const BOAT_KID_SEED = ["...", "Stay still.", "Aura is quiet."];
+const BOAT_KID_DIR = [
+  "a calm slow exhale through the nose, then a short low hum, unbothered",
+  "quiet command, almost a whisper, total control, a little amused",
+  "serene, a soft whisper, like sharing a secret truth, confident",
+];
 
 const CALLS: [string, string, string][] = [
   ["your-move", "YOUR MOVE!", "pointing at the player, sharp and commanding, rising at the end, hyped"],
@@ -141,10 +203,35 @@ function lines(): Line[] {
     "cool and low, swagger, chin up",
     "proud, theatrical, like a movie trailer hero, cocky",
   ];
-  const l1 = cast.levels.find((l: { id: number }) => l.id === 1);
-  l1.taunts.forEach((t: string, i: number) => {
-    out.push({ role: "ninja", slug: `taunt-${i}`, text: t, indexId: `v2-l1-taunt-${i}`, big: false, direction: tauntDir[i] ?? tauntDir[0] });
-  });
+  const calmDir = ["calm, quiet, knowing", "a whisper, certain", "serene, amused, slow", "almost silent, final"];
+  // Taunts: every level of the cast. Legacy runs voiced only the Ninja; LEVELS narrows it
+  // (--levels=1,2), a text already voiced for the same character is reused, not rendered.
+  const lv = process.argv.find((x) => x.startsWith("--levels="));
+  const levels = lv ? new Set(lv.slice(9).split(",").map(Number)) : null;
+  let hasBoatKid = false;
+  for (const level of cast.levels) {
+    const role = roleForOpponent(level.opponent?.name ?? "");
+    if (role === "boatkid") hasBoatKid = true;
+    if (levels && !levels.has(level.id)) continue;
+    profileFor(role, level.opponent?.persona, level.opponent?.name);
+    level.taunts.forEach((t: string, i: number) => {
+      const quiet = role === "boatkid";
+      out.push({
+        role,
+        slug: role === "ninja" ? `taunt-${i}` : `l${level.id}-taunt-${i}`,
+        text: t,
+        spoken: /^[.\s]+$/.test(t) ? "Hmm." : undefined,
+        indexId: `v2-l${level.id}-taunt-${i}`,
+        big: false,
+        direction: quiet ? (/^[.\s]+$/.test(t) ? BOAT_KID_DIR[0] : calmDir[i % calmDir.length]) : role === "ninja" ? tauntDir[i] ?? tauntDir[0] : "in character, a punchy taunt at the player",
+      });
+    });
+  }
+  if (!hasBoatKid) {
+    BOAT_KID_SEED.forEach((t, i) => {
+      out.push({ role: "boatkid", slug: `bk-taunt-${i}`, text: t, spoken: i === 0 ? "Hmm." : undefined, indexId: `v2-boatkid-taunt-${i}`, big: false, direction: BOAT_KID_DIR[i] });
+    });
+  }
   return out;
 }
 
@@ -158,11 +245,19 @@ const CANDIDATES: Record<CandidateId, { model: string }> = {
   "gemini-pro": { model: "gemini-2.5-pro-preview-tts" },
 };
 // Voice options auditioned in the sample step, the best per role and candidate is kept for the batch.
-const VOICE_OPTIONS: Record<CandidateId, Record<Role, string[]>> = {
-  gradium: { announcer: ["announcer", "announcer-2", "announcer-3"], ninja: ["ninja", "ninja-2", "ninja-3"] },
-  "gemini-flash": { announcer: ["Fenrir", "Puck", "Sadachbia"], ninja: ["Algenib", "Zubenelgenubi", "Umbriel"] },
-  "gemini-pro": { announcer: ["Fenrir", "Puck", "Sadachbia"], ninja: ["Algenib", "Zubenelgenubi", "Umbriel"] },
+const GEMINI_OPTIONS: Record<string, string[]> = {
+  announcer: ["Fenrir", "Puck", "Sadachbia"],
+  ninja: ["Algenib", "Zubenelgenubi", "Umbriel"],
+  boatkid: ["Enceladus", "Achernar", "Vindemiatrix"],
 };
+function voiceOptions(cand: CandidateId, role: Role): string[] {
+  if (cand === "gradium") return DESIGN[role] ? [role, `${role}-2`, `${role}-3`] : ["announcer-2"];
+  if (GEMINI_OPTIONS[role]) return GEMINI_OPTIONS[role];
+  const p = `${PROFILES[role]?.base ?? ""}`.toLowerCase();
+  if (/granny|grandma|woman|girl|parisienne|she /.test(p)) return ["Kore", "Leda", "Aoede"];
+  if (/papi|old|grandpa|elderly/.test(p)) return ["Charon", "Algieba", "Gacrux"];
+  return ["Puck", "Orus", "Fenrir"];
+}
 
 const DESIGN: Record<string, { prompt: string; language: string }> = {
   announcer: {
@@ -178,6 +273,18 @@ const DESIGN: Record<string, { prompt: string; language: string }> = {
   "announcer-3": {
     prompt:
       "Black American male battle rap host, 25, hyping a crowd at a street dance battle, yelling, commanding, deep booming voice, rhythmic punchy delivery, very high energy, loud, charismatic, grinning.",
+    language: "en",
+  },
+  boatkid: {
+    prompt: "Young boy, around 12, calm and quiet, almost whispering, confident and serene, soft breathy voice, slow unhurried pacing, never excited, a knowing little smile.",
+    language: "en",
+  },
+  "boatkid-2": {
+    prompt: "Calm kid, 11 to 13, soft low voice, speaks barely above a whisper, perfectly composed, unbothered, mysterious and confident, slow and gentle pacing.",
+    language: "en",
+  },
+  "boatkid-3": {
+    prompt: "Young teenage boy, 13, relaxed and serene, hushed intimate voice, breathy, deadpan confidence, slow pacing, zen and unimpressed.",
     language: "en",
   },
   "ninja-2": {
@@ -312,19 +419,18 @@ async function geminiPost(model: string, body: unknown, tries = 5): Promise<any>
 // ("Developer instruction is not enabled for this model"). The notes plus TRANSCRIPT header keeps
 // the spoken audio to the line on both Gemini TTS models.
 function geminiPrompt(line: Line, variant: number): string {
-  const base = line.role === "announcer" ? ANNOUNCER_BASE : NINJA_BASE;
-  const accent = line.role === "announcer" ? "American, young, Gen Z slang cadence" : "strong French accent, Parisian street";
+  const pr = profileFor(line.role);
   const spice = [
     "",
     " Push it further, more caricatural.",
     " Even more attitude, exaggerate the character.",
     " Take a breath before it and hit it hard.",
     " Make it iconic, like a meme sound.",
-  ][variant % 5];
+  ][variant % 5] + (variant > 5 ? " Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd." : "");
   return (
-    `# AUDIO PROFILE: ${line.role === "announcer" ? "THE ANNOUNCER" : "THE TURNSTILE NINJA"}\n` +
-    `${base}.\n### DIRECTOR'S NOTES\nStyle: ${line.direction}.${spice}\nAccent: ${accent}.\nPacing: fast, punchy, no pause before the line.\n` +
-    `#### TRANSCRIPT\n${line.text}`
+    `# AUDIO PROFILE: ${pr.title}\n` +
+    `${pr.base}.\n### DIRECTOR'S NOTES\nStyle: ${line.direction}.${line.role === "boatkid" ? "" : spice}\nAccent: ${pr.accent}.\nPacing: ${pr.pacing}.\n` +
+    `#### TRANSCRIPT\n${line.spoken ?? line.text}`
   );
 }
 
@@ -358,14 +464,12 @@ const JUDGE_SCHEMA = {
 };
 
 async function judge(file: string, line: Line): Promise<Scores> {
-  const who =
-    line.role === "announcer"
-      ? "THE ANNOUNCER: a Gen Z hype MC at an underground dance battle, should sound loud, hyped, caricatural, like an esports caster or battle rap host"
-      : "THE TURNSTILE NINJA: a cocky Parisian metro fare dodger, should sound smug, chin up, unbothered, with a clear French accent and street attitude";
+  const pr = profileFor(line.role);
+  const who = pr.who;
   const prompt =
     `You are a harsh casting director for a mobile rhythm battle game aimed at Gen Z. Listen to this voice line.\n` +
-    `Character: ${who}.\nExpected text: "${line.text}". Direction: ${line.direction}.\n` +
-    `Score 1 to 5 each (5 = ship it, 3 = flat or generic, 1 = broken): energy (loudness, drive, punch), ` +
+    `Character: ${who}.\nExpected text: "${line.spoken ? `${line.text} (a wordless sound, spoken as ${line.spoken})` : line.text}". Direction: ${line.direction}.\n` +
+    `Score 1 to 5 each (5 = ship it, 3 = flat or generic, 1 = broken): energy (${pr.energy}), ` +
     `emotion (a clear, committed feeling matching the direction), stereotype (it sounds exactly like this character), ` +
     `genz (would a 2026 Gen Z player find it hype and meme worthy, not cringe corporate). ` +
     `First write the transcript: every word actually spoken, verbatim. If the words are wrong, cut off, or extra words are spoken, cap every score at 2. Note: one short sentence.`;
@@ -381,7 +485,7 @@ async function judge(file: string, line: Line): Promise<Scores> {
   // Hard guard on top of the judge: a render that speaks the prompt or drops words never ships.
   const words = (t: string) => t.toLowerCase().normalize("NFD").replace(/[^a-z' ]/g, " ").split(/\s+/).filter(Boolean);
   const said = words(String((s as any).transcript ?? ""));
-  const want = words(line.text);
+  const want = words(line.spoken ?? line.text);
   if (said.length > want.length + 2 || said.length < Math.max(1, want.length - 1)) {
     for (const a of AXES) s[a] = Math.min(s[a], 2);
     s.note = `wrong words (heard "${clean(String((s as any).transcript)).slice(0, 80)}"), capped at 2. ${s.note}`;
@@ -463,7 +567,7 @@ async function render(line: Line, cand: CandidateId, opt: string, variant: numbe
     const id = await designVoice(opt, state);
     voice = `designed ${opt} ${id}`;
     direction = `voice design: ${DESIGN[opt].prompt} (temp 1.2, padding_bonus -2)`;
-    await gradiumTts(id, line.text, `${line.role}/${line.slug}/v${variant}`, raw);
+    await gradiumTts(id, line.spoken ?? line.text, `${line.role}/${line.slug}/v${variant}`, raw);
   } else {
     const model = CANDIDATES[cand].model;
     voice = opt;
@@ -504,10 +608,15 @@ async function pool<T>(items: T[], n: number, fn: (x: T) => Promise<void>) {
 async function sample() {
   const state = loadState();
   const all = lines();
-  const picks = [all.find((l) => l.slug === "aura-farming")!, all.find((l) => l.slug === "taunt-5")!];
+  // --role=<role> samples one more character (e.g. boatkid) and keeps the earlier sample rows.
+  const ra = process.argv.find((x) => x.startsWith("--role="));
+  const role = ra?.slice(7);
+  const picks = role
+    ? [all.filter((l) => l.role === role && !l.spoken).at(-1)!]
+    : [all.find((l) => l.slug === "aura-farming")!, all.find((l) => l.slug === "taunt-5")!];
   const jobs: [Line, CandidateId, string][] = [];
   for (const l of picks)
-    for (const c of Object.keys(CANDIDATES) as CandidateId[]) for (const o of VOICE_OPTIONS[c][l.role]) jobs.push([l, c, o]);
+    for (const c of Object.keys(CANDIDATES) as CandidateId[]) for (const o of voiceOptions(c, l.role)) jobs.push([l, c, o]);
   const auditions: Render[] = [];
   await pool(jobs, 3, async ([l, c, o]) => {
     auditions.push(await render(l, c, o, 0, path.join(OUT, "sample", "audition", `${l.role}-${c}-${o}.mp3`), state));
@@ -520,14 +629,19 @@ async function sample() {
       if (!w) continue;
       const dest = path.join(OUT, "sample", `${l.role}-${l.slug}-${c}.mp3`);
       copyFileSync(w.file, dest);
-      state.pick[`${l.role}:${c}`] = VOICE_OPTIONS[c][l.role].find((o) => w.voice === o || w.voice.startsWith(`designed ${o} `))!;
+      state.pick[`${l.role}:${c}`] = voiceOptions(c, l.role).find((o) => w.voice === o || w.voice.startsWith(`designed ${o} `))!;
       results.push({ ...w, file: dest });
     }
-  state.sample = results;
-  (state as any).auditions = auditions.map((a) => ({ file: path.relative(ROOT, a.file), voice: a.voice, scores: a.scores }));
-  state.sample = results.sort((a, b) => a.file.localeCompare(b.file));
-  saveState(state);
-  writeSample(state);
+  const cur = loadState();
+  const kept = role ? cur.sample.filter((r) => r.role !== role) : [];
+  const keptAud = role ? ((cur as any).auditions ?? []) : [];
+  cur.pick = { ...cur.pick, ...state.pick };
+  cur.voices = { ...state.voices, ...cur.voices };
+  (cur as any).auditions = [...keptAud, ...auditions.map((a) => ({ file: path.relative(ROOT, a.file), voice: a.voice, scores: a.scores }))];
+  cur.sample = [...kept, ...results].sort((a, b) => a.file.localeCompare(b.file));
+  saveState(cur);
+  const state2 = cur;
+  writeSample(state2);
   console.log(readFileSync(path.join(OUT, "SAMPLE.md"), "utf8"));
 }
 
@@ -538,7 +652,7 @@ function writeSample(state: State) {
   );
   writeFileSync(
     path.join(OUT, "SAMPLE.md"),
-    `# Voice bake off sample\n\nOne announcer call (AURA FARMING) and one Ninja taunt (Navigo? Never heard of it.) per candidate, ` +
+    `# Voice bake off sample\n\nOne announcer call (AURA FARMING), one Ninja taunt (Navigo? Never heard of it.) and one Boat Kid taunt (Aura is quiet.) per candidate, ` +
       `post processed (trim, atempo 1.08, slap reverb, compression, sub thump on the call). Judge ${JUDGE_MODEL}, 1 to 5, ship at 4 on every axis.\n\n` +
       `| file | role | model id | voice or direction | judge (energy, emotion, stereotype, genz) |\n|---|---|---|---|---|\n${rows.join("\n")}\n\n` +
       `Best candidate per role (mean over the sample): ${bestPerRole(state).map((b) => `${b.role} ${b.cands.join(" + ")}`).join(", ")}\n\n` +
@@ -549,12 +663,14 @@ function writeSample(state: State) {
 }
 
 function bestPerRole(state: State): { role: Role; cands: CandidateId[] }[] {
-  return (["announcer", "ninja"] as Role[]).map((role) => {
+  const roles = [...new Set(["announcer", "ninja", ...state.sample.map((r) => r.role)])];
+  return roles.map((role) => {
     const rs = state.sample.filter((r) => r.role === role && r.scores);
     const ranked = rs.map((r) => ({ c: r.candidate, m: mean(r.scores!) })).sort((a, b) => b.m - a.m);
     if (ranked.length === 0) return { role, cands: ["gemini-pro"] };
     // Close call (within 0.25 of the top mean): split the five variants between the two.
-    const cands = ranked.length > 1 && ranked[0].m - ranked[1].m <= 0.25 ? [ranked[0].c, ranked[1].c] : [ranked[0].c];
+    // Every candidate within 0.25 of the top mean shares the five variants (a three way tie splits three ways).
+    const cands = ranked.filter((r) => ranked[0].m - r.m <= 0.25).map((r) => r.c);
     return { role, cands };
   });
 }
@@ -567,26 +683,64 @@ function only(): Set<string> | null {
 async function batch() {
   const state = loadState();
   const best = Object.fromEntries(bestPerRole(state).map((b) => [b.role, b.cands])) as Record<Role, CandidateId[]>;
+  for (const l of lines()) best[l.role] ??= ["gemini-flash"]; // an unsampled character: the best overall model
   const filter = only();
   const jobs: [Line, number][] = [];
   for (const l of lines()) {
     if (filter && !filter.has(l.slug)) continue;
-    const done = new Set((state.batch[`${l.role}/${l.slug}`] ?? []).map((r) => path.basename(r.file)));
+    const done = new Set((state.batch[keyFor(state, l)] ?? []).map((r) => path.basename(r.file)));
     // Resumable: a variant already rendered and judged is kept unless --force.
     for (let v = 1; v <= 5; v++) if (process.argv.includes("--force") || !done.has(`v${v}.mp3`)) jobs.push([l, v]);
   }
-  console.log(`batch: ${jobs.length} renders, announcer ${best.announcer}, ninja ${best.ninja}`);
+  console.log(`batch: ${jobs.length} renders, ${Object.entries(best).map(([r, c]) => `${r} ${c}`).join(", ")}`);
+  const keys = new Map(jobs.map(([l]) => [l, keyFor(state, l)]));
   await pool(jobs, 4, async ([l, v]) => {
-    const cands = best[l.role];
+    const cands = best[l.role] ?? ["gemini-flash"];
     const cand = cands[(v - 1) % cands.length];
-    const r = await render(l, cand, state.pick[`${l.role}:${cand}`], v, path.join(OUT, l.role, l.slug, `v${v}.mp3`), state);
-    const key = `${l.role}/${l.slug}`;
+    const key = keys.get(l)!;
+    const opt = state.pick[`${l.role}:${cand}`] ?? voiceOptions(cand, l.role)[0];
+    const r = await render(l, cand, opt, v, path.join(OUT, key, `v${v}.mp3`), state);
     const cur = loadState();
     cur.batch[key] = [...(cur.batch[key] ?? []).filter((x) => x.file !== r.file), r];
     cur.voices = { ...state.voices, ...cur.voices };
     saveState(cur);
   });
   board();
+}
+
+// Rescue round: a line whose winner is under the ship threshold gets v6..v10, cycling the three
+// candidates with a louder direction, and the winner is picked again over all ten.
+async function rescue() {
+  const state = loadState();
+  const jobs: [Line, number, CandidateId][] = [];
+  const order: CandidateId[] = ["gemini-flash", "gemini-pro", "gradium", "gemini-flash", "gemini-pro"];
+  for (const l of lines()) {
+    const rs = state.batch[keyFor(state, l)] ?? [];
+    const w = winner(rs);
+    if (!w || minAxis(w.scores!) >= SHIP) continue;
+    const done = new Set(rs.map((r) => path.basename(r.file)));
+    for (let v = 6; v <= 10; v++) if (!done.has(`v${v}.mp3`)) jobs.push([l, v, order[v - 6]]);
+  }
+  console.log(`rescue: ${jobs.length} renders`);
+  await pool(jobs, 4, async ([l, v, cand]) => {
+    const opt = state.pick[`${l.role}:${cand}`] ?? voiceOptions(cand, l.role)[0];
+    const key = keyFor(state, l);
+    const r = await render(l, cand, opt, v, path.join(OUT, key, `v${v}.mp3`), state);
+    const cur = loadState();
+    cur.batch[key] = [...(cur.batch[key] ?? []).filter((x) => x.file !== r.file), r];
+    saveState(cur);
+  });
+  board();
+}
+
+// Where a line's variants live: the same character already voiced this exact text (under any
+// slug or level) means reuse, so a cast that moves a line to another level re-keys it for free.
+function keyFor(state: State, l: Line): string {
+  const base = `${l.role}/${l.slug}`;
+  const hit = Object.entries(state.batch).find(([k, rs]) => k.startsWith(`${l.role}/`) && rs.length > 0 && rs[0].text === l.text);
+  if (hit) return hit[0];
+  if (!state.batch[base] || state.batch[base].length === 0) return base;
+  return `${base}-${createHash("sha1").update(l.text).digest("hex").slice(0, 6)}`;
 }
 
 function winner(rs: Render[]): Render | undefined {
@@ -609,7 +763,7 @@ function board() {
   let fail = 0;
   const below: string[] = [];
   for (const l of lines()) {
-    const rs = (state.batch[`${l.role}/${l.slug}`] ?? []).sort((a, b) => a.file.localeCompare(b.file));
+    const rs = (state.batch[keyFor(state, l)] ?? []).sort((a, b) => a.file.localeCompare(b.file, undefined, { numeric: true }));
     if (rs.length === 0) continue;
     const w = winner(rs);
     md.push(`## ${l.role} / ${l.slug}: "${l.text}"`, "", "| variant | model | voice | scores | min | |", "|---|---|---|---|---|---|");
@@ -710,7 +864,7 @@ async function crowd() {
     console.log(`crowd bed ${out}`);
   }
   const cur = loadState();
-  cur.crowd = [...cur.crowd.filter((c) => c.file.includes("six-seven")), ...crowdOut];
+  cur.crowd = [...cur.crowd.filter((c) => /crowd-(six-seven|boat-kid)-/.test(c.file)), ...crowdOut];
   saveState(cur);
   board();
 }
@@ -725,12 +879,14 @@ async function chant() {
   const keys = ["crowd-fr-1", "crowd-fr-2", "crowd-fr-3", "crowd-pt-1", "crowd-pt-2", "crowd-pt-3", "announcer-2", "announcer-3"];
   for (const k of keys) await designVoice(k, loadState());
   const fresh = loadState();
-  const texts = ["Six seven!", "Six! Seven!"];
+  // --chant=boat-kid for the Boat Kid's chant (decision 16:40), default the 67 chant.
+  const which = process.argv.find((x) => x.startsWith("--chant="))?.slice(8) ?? "six-seven";
+  const texts = which === "boat-kid" ? ["Aura! Aura!", "Boat kid! Boat kid!"] : ["Six seven!", "Six! Seven!"];
   const parts: string[] = [];
   const jobs = keys.flatMap((k, i) => [{ k, t: texts[i % 2], i }]);
   await pool(jobs, 2, async (j) => {
-    const raw = path.join(TMP, `chant-${j.k}.wav`);
-    const out = path.join(dir, `six-seven-${j.k}.wav`);
+    const raw = path.join(TMP, `chant-${which}-${j.k}.wav`);
+    const out = path.join(dir, `${which}-${j.k}.wav`);
     if (!existsSync(out)) {
       await gradiumTts(fresh.voices[j.k].embedding_id, j.t, `chant/${j.k}`, raw);
       execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-i", raw, "-af",
@@ -741,8 +897,8 @@ async function chant() {
   parts.sort();
   // Two one shots: -1 one chant hit (all voices together), -2 a rising chant (three repetitions, louder each time).
   const beds: { name: string; reps: number }[] = [
-    { name: "crowd-six-seven-1", reps: 1 },
-    { name: "crowd-six-seven-2", reps: 3 },
+    { name: `crowd-${which}-1`, reps: 1 },
+    { name: `crowd-${which}-2`, reps: 3 },
   ];
   const made: State["crowd"] = [];
   for (const bed of beds) {
@@ -765,11 +921,11 @@ async function chant() {
     const out = path.join(VOICE_DIR, `${bed.name}.mp3`);
     args.push("-filter_complex", f.join(";"), "-map", "[o]", "-ac", "2", "-ar", "44100", "-c:a", "libmp3lame", "-b:a", "96k", out);
     execFileSync("ffmpeg", args);
-    made.push({ file: out, shouts: bed.reps === 1 ? ["six seven (8 voices, one hit)"] : ["six seven x3, rising (8 voices)"] });
+    made.push({ file: out, shouts: [`${texts.join(" / ")} (8 voices, ${bed.reps === 1 ? "one hit" : "x3, rising"})`] });
     console.log(`chant ${out}`);
   }
   const cur = loadState();
-  cur.crowd = [...cur.crowd.filter((c) => !c.file.includes("six-seven")), ...made];
+  cur.crowd = [...cur.crowd.filter((c) => !c.file.includes(`crowd-${which}-`)), ...made];
   saveState(cur);
   board();
 }
@@ -781,6 +937,7 @@ async function main() {
   else if (step === "batch") await batch();
   else if (step === "crowd") await crowd();
   else if (step === "chant") await chant();
+  else if (step === "rescue") await rescue();
   else if (step === "board") {
     writeSample(loadState());
     board();
