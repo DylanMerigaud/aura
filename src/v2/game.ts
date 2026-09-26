@@ -11,6 +11,8 @@ const COUNT_IN = 4;
 const RESUME_COUNT_IN = 3;
 /** Seconds between the decided battle and the results (the finish animation). */
 const FINISH = 3.2;
+/** A track still not decoded after this plays the battle on the clock alone (count in, SFX), never a black wait. */
+const TRACK_WAIT_MS = 12000;
 
 export interface GameDeps {
   base: string;
@@ -58,7 +60,11 @@ export class Game implements GameApi {
       p = fetch(`${this.deps.base}music/${file}`)
         .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(r.status)))
         .then((a) => ctx.decodeAudioData(a))
-        .catch(() => null);
+        .catch(() => {
+          // A failed download is not cached: the next battle tries again.
+          this.buffers.delete(file);
+          return null;
+        });
       this.buffers.set(file, p);
     }
     return p;
@@ -107,7 +113,8 @@ export class Game implements GameApi {
     this.track = info;
     this.offset = getOffset();
     this.loadVoices(level);
-    const buf = await this.buffer(info.file);
+    // The download keeps going after the timeout: the cached promise serves the retry.
+    const buf = await Promise.race([this.buffer(info.file), new Promise<null>((r) => setTimeout(() => r(null), TRACK_WAIT_MS))]);
     this.core = new BattleCore(level, info, windowScale, this.emit);
     this.endAt = -1;
     this.paused = false;
@@ -217,7 +224,10 @@ export class Game implements GameApi {
     if (e.kind === "taunt") this.voice(`v2-l${L.id}-taunt-${e.index}`);
     else if (e.kind === "end") {
       this.endAt = ctx.currentTime + FINISH;
-      this.stopSource((60 / L.bpm) * 4);
+      const bar = (60 / L.bpm) * 4;
+      // Lose: the tape slows to half speed under the one bar tail.
+      if (!e.win && this.src) this.src.playbackRate.setTargetAtTime(this.setRate * 0.5, ctx.currentTime, bar / 3);
+      this.stopSource(bar);
       this.voice(`v2-l${L.id}-${e.win ? "win" : "lose"}`, ctx.currentTime + 0.4);
     }
   }

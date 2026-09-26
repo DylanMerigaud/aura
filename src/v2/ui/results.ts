@@ -67,7 +67,8 @@ export function buildResults(onNext: () => void) {
     row(rowEls.burst, "BEST BURST", String(stats.bestBurst));
     roast.textContent = stats.win ? level.announcer.win : level.announcer.lose;
     roastTag.classList.add("hidden");
-    prompt.textContent = stats.win ? "PRESS SPACE TO CONTINUE" : "PRESS SPACE TO RETRY";
+    const touch = typeof matchMedia === "function" && matchMedia("(pointer: coarse)").matches;
+    prompt.textContent = `${touch ? "TAP" : "PRESS SPACE"} TO ${stats.win ? "CONTINUE" : "RETRY"}`;
     setTimeout(() => (armed = true), 300);
 
     fetchRoast(stats, level)

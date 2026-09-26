@@ -24,9 +24,43 @@ function bar(parent: HTMLElement, top: boolean): HTMLDivElement {
   return d;
 }
 
+/** Pixel ratio of the final blit: the scene is a 360 p target anyway, so a phone gains nothing past 1. */
+export function pixelRatioCap(dpr: number, coarse: boolean): number {
+  return Math.min(coarse ? 1 : 1.5, dpr || 1);
+}
+
+/**
+ * Whether a half float render target is complete on this GPU (iOS Safari and some Android GLES3 drivers
+ * lack EXT_color_buffer_float / _half_float). Bloom's own targets are half float, so no support means no bloom.
+ */
+function halfFloatOk(renderer: THREE.WebGLRenderer): boolean {
+  const ext = renderer.extensions;
+  if (!ext.has("EXT_color_buffer_float") && !ext.has("EXT_color_buffer_half_float")) return false;
+  const probe = new THREE.WebGLRenderTarget(4, 4, { type: THREE.HalfFloatType });
+  try {
+    renderer.setRenderTarget(probe);
+    const gl = renderer.getContext();
+    return gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE;
+  } catch {
+    return false;
+  } finally {
+    renderer.setRenderTarget(null);
+    probe.dispose();
+  }
+}
+
+function overlay(parent: HTMLElement): HTMLDivElement {
+  const d = document.createElement("div");
+  d.style.cssText = "position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;z-index:2";
+  parent.appendChild(d);
+  return d;
+}
+
 export function createStage(canvas: HTMLCanvasElement, opts: { base: string; debug: boolean }): Stage {
+  // Throws when WebGL is unavailable: main.ts catches it and offers the 2D version.
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: "high-performance" });
-  renderer.setPixelRatio(Math.min(1.5, devicePixelRatio || 1));
+  const coarse = typeof matchMedia === "function" && matchMedia("(pointer: coarse)").matches;
+  renderer.setPixelRatio(pixelRatioCap(devicePixelRatio, coarse));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.15;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -41,8 +75,9 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
   scene.add(glasses);
 
   // Low res target with bloom, nearest filtered so the blit keeps the chunky pixels.
+  const floatOk = halfFloatOk(renderer);
   const rt = new THREE.WebGLRenderTarget(640, 360, {
-    type: THREE.HalfFloatType,
+    type: floatOk ? THREE.HalfFloatType : THREE.UnsignedByteType,
     minFilter: THREE.NearestFilter,
     magFilter: THREE.NearestFilter,
   });
@@ -50,8 +85,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
   composer.renderToScreen = false;
   composer.setPixelRatio(1);
   composer.addPass(new RenderPass(scene, camera));
-  const bloom = new UnrealBloomPass(new THREE.Vector2(640, 360), 0.85, 0.35, 0.95);
-  composer.addPass(bloom);
+  if (floatOk) composer.addPass(new UnrealBloomPass(new THREE.Vector2(640, 360), 0.85, 0.35, 0.95));
 
   const composite = createComposite();
   const blitScene = new THREE.Scene();
@@ -64,6 +98,16 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
   const host = canvas.parentElement ?? document.body;
   const lbTop = bar(host, true);
   const lbBottom = bar(host, false);
+  // Fade to and from black: in from black across the count in, out to black before the results.
+  const fade = overlay(host);
+  let fadeLevel = 0;
+  const setFade = (v: number, seconds: number) => {
+    if (v === fadeLevel) return;
+    fadeLevel = v;
+    fade.style.transition = seconds > 0 ? `opacity ${seconds.toFixed(3)}s linear` : "none";
+    fade.style.opacity = String(v);
+  };
+  let spb = 0.5;
   let letterbox = false;
   const setLetterbox = (on: boolean) => {
     if (on === letterbox) return;
@@ -105,6 +149,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
   let flashBlack = false;
   let holdFreezeIn = -1;
   let hitAlt = false;
+  let lastTier = 0;
   let time = 0;
   let idleAngle = 0;
   /** True while battle VFX may be on screen; the first idle frame after a battle clears them. */
@@ -264,7 +309,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
         resize();
         vfx.setQuality(0.5);
       }
-      if (fpsDiv) fpsDiv.textContent = `${fpsVal.toFixed(0)} fps ${lowRes.x}x${lowRes.y}${cast ? " " + cast.label : ""}`;
+      if (fpsDiv) fpsDiv.textContent = `${fpsVal.toFixed(0)} fps ${lowRes.x}x${lowRes.y}${floatOk ? "" : " nobloom"}${cast ? " " + cast.label : ""}`;
     }
   }
 
@@ -319,6 +364,10 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
     event(e: CoreEvent) {
       vfx.event(e, anchors);
       switch (e.kind) {
+        case "countIn":
+          // n = 4..1: a quarter of the black lifts on each click, clear on the downbeat.
+          setFade(Math.min(fadeLevel, (e.n - 1) / 4), spb);
+          break;
         case "beat":
           if (e.downbeat && !ending) {
             if (lastBarEnergy >= 0 && e.energy - lastBarEnergy > 0.3) flash(1, Math.random() < 0.4);
@@ -419,7 +468,15 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
     },
 
     frame(f: Frame, realDt: number) {
+      if (!battleFx) {
+        setFade(1, 0);
+        lastTier = 0;
+      }
+      // Combo 25: the sunglasses drop, seen from the hero low angle in front of us.
+      if (f.tier === 3 && lastTier < 3 && !ending && whipT < 0) cut("heroLow");
+      lastTier = f.tier;
       battleFx = true;
+      spb = f.spb;
       const dt = Math.min(0.1, Math.max(0, realDt));
       time += dt;
       measure(dt);
@@ -455,6 +512,8 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
       dutch += (dutchTarget - dutch) * Math.min(1, dt * 0.8);
 
       setLetterbox(f.songTime < 0 || ending);
+      // The game hands over to the results 3.2 s after the end: the last 0.7 s go to black.
+      if (ending && endT > 2.5) setFade(1, 0.6);
       computeAnchors();
       placeGlasses();
       applyCamera(f, dt, vdt);
@@ -468,6 +527,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
         battleFx = false;
         vfx.event({ kind: "countIn", n: 4, at: 0 }, anchors);
         glasses.visible = false;
+        setFade(0, 0.6);
       }
       const dt = Math.min(0.1, Math.max(0, realDt));
       time += dt;

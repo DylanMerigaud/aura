@@ -21,6 +21,29 @@
       "role": "crowd",
       "height_m": 2.01,
       "source": "Mixamo (kaya, with skin, FBX Binary, 512px textures)"
+    },
+    {
+      "file": "characters/james_player_streetwear.glb",
+      "name": "James (streetwear)",
+      "role": "player",
+      "height_m": 1.83,
+      "source": "Mixamo (james, with skin, FBX Binary, 512px textures)",
+      "preferred": true
+    },
+    {
+      "file": "characters/abe_enemy_elder.glb",
+      "name": "Abe (elder, His Holiness)",
+      "role": "enemy",
+      "height_m": 1.78,
+      "source": "Mixamo (abe, with skin, FBX Binary, 512px textures)",
+      "preferred": true
+    },
+    {
+      "file": "characters/sophie_crowd_casual.glb",
+      "name": "Sophie (casual)",
+      "role": "crowd",
+      "height_m": 1.76,
+      "source": "Mixamo (sophie, with skin, FBX Binary, 512px textures)"
     }
   ],
   "clips": [

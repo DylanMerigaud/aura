@@ -31,6 +31,7 @@ body {
   inset: 0;
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   display: block;
   touch-action: none;
 }
@@ -40,6 +41,7 @@ body {
   inset: 0;
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   pointer-events: none;
   padding: var(--safe-t) var(--safe-r) var(--safe-b) var(--safe-l);
   overflow: hidden;
@@ -71,7 +73,7 @@ h1, h2, h3, .logo, .screen-title, .vs-level-name, .grade-popup, .burst-num, .bur
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: calc(24px + var(--safe-t)) 24px calc(24px + var(--safe-b));
+  padding: calc(24px + var(--safe-t)) calc(24px + var(--safe-r)) calc(24px + var(--safe-b)) calc(24px + var(--safe-l));
 }
 .screen.active { display: flex; pointer-events: auto; }
 
@@ -175,7 +177,7 @@ h1, h2, h3, .logo, .screen-title, .vs-level-name, .grade-popup, .burst-num, .bur
 .map-node.selected { border-color: var(--yellow); box-shadow: 0 0 18px var(--yellow); }
 .map-node.locked { border-color: #555; color: #777; }
 .map-node-lock { font-size: 20px; }
-.map-node-stars { font-size: 12px; color: var(--yellow); -webkit-text-stroke: 0; text-shadow: none; }
+.map-node-stars { font-size: 14px; color: var(--yellow); -webkit-text-stroke: 0; text-shadow: none; }
 
 .map-pin {
   position: absolute;
@@ -213,7 +215,7 @@ h1, h2, h3, .logo, .screen-title, .vs-level-name, .grade-popup, .burst-num, .bur
 .loadout-grid { display: grid; grid-template-columns: repeat(2, minmax(140px, 1fr)); gap: 14px; width: min(92vw, 480px); margin-top: 12px; }
 .loadout-card { background: rgba(0, 0, 0, 0.55); border: 2px solid var(--violet); border-radius: 10px; padding: 14px; }
 .loadout-card-name { color: var(--violet); margin: 0 0 6px; font-size: 20px; }
-.loadout-card-desc { color: #ddd; font-size: 13px; margin: 0; -webkit-text-stroke: 0; text-shadow: none; }
+.loadout-card-desc { color: #ddd; font-size: 14px; margin: 0; -webkit-text-stroke: 0; text-shadow: none; }
 
 /* ---------------------------------------------------------------- results */
 
@@ -225,7 +227,7 @@ h1, h2, h3, .logo, .screen-title, .vs-level-name, .grade-popup, .burst-num, .bur
 .results-rows { display: flex; flex-direction: column; gap: 4px; margin-bottom: 16px; }
 .results-row { margin: 0; font-size: 16px; color: #eee; -webkit-text-stroke: 0; text-shadow: none; }
 .results-roast { max-width: min(90vw, 560px); color: #fff; font-size: 16px; margin: 0 0 4px; -webkit-text-stroke: 0; text-shadow: none; }
-.results-roast-tag { color: #888; font-size: 11px; margin: 0 0 16px; -webkit-text-stroke: 0; text-shadow: none; }
+.results-roast-tag { color: #999; font-size: 14px; margin: 0 0 16px; -webkit-text-stroke: 0; text-shadow: none; }
 .results-prompt { color: var(--yellow); font-size: 18px; animation: blink 1.1s steps(2, jump-none) infinite; }
 
 /* ---------------------------------------------------------------- battle HUD */
@@ -384,7 +386,7 @@ h1, h2, h3, .logo, .screen-title, .vs-level-name, .grade-popup, .burst-num, .bur
   border: 3px solid var(--opp-color, var(--magenta));
   flex-shrink: 0;
 }
-.taunt-name { color: var(--opp-color, var(--magenta)); font-size: 12px; -webkit-text-stroke: 0; text-shadow: none; }
+.taunt-name { color: var(--opp-color, var(--magenta)); font-size: 14px; -webkit-text-stroke: 0; text-shadow: none; }
 .taunt-text { color: #111; font-size: 15px; -webkit-text-stroke: 0; text-shadow: none; }
 @keyframes slide-up {
   0% { transform: translate(-50%, 40px); opacity: 0; }
@@ -409,7 +411,8 @@ h1, h2, h3, .logo, .screen-title, .vs-level-name, .grade-popup, .burst-num, .bur
   transform: translate(-50%, -50%);
   font-size: clamp(16px, 3.4vw, 26px);
   color: var(--cyan);
-  white-space: nowrap;
+  width: max-content;
+  max-width: 92vw;
 }
 @keyframes punch {
   0% { transform: translate(-50%, -50%) scale(2.4); opacity: 0; }
@@ -422,3 +425,55 @@ h1, h2, h3, .logo, .screen-title, .vs-level-name, .grade-popup, .burst-num, .bur
 
 .gate { background: var(--ink); }
 .gate-prompt { color: var(--yellow); font-size: clamp(18px, 4vw, 30px); animation: blink 1s steps(2, jump-none) infinite; }
+
+/* loading between the FIGHT tap and the first count in click */
+
+.hud-loading {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 22px;
+  color: var(--yellow);
+  -webkit-text-stroke: 2px #000;
+  paint-order: stroke fill;
+  animation: blink 0.8s steps(2, jump-none) infinite;
+}
+
+/* no WebGL: a message and the way to the 2D game */
+
+.no-webgl {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: calc(24px + var(--safe-t)) 24px calc(24px + var(--safe-b));
+  background: var(--ink);
+  text-align: center;
+  font-size: 18px;
+}
+.no-webgl.soft { inset: auto 0 0 0; background: rgba(7, 4, 15, 0.9); flex-direction: row; flex-wrap: wrap; }
+.no-webgl a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 64px;
+  padding: 0 24px;
+  border: 2px solid var(--magenta);
+  border-radius: 10px;
+  color: var(--yellow);
+  text-decoration: none;
+  font-size: 22px;
+}
+
+/* portrait phones: the top bar keeps the meter readable */
+
+@media (max-width: 480px) {
+  .hud-top { gap: 8px; }
+  .hud-right-box { min-width: 70px; }
+  .tachometer { width: 38px; height: 38px; }
+  .hit-arrow, .mash-arrow { font-size: 52px; }
+}

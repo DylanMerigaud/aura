@@ -14,11 +14,8 @@ export function buildGate(onReady: () => void) {
     if (done) return;
     done = true;
     initAudio();
-    try {
-      await ctx.resume();
-    } catch {
-      /* the next wake() on visibilitychange retries */
-    }
+    // iOS can leave resume() pending when it does not count the gesture: never hang the gate on it.
+    await Promise.race([ctx.resume().catch(() => {}), new Promise((r) => setTimeout(r, 800))]);
     wake();
     onReady();
   }

@@ -7,7 +7,7 @@ import { startApp } from "./ui/app";
 import { Game } from "./game";
 import { LEVELS_V2 } from "./levels";
 import { trackInfo } from "./tracks";
-import type { CoreEvent, Frame } from "./contracts";
+import type { CoreEvent, Frame, Stage } from "./contracts";
 
 const params = new URLSearchParams(location.search);
 const debug = params.has("debug");
@@ -15,7 +15,35 @@ const debug = params.has("debug");
 const base = /\/v2\/?/.test(location.pathname) ? "../" : "";
 
 const canvas = document.getElementById("stage") as HTMLCanvasElement;
-const stage = createStage(canvas, { base, debug });
+
+/** No WebGL (old phone, blocked GPU, lost context): say so and point at the 2D game, which runs anywhere. */
+function noWebgl(): never {
+  const d = document.createElement("div");
+  d.className = "no-webgl";
+  d.innerHTML = `<h1 class="logo">AURA</h1><p>This browser could not start 3D graphics (WebGL).</p><a href="../">PLAY THE 2D VERSION</a>`;
+  document.body.appendChild(d);
+  throw new Error("WebGL unavailable");
+}
+
+let stage: Stage;
+try {
+  stage = createStage(canvas, { base, debug });
+} catch (err) {
+  console.error(err);
+  noWebgl();
+}
+canvas.addEventListener("webglcontextlost", (e) => {
+  e.preventDefault();
+  if (!document.querySelector(".no-webgl")) noWebglSoft();
+});
+/** A context lost mid session is usually restored by the browser: offer the way out without stopping. */
+function noWebglSoft() {
+  const d = document.createElement("div");
+  d.className = "no-webgl soft";
+  d.innerHTML = `<p>3D graphics were interrupted.</p><a href="">RELOAD</a> <a href="../">2D VERSION</a>`;
+  document.body.appendChild(d);
+  canvas.addEventListener("webglcontextrestored", () => d.remove(), { once: true });
+}
 addEventListener("resize", () => stage.resize());
 // iOS suspends or interrupts the context (calls, lock screen, app switch): any gesture or coming back resumes it.
 addEventListener("pointerdown", wake);

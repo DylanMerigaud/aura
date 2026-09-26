@@ -1,7 +1,7 @@
 // v2 audio layers (amendment 9 section 6): the Lyria track bus (lowpass riser, sidechain duck), the crowd
 // bed, and every judged / release / story one shot, all layered and scheduled on ctx.currentTime, never
 // on the frame. Read src/audio/engine.ts, sfx.ts, crowd.ts first: this reuses them, never edits them.
-import { ctx, master, musicBus, noiseSource, sfxBus } from "./engine";
+import { ctx, heardTime, master, musicBus, noiseSource, sfxBus } from "./engine";
 import { sfx } from "./sfx";
 import { cheer, boo } from "./crowd";
 import { chime, sparkleTail, mashTick, sting, subDrop, noiseBurst, downlifter, crowdOoh, countKick, riserTick } from "./synth-extra";
@@ -32,6 +32,14 @@ export function riserFreq(beatsToDrop: number, barBeats = 4, from = 400, to = OP
   return from * Math.pow(to / from, k);
 }
 
+/**
+ * Context time to schedule a sound so it is HEARD `beats` beats from now: a sound scheduled at context time
+ * T is heard when heardTime() reaches T. Never in the past. Pure, testable.
+ */
+export function dropBoomTime(now: number, heardNow: number, beats: number, spb: number, rate: number): number {
+  return Math.max(now, heardNow + (Math.max(0, beats) * spb) / Math.max(0.1, rate));
+}
+
 export class AudioFx implements Listener {
   /** The lead connects the Lyria track source here: musicIn -> lowpass -> duck -> musicBus. */
   readonly musicIn: GainNode;
@@ -41,6 +49,8 @@ export class AudioFx implements Listener {
   private spb = 0.5;
   private cringeUntil = 0;
   private duckCrowdToSilence = false;
+  /** The battle is decided: the end() envelope owns the crowd bed. */
+  private ended = false;
 
   private bedGain: GainNode | null = null;
   private bedFilter: BiquadFilterNode | null = null;
@@ -52,6 +62,9 @@ export class AudioFx implements Listener {
   private holdGain: GainNode | null = null;
 
   private whooshed = new WeakSet<object>();
+  private dropArmed = false;
+  /** Context time the next drop boom is scheduled at, -1 when none. */
+  private dropBoomAt = -1;
   private crowdGate = new CrowdGate(0.25);
 
   constructor() {
@@ -87,9 +100,16 @@ export class AudioFx implements Listener {
       case "taunt":
         sting(t, jitter());
         break;
+      case "dropSoon":
+        this.dropArmed = true;
+        break;
       case "drop":
-        sfx.boom(t);
-        this.duckMusic(t);
+        // Already scheduled on the audio clock from the frame before; this is the late fallback.
+        if (this.dropBoomAt < 0) {
+          sfx.boom(t);
+          this.duckMusic(t);
+        }
+        this.dropBoomAt = -1;
         break;
       case "phase2":
         downlifter(t);
@@ -108,6 +128,17 @@ export class AudioFx implements Listener {
     this.updateDropRiser(f);
     this.updateCrowdBed(f);
     this.updateAnticipation(f);
+    this.scheduleDropBoom(f);
+  }
+
+  /** The drop boom lands exactly on the heard drop beat: scheduled ahead on the audio clock, not on the frame. */
+  private scheduleDropBoom(f: Frame) {
+    if (!this.dropArmed || !Number.isFinite(f.beatsToDrop) || f.beatsToDrop > 1) return;
+    this.dropArmed = false;
+    const at = dropBoomTime(ctx.currentTime, heardTime(), f.beatsToDrop, f.spb, f.rate);
+    sfx.boom(at);
+    this.duckMusic(at);
+    this.dropBoomAt = at;
   }
 
   // ---- judged one shots ----
@@ -147,14 +178,22 @@ export class AudioFx implements Listener {
     this.queueCrowd(t, "cheer", Math.max(0.4, Math.min(2.2, burst / 14)));
   }
 
+  /** Win: boom and the crowd peaks, then the bed ducks under the one bar tail. Lose: scratch, "ooh", boo. */
   private end(t: number, win: boolean) {
+    this.ended = true;
     if (win) {
       sfx.boom(t, 1.4);
       this.duckMusic(t);
       this.queueCrowd(t, "cheer", 2.2);
+      this.bedGain?.gain.cancelScheduledValues(t);
+      this.bedGain?.gain.setTargetAtTime(this.bedBase * 1.6, t, 0.05);
+      this.bedGain?.gain.setTargetAtTime(0.0001, t + this.spb * 2, 0.4);
     } else {
       sfx.scratch(t);
-      this.queueCrowd(t, "boo");
+      this.queueCrowd(t, "ooh");
+      window.setTimeout(() => boo(), 700);
+      this.bedGain?.gain.cancelScheduledValues(t);
+      this.bedGain?.gain.setTargetAtTime(0.0001, t + this.spb, 0.5);
     }
   }
 
@@ -195,6 +234,7 @@ export class AudioFx implements Listener {
 
   /** A kick plus a riser tick exactly at `at`, the crowd bed rising across the count in (called once per beat). */
   countIn(at: number, n: number) {
+    this.ended = false;
     this.ensureBed(at);
     countKick(at);
     riserTick(at, n);
@@ -228,7 +268,7 @@ export class AudioFx implements Listener {
   }
 
   private updateCrowdBed(f: Frame) {
-    if (!this.bedGain || !this.bedFilter) return;
+    if (!this.bedGain || !this.bedFilter || this.ended) return;
     const t = ctx.currentTime;
     if (this.duckCrowdToSilence) {
       this.bedGain.gain.setTargetAtTime(0.0001, t, 0.06);
@@ -289,5 +329,8 @@ export class AudioFx implements Listener {
     this.lowpass.frequency.setTargetAtTime(OPEN_HZ, t, 0.05);
     this.duckCrowdToSilence = false;
     this.cringeUntil = 0;
+    this.ended = false;
+    this.dropArmed = false;
+    this.dropBoomAt = -1;
   }
 }

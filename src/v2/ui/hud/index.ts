@@ -15,6 +15,9 @@ export function buildHud(base: string) {
   root.appendChild(meter.root);
   root.appendChild(prompts.root);
   root.appendChild(popups.root);
+  // Between the FIGHT tap and the first count in click (models, track): never a silent black wait.
+  const loading = el("div", "hud-loading hidden", "LOADING");
+  root.appendChild(loading);
 
   let level: LevelV2 | null = null;
 
@@ -22,18 +25,21 @@ export function buildHud(base: string) {
   function prepare(l: LevelV2) {
     level = l;
     root.classList.remove("shown");
+    loading.classList.remove("hidden");
     popups.reset();
   }
 
-  function vibrate() {
-    if ("vibrate" in navigator) navigator.vibrate(15);
+  function vibrate(ms: number) {
+    if ("vibrate" in navigator) navigator.vibrate(ms);
   }
 
   const listener: Listener = {
     event(e: CoreEvent) {
+      if (e.kind === "countIn") loading.classList.add("hidden");
       if (e.kind === "countIn" && e.n === 1) root.classList.add("shown");
       if (level) popups.event(e, level);
-      if ((e.kind === "judged" && e.grade !== "miss") || e.kind === "release") vibrate();
+      if (e.kind === "judged" && e.grade !== "miss") vibrate(e.big ? 30 : 15);
+      else if (e.kind === "release" || e.kind === "drop") vibrate(45);
       if (e.kind === "end") root.classList.remove("shown");
     },
     frame(f: Frame, realDt: number) {
