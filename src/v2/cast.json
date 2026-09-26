@@ -1,0 +1,124 @@
+{
+ "levels": [
+  {
+   "id": 1,
+   "title": "Phonk God",
+   "place": "The club, peak phonk hour",
+   "story": [
+    "Bass rattles the floor as strobe lights freeze the sweat in midair.",
+    "DJ Montagem stares down from the booth, ready to harvest your remaining aura."
+   ],
+   "opponent": {
+    "name": "DJ Montagem",
+    "persona": "Brazilian phonk maestro radiating absolute main character energy from the booth.",
+    "color": "#ff007f"
+   },
+   "taunts": [
+    "You are completely cooked by this 808 drop.",
+    "One slip and your sigma streak snaps instantly.",
+    "My kick drum just erased ten thousand aura."
+   ],
+   "announcer": {
+    "intro": "The bass drops, fight for the dance floor.",
+    "win": "Massive W, you cleared the entire booth.",
+    "lose": "Cooked on beat, step off the stage."
+   }
+  },
+  {
+   "id": 2,
+   "title": "Corporate Synergy God",
+   "place": "Metro platform, 2am",
+   "story": [
+    "The 2am metro platform echoes with empty buzzwords.",
+    "Kevin adjusts his branded lanyard and challenges your vibe."
+   ],
+   "opponent": {
+    "name": "Kevin from Marketing",
+    "persona": "Overcaffeinated intern flexing negative aura and secondhand buzzwords.",
+    "color": "#39ff14"
+   },
+   "taunts": [
+    "Frerot, your beat drop lacks pure synergy.",
+    "Let us circle back, you total NPC.",
+    "My rhythm roadmap has maximum rizz."
+   ],
+   "announcer": {
+    "intro": "Lanyard on, thinks he has main character energy.",
+    "win": "Massive W, you sent him back to HR.",
+    "lose": "Unbelievable L, outpaced by an unpaid intern."
+   }
+  },
+  {
+   "id": 3,
+   "title": "Sauce Boss",
+   "place": "Kebab shop, 4am",
+   "story": [
+    "Neon lights flicker over sizzling spit at 4am.",
+    "Mehdi Aura spins the tongs without blinking."
+   ],
+   "opponent": {
+    "name": "Mehdi Aura",
+    "persona": "Late night grillmaster with effortless main character energy.",
+    "color": "#ff5e36"
+   },
+   "taunts": [
+    "T'es cuit, extra onions won't save you.",
+    "My spit spins faster than your delulu combo.",
+    "Too much sauce, your rhythm got ratioed."
+   ],
+   "announcer": {
+    "intro": "Midnight snack battle, clock in for pure aura.",
+    "win": "Massive W, you earned the chef's special.",
+    "lose": "You got chopped up by the grillmaster."
+   }
+  },
+  {
+   "id": 4,
+   "title": "Aura Saint",
+   "place": "Parvis de Notre-Dame, dawn",
+   "story": [
+    "Dawn breaks over Notre-Dame as supreme stillness approaches.",
+    "His motionless presence radiates impossible main character energy."
+   ],
+   "opponent": {
+    "name": "His Holiness",
+    "persona": "A serene presence exuding pure main character energy.",
+    "color": "#fff275"
+   },
+   "taunts": [
+    "Receive this peaceful W for your soul.",
+    "May your inner rhythm find true peace, friend.",
+    "Breathe gently, your aura is completely restored."
+   ],
+   "announcer": {
+    "intro": "Dawn breaks, face the ultimate aura test!",
+    "win": "Massive W, you have been absolved.",
+    "lose": "Rest now, your rhythm was completely cooked."
+   }
+  },
+  {
+   "id": 5,
+   "title": "Algorithm Breaker",
+   "place": "The Voodoo stage",
+   "story": [
+    "The feed detects zero retention in your rhythm.",
+    "Survive the sudden patch note before you vanish."
+   ],
+   "opponent": {
+    "name": "The Algorithm",
+    "persona": "Cold corporate feed engine that has killed more than 2,000 prototypes this year.",
+    "color": "#00ff66"
+   },
+   "taunts": [
+    "Phase two drops down, your frame rate collapses.",
+    "It is giving zero engagement, strictly unindexed.",
+    "Massive L on retention, terminating feed access."
+   ],
+   "announcer": {
+    "intro": "Final feed gatekeeper approaches, show main character energy.",
+    "win": "Infinite aura unlocked, you broke the entire feed!",
+    "lose": "Shadowbanned forever, total loss of user momentum."
+   }
+  }
+ ]
+}

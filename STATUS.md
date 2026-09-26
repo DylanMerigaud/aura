@@ -1,8 +1,10 @@
-12:08 CEST
-GREEN: full game live and hardened for Safari/iPhone: 5 levels (Gemini script + art), 30 Gradium voice lines, 4 QTE types, camera work, title, story, results, progress, touch, calibration, itch zip built
-RED: NOT YET PLAYED BY A HUMAN on a real device, and real fps not measured (the agent may not open a browser)
-PLAY: https://dylanmerigaud.github.io/aura/  (add ?debug=1 for the fps meter)
-NEED FROM DYLAN: play level 1 with sound on at the URL (laptop, then phone with ?debug=1 for the fps counter) and tell me: timing late, early or fine, the fps, anything broken
+12:35 CEST, v2 (3D) in progress
+GREEN: v1 live and untouched at the root URL; v2 core (song clock, tempo rule, scoring, 69 burst) written and tested; six lanes building the 3D stage, VFX, charts, cast, HUD and audio
+RED: v2 not playable yet (target 13:30 at /v2/)
+PLAY: https://dylanmerigaud.github.io/aura/ (v1). v2 preview will be https://dylanmerigaud.github.io/aura/v2/
+NEED FROM DYLAN: nothing yet; at 13:30 play /v2/ with sound and report timing, fps (?debug=1), anything broken
+
+## v1 status (12:08, the safety net)
 
 ## Milestones
 - 12:00 playable battle: DONE 11:26

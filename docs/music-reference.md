@@ -1,5 +1,11 @@
 # Music reference analysis
 
+Beat grid method used everywhere below: beats and tempo from librosa.beat.beat_track on the onset
+strength envelope, bars assumed 4/4 from the first tracked beat, onsets from
+onset_detect(backtrack=True) with strength read off that same envelope, bar and beat energy from
+RMS normalized to the track's own max, a drop is the largest positive jump in bar energy, a
+breakdown is 2 or more consecutive bars under 35 percent of the track's max bar energy.
+
 Source analyzed: "FODE DENTRO" by DJ ANXVAR, YouTube (https://www.youtube.com/watch?v=XsnUlM4sxoA).
 Audio was downloaded once for measurement only, into the session scratchpad, never into this repo
 and never shipped in the game. This document is a plain word description of the measurements, no

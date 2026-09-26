@@ -1,0 +1,304 @@
+// Character loading and animation: the Mixamo manifest (assets/3d/manifest.json) when it exists, the
+// three.js RobotExpressive (MIT) as the fallback. Clips are addressed by event name (amendment 8 section 2),
+// a missing clip falls back to the idle groove with a squash and stretch, never a crash.
+import * as THREE from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import * as SkeletonUtils from "three/examples/jsm/utils/SkeletonUtils.js";
+
+export type ClipEvent =
+  | "idle_groove" | "hit_up" | "hit_down" | "hit_left" | "hit_right" | "mash_charge" | "release" | "hold_freeze"
+  | "miss_cringe" | "defeat" | "victory" | "enemy_idle" | "enemy_taunt" | "enemy_hit" | "enemy_big_hit"
+  | "enemy_cringe" | "enemy_victory";
+
+interface Manifest {
+  characters: { file: string; name: string; role?: string }[];
+  clips: { file: string; event: string; name?: string; loop?: boolean; fps?: number }[];
+}
+
+/** RobotExpressive clip per event (it has Dance, Death, Idle, Jump, No, Punch, Running, ThumbsUp, Wave, Yes...). */
+const ROBOT: Record<ClipEvent, string> = {
+  idle_groove: "Idle",
+  hit_up: "Yes",
+  hit_down: "Punch",
+  hit_left: "Punch",
+  hit_right: "ThumbsUp",
+  mash_charge: "Running",
+  release: "Jump",
+  hold_freeze: "Dance",
+  miss_cringe: "No",
+  defeat: "Death",
+  victory: "Dance",
+  enemy_idle: "Idle",
+  enemy_taunt: "Wave",
+  enemy_hit: "No",
+  enemy_big_hit: "No",
+  enemy_cringe: "No",
+  enemy_victory: "Dance",
+};
+const LOOPING = new Set<string>(["idle_groove", "enemy_idle", "mash_charge", "victory", "enemy_victory", "hold_freeze"]);
+
+export interface CastSource {
+  player: THREE.Object3D;
+  enemy: THREE.Object3D;
+  /** Clips by event name, shared by both (same rig). */
+  clips: Map<string, { clip: THREE.AnimationClip; loop: boolean }>;
+  label: string;
+}
+
+const loader = new GLTFLoader();
+
+async function loadGltf(url: string) {
+  return loader.loadAsync(url);
+}
+
+async function fromManifest(base: string): Promise<CastSource> {
+  const res = await fetch(`${base}models/manifest.json`, { cache: "no-cache" });
+  if (!res.ok) throw new Error(`manifest ${res.status}`);
+  const m = (await res.json()) as Manifest;
+  if (!m.characters?.length) throw new Error("manifest has no character");
+  const byRole = (re: RegExp) => m.characters.find((c) => c.role && re.test(c.role));
+  const pc = byRole(/player|hero/i) ?? m.characters[0];
+  const ec = byRole(/enemy|opponent|boss/i) ?? m.characters.find((c) => c !== pc) ?? pc;
+  const [pg, eg] = await Promise.all([loadGltf(`${base}models/${pc.file}`), ec === pc ? null : loadGltf(`${base}models/${ec.file}`)]);
+  const clips = new Map<string, { clip: THREE.AnimationClip; loop: boolean }>();
+  await Promise.all(
+    m.clips.map(async (c) => {
+      try {
+        const g = await loadGltf(`${base}models/${c.file}`);
+        const clip = (c.name && g.animations.find((a) => a.name === c.name)) || g.animations[0];
+        if (clip) clips.set(c.event, { clip, loop: c.loop ?? LOOPING.has(c.event) });
+      } catch {
+        // A broken clip file is a missing clip: the idle fallback covers it.
+      }
+    }),
+  );
+  // Clips baked into the character file count too, by event name.
+  for (const a of pg.animations) if (!clips.has(a.name)) clips.set(a.name, { clip: a, loop: LOOPING.has(a.name) });
+  const player = pg.scene;
+  const enemy = eg ? eg.scene : SkeletonUtils.clone(pg.scene);
+  return { player, enemy, clips, label: `manifest ${pc.name} vs ${ec.name}` };
+}
+
+async function fromRobot(base: string): Promise<CastSource> {
+  const g = await loadGltf(`${base}models/fallback/RobotExpressive.glb`);
+  const clips = new Map<string, { clip: THREE.AnimationClip; loop: boolean }>();
+  for (const [ev, name] of Object.entries(ROBOT)) {
+    const clip = g.animations.find((a) => a.name === name);
+    if (clip) clips.set(ev, { clip, loop: LOOPING.has(ev) });
+  }
+  return { player: g.scene, enemy: SkeletonUtils.clone(g.scene), clips, label: "RobotExpressive fallback" };
+}
+
+/** Manifest first, the robot when it is missing or broken, a capsule when both fail. */
+export async function loadCast(base: string): Promise<CastSource> {
+  try {
+    return await fromManifest(base);
+  } catch {
+    try {
+      return await fromRobot(base);
+    } catch {
+      const cap = () => {
+        const m = new THREE.Mesh(new THREE.CapsuleGeometry(0.35, 1, 2, 8), new THREE.MeshLambertMaterial({ color: 0xdddddd }));
+        m.position.y = 0.85;
+        const g = new THREE.Group();
+        g.add(m);
+        return g;
+      };
+      return { player: cap(), enemy: cap(), clips: new Map(), label: "capsules" };
+    }
+  }
+}
+
+function blobTexture(): THREE.CanvasTexture {
+  const c = document.createElement("canvas");
+  c.width = c.height = 64;
+  const g = c.getContext("2d")!;
+  const grd = g.createRadialGradient(32, 32, 2, 32, 32, 32);
+  grd.addColorStop(0, "rgba(0,0,0,0.75)");
+  grd.addColorStop(1, "rgba(0,0,0,0)");
+  g.fillStyle = grd;
+  g.fillRect(0, 0, 64, 64);
+  return new THREE.CanvasTexture(c);
+}
+let blobTex: THREE.CanvasTexture | null = null;
+
+/** PS2 look: Lambert everywhere (cheap, skinning kept), optional tint toward a color. */
+function toLambert(root: THREE.Object3D, tint?: THREE.Color): void {
+  root.traverse((o) => {
+    const mesh = o as THREE.Mesh;
+    if (!mesh.isMesh) return;
+    mesh.frustumCulled = false;
+    const conv = (m: THREE.Material) => {
+      const src = m as THREE.MeshStandardMaterial;
+      const out = new THREE.MeshLambertMaterial({
+        color: src.color ? src.color.clone() : new THREE.Color(0xffffff),
+        map: src.map ?? null,
+        emissive: src.emissive ? src.emissive.clone() : new THREE.Color(0),
+        emissiveMap: src.emissiveMap ?? null,
+        transparent: src.transparent,
+        opacity: src.opacity,
+        side: src.side,
+      });
+      if (tint) out.color.lerp(tint, 0.55);
+      return out;
+    };
+    mesh.material = Array.isArray(mesh.material) ? mesh.material.map(conv) : conv(mesh.material);
+  });
+}
+
+const tmp = new THREE.Vector3();
+
+/** One fighter: normalized to 1.8 m, facing +z inside `root`, with a mixer, a blob shadow and bone anchors. */
+export class Fighter {
+  readonly root = new THREE.Group();
+  /** Squash and stretch and knockback live here, above the normalized model. */
+  readonly body = new THREE.Group();
+  private mixer: THREE.AnimationMixer;
+  private actions = new Map<string, THREE.AnimationAction>();
+  private current: THREE.AnimationAction | null = null;
+  private idleName: ClipEvent;
+  private head: THREE.Object3D | null = null;
+  private hands: THREE.Object3D[] = [];
+  private feet: THREE.Object3D[] = [];
+  private squash = 0;
+  private knock = 0;
+  private frozen = false;
+  private height = 1.8;
+
+  constructor(model: THREE.Object3D, clips: CastSource["clips"], private role: "player" | "enemy", tint?: THREE.Color) {
+    toLambert(model, tint);
+    model.updateMatrixWorld(true);
+    // Skinned bounds read the bone matrices, which are only filled by a skeleton update.
+    model.traverse((o) => (o as THREE.SkinnedMesh).isSkinnedMesh && (o as THREE.SkinnedMesh).skeleton.update());
+    const box = new THREE.Box3().setFromObject(model);
+    const h = box.max.y - box.min.y;
+    const ok = Number.isFinite(h) && h > 0.05;
+    const k = ok ? this.height / h : 1;
+    if (!ok) box.min.y = 0;
+    model.scale.multiplyScalar(k);
+    model.position.y -= box.min.y * k;
+    this.body.add(model);
+    this.root.add(this.body);
+
+    blobTex ??= blobTexture();
+    const blob = new THREE.Mesh(
+      new THREE.PlaneGeometry(1.4, 1.4),
+      new THREE.MeshBasicMaterial({ map: blobTex, transparent: true, depthWrite: false }),
+    );
+    blob.rotation.x = -Math.PI / 2;
+    blob.position.y = 0.015;
+    this.root.add(blob);
+
+    model.traverse((o) => {
+      if (!(o as THREE.Bone).isBone) return;
+      const n = o.name;
+      if (/_end$|top/i.test(n)) return;
+      if (!this.head && /head/i.test(n)) this.head = o;
+      if (/hand$|hand\.|palm2/i.test(n) && this.hands.length < 2 && !/index|thumb|middle|ring|pinky/i.test(n)) this.hands.push(o);
+      if (/foot/i.test(n) && this.feet.length < 2) this.feet.push(o);
+    });
+
+    this.mixer = new THREE.AnimationMixer(model);
+    for (const [ev, { clip, loop }] of clips) {
+      const a = this.mixer.clipAction(clip);
+      if (!loop) {
+        a.setLoop(THREE.LoopOnce, 1);
+        a.clampWhenFinished = true;
+      }
+      this.actions.set(ev, a);
+    }
+    this.idleName = role === "player" ? "idle_groove" : this.actions.has("enemy_idle") ? "enemy_idle" : "idle_groove";
+    this.mixer.addEventListener("finished", (e) => {
+      if (e.action === this.current) this.play(this.idleName);
+    });
+    this.play(this.idleName);
+  }
+
+  /** Cross fade to the clip of an event (0.12 s); a missing clip is idle plus a squash. */
+  play(ev: ClipEvent | string, speed = 1): void {
+    this.frozen = false;
+    const next = this.actions.get(ev) ?? this.actions.get(this.idleName) ?? null;
+    if (!this.actions.has(ev)) this.squash = 1;
+    if (!next) return;
+    next.enabled = true;
+    next.paused = false;
+    next.setEffectiveTimeScale(speed);
+    next.setEffectiveWeight(1);
+    const oneShot = next.loop === THREE.LoopOnce;
+    if (next !== this.current || !next.isRunning() || oneShot) {
+      next.reset();
+      if (this.current && this.current !== next) next.crossFadeFrom(this.current, 0.12, false);
+      next.play();
+    }
+    this.current = next;
+  }
+
+  /** HOLD: freeze the current pose (pause the action). */
+  freeze(on: boolean): void {
+    this.frozen = on;
+    if (this.current) this.current.paused = on;
+  }
+
+  knockback(amount: number): void {
+    this.knock = Math.max(this.knock, amount);
+    this.squash = Math.max(this.squash, 0.6);
+  }
+
+  bump(): void {
+    this.squash = Math.max(this.squash, 0.5);
+  }
+
+  /** dt is visual (time scaled); beatPhase drives the groove bob. */
+  update(dt: number, beatPhase: number, energy: number): void {
+    this.mixer.update(dt);
+    this.squash = Math.max(0, this.squash - dt * 4);
+    this.knock = Math.max(0, this.knock - dt * 3);
+    const bob = this.frozen ? 0 : Math.pow(1 - beatPhase, 3) * (0.03 + 0.04 * energy);
+    const s = this.squash * Math.sin(this.squash * 9) * 0.12;
+    this.body.scale.set(1 + s * 0.5 + bob * 0.5, 1 - s - bob, 1 + s * 0.5 + bob * 0.5);
+    // Knockback pushes away from the other fighter along local -z.
+    this.body.position.z = -this.knock * 0.6;
+    this.body.rotation.x = -this.knock * 0.25;
+  }
+
+  private world(o: THREE.Object3D | undefined, fallbackY: number, out: { x: number; y: number; z: number }): void {
+    if (o) o.getWorldPosition(tmp);
+    else this.root.localToWorld(tmp.set(0, fallbackY, 0));
+    out.x = tmp.x;
+    out.y = tmp.y;
+    out.z = tmp.z;
+  }
+
+  headPos(out: { x: number; y: number; z: number }): void {
+    this.world(this.head ?? undefined, this.height * 0.92, out);
+  }
+  chestPos(out: { x: number; y: number; z: number }): void {
+    this.world(undefined, this.height * 0.62, out);
+  }
+  handsPos(out: { x: number; y: number; z: number }): void {
+    if (this.hands.length === 2) {
+      const a = this.hands[0].getWorldPosition(new THREE.Vector3());
+      const b = this.hands[1].getWorldPosition(tmp);
+      out.x = (a.x + b.x) / 2;
+      out.y = (a.y + b.y) / 2;
+      out.z = (a.z + b.z) / 2;
+    } else this.world(this.hands[0], this.height * 0.55, out);
+  }
+  feetPos(out: { x: number; y: number; z: number }): void {
+    this.root.getWorldPosition(tmp);
+    out.x = tmp.x;
+    out.y = tmp.y;
+    out.z = tmp.z;
+  }
+  headBone(): THREE.Object3D {
+    return this.head ?? this.body;
+  }
+  get kind(): "player" | "enemy" {
+    return this.role;
+  }
+
+  dispose(): void {
+    this.mixer.stopAllAction();
+    this.root.removeFromParent();
+  }
+}
