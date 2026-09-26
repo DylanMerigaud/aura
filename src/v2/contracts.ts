@@ -85,7 +85,7 @@ export type CoreEvent =
   | { kind: "dropSoon"; beat: number }
   | { kind: "drop"; beat: number }
   | { kind: "phase2" }
-  /** Dance battle turns: the announcer calls YOUR MOVE / HIS MOVE; player prompts only exist in a player turn. */
+  /** Dance battle turns, shown by the camera and the performer (no label, no call); player prompts only exist in a player turn. */
   | { kind: "turn"; who: Turn; beat: number; lengthBeats: number }
   /** The opponent performs a canon move (a gesture key from src/anim, e.g. "boat_sweep") on his turn. */
   | { kind: "opponentMove"; move: string; beat: number; lengthBeats: number }

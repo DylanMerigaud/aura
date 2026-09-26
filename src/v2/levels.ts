@@ -80,7 +80,7 @@ function base(id: number, track: string, stage: StageKey, artKey: string, neon: 
  * 44, 52, 60); THE DROP on beat 68 (energy 0.38 on 64 to 67, then 0.95 for the rest, the largest rise of the
  * track); full section to the end.
  *
- * Dance battle turns (YOUR MOVE / HIS MOVE), TAP ONLY (tap, tap fast, hold), difficulty ramping 0.2 to 0.8 over
+ * Dance battle turns (the player, then him), MOBILE ONLY (swipe, alternate taps, hold), difficulty ramping 0.2 to 0.8 over
  * the 40 s through density, windows (tighter with the combo, src/v2/core.ts) and the tempo rule. HIT pairs stay at
  * least 2 beats apart and never repeat a move (scripts/eval-animation.ts k7, k10): `dir` is the dance move the hero
  * plays on the hit, not an input.
