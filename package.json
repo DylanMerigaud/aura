@@ -9,6 +9,7 @@
     "build": "node scripts/build.mjs",
     "zip": "node scripts/build.mjs && cd dist && rm -f ../aura-itch.zip && zip -qr ../aura-itch.zip .",
     "test": "vitest run",
+    "test:map": "vitest run tests/map",
     "typecheck": "tsc --noEmit",
     "gen:campaign": "tsx scripts/gen-campaign.ts",
     "gen:art": "tsx scripts/gen-art.ts",
