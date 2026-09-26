@@ -34,7 +34,7 @@ Combo multiplier on score and aura gain: x2 at a 10 combo, x3 at 25, x4 at 50. A
 
 Pressing the wrong arrow on a HIT or a COMBO is graded "cringe", not just a miss: it costs more aura than a normal miss and gets its own sound, screen shake and CRINGE popup, so button mashing the wrong direction is actively punished.
 
-Latency calibration: press the down arrow on the title screen. A 16 tick metronome plays, tap SPACE on each click after the first four, and the median offset between your taps and the beat is saved and used to align every future input to the audio clock. Redo it if your speakers or headphones change.
+Latency calibration: press the down arrow on the title screen. A 16 tick metronome plays, tap SPACE on each click after the first four, and the median residual between your taps and the heard beat is saved and applied on top of the latency the browser reports. Redo it if your speakers or headphones change.
 
 ## Campaign
 
@@ -90,7 +90,7 @@ All of this generation runs offline at build time, cached by content hash. The p
 - `src/qte/validate.ts`: validates a generated level against the beat grid and content rules.
 - `src/ui/draw.ts`, `src/ui/progress.ts`: canvas text and panel helpers, localStorage progress and rank.
 
-The `AudioContext` clock is the single source of truth for timing: the music schedules itself against `ctx.currentTime`, not against frame timestamps, with a 25 ms timer that schedules 120 ms ahead, so playback stays sample-accurate even if a frame is dropped. Every keyboard and touch input is timestamped the same way (`src/qte/input.ts` converts the DOM event's timestamp into `AudioContext` time), so judging never drifts from what the player actually heard. The QTE runner itself is pure beat-grid math with no DOM or audio dependency, which is what makes it directly unit testable and reusable headlessly.
+The `AudioContext` clock is the single source of truth for timing: the music schedules itself against `ctx.currentTime`, not against frame timestamps, with a 25 ms timer that schedules 120 ms ahead, so playback stays sample-accurate even if a frame is dropped. Every keyboard and touch input is mapped onto the same clock: `heardTime()` in `src/audio/engine.ts` uses `AudioContext.getOutputTimestamp()` to turn the DOM event's timestamp into the audio time the player was hearing at that instant (output latency included), and the note lane is drawn from that same heard clock, so what you see, what you hear and what gets judged agree. The QTE runner itself is pure beat-grid math with no DOM or audio dependency, which is what makes it directly unit testable and reusable headlessly.
 
 That headless reuse is what powers `scripts/snap.ts`, `scripts/snap-screens.ts` and `scripts/sim.ts`: they import the real `src/` game code into Node and run it against a fake `AudioContext` and a fake DOM (`scripts/fake-env.ts`), rendering with `@napi-rs/canvas` instead of a browser canvas. That is how the balance table above got generated, and how screenshots got taken, without ever opening a browser.
 

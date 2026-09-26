@@ -1,16 +1,17 @@
-12:00 CEST
-GREEN: full game live: 5 levels (Gemini script + art), Gradium voices, 4 QTE types, camera work, title, story, results, progress, touch, calibration
-RED: nothing blocking. Not yet played on a real device by a human (no browser allowed to the agent)
+12:08 CEST
+GREEN: full game live and hardened for Safari/iPhone: 5 levels (Gemini script + art), 30 Gradium voice lines, 4 QTE types, camera work, title, story, results, progress, touch, calibration, itch zip built
+RED: NOT YET PLAYED BY A HUMAN on a real device, and real fps not measured (the agent may not open a browser)
 PLAY: https://dylanmerigaud.github.io/aura/  (add ?debug=1 for the fps meter)
-NEED FROM DYLAN: play level 1 with sound on (laptop, then phone) and tell me: timing late, early, or fine; anything broken
+NEED FROM DYLAN: play level 1 with sound on at the URL (laptop, then phone with ?debug=1 for the fps counter) and tell me: timing late, early or fine, the fps, anything broken
 
 ## Milestones
 - 12:00 playable battle: DONE 11:26
 - 13:00 all QTE types, taunts, Gemini level, win/lose: DONE 11:26
 - 14:30 five levels, story cards, Gradium voices, title, progress, touch: DONE 11:40 (touch untested on device)
-- 16:00 polish: camera list, particles, poses, boss phase 2, cringe mode, fps meter, itch zip: DONE 11:57, polishing continues
+- 16:00 polish: camera list, particles, poses, boss phase 2, cringe mode, fps meter, itch zip: DONE 11:57
+- 12:05 browser review by a second agent: 12 findings, all fixed (audio unlock on iPhone, iOS interruption resume, silent switch, a freeze on an empty MASH, roundRect polyfill, touch menus)
 - 17:30 freeze, README, docs/apis.md: README and docs/apis.md written
-- 18:15 final push, itch zip, itch page copy: copy below
+- 18:15 final push, itch zip, itch page copy: DONE 12:08, copy below. Zip: `pnpm zip` writes aura-itch.zip at the repo root (3 MB)
 
 ## Balance (pnpm sim, 6 runs per cell, bots: timing error / miss rate)
 pro (20 ms / 2%) wins every level; good (45 ms / 8%) wins every level, level 5 close;
