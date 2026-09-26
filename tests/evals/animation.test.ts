@@ -218,16 +218,20 @@ describe("animation gate", () => {
       bpm: 120,
       bars: 20,
       slots: [
-        { b: 8, dur: 0, type: "hit", move: "up" },
-        { b: 9, dur: 0, type: "hit", move: "left" },
-        { b: 12, dur: 0, type: "hit", move: "left" },
-        { b: 14, dur: 2, type: "combo", move: "up down left" },
-        { b: 18, dur: 0, type: "hit", move: "left" },
+        // Past the 16 beat onboarding, where k10 does not count repeats.
+        { b: 24, dur: 0, type: "hit", move: "up" },
+        { b: 25, dur: 0, type: "hit", move: "left" },
+        { b: 28, dur: 0, type: "hit", move: "left" },
+        { b: 30, dur: 2, type: "combo", move: "up down left" },
+        { b: 34, dur: 0, type: "hit", move: "left" },
       ],
     };
     const checks = animationChecks({ ...b, charts: [chart] });
     expect(verdict(checks, "k7_held_beat", "c")).toEqual(["fail"]);
-    expect(gates(checks, "k10_no_repeat", "c")[0].evidence.repeats).toEqual(["left@9 and @12"]);
+    expect(gates(checks, "k10_no_repeat", "c")[0].evidence.repeats).toEqual(["left@25 and @28"]);
+    // The same repeat inside the onboarding is allowed.
+    const early: Chart = { ...chart, id: "e", slots: [{ b: 4, dur: 0, type: "hit", move: "up" }, { b: 6, dur: 0, type: "hit", move: "up" }] };
+    expect(verdict(animationChecks({ ...b, charts: [early] }), "k10_no_repeat", "e")).toEqual(["pass"]);
   });
 
   it("keeps its thresholds where docs/evals.md says they are", () => {
