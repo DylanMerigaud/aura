@@ -1,5 +1,5 @@
-// Transient battle overlays: grade popups, the 67 burst number on release, the taunt
-// subtitle with the opponent portrait, and the count in with the level title punch. Each is a
+// Transient battle overlays: grade popups, the 67 burst number on release, and the
+// count in with the level title punch. Each is a
 // small pool of reused nodes: CSS keyframes are restarted with replay() rather than creating and
 // destroying nodes every trigger.
 import type { CoreEvent, LevelV2 } from "../../contracts";
@@ -36,17 +36,6 @@ export function buildPopups(base: string) {
   const comboPop = el("div", "combo-popup");
   root.appendChild(comboPop);
 
-  const tauntBar = el("div", "taunt-bar hidden");
-  const tauntPortrait = el("div", "taunt-portrait");
-  const tauntText = el("div", "taunt-text");
-  const tauntName = el("div", "taunt-name");
-  tauntBar.appendChild(tauntPortrait);
-  const tauntBody = el("div", "taunt-body");
-  tauntBody.appendChild(tauntName);
-  tauntBody.appendChild(tauntText);
-  tauntBar.appendChild(tauntBody);
-  root.appendChild(tauntBar);
-  let tauntTimer: ReturnType<typeof setTimeout> | null = null;
 
   const countIn = el("div", "count-in hidden");
   const countNum = el("div", "count-num");
@@ -124,17 +113,9 @@ export function buildPopups(base: string) {
       replay(burst, "pop-big");
       return;
     }
-    if (e.kind === "taunt") {
-      tauntPortrait.style.backgroundImage = `url("${base}art/opp-${level.artKey}.jpg")`;
-      tauntPortrait.style.setProperty("--opp-color", level.opponent.color || "#ffffff");
-      tauntName.textContent = level.opponent.name.toUpperCase();
-      tauntText.textContent = e.text;
-      tauntBar.classList.remove("hidden");
-      replay(tauntBar, "slide-up");
-      if (tauntTimer) clearTimeout(tauntTimer);
-      tauntTimer = setTimeout(() => tauntBar.classList.add("hidden"), 3200);
-      return;
-    }
+    // The big taunt card is gone (addendum 16:15 point 3): the line is a speech bubble on his head
+    // (src/render3d/nameplates.ts say, fired by the stage on the same event).
+    if (e.kind === "taunt") return;
     if (e.kind === "countIn") {
       countIn.classList.remove("hidden");
       countNum.textContent = e.n === 1 ? "FIGHT!" : String(e.n - 1);
@@ -156,8 +137,6 @@ export function buildPopups(base: string) {
     if (e.kind === "end") {
       titlePunch.classList.add("hidden");
       turnCallNode.classList.add("hidden");
-      tauntBar.classList.add("hidden");
-      if (tauntTimer) clearTimeout(tauntTimer);
     }
   }
 
@@ -167,8 +146,6 @@ export function buildPopups(base: string) {
     turnCallNode.classList.add("hidden");
     if (titleTimer) clearTimeout(titleTimer);
     if (turnTimer) clearTimeout(turnTimer);
-    tauntBar.classList.add("hidden");
-    if (tauntTimer) clearTimeout(tauntTimer);
   }
 
   return { root, event, reset };

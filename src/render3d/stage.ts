@@ -15,6 +15,8 @@ import { LAYOUT, MOVE_S, SUBJECT, pickShot, punchZoom, rampScale, sameFamily, sh
 import { Vfx } from "./vfx";
 import { createComposite } from "./vfx/composite";
 import { Nameplates } from "./nameplates";
+import { playerRank } from "../v2/xp";
+import { DEFAULT_HANDLE, getLoadout } from "../loadout/state";
 
 const WHIP = 0.1;
 
@@ -432,7 +434,10 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
       player.root.rotation.y = Math.PI;
       enemy.root.position.set(...LAYOUT.enemy);
       scene.add(player.root, enemy.root);
-      plates.enemyHandle = (lv.opponent as { handle?: string }).handle ?? "@" + lv.opponent.name.toLowerCase().replace(/\W+/g, "_");
+      plates.enemyHandle = lv.opponent.handle ?? "@" + lv.opponent.name.toLowerCase().replace(/\W+/g, "_");
+      plates.enemyRank = lv.opponent.rank ?? "Sigma";
+      plates.playerHandle = getLoadout().handle ?? DEFAULT_HANDLE;
+      plates.playerRank = playerRank();
       // Fresh director for the battle: the count in on the two shot, both fighters facing across the pool.
       cut("twoShot");
       hisTurn = false;
@@ -553,7 +558,8 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
           crowd.jump(0.4);
           break;
         case "taunt":
-          // He talks over his move without breaking it.
+          // He talks over his move without breaking it: a speech bubble on his head for 2 s.
+          plates.say(e.text);
           if (!enemy?.gesturing) playE("enemy_taunt");
           if (!ending) cutTo(pickShot(shot, Math.random, { taunt: true }));
           break;
