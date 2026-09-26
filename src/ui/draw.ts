@@ -21,3 +21,20 @@ export function cover(g: CanvasRenderingContext2D, im: HTMLImageElement | null, 
     g.fillRect(0, 0, W, H);
   }
 }
+
+/** Word-wrapped text; returns the y after the last line. */
+export function wrap(g: CanvasRenderingContext2D, s: string, x: number, y: number, maxW: number, size: number, color: string, weight = 800): number {
+  g.font = `${weight} ${size}px "Arial Black", Impact, sans-serif`;
+  const words = s.split(" ");
+  let line = "";
+  for (const w of words) {
+    const t = line ? `${line} ${w}` : w;
+    if (g.measureText(t).width > maxW && line) {
+      text(g, line, x, y, color, size, "left", weight);
+      y += size * 1.25;
+      line = w;
+    } else line = t;
+  }
+  if (line) text(g, line, x, y, color, size, "left", weight);
+  return y + size * 1.25;
+}

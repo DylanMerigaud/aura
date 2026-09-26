@@ -70,8 +70,6 @@ export class Character {
       g.fillRect(-40, -30, 14, 26);
     } else if (h === "crown") {
       g.fillStyle = "#ffd23f";
-      g.shadowColor = "#ffd23f";
-      g.shadowBlur = 30;
       g.beginPath();
       g.moveTo(-30, -48);
       g.lineTo(-30, -80);
@@ -96,8 +94,7 @@ export class Character {
     g.save();
     g.translate(this.x, this.y);
     g.scale(this.facing * scale, scale * r.squash);
-    g.shadowColor = this.color;
-    g.shadowBlur = 24;
+
     g.lineCap = "round";
     g.lineJoin = "round";
     const hipY = -150 - bob * 0.3;

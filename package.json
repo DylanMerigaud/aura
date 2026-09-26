@@ -13,7 +13,9 @@
     "gen:campaign": "tsx scripts/gen-campaign.ts",
     "gen:art": "tsx scripts/gen-art.ts",
     "gen:voices": "tsx scripts/gen-voices.ts",
-    "deploy": "bash scripts/deploy-pages.sh"
+    "pages": "bash scripts/deploy-pages.sh",
+    "sim": "tsx scripts/sim.ts",
+    "snap": "tsx scripts/snap.ts"
   },
   "devDependencies": {
     "@google/genai": "^2.24.0",

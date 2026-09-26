@@ -451,12 +451,21 @@ export class Battle {
     if (now < 0) this.countIn(g, now);
   }
 
+  private floorGrad = new Map<string, CanvasGradient>();
   private glowFloor(g: CanvasRenderingContext2D, x: number, k: number, rgba: string) {
-    const grd = g.createRadialGradient(x, GROUND, 10, x, GROUND, 260);
-    grd.addColorStop(0, rgba + (0.2 + k * 0.5) + ")");
-    grd.addColorStop(1, rgba + "0)");
+    let grd = this.floorGrad.get(rgba);
+    if (!grd) {
+      grd = g.createRadialGradient(0, 0, 10, 0, 0, 260);
+      grd.addColorStop(0, rgba + "0.7)");
+      grd.addColorStop(1, rgba + "0)");
+      this.floorGrad.set(rgba, grd);
+    }
+    g.save();
+    g.translate(x, GROUND);
+    g.globalAlpha = 0.3 + k * 0.7;
     g.fillStyle = grd;
-    g.fillRect(x - 280, GROUND - 200, 560, 330);
+    g.fillRect(-280, -200, 560, 330);
+    g.restore();
   }
 
   private crowd(g: CanvasRenderingContext2D, off: { x: number; y: number }, baseY: number, scale: number, color: string, jump: number, n: number) {
@@ -485,9 +494,10 @@ export class Battle {
     g.translate(x, y);
     g.rotate(ROT[dir]);
     g.globalAlpha = alpha;
+    g.globalCompositeOperation = "lighter";
+    g.drawImage(this.parts.sprites[color === "#35e0ff" ? 0 : color === "#fff36b" ? 2 : 1], -size * 1.8, -size * 1.8, size * 3.6, size * 3.6);
+    g.globalCompositeOperation = "source-over";
     g.fillStyle = color;
-    g.shadowColor = color;
-    g.shadowBlur = 18;
     g.beginPath();
     const s = size;
     g.moveTo(s, 0);
@@ -499,7 +509,6 @@ export class Battle {
     g.lineTo(0, s * 0.8);
     g.closePath();
     g.fill();
-    g.shadowBlur = 0;
     g.strokeStyle = "#fff";
     g.lineWidth = 3;
     g.stroke();

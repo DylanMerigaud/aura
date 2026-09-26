@@ -10,7 +10,8 @@ import { W, H } from "./game/camera";
 import { img } from "./game/assets";
 import { setOffset, getOffset } from "./game/latency";
 import { loadProgress, saveProgress, rank } from "./ui/progress";
-import { text, cover } from "./ui/draw";
+import { text, cover, wrap } from "./ui/draw";
+import { Particles } from "./game/particles";
 
 const campaign = campaignData as unknown as Campaign;
 const levels = campaign.levels;
@@ -145,10 +146,19 @@ bindInput(canvas, onInput, touchMode);
 
 // ---------------------------------------------------------------- drawing screens
 
+const titleParts = new Particles(["#35e0ff", "#ff3df2", "#fff36b"]);
 function drawTitle(t: number) {
   cover(g, img("title"), W, H, Math.sin(t * 0.3) * 20);
   g.fillStyle = "rgba(5,2,15,0.35)";
   g.fillRect(0, 0, W, H);
+  // Two auras clashing under the logo.
+  for (let i = 0; i < 3; i++) {
+    titleParts.emit(W * 0.2 + Math.random() * 80, 560 + Math.random() * 60, 260 + Math.random() * 200, -60 - Math.random() * 120, 1.2, 40, 0);
+    titleParts.emit(W * 0.8 - Math.random() * 80, 560 + Math.random() * 60, -260 - Math.random() * 200, -60 - Math.random() * 120, 1.2, 40, 1);
+  }
+  if (Math.random() < 0.3) titleParts.burst(W / 2, 480, 4, 200, 2, 30);
+  titleParts.update(1 / 60);
+  titleParts.draw(g);
   const pulse = 1 + Math.sin(t * 4) * 0.03;
   g.save();
   g.translate(W / 2, 250);
@@ -217,11 +227,11 @@ function drawStory(t: number) {
     g.restore();
   }
   text(g, `LEVEL ${L.id}  ${L.place.toUpperCase()}`, 80, 150, "#35e0ff", 26, "left");
-  text(g, L.story[0], 80, 250, "#fff", 36, "left", 800);
-  if (t > 0.6) text(g, L.story[1], 80, 310, "#fff", 28, "left", 700);
-  text(g, `VS ${L.opponent.name.toUpperCase()}`, 80, 420, "#ff3df2", 54, "left");
-  text(g, L.opponent.persona, 80, 475, "#ddd", 20, "left", 700);
-  if (t > 0.8 && Math.sin(t * 5) > -0.3) text(g, "SPACE / TAP TO FIGHT", 80, 600, "#fff36b", 30, "left");
+  let y = wrap(g, L.story[0], 80, 205, 720, 27, "#fff");
+  if (t > 0.6) y = wrap(g, L.story[1], 80, y + 4, 720, 22, "#ddd", 700);
+  text(g, `VS ${L.opponent.name.toUpperCase()}`, 80, y + 40, L.opponent.color || "#ff3df2", 50, "left");
+  wrap(g, L.opponent.persona, 80, y + 90, 720, 18, "#ccc", 700);
+  if (t > 0.8 && Math.sin(t * 5) > -0.3) text(g, "SPACE / TAP TO FIGHT", 80, 612, "#fff36b", 30, "left");
 }
 
 function drawResults(t: number) {
