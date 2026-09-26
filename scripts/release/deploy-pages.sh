@@ -136,6 +136,7 @@ elif [ "$DRY_RUN" -eq 1 ]; then
   echo "dry run, would commit \"$MSG\" with:"
   git -C "$SITE" status --short | sed -n '1,40p'
   echo "($(git -C "$SITE" status --short | wc -l | tr -d ' ') paths changed, nothing committed, nothing pushed)"
+  echo "(the URLs below still serve the previous deploy)"
 else
   git -C "$SITE" commit --quiet -m "$MSG"
   git -C "$SITE" push --quiet origin HEAD:gh-pages || die "push refused (a deploy landed meanwhile?): run it again"
@@ -144,7 +145,6 @@ fi
 
 # 5. Where it lives.
 echo
-[ "$DRY_RUN" -eq 0 ] || echo "(dry run: the URLs below still serve the previous deploy)"
 if [ -n "$SUBDIR" ]; then
   echo "URL: $BASE$SUBDIR/"
   echo "root, unchanged: $BASE"
