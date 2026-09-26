@@ -1,5 +1,5 @@
 // The black playground (addendum 16:00 point 1): a black void, a dark floor with one warm pool of light
-// from above that falls off to black at the ring (never a lit beige disc, freeze item 2), the ring as a thin white line, a faint light beam
+// from above that falls off to black before the ring (never a lit beige disc, freeze item 2), the ring as a thin white line, a faint light beam
 // with dust motes floating in it. No decor, no neon: the aura VFX and the characters' own colors are the
 // only color on screen. Every stage key renders this same arena; a level only changes the light color.
 // Lights: a dim hemisphere (the pool's warm bounce from below), the spot (the one shadow caster) and a
@@ -10,12 +10,12 @@ import { LAYOUT } from "./director";
 
 /** Radius of the ring line on the floor (the fighters stand at about 3 m from the centre). */
 const RING_R = 4.8;
-/** Radius of the light pool on the floor: the pool reaches black at the ring line. */
-const POOL_R = RING_R;
+/** Radius of the light pool on the floor: the pool reaches black before the ring line, so the ring sits in the dark. */
+const POOL_R = RING_R * 0.82;
 /** The floor's own color: near black, so outside the pool it IS the void and inside it only the light shows. */
-export const FLOOR_COLOR = 0x0e0d0c;
-/** Spot cone: its edge lands on the ring, the penumbra (a share of the cone) makes the soft falloff to it. */
-export const SPOT_PENUMBRA = 0.3;
+export const FLOOR_COLOR = 0x0a0a0a;
+/** Spot cone: its edge lands at the pool edge, inside the ring; the wide penumbra (a share of the cone) makes the soft falloff. */
+export const SPOT_PENUMBRA = 0.6;
 const SPOT_Y = 11;
 const DUST_N = 220;
 
@@ -27,7 +27,9 @@ export const ARENA_LIGHT: Record<StageKey, string> = {
   parvis: "#fff1dc",
   stage: "#fff1dc",
 };
-export const RIM_COLOR = "#7fa6ff";
+/** Cool and desaturated (a moonlit blue, never a neon one), kept dim so the crowd stays silhouettes. */
+export const RIM_COLOR = "#8a9cc0";
+export const RIM_INTENSITY = 0.55;
 const WHITE = new THREE.Color(1, 1, 1);
 
 /** Soft round dot for the dust motes. */
@@ -150,10 +152,10 @@ export class RingSet {
     this.group.add(this.dust);
 
     // A dim hemisphere: the pool's warm bounce from the floor lights the faces a little from below.
-    this.hemi = new THREE.HemisphereLight(0x2a3040, 0x6b5a46, 0.9);
+    this.hemi = new THREE.HemisphereLight(0x1a1d24, 0x3a3128, 0.5);
     this.scene.add(this.hemi);
 
-    const key = new THREE.SpotLight(this.light, this.baseSpot, 0, Math.atan(RING_R / SPOT_Y), SPOT_PENUMBRA, 0);
+    const key = new THREE.SpotLight(this.light, this.baseSpot, 0, Math.atan(POOL_R / SPOT_Y), SPOT_PENUMBRA, 0);
     key.position.set(0, SPOT_Y, (LAYOUT.player[2] + LAYOUT.enemy[2]) / 2);
     key.target.position.set(0, 0, key.position.z);
     key.castShadow = true;
@@ -166,7 +168,7 @@ export class RingSet {
     this.key = key;
 
     // Cool rim from behind the crowd (behind the enemy, high): outlines the crowd and the fighters' backs.
-    this.rimLight = new THREE.DirectionalLight(RIM_COLOR, 1.6);
+    this.rimLight = new THREE.DirectionalLight(RIM_COLOR, RIM_INTENSITY);
     this.rimLight.position.set(0, 5, -12);
     this.scene.add(this.rimLight);
   }
