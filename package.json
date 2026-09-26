@@ -10,6 +10,7 @@
     "zip": "tsx scripts/release/build-itch.ts",
     "test": "vitest run",
     "test:live": "vitest run tests/live",
+    "test:map": "vitest run tests/map",
     "typecheck": "tsc --noEmit",
     "gen:campaign": "tsx scripts/gen-campaign.ts",
     "gen:art": "tsx scripts/gen-art.ts",
