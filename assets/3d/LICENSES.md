@@ -1,6 +1,6 @@
 # Asset licenses
 
-All characters and animations in this pack come from Adobe Mixamo (https://www.mixamo.com), downloaded through a logged in Mixamo account and converted from FBX to glb locally. No other source was used.
+All characters and most animations in this pack come from Adobe Mixamo (https://www.mixamo.com), downloaded through a logged in Mixamo account and converted from FBX to glb locally. The three clips under `mocap/` are the one exception: our own motion capture, listed in their own section below.
 
 Adobe's own FAQ (https://helpx.adobe.com/creative-cloud/faq/mixamo-faq.html, "What type of projects can I create with Mixamo?") states: "You can use both characters and animations royalty free for personal, commercial, and non-profit projects including: Incorporate characters into illustrations and graphic art. 3D print characters. Create films. Create video games." This covers AURA's use as a game asset, commercial or not, with no attribution requirement and no per-asset fee.
 
@@ -11,6 +11,14 @@ One line per source file below, all Mixamo, same license as stated above.
 - characters/mannequin_player.glb, Mixamo "Mannequin", https://www.mixamo.com
 - characters/ninja_enemy.glb, Mixamo "Ninja", https://www.mixamo.com
 - characters/kaya_crowd.glb, Mixamo "Kaya", https://www.mixamo.com
+- characters/james_player_streetwear.glb, Mixamo "James", https://www.mixamo.com
+- characters/abe_enemy_elder.glb, Mixamo "Abe", https://www.mixamo.com
+- characters/sophie_crowd_casual.glb, Mixamo "Sophie", https://www.mixamo.com
+- characters/sportygranny_crowd_older.glb, Mixamo "Sporty Granny", https://www.mixamo.com
+- characters/michelle_crowd_darker.glb, Mixamo "Michelle", https://www.mixamo.com
+- characters/elizabeth_crowd_darker.glb, Mixamo "Elizabeth", https://www.mixamo.com
+- characters/adam_crowd_sporty.glb, Mixamo "Adam", https://www.mixamo.com
+- characters/josh_crowd_jacket.glb, Mixamo "Josh", https://www.mixamo.com
 
 ## Animation clips
 
@@ -44,9 +52,14 @@ One line per source file below, all Mixamo, same license as stated above.
 - anims/crowd_jump_excited.glb, Mixamo "Excited" (Super Excited), https://www.mixamo.com
 - anims/crowd_idle.glb, Mixamo "Happy Idle" (Variation 1), https://www.mixamo.com
 - anims/walk_catwalk_strut.glb, Mixamo "Catwalk Walk Forward HighKnees" (In Place), https://www.mixamo.com
+- anims/crowd_bounce_bboy.glb, Mixamo "Bboy Hip Hop Move" (Variation One), https://www.mixamo.com
+
+## Motion capture clips (our own capture)
+
+- mocap/boat_arm_sweep.glb, mocap/over_shoulder_look.glb, mocap/chinup_stare.glb: our own motion capture, not Mixamo. Real reference footage (the original Pacu Jalur boat dancer TikTok and two real aura-battle recreation TikToks, credited in `mocap/manifest.json`'s `source` field per clip) run through MediaPipe Pose to extract 3D body landmarks, retargeted by hand onto the `mixamorig:` bone names and rest pose of `characters/mannequin_player.glb`. The reference video files themselves were never copied into this repo, only the motion (joint rotations) derived from them, on our own rig. See `mocap/manifest.json` for the `quality` note on each clip (jitter, approximation, what is and is not animated).
 
 ## Notes
 
-- All characters downloaded "with skin", FBX Binary, then resized to 512x512 textures during glb conversion to fit the size budget (a purely technical resize, license unaffected).
+- All characters downloaded "with skin", FBX Binary, then resized to 512x512 textures during glb conversion to fit the size budget (a purely technical resize, license unaffected). Two characters (adam_crowd_sporty.glb, sportygranny_crowd_older.glb) also got webp texture compression on top to clear the 4 MB cap, same technical note.
 - All animation clips downloaded "without skin", FBX Binary, 30 fps, no keyframe reduction, then converted to glb (no mesh, rig and curves only, same Mixamo skeleton as the three characters).
 - No commercial license was purchased and none was needed: Mixamo access itself is free, and the FAQ line above confirms royalty free use with no attribution requirement.
