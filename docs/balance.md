@@ -17,16 +17,16 @@ accuracy (Perfect 1, Great 0.7, Ok 0.3), best combo over all runs (median in par
 best combo flame tier, then the end of battle aura meter as min / median / max and a six bin histogram:
 [KO loss, -1..-0.5, -0.5..0, 0..0.5, 0.5..1, KO win].
 
-## L1 The club, peak phonk hour (17 events, 39.7 s)
+## L1 Chatelet, 2am (17 events, 39.7 s)
 
 | bot | median score | win rate | accuracy | best combo | stars | tier | aura meter min / median / max [bins] |
 |-----|-------------:|---------:|---------:|-----------:|------:|-----:|--------------------------------------|
-| perfect | 7260 | 100.0% | 100.0% | 13 (13) | 3 | 1 | 1.00 / 1.00 / 1.00 [0 0 0 0 0 500] |
-| good | 6860 | 100.0% | 89.0% | 16 (13) | 3 | 2 | 0.47 / 1.00 / 1.00 [0 0 0 1 79 420] |
-| average | 4490 | 99.2% | 68.3% | 17 (9) | 3 | 2 | -0.12 / 0.68 / 1.00 [0 0 4 103 330 63] |
-| masher | 430 | 0.0% | 9.6% | 4 (1) | 0 | 0 | -1.00 / -1.00 / -0.41 [399 100 1 0 0 0] |
+| perfect | 8460 | 100.0% | 100.0% | 15 (15) | 3 | 2 | 1.00 / 1.00 / 1.00 [0 0 0 0 0 500] |
+| good | 8320 | 100.0% | 88.4% | 17 (16) | 3 | 2 | 0.22 / 0.92 / 1.00 [0 0 0 8 280 212] |
+| average | 4490 | 95.8% | 68.1% | 17 (9) | 2 | 2 | -0.37 / 0.43 / 0.94 [0 0 21 288 191 0] |
+| masher | 300 | 0.0% | 9.3% | 4 (1) | 0 | 0 | -1.00 / -1.00 / -0.66 [492 8 0 0 0 0] |
 
-Flags: **too easy: average bot wins 99 percent (over 85 percent)**
+Flags: **too easy: average bot wins 96 percent (over 85 percent)**
 
 ## L2 Metro platform, 2am (17 events, 39.6 s)
 
@@ -79,4 +79,4 @@ Flags: **too hard: average bot wins 0 percent (under 35 percent)**
 - mashable: the button masher wins over 10 percent of runs.
 - no top tier: the perfect bot never reaches 3 stars (win, accuracy 0.9 or more, no cringe).
 
-Unbalanced charts: L1 The club, peak phonk hour, L2 Metro platform, 2am, L4 Parvis de Notre-Dame, dawn, L5 The Voodoo stage.
+Unbalanced charts: L1 Chatelet, 2am, L2 Metro platform, 2am, L4 Parvis de Notre-Dame, dawn, L5 The Voodoo stage.
