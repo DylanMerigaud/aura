@@ -1,4 +1,4 @@
-// Renders campaign taunt and announcer lines to public/voice/*.ogg via the Gradium TTS REST API, cached by hash of (voice, text) in .cache/gradium, then writes public/voice/index.json.
+// Renders campaign taunt and announcer lines to public/voice/*.mp3 via the Gradium TTS REST API, cached by hash of (voice, text) in .cache/gradium, then writes public/voice/index.json.
 
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
@@ -157,12 +157,15 @@ async function main() {
   await runPool(jobs, CONCURRENCY, async (job) => {
     const hash = hashFor(job.voice, job.text);
     const cachePath = path.join(CACHE_DIR, `${hash}.${EXT}`);
-    const outPath = path.join(VOICE_DIR, `${job.lineId}.${EXT}`);
-    const fileName = `${job.lineId}.${EXT}`;
+    // Gradium returns Ogg Opus; the game ships MP3 because Safari decodes it everywhere.
+    const outPath = path.join(VOICE_DIR, `${job.lineId}.mp3`);
+    const fileName = `${job.lineId}.mp3`;
+    const transcode = () =>
+      execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-i", cachePath, "-ac", "1", "-b:a", "64k", outPath]);
 
     try {
       if (!FORCE && existsSync(cachePath)) {
-        writeFileSync(outPath, readFileSync(cachePath));
+        transcode();
         index[job.lineId] = fileName;
         cached++;
         console.log(`cache  ${job.lineId} (${job.voice.name})`);
@@ -171,7 +174,7 @@ async function main() {
 
       const audio = await fetchAudio(apiKey, job);
       writeFileSync(cachePath, audio);
-      writeFileSync(outPath, audio);
+      transcode();
       index[job.lineId] = fileName;
       rendered++;
       console.log(`render ${job.lineId} (${job.voice.name}, ${audio.length} bytes)`);
