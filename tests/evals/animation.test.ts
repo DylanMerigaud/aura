@@ -200,13 +200,15 @@ describe("animation gate", () => {
     expect(verdict(checks, "k3_symmetry", "hit_right:hit_right")).toEqual(["fail"]);
   });
 
-  it("fails when the runtime would play a generic alternate over the canon clip", async () => {
+  it("fails a generic alternate mapped next to a canon move, whatever the order", async () => {
     const b = await baseline();
     b.clips.push({ file: "anims/generic.glb", event: "hit_up", name: "Hip Hop Dancing", canon: "generic" });
     b.stats.set("anims/generic.glb", b.hit);
-    expect(verdict(animationChecks({ ...b, charts: [] }), "canon_played", "hit_up")).toEqual(["fail"]);
-    b.clips.push(b.clips.splice(0, 1)[0]);
-    expect(verdict(animationChecks({ ...b, charts: [] }), "canon_played", "hit_up")).toEqual(["pass"]);
+    expect(verdict(animationChecks({ ...b, charts: [] }), "canon_only", "hit_up")).toEqual(["fail"]);
+    b.clips.unshift(b.clips.pop()!);
+    expect(verdict(animationChecks({ ...b, charts: [] }), "canon_only", "hit_up")).toEqual(["fail"]);
+    b.clips = b.clips.map((c) => (c.file === "anims/generic.glb" ? { ...c, canon: "boat" } : c));
+    expect(verdict(animationChecks({ ...b, charts: [] }), "canon_only", "hit_up")).toEqual(["pass"]);
   });
 
   it("fails HIT moves with no held beat between them (cringe 7) and the same HIT twice in a row (cringe 10)", async () => {

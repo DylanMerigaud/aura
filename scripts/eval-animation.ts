@@ -313,7 +313,7 @@ export function animationChecks(input: AnimationInput): Check[] {
     }
   }
 
-  // Per event: a readable clip exists, and the runtime plays the canon one.
+  // Per event: a readable clip exists, and no generic alternate can replace the canon move.
   const events = [...new Set([...input.requiredEvents, ...clips.map((c) => c.event)])];
   for (const ev of events) {
     const entries = clips.filter((c) => c.event === ev);
@@ -323,13 +323,16 @@ export function animationChecks(input: AnimationInput): Check[] {
       files: entries.map((c) => c.file),
       required: input.requiredEvents.includes(ev),
     }));
-    // src/render3d/fighters.ts keeps one clip per event, the last one listed (Map.set per manifest entry).
-    if (readable.length > 1 && readable.some((c) => c.canon && c.canon !== "generic")) {
-      const played = readable[readable.length - 1];
-      out.push(check(ev, "canon_played", played.canon !== "generic", {
-        note: `runtime plays ${idOf(played.file)} (canon ${played.canon}), listed last of ${readable.length}`,
-        played: played.file,
-        canon: readable.map((c) => `${idOf(c.file)}:${c.canon}`),
+    // src/render3d/fighters.ts loads every manifest clip in parallel and keeps one per event, the file that
+    // finishes loading last: with a generic alternate listed next to the canon move, the alternate can win.
+    const canon = readable.filter((c) => c.canon && c.canon !== "generic");
+    if (readable.length > 1 && canon.length) {
+      const generic = readable.filter((c) => !c.canon || c.canon === "generic");
+      out.push(check(ev, "canon_only", generic.length === 0, {
+        note: generic.length
+          ? `generic ${generic.map((c) => idOf(c.file)).join(", ")} can replace canon ${canon.map((c) => idOf(c.file)).join(", ")} (one clip per event, last loaded wins)`
+          : `${readable.length} clips, all canon`,
+        clips: readable.map((c) => `${idOf(c.file)}:${c.canon ?? "none"}`),
       }));
     }
   }
