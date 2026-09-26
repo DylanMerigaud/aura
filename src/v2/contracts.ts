@@ -47,6 +47,20 @@ export interface LevelV2 extends Level {
   turns?: TurnSpec[];
   /** Scripted aura the opponent farms at the start of each of his turns (default OPPONENT_TURN_AURA). */
   opponentAura?: number;
+  /** Onboarding tuning (the hero level, HERO_TUNING in src/v2/levels.ts). Missing: the core defaults. */
+  tuning?: LevelTuning;
+}
+
+/** Per level overrides of the battle core's director parameters. */
+export interface LevelTuning {
+  /** Music playbackRate the level plays at (110 / 130 plays a 130 BPM track at 110); the grid follows the clock. */
+  playRate: number;
+  /** Cap of the tempo rule's speed up, relative to playRate (1.05 = at most 5 percent faster). */
+  tempoMax: number;
+  /** The timing windows stay at the level's windowScale (no onboarding widening, no combo tightening) below this combo. */
+  flatWindowsUntilCombo: number;
+  /** Lowest aura meter over the onboarding (the first ONBOARD_S real seconds): 0 = it cannot be lost there. */
+  onboardFloor: number;
 }
 
 /** One turn of the battle. `move` (opponent turns) is a gesture key of src/anim/gestures.ts GESTURES. */

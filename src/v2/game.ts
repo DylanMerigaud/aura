@@ -164,8 +164,9 @@ export class Game implements GameApi {
   /** Start the track so that track position `from + firstBeat` (or `from` when resuming) lands after `beats` count in clicks. */
   private startSource(buf: AudioBuffer | null, resumePos: number, beats: number, lead: number) {
     const info = this.track!;
-    const spb = 60 / info.bpm;
     const rate = this.core ? this.core.tempo.rate : 1;
+    // Real seconds per beat: the count in clicks on the tempo the track plays at.
+    const spb = 60 / info.bpm / rate;
     const tClick0 = ctx.currentTime + lead;
     // Fresh start: beat 0 lands right after the count in. Resume: the paused position does.
     const landPos = resumePos > 0 ? resumePos : info.firstBeat;

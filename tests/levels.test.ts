@@ -84,15 +84,15 @@ describe("hero level", () => {
     expect(turn?.who).toBe("player");
   });
 
-  it("onboards in the first 15 s: sparse single notes within 2 bars, then the 67, then a hold; no combo (TAP ONLY)", () => {
-    const early = hero.events.filter((e) => (e.beat * 60) / hero.bpm < 15);
-    const firstMash = early.findIndex((e) => e.type === "mash");
-    expect(early[0].beat).toBeLessThanOrEqual(8);
+  it("onboards: single notes within 2 bars, then the 67, then a hold; no combo (tests/onboarding.test.ts has the lane 10 rules)", () => {
+    const ev = hero.events;
+    const firstMash = ev.findIndex((e) => e.type === "mash");
+    expect(ev[0].beat).toBeLessThanOrEqual(8);
     expect(firstMash).toBeGreaterThanOrEqual(4);
-    for (let i = 0; i < firstMash; i++) expect(early[i].type).toBe("hit");
-    for (let i = 1; i < firstMash; i++) expect(early[i].beat - early[i - 1].beat).toBeGreaterThanOrEqual(2);
-    expect(early.findIndex((e) => e.type === "hold")).toBeGreaterThan(firstMash);
-    expect(hero.events.some((e) => e.type === "combo")).toBe(false);
+    for (let i = 0; i < firstMash; i++) expect(ev[i].type).toBe("hit");
+    for (let i = 1; i < firstMash; i++) expect(ev[i].beat - ev[i - 1].beat).toBeGreaterThanOrEqual(2);
+    expect(ev.findIndex((e) => e.type === "hold")).toBeGreaterThan(firstMash);
+    expect(ev.some((e) => e.type === "combo")).toBe(false);
   });
 
   it("says every taunt on his turns, for the 3 line cast and the 8 line cast", () => {

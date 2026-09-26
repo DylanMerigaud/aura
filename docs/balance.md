@@ -17,14 +17,14 @@ accuracy (Perfect 1, Great 0.7, Ok 0.3), best combo over all runs (median in par
 best combo flame tier, then the end of battle aura meter as min / median / max and a six bin histogram:
 [KO loss, -1..-0.5, -0.5..0, 0..0.5, 0.5..1, KO win].
 
-## L1 The black playground (19 events, 39.7 s)
+## L1 The black playground (15 events, 39.7 s)
 
 | bot | median score | win rate | accuracy | best combo | stars | tier | aura meter min / median / max [bins] |
 |-----|-------------:|---------:|---------:|-----------:|------:|-----:|--------------------------------------|
-| perfect | 16500 | 100.0% | 100.0% | 17 (17) | 3 | 2 | 1.00 / 1.00 / 1.00 [0 0 0 0 0 500] |
-| good | 8760 | 99.8% | 85.5% | 19 (17) | 3 | 2 | -0.03 / 0.59 / 1.00 [0 0 1 149 334 16] |
-| average | 4950 | 74.0% | 66.1% | 19 (9) | 3 | 2 | -0.53 / 0.13 / 0.72 [0 1 129 361 9 0] |
-| masher | 300 | 0.0% | 7.1% | 3 (1) | 0 | 0 | -1.00 / -1.00 / -1.00 [500 0 0 0 0 0] |
+| perfect | 10500 | 100.0% | 100.0% | 12 (12) | 3 | 1 | 1.00 / 1.00 / 1.00 [0 0 0 0 0 500] |
+| good | 10500 | 100.0% | 97.1% | 14 (12) | 3 | 1 | 0.25 / 1.00 / 1.00 [0 0 0 6 99 395] |
+| average | 6670 | 100.0% | 89.5% | 15 (11) | 3 | 2 | 0.00 / 0.81 / 1.00 [0 0 0 59 224 217] |
+| masher | 1160 | 0.0% | 23.6% | 7 (3) | 0 | 1 | -1.00 / -0.73 / -0.12 [54 374 72 0 0 0] |
 
 Flags: none, balanced.
 
@@ -33,9 +33,9 @@ Flags: none, balanced.
 | bot | median score | win rate | accuracy | best combo | stars | tier | aura meter min / median / max [bins] |
 |-----|-------------:|---------:|---------:|-----------:|------:|-----:|--------------------------------------|
 | perfect | 4020 | 100.0% | 100.0% | 9 (9) | 3 | 1 | 0.67 / 0.67 / 0.67 [0 0 0 0 500 0] |
-| good | 2920 | 96.6% | 83.3% | 9 (9) | 3 | 1 | -0.33 / 0.46 / 0.67 [0 0 17 317 166 0] |
-| average | 2270 | 45.8% | 63.1% | 9 (5) | 3 | 1 | -1.00 / -0.02 / 0.57 [1 29 241 218 11 0] |
-| masher | 330 | 0.0% | 15.8% | 6 (1) | 0 | 1 | -1.00 / -1.00 / -0.26 [467 30 3 0 0 0] |
+| good | 3020 | 97.4% | 85.0% | 9 (9) | 3 | 1 | -0.33 / 0.49 / 0.67 [0 0 13 279 208 0] |
+| average | 2320 | 51.0% | 64.9% | 9 (5) | 3 | 1 | -0.82 / 0.02 / 0.57 [0 24 221 242 13 0] |
+| masher | 330 | 0.0% | 15.0% | 5 (1) | 0 | 1 | -1.00 / -1.00 / -0.52 [455 45 0 0 0 0] |
 
 Flags: none, balanced.
 
@@ -44,9 +44,9 @@ Flags: none, balanced.
 | bot | median score | win rate | accuracy | best combo | stars | tier | aura meter min / median / max [bins] |
 |-----|-------------:|---------:|---------:|-----------:|------:|-----:|--------------------------------------|
 | perfect | 5400 | 100.0% | 100.0% | 10 (10) | 3 | 1 | 0.74 / 0.74 / 0.74 [0 0 0 0 500 0] |
-| good | 3300 | 95.6% | 80.0% | 10 (10) | 3 | 1 | -0.41 / 0.40 / 0.74 [0 0 22 331 147 0] |
-| average | 2490 | 37.0% | 57.7% | 10 (5) | 3 | 1 | -1.00 / -0.08 / 0.57 [5 59 251 180 5 0] |
-| masher | 430 | 0.0% | 16.2% | 6 (1) | 0 | 1 | -1.00 / -1.00 / -0.47 [471 28 1 0 0 0] |
+| good | 3500 | 96.8% | 83.2% | 10 (10) | 3 | 1 | -0.41 / 0.48 / 0.74 [0 0 16 258 226 0] |
+| average | 2600 | 50.8% | 61.9% | 10 (5) | 3 | 1 | -1.00 / 0.01 / 0.61 [2 35 209 242 12 0] |
+| masher | 330 | 0.0% | 14.4% | 5 (1) | 0 | 1 | -1.00 / -1.00 / -0.69 [474 26 0 0 0 0] |
 
 Flags: none, balanced.
 
@@ -55,22 +55,30 @@ Flags: none, balanced.
 | bot | median score | win rate | accuracy | best combo | stars | tier | aura meter min / median / max [bins] |
 |-----|-------------:|---------:|---------:|-----------:|------:|-----:|--------------------------------------|
 | perfect | 2700 | 100.0% | 100.0% | 8 (8) | 3 | 1 | 0.36 / 0.36 / 0.36 [0 0 0 500 0 0] |
-| good | 1800 | 43.6% | 74.6% | 8 (7) | 3 | 1 | -0.99 / -0.05 / 0.31 [0 15 267 218 0 0] |
-| average | 1100 | 1.4% | 46.1% | 8 (3) | 2 | 1 | -1.00 / -0.70 / 0.23 [110 257 126 7 0 0] |
-| masher | 100 | 0.0% | 8.0% | 2 (1) | 0 | 0 | -1.00 / -1.00 / -1.00 [500 0 0 0 0 0] |
+| good | 2000 | 76.8% | 84.6% | 8 (8) | 3 | 1 | -0.46 / 0.20 / 0.36 [0 0 116 384 0 0] |
+| average | 1400 | 9.4% | 59.8% | 8 (4) | 3 | 1 | -1.00 / -0.38 / 0.31 [23 133 297 47 0 0] |
+| masher | 100 | 0.0% | 7.5% | 2 (1) | 0 | 0 | -1.00 / -1.00 / -1.00 [500 0 0 0 0 0] |
 
-Flags: **too hard: average bot wins 1 percent (under 35 percent)**
+Flags: **too hard: average bot wins 9 percent (under 35 percent)**
 
 ## L5 The black playground (17 events, 44.6 s)
 
 | bot | median score | win rate | accuracy | best combo | stars | tier | aura meter min / median / max [bins] |
 |-----|-------------:|---------:|---------:|-----------:|------:|-----:|--------------------------------------|
 | perfect | 14700 | 100.0% | 100.0% | 17 (17) | 3 | 2 | 0.75 / 0.75 / 0.75 [0 0 0 0 500 0] |
-| good | 5290 | 47.8% | 70.0% | 17 (9) | 3 | 2 | -0.69 / -0.01 / 0.47 [0 6 255 239 0 0] |
-| average | 3650 | 0.6% | 46.6% | 15 (5) | 1 | 2 | -1.00 / -0.61 / 0.07 [39 297 161 3 0 0] |
-| masher | 630 | 0.0% | 16.1% | 7 (2) | 0 | 1 | -1.00 / -1.00 / -1.00 [500 0 0 0 0 0] |
+| good | 6990 | 94.2% | 82.3% | 17 (14) | 3 | 2 | -0.41 / 0.26 / 0.57 [0 0 29 457 14 0] |
+| average | 4690 | 16.0% | 61.6% | 17 (7) | 2 | 2 | -1.00 / -0.22 / 0.31 [1 57 362 80 0 0] |
+| masher | 560 | 0.0% | 14.7% | 6 (2) | 0 | 1 | -1.00 / -1.00 / -1.00 [500 0 0 0 0 0] |
 
-Flags: **too hard: average bot wins 1 percent (under 35 percent)**
+Flags: **too hard: average bot wins 16 percent (under 35 percent)**
+
+## Level 1 is the onboarding
+
+Level 1 carries LevelV2.tuning (src/v2/levels.ts heroTuning): the 130 BPM hero track plays at 110 BPM, Ok 330 ms
+of real time (Perfect 114, Great 229) with no tightening before combo 25, the meter floored at 0 over the first
+15 s, the tempo speed up capped at 1.05, opponent aura 0.02 per turn. The bots time in real seconds, scaled
+into song seconds by the play rate. Target: the average bot wins at least 80 percent, the masher under 10; the
+too easy flag does not apply to it.
 
 ## Flag rules
 

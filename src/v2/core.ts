@@ -3,7 +3,7 @@
 import { QteRunner, type Input, type Result } from "../qte/runner";
 import { comboMultiplier, releaseMultiplier, WINDOWS, type Grade } from "../qte/judge";
 import { Tempo } from "./tempo";
-import { tierOf, type CoreEvent, type Frame, type LevelV2, type Stats, type TrackInfo, type Turn, type TurnSpec } from "./contracts";
+import { tierOf, type CoreEvent, type LevelTuning, type Frame, type LevelV2, type Stats, type TrackInfo, type Turn, type TurnSpec } from "./contracts";
 
 /** Aura drained per beat by opponent pressure, per level. */
 const PRESSURE = [0, 0.002, 0.003, 0.004, 0.005];
@@ -30,7 +30,8 @@ const TURN_GRACE = 0.3;
 export const WINDOW_OK_MS: [number, number] = [110, 70];
 export const WINDOW_COMBO = 25;
 export const ONBOARD_WINDOW = 1.25;
-export function windowFactor(combo: number, songTime: number): number {
+export function windowFactor(combo: number, songTime: number, tuning?: LevelTuning): number {
+  if (tuning && combo < tuning.flatWindowsUntilCombo) return 1;
   if (songTime < ONBOARD_S) return ONBOARD_WINDOW;
   const k = Math.min(1, Math.max(0, combo) / WINDOW_COMBO);
   return (WINDOW_OK_MS[0] + (WINDOW_OK_MS[1] - WINDOW_OK_MS[0]) * k) / (WINDOWS.ok * 1000);
@@ -50,7 +51,7 @@ const BIG_BURST = 10;
 
 export class BattleCore {
   runner: QteRunner;
-  tempo = new Tempo();
+  tempo: Tempo;
   meter = 0;
   score = 0;
   combo = 0;
@@ -90,6 +91,7 @@ export class BattleCore {
    */
   constructor(public level: LevelV2, public track: TrackInfo, windowScale: number, private emit: (e: CoreEvent) => void, private tauntShift = 0) {
     this.spb = 60 / level.bpm;
+    this.tempo = new Tempo(level.tuning?.playRate, level.tuning?.tempoMax);
     this.baseWindow = windowScale;
     this.runner = new QteRunner(level.events, this.spb, windowScale * ONBOARD_WINDOW, (r) => this.onResult(r));
     this.gain = 1.15 / Math.max(8, level.events.length);
@@ -145,7 +147,9 @@ export class BattleCore {
   }
 
   private push(d: number) {
-    const floor = this.songTime < ONBOARD_S ? ONBOARD_FLOOR : -1;
+    // Song seconds run at the playback rate: ONBOARD_S real seconds of a slowed track are fewer song seconds.
+    const onboard = this.songTime < ONBOARD_S * this.tempo.base;
+    const floor = onboard ? (this.level.tuning?.onboardFloor ?? ONBOARD_FLOOR) : -1;
     this.meter = Math.max(Math.min(this.meter, floor), Math.min(1, this.meter + d));
   }
 
@@ -220,7 +224,7 @@ export class BattleCore {
     this.songTime = t;
     this.tempo.update(realDt);
     if (this.ended) return;
-    this.runner.windowScale = this.baseWindow * windowFactor(this.combo, t);
+    this.runner.windowScale = this.baseWindow * windowFactor(this.combo, t, this.level.tuning);
     this.runner.update(t);
     const L = this.level;
     const beatPos = t / this.spb;
@@ -313,7 +317,7 @@ export class BattleCore {
       meter: this.meter, combo: this.combo, tier: tierOf(this.combo), score: this.score, rate: this.tempo.rate,
       energy: this.energyAt(Math.floor(beatPos)), beatsToDrop: nextDrop === undefined ? Infinity : nextDrop - beatPos,
       mashing, mashCount: mashing && cur ? Math.min(cur.progress, this.mashCap((cur.ev as { length: number }).length)) : 0,
-      holding, holdProgress, phase2: this.phase2Fired, flow: this.flow, windowK: windowFactor(this.combo, t), turn: this.turnAt(beatPos), ending: this.ended, win: this.win, prompts,
+      holding, holdProgress, phase2: this.phase2Fired, flow: this.flow, windowK: windowFactor(this.combo, t, this.level.tuning), turn: this.turnAt(beatPos), ending: this.ended, win: this.win, prompts,
       showsAt: this.showsAt, targetAt: this.targetAt, level: this.level,
     };
   }
