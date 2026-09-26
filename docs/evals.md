@@ -52,8 +52,9 @@ after regeneration. DISTINCT VOICE (names hidden, judged once across all five to
 Kevin from Marketing and level 3 Mehdi Aura and level 5 The Algorithm clear 4/5; level 1 DJ
 Montagem stays at 2/5 after two regeneration rounds, it ships per the "never silence" rule and is
 flagged here rather than hidden. The level 4 opponent (3/5) was cut from the build on 2026-09-26
-and no longer counts. Mehdi Aura is now the level 1 opponent at Chatelet, the only playable fight;
-his 4/5 was judged as level 3. The variety gate passes:
+and no longer counts. These rows predate the current cast: since 15:00 the only playable fight is
+level 1, THE TURNSTILE NINJA at Chatelet, written by gemini-3.1-pro-preview (`scripts/gen-ninja.ts`)
+after this text eval ran, so no row above judges him. The variety gate passes:
 level 4 originally reused "NPC" already used by level 2, fixed by hand after the automated
 regeneration rounds did not converge (see the `manual_patch` row on `l2-announcer` and the final
 `variety` row on `cast` in the ledger).
