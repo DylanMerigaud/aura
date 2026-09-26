@@ -1,0 +1,332 @@
+[
+  {
+    "slot": "menu_move",
+    "file": "menu_move_01_gta-san-andreas-menu-sound.mp3",
+    "name": "GTA San Andreas Menu Sound",
+    "source_url": "https://www.myinstants.com/en/instant/gta-san-andreas-menu-sound-123/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/gta-san-andreas-menu-sound-1.mp3",
+    "duration_s": 1.358,
+    "sample_rate": 44100,
+    "sha256": "97d6238ee974df150d2a22ac663153b136ff8c8104ae6b2dc779e98445610b24"
+  },
+  {
+    "slot": "menu_confirm",
+    "file": "menu_confirm_01_gta-menu.mp3",
+    "name": "Gta Menu",
+    "source_url": "https://www.myinstants.com/en/instant/gta-menu-78226/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/gta-menu.mp3",
+    "duration_s": 0.216,
+    "sample_rate": 48000,
+    "sha256": "c0a3a101e2ec28c68b4955b3c48762db9ca9aa591b8ff04fe953db372e80a964"
+  },
+  {
+    "slot": "menu_cancel",
+    "file": "menu_cancel_01_gta-san-andreas-pistol-gun-sho.mp3",
+    "name": "Gta San Andreas Pistol Gun Shot Sound Effect",
+    "source_url": "https://www.myinstants.com/en/instant/gta-san-andreas-pistol-gun-shot-sound-effect-61724/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/gta-san-andreas-pistol-gun-shot-sound-effect.mp3",
+    "duration_s": 5.407,
+    "sample_rate": 44100,
+    "sha256": "63f562155d02b6d7c0dc72d7aa804953c7d7521e982195f869b9c28574d67025"
+  },
+  {
+    "slot": "menu_cancel",
+    "file": "menu_cancel_02_ding-click.mp3",
+    "name": "DING! CLICK",
+    "source_url": "https://www.myinstants.com/en/instant/ding-click-26253/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/ding-sound-effect_1_0gpHFnw.mp3",
+    "duration_s": 2.978,
+    "sample_rate": 44100,
+    "sha256": "bf9c08a6b942f6c875b07e35de5ebbc3a009c7567a0e9d1a69ff79c0c79e9e81"
+  },
+  {
+    "slot": "level_start",
+    "file": "level_start_01_among-us-roundstart.mp3",
+    "name": "Among us Roundstart",
+    "source_url": "https://www.myinstants.com/en/instant/among-us-roundstart-17570/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/among-us-roundstart.mp3",
+    "duration_s": 4.519,
+    "sample_rate": 44100,
+    "sha256": "ae9c21db400d242d93c60600ce6b751ade70f1d6445f306a18e40a4f34ea552a"
+  },
+  {
+    "slot": "level_start",
+    "file": "level_start_02_minecraft-level-up-sound.mp3",
+    "name": "Minecraft Level Up Sound",
+    "source_url": "https://www.myinstants.com/en/instant/minecraft-level-up-sound/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/levelup.mp3",
+    "duration_s": 3.788,
+    "sample_rate": 44100,
+    "sha256": "cdc2187c5979d8bedab9dedddc32f07505a246204704599b84bb244d4101d45d"
+  },
+  {
+    "slot": "qte_perfect",
+    "file": "qte_perfect_01_family-feud-yes-ding.mp3",
+    "name": "Family Feud YES Ding",
+    "source_url": "https://www.myinstants.com/en/instant/family-feud-yes-ding-24818/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/family-feud-good-answer.mp3",
+    "duration_s": 0.912,
+    "sample_rate": 48000,
+    "sha256": "edf9350368a27e759d95ed098071ad53d40f56b1f4e69360a84672cd36bb9415"
+  },
+  {
+    "slot": "qte_perfect",
+    "file": "qte_perfect_02_pokemon-level-up.mp3",
+    "name": "Pokemon-Level Up!",
+    "source_url": "https://www.myinstants.com/en/instant/pokemon-level-up/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/12_3.mp3",
+    "duration_s": 4.206,
+    "sample_rate": 44100,
+    "sha256": "9024dae951b45f79f0e200870072d45587194e1796b59483ce39ec3a9ec9ca38"
+  },
+  {
+    "slot": "qte_miss_cringe",
+    "file": "qte_miss_cringe_01_bruh-sound-effect.mp3",
+    "name": "BRUH sound effect!",
+    "source_url": "https://www.myinstants.com/en/instant/bruh-sound-effect-26614/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/bruh-sound-effect_WstdzdM.mp3",
+    "duration_s": 0.864,
+    "sample_rate": 48000,
+    "sha256": "6a04c34422d17b5ad0a62baaf5810dab7e19aa06baf5cbe2002fc750486ff170"
+  },
+  {
+    "slot": "qte_miss_cringe",
+    "file": "qte_miss_cringe_02_oh-no-cringe.mp3",
+    "name": "oh no cringe",
+    "source_url": "https://www.myinstants.com/en/instant/oh-no-cringe-90985/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/oh-no-cringe.mp3",
+    "duration_s": 7.236,
+    "sample_rate": 44100,
+    "sha256": "8b46bf1fb97fc2040cc90249fc491e516f561e5ae6444db3f5b2e850a5f631fa"
+  },
+  {
+    "slot": "qte_miss_cringe",
+    "file": "qte_miss_cringe_03_emotional-damage-meme.mp3",
+    "name": "Emotional Damage Meme",
+    "source_url": "https://www.myinstants.com/en/instant/emotional-damage-meme-74555/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/emotional-damage-meme.mp3",
+    "duration_s": 3.37,
+    "sample_rate": 44100,
+    "sha256": "e1668d57edc60539f3e218fbc51c5c97fbe5cb56d63b7b2c85608afbdecbf4d8"
+  },
+  {
+    "slot": "aura_release",
+    "file": "aura_release_01_super-saiyan-aura.mp3",
+    "name": "Super Saiyan Aura ",
+    "source_url": "https://www.myinstants.com/en/instant/super-saiyan-aura/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/saiyan.mp3",
+    "duration_s": 5.808,
+    "sample_rate": 48000,
+    "sha256": "1b58ad0b5b5e685b782c6f660c44b0325b4d7681597e7af3ddc710c526e6b431"
+  },
+  {
+    "slot": "aura_release",
+    "file": "aura_release_02_vine-boom-sound-effect-full.mp3",
+    "name": "vine boom sound effect full",
+    "source_url": "https://www.myinstants.com/en/instant/vine-boom-sound-effect-full-16880/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/vine-boom-sound-effect-full.mp3",
+    "duration_s": 1.881,
+    "sample_rate": 44100,
+    "sha256": "4dab8b2238b0ef06c2c3e3c94448f24601cb7026bba88a74ff68a54f8bccdd20"
+  },
+  {
+    "slot": "aura_release",
+    "file": "aura_release_03_aura-ego.mp3",
+    "name": "aura + ego",
+    "source_url": "https://www.myinstants.com/en/instant/aura-ego-8025/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/aura-ego.mp3",
+    "duration_s": 4.598,
+    "sample_rate": 44100,
+    "sha256": "1733b9fd3c951a65b2c00036047e254c1b877c173d896682b40f99cdabbd6242"
+  },
+  {
+    "slot": "big_hit",
+    "file": "big_hit_01_vine-boom-sound.mp3",
+    "name": "VINE BOOM SOUND",
+    "source_url": "https://www.myinstants.com/en/instant/vine-boom-sound-70972/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/vine-boom.mp3",
+    "duration_s": 1.306,
+    "sample_rate": 44100,
+    "sha256": "c4dadbc0b9cd21b1313ec11845a00d9401bc208ae0f59f54a0282b8cb89d56c2"
+  },
+  {
+    "slot": "big_hit",
+    "file": "big_hit_02_fatality-mortal-kombat-sound-e.mp3",
+    "name": "Fatality - Mortal Kombat Sound Effect (HD)",
+    "source_url": "https://www.myinstants.com/en/instant/fatality-mortal-kombat-sound-effect-hd-34541/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/fatality-mortal-kombat-sound-effect-hd.mp3",
+    "duration_s": 2.116,
+    "sample_rate": 44100,
+    "sha256": "0eb952826ea7fdbb3e824079e0591cfb7087f09fa62f2e81f60e0d88bd0625c7"
+  },
+  {
+    "slot": "big_hit",
+    "file": "big_hit_03_mk-9-fatality-before-soundeffe.mp3",
+    "name": "MK 9 - Fatality before-soundeffect",
+    "source_url": "https://www.myinstants.com/en/instant/mk-9-fatality-before-soundeffect-9993/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/short-sound-before-fatality-in-mortal-kombat-9-9.mp3",
+    "duration_s": 2.011,
+    "sample_rate": 44100,
+    "sha256": "02610a84fe854f0e03af4995476e150c60393970d8fea4f7695d678270230fc3"
+  },
+  {
+    "slot": "crowd_cheer",
+    "file": "crowd_cheer_01_crowd-cheer-applause.mp3",
+    "name": "Crowd Cheer + Applause",
+    "source_url": "https://www.myinstants.com/en/instant/crowd-cheer-applause-73083/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/crowd-cheering-applause.mp3",
+    "duration_s": 6.217,
+    "sample_rate": 44100,
+    "sha256": "22533e6c87fa1251bd88a489b28a9a11567e6439ef4f4ab4c5be24304a3fa960"
+  },
+  {
+    "slot": "crowd_boo",
+    "file": "crowd_boo_01_crowd-boo.mp3",
+    "name": "Crowd Boo",
+    "source_url": "https://www.myinstants.com/en/instant/crowd-boo/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/crowd-boo.mp3",
+    "duration_s": 4.493,
+    "sample_rate": 22050,
+    "sha256": "a081d01f2484723aa79afe1d1c6269b2c02e5be1abc4e78c507521c088b6a68c"
+  },
+  {
+    "slot": "crowd_boo",
+    "file": "crowd_boo_02_boooooing-crowd.mp3",
+    "name": "Boooooing crowd",
+    "source_url": "https://www.myinstants.com/en/instant/boooooing-crowd-66305/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/booing-crowd.mp3",
+    "duration_s": 4.833,
+    "sample_rate": 44100,
+    "sha256": "e662a4012975b679fb81d748bc2f608f490d1f6092de2a660c4def5600111a5d"
+  },
+  {
+    "slot": "crowd_bed",
+    "file": "crowd_bed_01_crowd-screaming.mp3",
+    "name": "Crowd screaming",
+    "source_url": "https://www.myinstants.com/en/instant/crowd-screaming-25682/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/crowd-screaming.mp3",
+    "duration_s": 10.214,
+    "sample_rate": 44100,
+    "sha256": "5d1b9a8a98c432be5a1d37d88158f2ebc5da57ef9f1e679c618d439e5e80e7a3"
+  },
+  {
+    "slot": "crowd_bed",
+    "file": "crowd_bed_02_the-premiere-edition-crowd-scr.mp3",
+    "name": "The Premiere Edition - Crowd Screaming",
+    "source_url": "https://www.myinstants.com/en/instant/the-premiere-edition-crowd-screaming-76834/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/the-premiere-edition-crowd-screaming.mp3",
+    "duration_s": 16.272,
+    "sample_rate": 48000,
+    "sha256": "8a2aff88ac5c961dbeca6f8ba01ef455f7db6ce52dfd4b34c716f61f79cf1c57"
+  },
+  {
+    "slot": "taunt_sting",
+    "file": "taunt_sting_01_bing-chilling.mp3",
+    "name": "bing chilling",
+    "source_url": "https://www.myinstants.com/en/instant/bing-chilling-44511/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/bing-chilling_fcdGgUc.mp3",
+    "duration_s": 2.534,
+    "sample_rate": 44100,
+    "sha256": "04fe90aecfc0c42cf275e2569f4d978ceaeebad0d08cd516d941c5b7a400de55"
+  },
+  {
+    "slot": "victory",
+    "file": "victory_01_da-baby-lets-goooo.mp3",
+    "name": "Da Baby Lets Goooo",
+    "source_url": "https://www.myinstants.com/en/instant/da-baby-lets-goooo-56822/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/dababy-lets-go-sound-effect_EWZTfTT.mp3",
+    "duration_s": 3.265,
+    "sample_rate": 44100,
+    "sha256": "17b191f2117d56ec1a6dec63bc013079fe578117ad7bd0ce4dd2f125abe56027"
+  },
+  {
+    "slot": "victory",
+    "file": "victory_02_gta-sa-mission-passed.mp3",
+    "name": "GTA SA Mission Passed",
+    "source_url": "https://www.myinstants.com/en/instant/gta-sa-mission-passed/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/gta-san-andreas-mission-complete-sound-hq.mp3",
+    "duration_s": 7.523,
+    "sample_rate": 44100,
+    "sha256": "8c830164841c12af85be26108cbfb49450dbbbd1071e04fc2d06cfef9e3c6578"
+  },
+  {
+    "slot": "victory",
+    "file": "victory_03_grand-theft-auto-san-andreas-m.mp3",
+    "name": "Grand Theft Auto San Andreas Mission Passed!",
+    "source_url": "https://www.myinstants.com/en/instant/grand-theft-auto-san-andreas-mission-passed-65006/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/y2mate_xvijLIk.mp3",
+    "duration_s": 7.68,
+    "sample_rate": 44100,
+    "sha256": "f39e918f34c4a7a0a861c9dda2d2321bd7d3c0bc65995251ed860baa28510a68"
+  },
+  {
+    "slot": "defeat",
+    "file": "defeat_01_gta-v-wasted-death-sound.mp3",
+    "name": "GTA V Wasted (Death Sound)",
+    "source_url": "https://www.myinstants.com/en/instant/gta-v-wasted-death-sound-8038/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/gta-v-wasted-death-sound.mp3",
+    "duration_s": 7.784,
+    "sample_rate": 44100,
+    "sha256": "e95924a8ad7beed439ea6ac264a64f5aca99e65b2e3e1d730b644a565e009b6c"
+  },
+  {
+    "slot": "defeat",
+    "file": "defeat_02_gta-5-wasted.mp3",
+    "name": "GTA 5 - WASTED",
+    "source_url": "https://www.myinstants.com/en/instant/gta-5-wasted-51876/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/wasted_2.mp3",
+    "duration_s": 7.536,
+    "sample_rate": 48000,
+    "sha256": "6263d2ad8e32334ba24ec9b07e2bee065e96050808f2571316fbc446f4436e98"
+  },
+  {
+    "slot": "defeat",
+    "file": "defeat_03_gta-v-wasted-sound-effect.mp3",
+    "name": "GTA V Wasted Sound Effect",
+    "source_url": "https://www.myinstants.com/en/instant/gta-v-wasted-sound-effect-18669/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/grand-theft-auto-v-wasted.mp3",
+    "duration_s": 7.784,
+    "sample_rate": 44100,
+    "sha256": "c91cc88f4e3973d21909b1ab2986e16c9bd1ec878566a017dc6ccc21d44de4c9"
+  },
+  {
+    "slot": "boss_intro",
+    "file": "boss_intro_01_lets-get-ready-to-rumbleee.mp3",
+    "name": "lets get ready to rumbleee",
+    "source_url": "https://www.myinstants.com/en/instant/lets-get-ready-to-rumbleee/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/michael-buffer-lets-get-ready-to-rumble1.mp3",
+    "duration_s": 7.184,
+    "sample_rate": 44100,
+    "sha256": "8f3224e6545af284c14c837d6bc0efedd00049b9e0fabb3393573c2a3e3394e0"
+  },
+  {
+    "slot": "boss_intro",
+    "file": "boss_intro_02_mk9-fatality.mp3",
+    "name": "MK9 Fatality",
+    "source_url": "https://www.myinstants.com/en/instant/mk9-fatality/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/fatality-announcer-mortal-kombat-9-sound-effect.mp3",
+    "duration_s": 3.944,
+    "sample_rate": 44100,
+    "sha256": "c1f22016886ba93469108e8332d8041965b31f0858cb102d9c3997d50c488482"
+  },
+  {
+    "slot": "title_screen_sting",
+    "file": "title_screen_sting_01_nintendo-game-boy-startup.mp3",
+    "name": "Nintendo Game Boy Startup",
+    "source_url": "https://www.myinstants.com/en/instant/nintendo-game-boy-startup-99643/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/nintendo-game-boy-startup.mp3",
+    "duration_s": 1.75,
+    "sample_rate": 44100,
+    "sha256": "28eeb32ad6188ad17667e298e84fb0eac9a2089062de2d0b31e9efc65f5e7eae"
+  },
+  {
+    "slot": "title_screen_sting",
+    "file": "title_screen_sting_02_over-9000.mp3",
+    "name": "Over 9000!!",
+    "source_url": "https://www.myinstants.com/en/instant/over-9000/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/over9000.swf.mp3",
+    "duration_s": 2.664,
+    "sample_rate": 44100,
+    "sha256": "0bf2b2567c6af1f3d79afdeed64a3815c0c3873579fc5942f61b536d9e0996b9"
+  }
+]

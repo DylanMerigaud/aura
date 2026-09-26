@@ -79,8 +79,9 @@ export class Battle {
 
   start() {
     startCrowd();
-    this.music.onBeat = (b) => {
-      if (b < 0) setTimeout(() => sfx.tick(undefined, b === -1), 0);
+    // Count-in clicks are scheduled on the exact beat time, like the drums.
+    this.music.onBeat = (b, at) => {
+      if (b < 0) sfx.tick(at, b === -1);
     };
     this.music.start(4);
     playVoice(lineId.intro(this.level.id), this.level.announcer.intro, { pitch: 0.6, rate: 1.15 });
