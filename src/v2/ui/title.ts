@@ -1,5 +1,5 @@
 // Title menu (amendment 6 section 5, reached from the MENU corner button of the title scene, never
-// on the way in): PLAY to the map, MULTIPLAYER and LOADOUT greyed out until earned (a greyed item
+// on the way in): PLAY to the map, LOADOUT (a greyed item
 // plays the cancel blip and shakes), SETTINGS for calibration, volume and controls. Touch taps the
 // item directly; on desktop arrows move and enter confirms, escape or BACK returns to the scene.
 import type { LevelV2 } from "../contracts";
@@ -69,10 +69,9 @@ export function buildTitle(levels: LevelV2[], progress: () => ProgressV2, on: Ti
   }
 
   const playItem = makeItem("PLAY", "the world tour", true, on.play);
-  const multiItem = makeItem("MULTIPLAYER", "coming soon: same room, same beat", false, () => {});
-  const loadoutItem = makeItem("LOADOUT", "unlock: finish the campaign", false, on.loadout);
+  const loadoutItem = makeItem("LOADOUT", "your fighter and your emote", true, on.loadout);
   const settingsItem = makeItem("SETTINGS", "calibration, volume, controls", true, on.settings);
-  const items: Item[] = [playItem, multiItem, loadoutItem, settingsItem];
+  const items: Item[] = [playItem, loadoutItem, settingsItem];
   let idx = 0;
 
   function paint() {

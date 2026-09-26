@@ -1,7 +1,8 @@
 // TITLE SCENE (addendum 15:20): the loaded 3D stage idles behind a see through overlay, the big AURA
-// logo and a pulsing TAP line. The scene itself is the tap to start: the first tap anywhere (pointer
-// down, click or any key) unlocks audio AND starts the level 1 battle, one input from the title to
-// playing. The MENU corner button has its own hit area and opens the fake title menu instead.
+// logo and a pulsing TAP line (addendum 16:15: white condensed letters, dark outline, one accent). The
+// scene itself is the tap to start: the first tap anywhere (pointer down, click or any key) unlocks audio
+// AND starts the current opponent's battle, one input from the title to playing. The small LOADOUT
+// (and SETTINGS) corner buttons own their hit areas: nothing they receive reaches the start tap.
 //
 // Audio unlock: the AudioContext already exists (created suspended during loading so the music
 // decodes ahead). resume() runs on the tap's pointerdown and again on its pointerup, since iOS only
@@ -27,11 +28,13 @@ export function unlockAudio() {
   }
 }
 
-export function buildGate(onStart: () => void, onMenu: () => void) {
+export interface GateCorners {
+  loadout(): void;
+  settings?(): void;
+}
+
+export function buildGate(onStart: () => void, corners: GateCorners) {
   const root = el("section", "screen gate");
-  const menuBtn = el("button", "corner-btn gate-menu", "MENU");
-  menuBtn.type = "button";
-  root.appendChild(menuBtn);
   root.appendChild(el("h1", "logo gate-logo", "AURA"));
   root.appendChild(el("p", "gate-prompt", "TAP TO PLAY"));
   const touch = typeof matchMedia === "function" && matchMedia("(pointer: coarse)").matches;
@@ -47,18 +50,26 @@ export function buildGate(onStart: () => void, onMenu: () => void) {
     });
   }
 
-  // The MENU button owns its hit area: nothing it receives reaches the start tap.
-  const stop = (e: Event) => e.stopPropagation();
-  menuBtn.addEventListener("pointerdown", stop);
-  menuBtn.addEventListener("pointerup", (e) => {
-    e.stopPropagation();
-    unlockAudio();
-  });
-  menuBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    unlockAudio();
-    onMenu();
-  });
+  // A corner button owns its hit area: nothing it receives reaches the start tap.
+  function corner(cls: string, label: string, act: () => void) {
+    const b = el("button", "corner-btn " + cls, label);
+    b.type = "button";
+    const stop = (e: Event) => e.stopPropagation();
+    b.addEventListener("pointerdown", stop);
+    b.addEventListener("pointerup", (e) => {
+      e.stopPropagation();
+      unlockAudio();
+    });
+    b.addEventListener("click", (e) => {
+      e.stopPropagation();
+      unlockAudio();
+      act();
+    });
+    root.appendChild(b);
+    return b;
+  }
+  corner("gate-loadout", "LOADOUT", () => corners.loadout());
+  if (corners.settings) corner("gate-settings", "SETTINGS", () => corners.settings?.());
 
   root.addEventListener("pointerdown", (e) => {
     if (e.button > 0) return;
