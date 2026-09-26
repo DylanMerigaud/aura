@@ -9,6 +9,7 @@ import * as SkeletonUtils from "three/examples/jsm/utils/SkeletonUtils.js";
 import type { Anchors, CoreEvent, Frame, LevelV2, Stage } from "../v2/contracts";
 import { RingSet } from "./set";
 import { Crowd } from "./crowd";
+import { crowdBudget } from "./crowdRoster";
 import { Fighter, loadCast, type CastSource, type ClipEvent } from "./fighters";
 import { LAYOUT, isOts, pickShot, punchZoom, rampScale, sameFamily, shotPose, turnShot, type Pose, type ShotKind } from "./director";
 import { Vfx } from "./vfx";
@@ -96,6 +97,8 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
   const plates = new Nameplates(canvas);
   const enemyHead = { x: 0, y: 0, z: 0 };
   const crowd = new Crowd();
+  // Rigs per quality tier: 16 on a desktop, 12 on a touch screen or at step 1, 8 at step 2.
+  crowd.setBudget(crowdBudget(0, coarse));
   scene.add(crowd.group);
   const vfx = new Vfx(scene, camera);
   const glasses = vfx.sunglasses();
@@ -358,6 +361,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
           renderer.setPixelRatio(1);
           resize();
         }
+        crowd.setBudget(crowdBudget(quality.step, coarse));
         if (quality.step >= 2) {
           set.key.castShadow = false;
           if (bloom) bloom.enabled = false;
@@ -369,7 +373,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
         }
       }
       if (fpsDiv)
-        fpsDiv.textContent = `${fpsVal.toFixed(0)} fps ${lowRes.x}x${lowRes.y} q${quality.step}${bloom?.enabled ? "" : " nobloom"}${cast ? " " + cast.label : ""}`;
+        fpsDiv.textContent = `${fpsVal.toFixed(0)} fps ${lowRes.x}x${lowRes.y} q${quality.step}${bloom?.enabled ? "" : " nobloom"}${cast ? " " + cast.label : ""} ${crowd.label}`;
     }
   }
 
@@ -399,6 +403,8 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
         }
       }
       if (!cast) return;
+      // The animated crowd streams in after the fighters (once, cached); the capsules hold the ring until then.
+      void crowd.load(opts.base);
       player?.dispose();
       enemy?.dispose();
       player = new Fighter(SkeletonUtils.clone(cast.player), cast.clips, "player");

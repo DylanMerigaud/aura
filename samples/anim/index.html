@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mocap vs Gestures</title>
+<style>
+  :root { --bg: #fff; --fg: #1a1a1a; --line: #ddd; --dim: #666; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #141416; --fg: #eee; --line: #333; --dim: #999; } }
+  body { background: var(--bg); color: var(--fg); font: 15px/1.45 system-ui, sans-serif; margin: 0; padding: 16px; }
+  main { max-width: 960px; margin: 0 auto; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0 24px; }
+  th, td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
+  .wrap { overflow-x: auto; }
+  small, .dim { color: var(--dim); }
+  code { font-size: 13px; }
+</style>
+</head>
+<body>
+<main>
+<h1>Mocap clips vs keyed gestures</h1>
+<p class="dim">Serve the repo root statically (<code>npx serve .</code>) and open <code>/samples/anim/</code>. The mocap rows are read from
+<code>assets/3d/mocap/manifest.json</code>; the gestures are copied from <code>src/anim/gestures.ts</code> (see SAMPLE.md).</p>
+<div class="wrap"><table id="t">
+<thead><tr><th>Mocap clip</th><th>Event, fps</th><th>Keyed gesture</th><th>Known defects (mocap manifest)</th></tr></thead>
+<tbody></tbody>
+</table></div>
+<h2>Keyed gestures with no mocap counterpart</h2>
+<p>sixSevenHands, palmPush, wristRoll, reachAndPull, chillGuyPockets (full body), shoulderBrush, cookedCollapse.</p>
+</main>
+<script>
+  const PAIR = {
+    "mocap/boat_arm_sweep.glb": "boatSweep (4 beats, upper, loop)",
+    "mocap/over_shoulder_look.glb": "lookBack (4 beats, upper, once)",
+    "mocap/chinup_stare.glb": "chinUpTaunt (4 beats, upper, once), sigmaStare",
+  };
+  const body = document.querySelector("#t tbody");
+  const row = (c) => {
+    const tr = document.createElement("tr");
+    const cells = [
+      `<a href="../../assets/3d/${c.file}">${c.name}</a><br><small>${c.file}</small>`,
+      `${c.event}, ${c.fps ?? "?"} fps`,
+      `<code>${PAIR[c.file] ?? "none"}</code>`,
+      `<small>${c.quality ?? ""}</small>`,
+    ];
+    tr.innerHTML = cells.map((h) => `<td>${h}</td>`).join("");
+    body.appendChild(tr);
+  };
+  fetch("../../assets/3d/mocap/manifest.json")
+    .then((r) => r.json())
+    .then((m) => m.clips.forEach(row))
+    .catch(() => Object.keys(PAIR).forEach((file) => row({ file, name: file, event: "", quality: "manifest not reachable from here" })));
+</script>
+</body>
+</html>

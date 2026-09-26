@@ -52,7 +52,7 @@ const loader = new GLTFLoader();
 /** Mixamo prefixes bones per export (mixamorig:, mixamorig1:, sanitized by GLTFLoader to mixamorigHips, mixamorig1Hips). */
 const boneKey = (n: string) => n.replace(/^mixamorig\d*:?/, "");
 
-function hipsRestY(root: THREE.Object3D): number | undefined {
+export function hipsRestY(root: THREE.Object3D): number | undefined {
   let y: number | undefined;
   root.traverse((o) => {
     if (y === undefined && boneKey(o.name) === "Hips") y = o.position.y;
@@ -83,7 +83,7 @@ export function removeDrift(track: { times: ArrayLike<number>; values: { [k: num
 const retargeted = new WeakMap<THREE.AnimationClip, Map<string, THREE.AnimationClip>>();
 /** Rename a clip's tracks onto this model's bone names (dropping bones it lacks) and scale the Hips
  * translation from the clip rig's rest height to the model's, so feet stay on the floor. */
-function retarget(clip: THREE.AnimationClip, names: Map<string, string>, hipsK: number): THREE.AnimationClip {
+export function retarget(clip: THREE.AnimationClip, names: Map<string, string>, hipsK: number): THREE.AnimationClip {
   // Every battle builds new fighters from the same cast: one retargeted copy per clip and rig is enough.
   const key = `${names.get("Hips") ?? ""}|${hipsK}`;
   let byRig = retargeted.get(clip);
@@ -249,15 +249,15 @@ function rampTexture(): THREE.DataTexture {
   return t;
 }
 
-/** Toon look: MeshToonMaterial with a 3 step ramp (skinning kept, cheap), optional tint toward a color. Casts the key light's shadow. */
-function toToon(root: THREE.Object3D, tint?: THREE.Color): void {
+/** Toon look: MeshToonMaterial with a 3 step ramp (skinning kept, cheap), optional tint toward a color. Casts the key light's shadow unless `shadow` is false. */
+export function toToon(root: THREE.Object3D, tint?: THREE.Color, tintK = 0.55, shadow = true): void {
   toonRamp ??= rampTexture();
   const gradientMap = toonRamp;
   root.traverse((o) => {
     const mesh = o as THREE.Mesh;
     if (!mesh.isMesh) return;
     mesh.frustumCulled = false;
-    mesh.castShadow = true;
+    mesh.castShadow = shadow;
     const conv = (m: THREE.Material) => {
       const src = m as THREE.MeshStandardMaterial;
       const out = new THREE.MeshToonMaterial({
@@ -270,11 +270,70 @@ function toToon(root: THREE.Object3D, tint?: THREE.Color): void {
         opacity: src.opacity,
         side: src.side,
       });
-      if (tint) out.color.lerp(tint, 0.55);
+      if (tint) out.color.lerp(tint, tintK);
       return out;
     };
     mesh.material = Array.isArray(mesh.material) ? mesh.material.map(conv) : conv(mesh.material);
   });
+}
+
+/** Scale a model to `height` metres with its feet on y = 0 (a broken bound leaves the scale alone). */
+export function normalizeHeight(model: THREE.Object3D, height: number): void {
+  model.updateMatrixWorld(true);
+  // Skinned bounds read the bone matrices, which are only filled by a skeleton update.
+  model.traverse((o) => (o as THREE.SkinnedMesh).isSkinnedMesh && (o as THREE.SkinnedMesh).skeleton.update());
+  const box = new THREE.Box3().setFromObject(model);
+  const h = box.max.y - box.min.y;
+  const ok = Number.isFinite(h) && h > 0.05;
+  const k = ok ? height / h : 1;
+  if (!ok) box.min.y = 0;
+  model.scale.multiplyScalar(k);
+  model.position.y -= box.min.y * k;
+}
+
+/** Bone name per Mixamo key (Hips, Spine...) of a model, for retarget(). */
+export function boneNames(model: THREE.Object3D): Map<string, string> {
+  const names = new Map<string, string>();
+  model.traverse((o) => {
+    if (o.name && !names.has(boneKey(o.name))) names.set(boneKey(o.name), o.name);
+  });
+  return names;
+}
+
+/** What the crowd is built from: one loaded scene per character file (cloned per slot) and its loops by event. */
+export interface CrowdKit {
+  models: Map<string, THREE.Object3D>;
+  clips: Map<string, { clip: THREE.AnimationClip; hipsY?: number }>;
+}
+
+/**
+ * The crowd's characters and clips from the manifest: every file in `files(characters)` and every clip of
+ * the "crowd" canon, through the same cache as the cast (one download per file, whatever the slot count).
+ * A file that fails is left out; the caller decides whether what is left passes the roster door.
+ */
+export async function loadCrowdKit(base: string, files: (chars: Manifest["characters"]) => string[]): Promise<CrowdKit> {
+  const res = await withTimeout(fetch(`${base}models/manifest.json`, { cache: "no-cache" }), 8000, "manifest");
+  if (!res.ok) throw new Error(`manifest ${res.status}`);
+  const m = (await res.json()) as Manifest;
+  const kit: CrowdKit = { models: new Map(), clips: new Map() };
+  const chars = files(m.characters ?? []);
+  const clips = (m.clips ?? []).filter((c) => c.canon === "crowd" || /^crowd_/.test(c.event));
+  await Promise.all([
+    ...chars.map((f) =>
+      withTimeout(loadGltf(`${base}models/${f}`), CLIP_MS, f)
+        .then((g) => void kit.models.set(f, g.scene))
+        .catch(() => undefined),
+    ),
+    ...clips.map((c) =>
+      withTimeout(loadGltf(`${base}models/${c.file}`), CLIP_MS, c.file)
+        .then((g) => {
+          const clip = (c.name && g.animations.find((a) => a.name === c.name)) || g.animations[0];
+          if (clip && !kit.clips.has(c.event)) kit.clips.set(c.event, { clip, hipsY: hipsRestY(g.scene) });
+        })
+        .catch(() => undefined),
+    ),
+  ]);
+  return kit;
 }
 
 const tmp = new THREE.Vector3();
@@ -330,16 +389,7 @@ export class Fighter {
 
   constructor(model: THREE.Object3D, private clips: CastSource["clips"], private role: "player" | "enemy", tint?: THREE.Color) {
     toToon(model, tint);
-    model.updateMatrixWorld(true);
-    // Skinned bounds read the bone matrices, which are only filled by a skeleton update.
-    model.traverse((o) => (o as THREE.SkinnedMesh).isSkinnedMesh && (o as THREE.SkinnedMesh).skeleton.update());
-    const box = new THREE.Box3().setFromObject(model);
-    const h = box.max.y - box.min.y;
-    const ok = Number.isFinite(h) && h > 0.05;
-    const k = ok ? this.height / h : 1;
-    if (!ok) box.min.y = 0;
-    model.scale.multiplyScalar(k);
-    model.position.y -= box.min.y * k;
+    normalizeHeight(model, this.height);
     this.body.add(model);
     this.root.add(this.body);
 
@@ -362,11 +412,7 @@ export class Fighter {
     });
 
     this.mixer = new THREE.AnimationMixer(model);
-    const names = new Map<string, string>();
-    model.traverse((o) => {
-      if (o.name && !names.has(boneKey(o.name))) names.set(boneKey(o.name), o.name);
-    });
-    this.names = names;
+    this.names = boneNames(model);
     this.modelHips = hipsRestY(model);
     this.mixer.addEventListener("finished", (e) => {
       if (e.action === this.current) this.play(this.idleName);
