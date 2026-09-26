@@ -1,4 +1,5 @@
 // AURA v2 entry: the WebGL stage, the battle driver, the audio layers and the DOM app, one frame loop.
+import { bindMenuSounds } from "../audio/menu-sfx";
 import { createStage } from "../render3d/stage";
 import { runDemo } from "../render3d/demo";
 import { AudioFx } from "../audio/layers";
@@ -71,6 +72,7 @@ game.listen({
   frame: (f: Frame, dt: number) => fx?.frame(f, dt),
 });
 
+bindMenuSounds(() => game.running());
 if (params.has("demo")) runDemo(stage);
 else {
   const { hud } = startApp({ game, stage, levels: LEVELS_V2, base, debug, canvas });
