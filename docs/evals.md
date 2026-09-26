@@ -80,7 +80,7 @@ words cap every axis at 2). Winner per line: highest min axis, then mean.
 
 Sample winners: announcer, the Gradium designed voice (mean 5.0) and `gemini-3.8-flash-tts` Fenrir
 (4.75), so they split the variants; Turnstile Ninja, `gemini-3.8-flash-tts` Algenib (4.5); Boat
-Kid, a three way tie at 5.0 (flash Enceladus family, pro, Gradium), split three ways.
+Kid, a three way tie at 5.0 (flash Achernar, pro Achernar, Gradium designed boatkid-2), split three ways.
 `gemini-2.5-pro-preview-tts` lost the announcer and the Ninja samples.
 
 Final roster (cast `roster-1625`, 63 lines: 8 announcer calls including SIX SEVEN, 15 intro, win,
