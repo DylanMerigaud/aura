@@ -46,6 +46,8 @@ export interface CastSource {
   /** Clips by event name, shared by both. `hipsY` is the rest height of the rig the clip was exported on. */
   clips: Map<string, { clip: THREE.AnimationClip; loop: boolean; hipsY?: number }>;
   label: string;
+  /** The manifest file `enemy` was loaded from (characters/...), when it came from the manifest. */
+  enemyFile?: string;
 }
 
 const loader = new GLTFLoader();
@@ -196,7 +198,7 @@ async function fromManifest(base: string): Promise<CastSource> {
   }
   const player = pg.scene;
   const enemy = eg ? eg.scene : SkeletonUtils.clone(pg.scene);
-  return { player, enemy, clips, label: `manifest ${pc.name} vs ${ec.name}` };
+  return { player, enemy, clips, label: `manifest ${pc.name} vs ${ec.name}`, enemyFile: ec.file };
 }
 
 async function fromRobot(base: string): Promise<CastSource> {
@@ -207,6 +209,12 @@ async function fromRobot(base: string): Promise<CastSource> {
     if (clip) clips.set(ev, { clip, loop: LOOPING.has(ev) });
   }
   return { player: g.scene, enemy: SkeletonUtils.clone(g.scene), clips, label: "RobotExpressive fallback" };
+}
+
+/** One rig of the manifest by file ("characters/boatkid_enemy.glb"), for the opponent of a level. */
+export async function loadRig(base: string, file: string): Promise<THREE.Object3D> {
+  const g = await withTimeout(loadGltf(`${base}models/${file}`), CHARACTER_MS, file);
+  return g.scene;
 }
 
 /** Manifest first, the robot when it is missing or broken, a capsule when both fail. */
@@ -407,7 +415,8 @@ export class Fighter {
   private height = 1.8;
   private gest: Layer | null = null;
 
-  constructor(model: THREE.Object3D, private clips: CastSource["clips"], private role: "player" | "enemy", tint?: THREE.Color) {
+  constructor(model: THREE.Object3D, private clips: CastSource["clips"], private role: "player" | "enemy", tint?: THREE.Color, height = 1.8) {
+    this.height = height;
     toToon(model, tint);
     normalizeHeight(model, this.height);
     this.body.add(model);

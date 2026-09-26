@@ -167,9 +167,9 @@ export class RingSet {
     this.scene.add(this.rimLight);
   }
 
-  /** Every stage key is the same arena; the level only picks the light color. */
+  /** Every stage key is the same arena; the level only picks the light color (the opponent's, else the stage's). */
   setLevel(level: LevelV2): void {
-    this.light.set(ARENA_LIGHT[level.stage] ?? ARENA_LIGHT.club);
+    this.light.set(level.opponent.light ?? ARENA_LIGHT[level.stage] ?? ARENA_LIGHT.club);
     this.key.color.copy(this.light);
     (this.pool.uniforms.color.value as THREE.Color).copy(this.light);
     (this.beam.uniforms.color.value as THREE.Color).copy(this.light);

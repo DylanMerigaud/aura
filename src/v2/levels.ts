@@ -1,5 +1,8 @@
-// The v2 campaign: the hero chart (level 1, the club) written by hand on the analysis of level4.mp3,
-// levels 2 to 5 generated from their track's analysis by a seeded, deterministic chart generator.
+// The v2 campaign, the roster in order (addendum 16:40): 1 the Boat Kid (the hero chart, written by hand on the
+// analysis of level4.mp3, where the WOW lives), 2 the Turnstile Ninja, 3 Papi Raleur, 4 La Parisienne, 5 Sporty
+// Granny, all in the same black arena (a light color per opponent, cast.json opponent.light). Levels 2 to 5 are
+// generated from their track's analysis by a seeded, deterministic chart generator. A win moves to the next
+// opponent, the roster loops when exhausted with the difficulty raised each loop (rosterLevel).
 import type { Dir, QteEvent, Taunt } from "../qte/types";
 import type { LevelV2, StageKey, TrackInfo, TurnSpec } from "./contracts";
 import { toBeat, trackInfo } from "./tracks";
@@ -10,7 +13,7 @@ interface CastLevel {
   title: string;
   place: string;
   story: string[];
-  opponent: { name: string; persona: string; color: string };
+  opponent: { name: string; handle: string; rank: string; persona: string; color: string; light: string; rig: string };
   taunts: string[];
   announcer: { intro: string; win: string; lose: string };
 }
@@ -84,7 +87,7 @@ function base(id: number, track: string, stage: StageKey, artKey: string, neon: 
  *   beats   turn       inputs                                              note
  *   0-16    player     HIT 4, 6, 8, 10, 12, 14                             onboarding: the first on the groove slam
  *                                                                          (4), wide windows, a ghost tap on the first
- *   16-24   opponent   chillGuyPockets                                      hands in pockets, the ninja's intro
+ *   16-24   opponent   boatSweep (every opponent turn)                      the Boat Kid rows, calm
  *   24-40   player     THE 67 24-28, HIT 30, HOLD 32-36, HIT 38            the 67 released on the 808 slam of 28, the
  *                                                                          hold lifted on the slam of 36
  *   40-48   opponent   boatSweep                                            the breakdown
@@ -119,13 +122,14 @@ const HERO_EVENTS: QteEvent[] = [
 
 const HERO_TURNS: TurnSpec[] = [
   { who: "player", beat: 0, lengthBeats: 16 },
-  { who: "opponent", beat: 16, lengthBeats: 8, move: "chillGuyPockets" },
+  // The Boat Kid's signature on every one of his turns: the mocap boat arm sweep.
+  { who: "opponent", beat: 16, lengthBeats: 8, move: "boatSweep" },
   { who: "player", beat: 24, lengthBeats: 16 },
   { who: "opponent", beat: 40, lengthBeats: 8, move: "boatSweep" },
   { who: "player", beat: 48, lengthBeats: 8 },
-  { who: "opponent", beat: 56, lengthBeats: 8, move: "palmPush" },
+  { who: "opponent", beat: 56, lengthBeats: 8, move: "boatSweep" },
   { who: "player", beat: 64, lengthBeats: 16 },
-  { who: "opponent", beat: 80, lengthBeats: 6, move: "chinUpTaunt" },
+  { who: "opponent", beat: 80, lengthBeats: 6, move: "boatSweep" },
 ];
 
 function hero(): LevelV2 {
@@ -135,7 +139,8 @@ function hero(): LevelV2 {
     events: HERO_EVENTS,
     // Taunts on his turns only, never over a player prompt: one per turn for a short cast, two per turn for 8 lines.
     taunts: taunts(HERO_EVENTS, c.taunts, c.taunts.length <= 4 ? [17, 41, 57, 81] : [17, 21, 41, 45, 57, 61, 81, 84]),
-    dropBeats: [4, 68],
+    // 28 is the 808 slam the first 67 releases on (the pacing eval's release_on_drop).
+    dropBeats: [4, 28, 68],
     breakdownBeats: [[37, 44], [45, 52], [53, 60], [61, 68]],
     turns: HERO_TURNS,
     // Tuned with pnpm balance: the average bot wins about 75 percent (flags at 35 and 85).
@@ -358,6 +363,18 @@ export function generateChart(info: TrackInfo, lengthBeats: number, seed: number
   return events;
 }
 
+/**
+ * Where the taunts go: two per opponent turn (his turn is free of player prompts), then spread over the level
+ * for the rest (taunts() slides each off a busy beat). Always one beat per text.
+ */
+export function tauntBeats(turns: TurnSpec[], n: number, lengthBeats: number): number[] {
+  const out: number[] = [];
+  for (const t of turns) if (t.who === "opponent") out.push(t.beat + 1, t.beat + Math.min(5, t.lengthBeats - 1));
+  const extra = n - out.length;
+  for (let i = 0; i < extra; i++) out.push(Math.round(((i + 1) * lengthBeats) / (extra + 1)));
+  return out.slice(0, n).sort((a, b) => a - b);
+}
+
 /** Whole beats that fit in the track (ending a quarter second before it), capped at 50 s of play. */
 export function fitBeats(info: TrackInfo): number {
   return Math.min(Math.floor(((info.duration - info.firstBeat - 0.25) * info.bpm) / 60), Math.floor((50 * info.bpm) / 60));
@@ -383,31 +400,55 @@ function generated(
     turns,
     ...(phase2Beat !== undefined ? { phase2Beat } : {}),
     events,
-    taunts: taunts(events, c.taunts, [Math.round(L * 0.2), Math.round(L * 0.5), Math.round(L * 0.8)]),
+    taunts: taunts(events, c.taunts, tauntBeats(turns, c.taunts.length, L)),
     dropBeats: dropBeatsOf(info, L),
     breakdownBeats: breakdownBeatsOf(info, L),
   };
 }
 
 export const LEVELS_V2: LevelV2[] = [
+  // 1 The Boat Kid (hero chart).
   hero(),
-  // Metro, Kevin: tutorial pace, HIT and one short MASH.
+  // 2 The Turnstile Ninja: tutorial pace, HIT and one short MASH.
   generated(2, "level1", "metro", "metro", ["#39ff14", "#00b3ff"], 0.95, {
     mashes: 1, mashLen: 4, holdOnDrops: false, holdOnBreakdowns: false, combo: 0, hold: 0, gapMin: 2, gapMax: 4,
   }),
-  // Kebab, Mehdi: adds COMBO.
+  // 3 Papi Raleur: adds COMBO.
   generated(3, "level2", "kebab", "kebab", ["#ff9f1c", "#ff3b30"], 0.9, {
     mashes: 1, mashLen: 5, holdOnDrops: false, holdOnBreakdowns: false, combo: 0.12, hold: 0, gapMin: 2, gapMax: 4,
   }),
-  // Parvis, His Holiness: built on HOLD, freezes on the organ drops.
+  // 4 La Parisienne: built on HOLD, freezes on the drops.
   generated(4, "level3", "parvis", "rooftop", ["#ffe066", "#8ecbff"], 0.85, {
     mashes: 0, mashLen: 4, holdOnDrops: true, holdOnBreakdowns: true, combo: 0.1, hold: 0.45, gapMin: 2, gapMax: 4,
   }),
-  // Voodoo stage, The Algorithm: everything, phase 2 at the midpoint of the boss track tightens the spacing.
+  // 5 Sporty Granny: everything, phase 2 at the midpoint of the boss track tightens the spacing.
   generated(5, "boss", "stage", "stage", ["#ff007f", "#00e5ff"], 0.75, {
     mashes: 2, mashLen: 5, holdOnDrops: false, holdOnBreakdowns: true, combo: 0.3, hold: 0.1, gapMin: 2, gapMax: 4,
   }, true),
 ];
+
+/**
+ * The level at a position of the run (0 = the Boat Kid on the first loop). Past the fifth opponent the roster
+ * loops, and each loop raises the difficulty vector: windows 10 percent tighter per loop (floored at 0.55) and the
+ * opponent farms more aura on his turns. Loop 0 is LEVELS_V2 as is.
+ */
+export function rosterLevel(index: number): LevelV2 {
+  const n = LEVELS_V2.length;
+  const i = Math.max(0, Math.floor(index));
+  const loop = Math.floor(i / n);
+  const l = LEVELS_V2[i % n];
+  if (loop === 0) return l;
+  return {
+    ...l,
+    windowScale: Math.max(0.55, l.windowScale * Math.pow(0.9, loop)),
+    opponentAura: Math.min(0.3, (l.opponentAura ?? 0.04) + 0.04 * loop),
+  };
+}
+
+/** Loop count of a run position (0 on the first pass through the roster). */
+export function rosterLoop(index: number): number {
+  return Math.floor(Math.max(0, Math.floor(index)) / LEVELS_V2.length);
+}
 
 /** Seconds of play at the track bpm. */
 export function levelSeconds(l: LevelV2): number {
