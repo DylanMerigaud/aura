@@ -1,12 +1,32 @@
 // Tests for the v2 UI's pure logic: progress save and load, star display, touch zone routing.
 // No DOM here on purpose (see src/v2/ui/progress.ts): these run in plain Node.
 import { describe, expect, it } from "vitest";
-import { loadProgress, nextProgress, saveProgress, type ProgressV2 } from "../src/v2/ui/progress";
+import { battleWindow, loadProgress, nextProgress, opponentSlot, saveProgress, type ProgressV2 } from "../src/v2/ui/progress";
 import { isTapKey, lift, newTapState, press, routeKey, zoneMode, type KeyLike } from "../src/v2/ui/touch";
 import { approach, clamp, pct, starGlyphs } from "../src/v2/ui/format";
 import { newGate, visiblePrompts } from "../src/v2/ui/hud/queue";
 import type { EventState } from "../src/qte/runner";
 import type { QteEvent } from "../src/qte/types";
+
+describe("opponent sequence", () => {
+  it("walks the roster in order, loops with tighter windows, floors at 0.6", () => {
+    expect(opponentSlot(0, 5)).toMatchObject({ index: 0, loop: 0, windowScale: 1 });
+    expect(opponentSlot(4, 5)).toMatchObject({ index: 4, loop: 0 });
+    const l1 = opponentSlot(5, 5);
+    expect(l1).toMatchObject({ index: 0, loop: 1 });
+    expect(l1.windowScale).toBeCloseTo(0.9);
+    expect(opponentSlot(500, 5).windowScale).toBe(0.6);
+    expect(opponentSlot(-3, 5).opp).toBe(0);
+    expect(battleWindow({ windowScale: 1 }, l1)).toBeCloseTo(0.9);
+    expect(battleWindow({ windowScale: 0.5 }, opponentSlot(500, 5))).toBe(0.5);
+    expect(battleWindow({}, opponentSlot(0, 5))).toBe(1);
+  });
+
+  it("nextProgress keeps the opponent position", () => {
+    const r = nextProgress({ unlocked: 1, best: {}, opp: 7 }, 1, 0, { score: 1, stars: 1, accuracy: 1, burst: 0 }, 5);
+    expect(r.opp).toBe(7);
+  });
+});
 
 describe("progress", () => {
   it("loads a default when nothing was saved", () => {
@@ -16,7 +36,7 @@ describe("progress", () => {
   });
 
   it("round trips through save and load", () => {
-    const p: ProgressV2 = { unlocked: 3, best: { 1: { score: 900, stars: 3, accuracy: 0.95, burst: 40 } } };
+    const p: ProgressV2 = { unlocked: 3, best: { 1: { score: 900, stars: 3, accuracy: 0.95, burst: 40 } }, opp: 2 };
     saveProgress(p);
     const loaded = loadProgress();
     expect(loaded).toEqual(p);
