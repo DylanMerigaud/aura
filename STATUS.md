@@ -1,3 +1,9 @@
+15:35 CEST, GAME lane: TAP ONLY and the one input flow at the ROOT
+GREEN: tests 655, typecheck clean; notes fly to the ring and any tap hits, the 67 is rapid taps then one tap on the drop, hold is press and lift; loading screen, title scene tap starts Chatelet, results RETRY PACK MAP SHARE; YOUR MOVE / HIS MOVE turns with his canon move; animated silhouette crowd (5 rigs files, 12 on phones)
+RED: the black playground, the performer camera and the like/dislike bar (Dylan 16:00) not done yet; nothing seen on a phone since this push
+PLAY: https://dylanmerigaud.github.io/aura/
+NEED FROM DYLAN: nothing yet
+
 15:20 CEST, INTEGRATION lane: all 7 PRs and the packs branch merged; Gen Z SFX, the LIVE overlay, the 3D world tour map, Aura Packs wired into the game; v2 is the Pages root
 GREEN: tests 622, typecheck clean, release:check and release:itch ALL PASS; voice bake off and Lyria regeneration running in their own branches (samples ~15:45)
 RED: nobody has seen the LIVE overlay, the map or the packs render on a phone yet; balance flags Chatelet too easy (average bot wins 96 percent), handed to the GAME lane; input module (src/input) merged but not used, the GAME lane's battleInput stays the handler
