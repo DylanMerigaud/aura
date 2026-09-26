@@ -14,12 +14,16 @@ function syncMedia() {
   if (existsSync("assets/3d")) {
     // Ship only the characters the stage picks (the preferred one per role, no crowd models): keeps the build light.
     const skip = new Set();
+    // The loadout's fighter pool ships too: the player may pick any of them (src/loadout/state.ts).
+    const pool = new Set([...readFileSync("src/loadout/state.ts", "utf8").matchAll(/file: "([^"]+)"/g)].map((m) => `assets/3d/${m[1]}`));
+    // Every opponent's own rig ships too (src/v2/cast.json opponent.rig, the stage loads it per level).
+    for (const l of JSON.parse(readFileSync("src/v2/cast.json", "utf8")).levels ?? []) if (l.opponent?.rig) pool.add(`assets/3d/characters/${l.opponent.rig}`);
     try {
       const m = JSON.parse(readFileSync("assets/3d/manifest.json", "utf8"));
       for (const c of m.characters ?? []) {
         const rivals = m.characters.filter((o) => o.role === c.role);
         const picked = rivals.find((o) => o.preferred) ?? rivals[0];
-        if (c.role === "crowd" || c !== picked) skip.add(`assets/3d/${c.file}`);
+        if ((c.role === "crowd" || c !== picked) && !pool.has(`assets/3d/${c.file}`)) skip.add(`assets/3d/${c.file}`);
       }
     } catch { /* no manifest: copy everything */ }
     rmSync("public/models", { recursive: true, force: true });
@@ -40,7 +44,7 @@ if (dev) {
   // /v1/ and reads the shared media one level up through <base href="../">. /v2/ stays as a redirect for old links.
   rmSync("dist", { recursive: true, force: true });
   mkdirSync("dist");
-  cpSync("public", "dist", { recursive: true, filter: (p) => !generated(p) && !/^public\/(sfx-preview|v2)(\/|$)/.test(p) && !/^public\/(index\.html|game\.css)$/.test(p) });
+  cpSync("public", "dist", { recursive: true, filter: (p) => !generated(p) && !/^public\/(sfx-preview|v2|packs)(\/|$)/.test(p) && !/^public\/(index\.html|game\.css)$/.test(p) });
   const v2 = existsSync("src/v2/main.ts");
   mkdirSync("dist/v1", { recursive: true });
   cpSync("public/game.css", "dist/v1/game.css");

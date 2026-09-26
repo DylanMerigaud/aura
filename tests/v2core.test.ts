@@ -119,3 +119,104 @@ describe("BattleCore", () => {
     expect(s.stars).toBe(3);
   });
 });
+
+describe("BattleCore turns", () => {
+  const turns: LevelV2["turns"] = [
+    { who: "player", beat: 0, lengthBeats: 12 },
+    { who: "opponent", beat: 12, lengthBeats: 8, move: "boatSweep" },
+    { who: "player", beat: 20, lengthBeats: 12 },
+  ];
+  const make = (events: LevelV2["events"], extra: Partial<LevelV2> = {}) => {
+    const out: CoreEvent[] = [];
+    const core = new BattleCore(level(events, { turns, taunts: [], ...extra }), track, 1, (e) => out.push(e));
+    return { core, out };
+  };
+  const spb = 0.5;
+
+  it("emits a turn at each turn start and the opponent's move on his turn, Frame.turn follows", () => {
+    const { core, out } = make([{ type: "hit", beat: 8, dir: "up" }]);
+    core.update(0.01, 0.016);
+    expect(out.filter((e) => e.kind === "turn")).toEqual([{ kind: "turn", who: "player", beat: 0, lengthBeats: 12 }]);
+    expect(core.frame().turn).toBe("player");
+    core.update(12 * spb + 0.01, 0.016);
+    expect(out.filter((e) => e.kind === "turn").at(-1)).toEqual({ kind: "turn", who: "opponent", beat: 12, lengthBeats: 8 });
+    expect(out.find((e) => e.kind === "opponentMove")).toEqual({ kind: "opponentMove", move: "boatSweep", beat: 12, lengthBeats: 8 });
+    expect(core.frame().turn).toBe("opponent");
+    core.update(20 * spb + 0.01, 0.016);
+    expect(core.frame().turn).toBe("player");
+    expect(out.filter((e) => e.kind === "turn").map((e) => (e as { who: string }).who)).toEqual(["player", "opponent", "player"]);
+  });
+
+  it("the opponent farms a small scripted aura on his turn", () => {
+    const { core } = make([{ type: "hit", beat: 24, dir: "up" }]);
+    core.update(11 * spb, 0.016);
+    const before = core.meter;
+    core.update(12 * spb + 0.01, 0.016);
+    expect(before - core.meter).toBeCloseTo(0.04, 5);
+  });
+
+  it("ignores presses during his turn: no judgment, no cringe, no miss", () => {
+    const { core, out } = make([{ type: "hit", beat: 22, dir: "up" }]);
+    core.update(14 * spb, 0.016);
+    core.input({ kind: "dir", dir: "left", t: 14 * spb });
+    core.input({ kind: "space", down: true, t: 15 * spb });
+    expect(out.some((e) => e.kind === "judged")).toBe(false);
+    expect(core.counts.cringe + core.counts.miss).toBe(0);
+    core.update(22 * spb, 0.016);
+    core.input({ kind: "dir", dir: "up", t: 22 * spb });
+    expect(out.find((e) => e.kind === "judged")).toMatchObject({ grade: "perfect" });
+  });
+
+  it("the first 15 s cannot be lost", () => {
+    const events: LevelV2["events"] = [8, 10, 12, 14, 16, 18, 20, 22, 24, 26].map((beat) => ({ type: "hit" as const, beat, dir: "up" as const }));
+    const { core, out } = make(events, { turns: undefined, lengthBeats: 40 });
+    for (let t = 0; t < 14.9; t += 0.1) core.update(t, 0.1);
+    expect(core.meter).toBeGreaterThan(-1);
+    expect(out.some((e) => e.kind === "end")).toBe(false);
+  });
+});
+
+describe("mastery and reactive taunts", () => {
+  it("windows: wide in the onboarding, 110 ms Ok at combo 0 then 70 ms at combo 25", async () => {
+    const { windowFactor, ONBOARD_S, ONBOARD_WINDOW } = await import("../src/v2/core");
+    expect(windowFactor(0, 1)).toBe(ONBOARD_WINDOW);
+    expect(windowFactor(0, ONBOARD_S + 1) * 130).toBeCloseTo(110);
+    expect(windowFactor(25, ONBOARD_S + 1) * 130).toBeCloseTo(70);
+    expect(windowFactor(80, ONBOARD_S + 1) * 130).toBeCloseTo(70);
+  });
+
+  it("FLOW after 8 Perfects in a row doubles the score and ends on the next non Perfect", () => {
+    // 20 notes so 9 Perfects do not KO the opponent (the gain per note scales with the chart size).
+    const hits = Array.from({ length: 20 }, (_, i) => ({ type: "hit" as const, beat: 4 + i * 2, dir: (i % 2 ? "up" : "left") as "up" | "left" }));
+    const lv = level(hits, { lengthBeats: 48, taunts: [] });
+    const out: CoreEvent[] = [];
+    const core = new BattleCore(lv, track, 1, (e) => out.push(e));
+    const spb = 0.5;
+    for (let i = 0; i < 9; i++) {
+      core.update((4 + i * 2) * spb - 0.01, 0.016);
+      core.input({ kind: "tap", down: true, t: (4 + i * 2) * spb });
+    }
+    expect(out.filter((e) => e.kind === "flow")).toEqual([{ kind: "flow", on: true }]);
+    expect(core.flow).toBe(true);
+    core.update(22 * spb - 0.01, 0.016);
+    core.input({ kind: "tap", down: true, t: 22 * spb + 0.08 });
+    expect(core.flow).toBe(false);
+  });
+
+  it("reacts: a miss streak and the combo 10 each make him say a line, never twice inside the cooldown", () => {
+    const hits = Array.from({ length: 24 }, (_, i) => ({ type: "hit" as const, beat: 4 + i * 2, dir: (i % 2 ? "up" : "left") as "up" | "left" }));
+    const taunts = ["a", "b", "c", "d", "e", "f", "g", "h"].map((text) => ({ beat: 999, text }));
+    const out: CoreEvent[] = [];
+    const core = new BattleCore(level(hits, { lengthBeats: 60, taunts }), track, 1, (e) => out.push(e));
+    const spb = 0.5;
+    // Two misses (no input), then 12 perfect taps.
+    for (let t = -1; t < 8 * spb + 0.5; t += 0.02) core.update(t, 0.02);
+    for (let i = 2; i < 14; i++) {
+      core.update((4 + i * 2) * spb - 0.01, 0.016);
+      core.input({ kind: "tap", down: true, t: (4 + i * 2) * spb });
+    }
+    const said = out.filter((e) => e.kind === "taunt").map((e) => (e as { text: string }).text);
+    expect(said).toContain("b");
+    expect(said.length).toBeGreaterThanOrEqual(2);
+  });
+});

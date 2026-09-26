@@ -73,10 +73,10 @@ export function buildSettings(onBack: () => void) {
   }
 
   const controls = el("div", "controls-list");
-  controls.appendChild(el("p", "controls-row", "arrows or WASD: move / direction"));
-  controls.appendChild(el("p", "controls-row", "space: hold, mash release"));
-  controls.appendChild(el("p", "controls-row", "enter: confirm, escape: back"));
-  controls.appendChild(el("p", "controls-row", "touch: tap edges for hit, halves for mash, hold anywhere, swipe for direction"));
+  controls.appendChild(el("p", "controls-row", "HIT: tap anywhere when the note lands in the ring"));
+  controls.appendChild(el("p", "controls-row", "67: tap fast, then one tap on the drop"));
+  controls.appendChild(el("p", "controls-row", "HOLD: press and hold anywhere, lift on the beat"));
+  controls.appendChild(el("p", "controls-row", "desktop: any key or click is a tap"));
   root.appendChild(controls);
 
   function paint() {
@@ -89,7 +89,7 @@ export function buildSettings(onBack: () => void) {
   const calibPulse = el("div", "calibrate-pulse");
   const calibCount = el("p", "calibrate-count", "0 / 8");
   calibOverlay.appendChild(el("h2", "screen-title", "LATENCY CALIBRATION"));
-  calibOverlay.appendChild(el("p", "subtitle", "tap SPACE on each click after the first four"));
+  calibOverlay.appendChild(el("p", "subtitle", "tap on each click after the first four"));
   calibOverlay.appendChild(calibPulse);
   calibOverlay.appendChild(calibCount);
   root.appendChild(calibOverlay);
@@ -147,7 +147,7 @@ export function buildSettings(onBack: () => void) {
 
   function onKey(e: KeyboardEvent) {
     if (calib) {
-      if (e.code === "Space") {
+      if (e.code !== "Escape" && !e.repeat) {
         e.preventDefault();
         calibTap(heardTime());
       } else if (e.code === "Escape") endCalibration();

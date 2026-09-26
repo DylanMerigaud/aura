@@ -1,0 +1,14 @@
+{
+  "track": "victory",
+  "candidate": "c4",
+  "model": "gemini-3.1-pro-preview",
+  "note": "too smooth, more samba",
+  "note_score": 5,
+  "note_evidence": "The track features a loud, live-sounding street bateria with prominent whistles, heavy surdos, and agogo bells starting at 00:00, perfectly capturing a raw, festive samba feel.",
+  "beat_clarity": 5,
+  "beat_evidence": "A fast, driving pulse is immediately established at 00:00 by the heavy surdo and layered percussion, making it very easy to tap along.",
+  "loop_or_ending": 5,
+  "loop_evidence": "The ensemble plays a synchronized, definitive final hit at 00:10, providing a strong and satisfying conclusion for a victory stinger.",
+  "intelligible_words": false,
+  "total": 5
+}

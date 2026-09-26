@@ -1,0 +1,14 @@
+{
+  "track": "level1",
+  "candidate": "c4",
+  "model": "gemini-3.1-pro-preview",
+  "note": "more funk, more bass",
+  "note_score": 5,
+  "note_evidence": "From 00:00, the track delivers authentic Brazilian funk with a heavy tamborzao rhythm and aggressively distorted, pitch-sliding 808 bass.",
+  "beat_clarity": 5,
+  "beat_evidence": "The syncopated but steady percussion provides a clear, tappable pulse right from the first second at 00:00.",
+  "loop_or_ending": 2,
+  "loop_evidence": "While the energy is high initially, the beat completely drops out at 00:34 for a spoken vocal outro, preventing a seamless loop.",
+  "intelligible_words": true,
+  "total": 4
+}

@@ -69,9 +69,11 @@ describe("batched writes", () => {
     ui.setViewers(9400);
     await frame();
     expect(value()).not.toBe("0");
-    await new Promise<void>((resolve) => setTimeout(resolve, 800));
+    // The tween is 600 ms of animation frames; a loaded machine (the full suite in parallel) drops frames,
+    // so wait for the end value instead of a fixed 800 ms.
+    for (let i = 0; i < 40 && value() !== "9.4K"; i++) await new Promise<void>((resolve) => setTimeout(resolve, 100));
     expect(value()).toBe("9.4K");
-  });
+  }, 10000);
 });
 
 describe("node caps", () => {

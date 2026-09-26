@@ -4,11 +4,21 @@
 import { ctx, heardTime, master, musicBus, noiseSource, sfxBus } from "./engine";
 import { sfx } from "./sfx";
 import { cheer, boo } from "./crowd";
-import { chime, sparkleTail, mashTick, sting, subDrop, noiseBurst, downlifter, crowdOoh, countKick, riserTick } from "./synth-extra";
+import { sparkleTail, mashTick, sting, subDrop, downlifter, countKick, riserTick } from "./synth-extra";
 import type { Grade } from "../qte/judge";
+import { play, useOutput, type PlayOpts, type Slot } from "../sfx";
 import type { CoreEvent, Frame, Listener } from "../v2/contracts";
 
 const OPEN_HZ = 20000;
+
+/** A Gen Z slot (src/sfx, docs/sfx.md) at context time t. A failure is logged, never thrown into the frame loop. */
+function gz(slot: Slot, t: number, opts: PlayOpts = {}) {
+  try {
+    play(slot, { ...opts, at: Math.max(0, t - ctx.currentTime) });
+  } catch (err) {
+    console.warn(`sfx ${slot}:`, err);
+  }
+}
 
 /** +/-3 percent pitch multiplier so a repeated hit does not sound like a machine gun. Pure, testable. */
 export function jitter(rand: () => number = Math.random): number {
@@ -66,6 +76,8 @@ export class AudioFx implements Listener {
   /** Context time the next drop boom is scheduled at, -1 when none. */
   private dropBoomAt = -1;
   private crowdGate = new CrowdGate(0.25);
+  /** Context time of the pending count in's first click, -1 when none. */
+  private firstClick = -1;
 
   constructor() {
     this.musicIn = ctx.createGain();
@@ -75,6 +87,11 @@ export class AudioFx implements Listener {
     this.duck = ctx.createGain();
     this.duck.gain.value = 1;
     this.musicIn.connect(this.lowpass).connect(this.duck).connect(musicBus);
+    useOutput(ctx, sfxBus);
+  }
+
+  private get bpm() {
+    return 60 / this.spb;
   }
 
   // ---- Listener ----
@@ -87,6 +104,7 @@ export class AudioFx implements Listener {
         break;
       case "mashStep":
         mashTick(t, e.count, jitter());
+        gz("mashCharge", t, { step: Math.min(1, e.count / 16) });
         break;
       case "release":
         this.release(t, e.burst);
@@ -107,6 +125,7 @@ export class AudioFx implements Listener {
         // Already scheduled on the audio clock from the frame before; this is the late fallback.
         if (this.dropBoomAt < 0) {
           sfx.boom(t);
+          gz("bigHit", t);
           this.duckMusic(t);
         }
         this.dropBoomAt = -1;
@@ -137,6 +156,7 @@ export class AudioFx implements Listener {
     this.dropArmed = false;
     const at = dropBoomTime(ctx.currentTime, heardTime(), f.beatsToDrop, f.spb, f.rate);
     sfx.boom(at);
+    gz("bigHit", at);
     this.duckMusic(at);
     this.dropBoomAt = at;
   }
@@ -147,13 +167,13 @@ export class AudioFx implements Listener {
     if (cringe) return this.cringe(t);
     if (grade === "perfect") {
       sfx.snap(t);
-      chime(t, 0.24, jitter());
+      gz("perfect", t);
       sparkleTail(t);
     } else if (grade === "great") {
       sfx.snap(t);
-      chime(t, 0.16, jitter());
+      gz("great", t);
     } else if (grade === "ok") {
-      sfx.tick(t);
+      gz("ok", t);
     } else {
       sfx.thud(t);
     }
@@ -161,7 +181,7 @@ export class AudioFx implements Listener {
 
   /** Record scratch, a late crowd "ooh", and the music low passed to 600 Hz for one beat. */
   private cringe(t: number) {
-    sfx.scratch(t);
+    gz("missCringe", t);
     this.queueCrowd(t, "ooh");
     const openBefore = Math.max(this.lowpass.frequency.value, 400);
     this.lowpass.frequency.cancelScheduledValues(t);
@@ -171,10 +191,10 @@ export class AudioFx implements Listener {
     this.cringeUntil = t + this.spb;
   }
 
-  /** Sub drop plus noise burst plus a crowd roar sized by the burst (amendment 6's 69 release). */
+  /** Sub drop plus noise burst plus a crowd roar sized by the burst (the 67 release). */
   private release(t: number, burst: number) {
     subDrop(t, Math.min(2, burst / 20));
-    noiseBurst(t, 0.35);
+    gz("auraRelease", t, { bpm: this.bpm });
     this.queueCrowd(t, "cheer", Math.max(0.4, Math.min(2.2, burst / 14)));
   }
 
@@ -183,13 +203,15 @@ export class AudioFx implements Listener {
     this.ended = true;
     if (win) {
       sfx.boom(t, 1.4);
+      gz("victory", t + 0.2, { bpm: this.bpm });
       this.duckMusic(t);
       this.queueCrowd(t, "cheer", 2.2);
       this.bedGain?.gain.cancelScheduledValues(t);
       this.bedGain?.gain.setTargetAtTime(this.bedBase * 1.6, t, 0.05);
       this.bedGain?.gain.setTargetAtTime(0.0001, t + this.spb * 2, 0.4);
     } else {
-      sfx.scratch(t);
+      gz("missCringe", t);
+      gz("defeat", t + 0.3);
       this.queueCrowd(t, "ooh");
       window.setTimeout(() => boo(), 700);
       this.bedGain?.gain.cancelScheduledValues(t);
@@ -238,6 +260,13 @@ export class AudioFx implements Listener {
     this.ensureBed(at);
     countKick(at);
     riserTick(at, n);
+    // The tamborzao roll fills the count in: one bar at the level tempo from the first click. The clicks are all
+    // scheduled at once, so the second one gives the tempo while the first is still ahead.
+    if (n === 4) this.firstClick = at;
+    else if (n === 3 && this.firstClick > 0 && at > this.firstClick) {
+      gz("levelStart", this.firstClick, { bpm: 60 / (at - this.firstClick) });
+      this.firstClick = -1;
+    }
     const frac = Math.min(1, (5 - n) / 4);
     this.bedGain?.gain.setTargetAtTime(this.bedBase * frac, at, 0.15);
   }
@@ -307,9 +336,11 @@ export class AudioFx implements Listener {
     if (!this.crowdGate.allow(at)) return;
     const delayMs = Math.max(0, at - ctx.currentTime) * 1000;
     window.setTimeout(() => {
-      if (kind === "cheer") cheer(size);
-      else if (kind === "boo") boo();
-      else crowdOoh(ctx.currentTime);
+      if (kind === "cheer") {
+        cheer(size);
+        if (size >= 1) gz("crowdRoar", ctx.currentTime);
+      } else if (kind === "boo") boo();
+      else gz("crowdOoh", ctx.currentTime);
     }, delayMs);
   }
 

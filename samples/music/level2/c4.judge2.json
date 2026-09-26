@@ -1,0 +1,14 @@
+{
+  "track": "level2",
+  "candidate": "c4",
+  "model": "gemini-3.1-pro-preview",
+  "note": "sidechain on the bass",
+  "note_score": 5,
+  "note_evidence": "The bass and synths exhibit a heavy, obvious sidechain pumping effect that ducks clearly on every kick, especially noticeable during the main drop at 0:19.",
+  "beat_clarity": 5,
+  "beat_evidence": "A strong, steady kick and percussion pattern starts at 0:00, providing an unmistakable pulse for the player to tap along to immediately.",
+  "loop_or_ending": 3,
+  "loop_evidence": "While the intro starts strong, there is a noticeable breakdown from 0:11 to 0:19 where the main beat drops out, disrupting the steady energy needed for a seamless rhythm loop.",
+  "intelligible_words": false,
+  "total": 4.33
+}

@@ -1,0 +1,14 @@
+{
+  "track": "level2",
+  "candidate": "c5",
+  "model": "gemini-3.1-pro-preview",
+  "note": "sidechain on the bass",
+  "note_score": 2,
+  "note_evidence": "When the heavy distorted bass enters at 0:18, it acts as a continuous drone without any obvious ducking or breathing effect on the kick drum.",
+  "beat_clarity": 5,
+  "beat_evidence": "The aggressive, rhythmic vocal chops establish a very clear and steady pulse from the very first second, making it incredibly easy to tap along.",
+  "loop_or_ending": 2,
+  "loop_evidence": "The track spends the first 18 seconds in a build-up phase rather than starting at full energy, and it ends abruptly at 0:37, which would prevent a seamless loop.",
+  "intelligible_words": false,
+  "total": 3
+}

@@ -1,0 +1,14 @@
+{
+  "track": "level2",
+  "candidate": "c2",
+  "model": "gemini-3.1-pro-preview",
+  "note": "sidechain on the bass",
+  "note_score": 4,
+  "note_evidence": "The distorted bass clearly ducks on every kick hit, creating a noticeable pumping effect that drives the rhythm from 0:10 to the end.",
+  "beat_clarity": 5,
+  "beat_evidence": "A heavy kick and syncopated percussion establish a clear, tappable pulse immediately at 0:00.",
+  "loop_or_ending": 5,
+  "loop_evidence": "The track drops in at full energy at 0:00 and maintains a steady intensity until an abrupt cut at 0:39, ideal for a seamless loop.",
+  "intelligible_words": false,
+  "total": 4.67
+}

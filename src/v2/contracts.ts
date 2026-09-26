@@ -40,6 +40,21 @@ export interface LevelV2 extends Level {
   breakdownBeats: [number, number][];
   /** Palette of the set: two neon colors (CSS hex). */
   neon: [string, string];
+  /**
+   * Dance battle turns in beats, in order, never overlapping. A player QTE never intersects an opponent
+   * turn (validateTurns). Missing: the whole level is one player turn.
+   */
+  turns?: TurnSpec[];
+  /** Scripted aura the opponent farms at the start of each of his turns (default OPPONENT_TURN_AURA). */
+  opponentAura?: number;
+}
+
+/** One turn of the battle. `move` (opponent turns) is a gesture key of src/anim/gestures.ts GESTURES. */
+export interface TurnSpec {
+  who: Turn;
+  beat: number;
+  lengthBeats: number;
+  move?: string;
 }
 
 /** Combo tier drives the aura flame: 0 none, 1 blue (combo 5+), 2 purple (15+), 3 white hot (25+, sunglasses). */
@@ -59,7 +74,7 @@ export type CoreEvent =
   /** Any judged QTE except a MASH release. `strong` = landed on a strong onset (director: hit stop). */
   | { kind: "judged"; grade: Grade; cringe: boolean; qte: QteEvent["type"]; dir?: Dir; combo: number; score: number; strong: boolean; big: boolean }
   | { kind: "mashStart"; lengthBeats: number }
-  /** One counted alternation of a MASH (after the anti turbo filter). */
+  /** One counted tap of a MASH (after the anti turbo filter); `side` alternates for the visuals. */
   | { kind: "mashStep"; count: number; side: "left" | "right" }
   /** MASH released: burst = min(count, cap) * timing multiplier (amendment 6). */
   | { kind: "release"; burst: number; count: number; mult: number; grade: Grade }
@@ -74,6 +89,8 @@ export type CoreEvent =
   | { kind: "turn"; who: Turn; beat: number; lengthBeats: number }
   /** The opponent performs a canon move (a gesture key from src/anim, e.g. "boat_sweep") on his turn. */
   | { kind: "opponentMove"; move: string; beat: number; lengthBeats: number }
+  /** FLOW: 8 Perfects in a row (score x2, sunglasses) until the next non Perfect. */
+  | { kind: "flow"; on: boolean }
   | { kind: "end"; win: boolean; ko: boolean };
 
 export interface Frame {
@@ -101,6 +118,10 @@ export interface Frame {
   /** 0..1 of the current HOLD. */
   holdProgress: number;
   phase2: boolean;
+  /** In FLOW (8 Perfects in a row). */
+  flow?: boolean;
+  /** Current timing window as a factor of the base windows (wide in the onboarding, tighter with the combo). */
+  windowK?: number;
   /** Whose turn it is now (the play zone dims and ignores taps on "opponent"). */
   turn: Turn;
   /** Set once the battle is decided (freeze frame, letterbox). */
@@ -157,7 +178,11 @@ export interface Listener {
 }
 
 /** Raw input already mapped to the heard audio clock (see src/qte/input.ts heardTime). */
-export type PlayInput = { kind: "dir"; dir: Dir; at: number; key?: string } | { kind: "space"; down: boolean; at: number };
+export type PlayInput =
+  /** The game's only input (TAP ONLY): a press or a lift anywhere, any key, any click. */
+  | { kind: "tap"; down: boolean; at: number }
+  | { kind: "dir"; dir: Dir; at: number; key?: string }
+  | { kind: "space"; down: boolean; at: number };
 
 /** The battle driver in src/v2/game.ts, used by src/v2/main.ts. */
 export interface GameApi {

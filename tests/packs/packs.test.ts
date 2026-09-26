@@ -95,3 +95,14 @@ describe("persistence", () => {
     expect(save(broken, freshInventory())).toBe(false);
   });
 });
+
+describe("emote clips", () => {
+  it("binds every emote to a clip file that exists in assets/3d", async () => {
+    const { existsSync } = await import("node:fs");
+    const { CATALOG } = await import("../../src/packs/catalog");
+    for (const item of CATALOG.filter((i) => i.kind === "emote")) {
+      expect(item.clip, item.id).toBeTruthy();
+      expect(existsSync(`assets/3d/${item.clip}`), `${item.id}: ${item.clip}`).toBe(true);
+    }
+  });
+});

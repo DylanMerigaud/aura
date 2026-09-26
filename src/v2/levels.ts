@@ -1,7 +1,10 @@
-// The v2 campaign: the hero chart (level 1, the club) written by hand on the analysis of level4.mp3,
-// levels 2 to 5 generated from their track's analysis by a seeded, deterministic chart generator.
+// The v2 campaign, the roster in order (addendum 16:40): 1 the Boat Kid (the hero chart, written by hand on the
+// analysis of level4.mp3, where the WOW lives), 2 the Turnstile Ninja, 3 Papi Raleur, 4 La Parisienne, 5 Sporty
+// Granny, all in the same black arena (a light color per opponent, cast.json opponent.light). Levels 2 to 5 are
+// generated from their track's analysis by a seeded, deterministic chart generator. A win moves to the next
+// opponent, the roster loops when exhausted with the difficulty raised each loop (rosterLevel).
 import type { Dir, QteEvent, Taunt } from "../qte/types";
-import type { LevelV2, StageKey, TrackInfo } from "./contracts";
+import type { LevelV2, StageKey, TrackInfo, TurnSpec } from "./contracts";
 import { toBeat, trackInfo } from "./tracks";
 import cast from "./cast.json";
 
@@ -10,7 +13,7 @@ interface CastLevel {
   title: string;
   place: string;
   story: string[];
-  opponent: { name: string; persona: string; color: string };
+  opponent: { name: string; handle: string; rank: string; persona: string; color: string; light: string; rig: string };
   taunts: string[];
   announcer: { intro: string; win: string; lose: string };
 }
@@ -76,46 +79,57 @@ function base(id: number, track: string, stage: StageKey, artKey: string, neon: 
  * and go breakdown from 37 to 67 (energy 0.25 to 0.45, the bass out) broken by an 808 slam every 2 bars (36,
  * 44, 52, 60); THE DROP on beat 68 (energy 0.38 on 64 to 67, then 0.95 for the rest, the largest rise of the
  * track); full section to the end.
- * Onset strength matched per input (full band onset_strength normalized to its 99.5th percentile, "cow" = the
- * 500 to 1800 Hz band where the cowbell and the clap sit, "808" = the 30 to 150 Hz slam):
- *   beat  input           full  cow   note
- *   8     HIT right       1.15  1.04  first QTE, 2 bars in
- *   12    HIT up          1.50  1.19  808 slam
- *   15    HIT left        1.53  1.34  bar end accent, strongest onset of the groove
- *   19    HIT down        1.06  1.13  bar end accent
- *   23    HIT right       1.26  1.09  bar end accent
- *   28    COMBO 3 end     0.48        presses 26 27 28: 27 is the accent (0.94), 28 the 808 slam
- *   31    HIT down        0.98  0.68  bar end accent
- *   36    HIT up          0.36  0.36  808 slam that opens the breakdown (energy 0.88 between two dips)
- *   40    HOLD 4                      bass out, release on the 808 slam of 44
- *   47    HIT left        0.52  0.54  clap
- *   52    COMBO 4 end     0.35        presses 49 to 52, the last on the 808 slam
- *   56    HOLD 4                      release on the 808 slam of 60
- *   62    MASH 6                      charge through the last 6 beats before the drop
- *   68    MASH release    0.57  0.62  THE 69 release on the drop
- *   71    HIT up          0.70  0.82
- *   76    COMBO 3 end     1.00  1.07  presses 74 75 76, strongest onset of the drop
- *   79    HIT right       0.79  0.75
- *   82    HIT up          0.50  0.68  last input, 808 slam
+ *
+ * Dance battle turns (YOUR MOVE / HIS MOVE), TAP ONLY (tap, tap fast, hold), difficulty ramping 0.2 to 0.8 over
+ * the 40 s through density, windows (tighter with the combo, src/v2/core.ts) and the tempo rule. HIT pairs stay at
+ * least 2 beats apart and never repeat a move (scripts/eval-animation.ts k7, k10): `dir` is the dance move the hero
+ * plays on the hit, not an input.
+ *   beats   turn       inputs                                              note
+ *   0-16    player     HIT 4, 6, 8, 10, 12, 14                             onboarding: the first on the groove slam
+ *                                                                          (4), wide windows, a ghost tap on the first
+ *   16-24   opponent   boatSweep (every opponent turn)                      the Boat Kid rows, calm
+ *   24-40   player     THE 67 24-28, HIT 30, HOLD 32-36, HIT 38            the 67 released on the 808 slam of 28, the
+ *                                                                          hold lifted on the slam of 36
+ *   40-48   opponent   boatSweep                                            the breakdown
+ *   48-56   player     HOLD 48-52, HIT 53, HIT 55                           hold through the breakdown onto the slam
+ *   56-64   opponent   palmPush                                             the build before the drop
+ *   64-80   player     THE 67 64-68, HIT 70, 72, 74, 76, 78                 THE 67 released on THE DROP (68), then
+ *                                                                          a note every 2 beats at full energy
+ *   80-86   opponent   chinUpTaunt                                          his last word before the verdict
+ * The first 15 s (to beat 32) cannot be lost: the core floors the meter there.
  */
 const HERO_EVENTS: QteEvent[] = [
-  { type: "hit", beat: 8, dir: "right" },
-  { type: "hit", beat: 12, dir: "up" },
-  { type: "hit", beat: 15, dir: "left" },
-  { type: "hit", beat: 19, dir: "down" },
-  { type: "hit", beat: 23, dir: "right" },
-  { type: "combo", beat: 28, dirs: ["left", "up", "right"] },
-  { type: "hit", beat: 31, dir: "down" },
-  { type: "hit", beat: 36, dir: "up" },
-  { type: "hold", beat: 40, length: 4 },
-  { type: "hit", beat: 47, dir: "left" },
-  { type: "combo", beat: 52, dirs: ["up", "down", "left", "right"] },
-  { type: "hold", beat: 56, length: 4 },
-  { type: "mash", beat: 62, length: 6 },
-  { type: "hit", beat: 71, dir: "up" },
-  { type: "combo", beat: 76, dirs: ["down", "left", "right"] },
-  { type: "hit", beat: 79, dir: "right" },
-  { type: "hit", beat: 82, dir: "up" },
+  { type: "hit", beat: 4, dir: "right" },
+  { type: "hit", beat: 6, dir: "left" },
+  { type: "hit", beat: 8, dir: "up" },
+  { type: "hit", beat: 10, dir: "right" },
+  { type: "hit", beat: 12, dir: "down" },
+  { type: "hit", beat: 14, dir: "left" },
+  { type: "mash", beat: 24, length: 4 },
+  { type: "hit", beat: 30, dir: "up" },
+  { type: "hold", beat: 32, length: 4 },
+  { type: "hit", beat: 38, dir: "right" },
+  { type: "hold", beat: 48, length: 4 },
+  { type: "hit", beat: 53, dir: "left" },
+  { type: "hit", beat: 55, dir: "up" },
+  { type: "mash", beat: 64, length: 4 },
+  { type: "hit", beat: 70, dir: "right" },
+  { type: "hit", beat: 72, dir: "down" },
+  { type: "hit", beat: 74, dir: "left" },
+  { type: "hit", beat: 76, dir: "up" },
+  { type: "hit", beat: 78, dir: "right" },
+];
+
+const HERO_TURNS: TurnSpec[] = [
+  { who: "player", beat: 0, lengthBeats: 16 },
+  // The Boat Kid's signature on every one of his turns: the mocap boat arm sweep.
+  { who: "opponent", beat: 16, lengthBeats: 8, move: "boatSweep" },
+  { who: "player", beat: 24, lengthBeats: 16 },
+  { who: "opponent", beat: 40, lengthBeats: 8, move: "boatSweep" },
+  { who: "player", beat: 48, lengthBeats: 8 },
+  { who: "opponent", beat: 56, lengthBeats: 8, move: "boatSweep" },
+  { who: "player", beat: 64, lengthBeats: 16 },
+  { who: "opponent", beat: 80, lengthBeats: 6, move: "boatSweep" },
 ];
 
 function hero(): LevelV2 {
@@ -123,11 +137,88 @@ function hero(): LevelV2 {
   return {
     ...level,
     events: HERO_EVENTS,
-    // Beat 3 before the first QTE, 33 before the breakdown, 84 after the last input.
-    taunts: taunts(HERO_EVENTS, c.taunts, [3, 14, 24, 33, 46, 58, 76, 84]),
-    dropBeats: [4, 68],
+    // Taunts on his turns only, never over a player prompt: one per turn for a short cast, two per turn for 8 lines.
+    taunts: taunts(HERO_EVENTS, c.taunts, c.taunts.length <= 4 ? [17, 41, 57, 81] : [17, 21, 41, 45, 57, 61, 81, 84]),
+    // 28 is the 808 slam the first 67 releases on (the pacing eval's release_on_drop).
+    dropBeats: [4, 28, 68],
     breakdownBeats: [[37, 44], [45, 52], [53, 60], [61, 68]],
+    turns: HERO_TURNS,
+    // Tuned with pnpm balance: the average bot wins about 75 percent (flags at 35 and 85).
+    opponentAura: 0.08,
   };
+}
+
+/** Opponent moves the generated levels rotate through (keys of src/anim/gestures.ts GESTURES). */
+export const OPPONENT_MOVES = ["chinUpTaunt", "boatSweep", "sixSevenHands", "palmPush", "sigmaStare", "wristRoll", "shoulderBrush", "chillGuyPockets"];
+
+/** True when the beat span [a, b] of a QTE intersects the turn [t.beat, t.beat + t.lengthBeats). */
+export function intersects(a: number, b: number, t: TurnSpec): boolean {
+  return a < t.beat + t.lengthBeats && b >= t.beat;
+}
+
+/** Player turn lengths tried, whole bars nearest 4 bars first, then any beat up to 10 bars. */
+const TURN_OFFSETS = Array.from({ length: 33 }, (_, i) => i + 8).sort((a, b) => Number(a % 4 !== 0) - Number(b % 4 !== 0) || Math.abs(a - 16) - Math.abs(b - 16));
+
+/**
+ * Simple alternation for a generated chart: player turns of about 4 bars, opponent turns of 2 bars placed
+ * where they cut no MASH (the 67 stays whole), always ending on a player turn. Any other event inside an
+ * opponent turn is dropped.
+ */
+export function alternate(events: QteEvent[], lengthBeats: number, seed: number): { events: QteEvent[]; turns: TurnSpec[] } {
+  const turns: TurnSpec[] = [];
+  const anchors = events.filter((e) => e.type === "mash");
+  let cursor = 0;
+  let m = seed % OPPONENT_MOVES.length;
+  for (;;) {
+    let placed = -1;
+    for (const d of TURN_OFFSETS) {
+      const s = cursor + d;
+      const t: TurnSpec = { who: "opponent", beat: s, lengthBeats: 8 };
+      // Leave at least 2 bars of player time after it.
+      if (s + 8 + 8 > lengthBeats) continue;
+      if (anchors.some((e) => intersects(span(e)[0], span(e)[1], t))) continue;
+      placed = s;
+      break;
+    }
+    if (placed < 0) break;
+    turns.push({ who: "player", beat: cursor, lengthBeats: placed - cursor });
+    turns.push({ who: "opponent", beat: placed, lengthBeats: 8, move: OPPONENT_MOVES[m++ % OPPONENT_MOVES.length] });
+    cursor = placed + 8;
+  }
+  turns.push({ who: "player", beat: cursor, lengthBeats: lengthBeats - cursor });
+  const opp = turns.filter((t) => t.who === "opponent");
+  return { turns, events: events.filter((e) => !opp.some((t) => intersects(span(e)[0], span(e)[1], t))) };
+}
+
+/**
+ * The turn rules: turns in order, integer, inside the level, never overlapping; no player QTE whose span
+ * intersects an opponent turn; opponent turns carry a move. Empty = pass.
+ */
+export function turnIssues(l: LevelV2): string[] {
+  const out: string[] = [];
+  const turns = l.turns ?? [];
+  let end = 0;
+  for (let i = 0; i < turns.length; i++) {
+    const t = turns[i];
+    if (!Number.isInteger(t.beat) || !Number.isInteger(t.lengthBeats) || t.lengthBeats <= 0) out.push(`turns[${i}] has a bad beat ${t.beat} or length ${t.lengthBeats}`);
+    if (t.beat < 0 || t.beat + t.lengthBeats > l.lengthBeats) out.push(`turns[${i}] (${t.beat}..${t.beat + t.lengthBeats}) is outside the level`);
+    if (i > 0 && t.beat < end) out.push(`turns[${i}] on beat ${t.beat} overlaps the previous turn ending on ${end}`);
+    end = Math.max(end, t.beat + t.lengthBeats);
+    if (t.who === "opponent" && !t.move) out.push(`turns[${i}] opponent turn on beat ${t.beat} has no move`);
+    if (t.who !== "opponent") continue;
+    for (const e of l.events) {
+      const [a, b] = span(e);
+      if (intersects(a, b, t)) out.push(`${e.type} on beat ${e.beat} (span ${a}..${b}) intersects the opponent turn ${t.beat}..${t.beat + t.lengthBeats}`);
+    }
+  }
+  return out;
+}
+
+/** Opponent turn beats strictly inside (a, b): they do not count as a gap without a QTE. */
+function opponentBeatsIn(l: LevelV2, a: number, b: number): number {
+  let n = 0;
+  for (const t of l.turns ?? []) if (t.who === "opponent") n += Math.max(0, Math.min(b, t.beat + t.lengthBeats) - Math.max(a, t.beat));
+  return n;
 }
 
 /** mulberry32: small seeded PRNG so generated charts never change between builds. */
@@ -272,6 +363,18 @@ export function generateChart(info: TrackInfo, lengthBeats: number, seed: number
   return events;
 }
 
+/**
+ * Where the taunts go: two per opponent turn (his turn is free of player prompts), then spread over the level
+ * for the rest (taunts() slides each off a busy beat). Always one beat per text.
+ */
+export function tauntBeats(turns: TurnSpec[], n: number, lengthBeats: number): number[] {
+  const out: number[] = [];
+  for (const t of turns) if (t.who === "opponent") out.push(t.beat + 1, t.beat + Math.min(5, t.lengthBeats - 1));
+  const extra = n - out.length;
+  for (let i = 0; i < extra; i++) out.push(Math.round(((i + 1) * lengthBeats) / (extra + 1)));
+  return out.slice(0, n).sort((a, b) => a - b);
+}
+
 /** Whole beats that fit in the track (ending a quarter second before it), capped at 50 s of play. */
 export function fitBeats(info: TrackInfo): number {
   return Math.min(Math.floor(((info.duration - info.firstBeat - 0.25) * info.bpm) / 60), Math.floor((50 * info.bpm) / 60));
@@ -291,36 +394,61 @@ function generated(
   const { info, c, level } = base(id, track, stage, artKey, neon, windowScale, L);
   // Boss phase 2 on the bar nearest the midpoint of the track (one track, see the lane report).
   const phase2Beat = boss ? Math.round(L / 8) * 4 : undefined;
-  const events = generateChart(info, L, level.seed, { ...f, phase2: phase2Beat });
+  const { events, turns } = alternate(generateChart(info, L, level.seed, { ...f, phase2: phase2Beat }), L, level.seed);
   return {
     ...level,
+    turns,
     ...(phase2Beat !== undefined ? { phase2Beat } : {}),
     events,
-    taunts: taunts(events, c.taunts, [Math.round(L * 0.2), Math.round(L * 0.5), Math.round(L * 0.8)]),
+    taunts: taunts(events, c.taunts, tauntBeats(turns, c.taunts.length, L)),
     dropBeats: dropBeatsOf(info, L),
     breakdownBeats: breakdownBeatsOf(info, L),
   };
 }
 
 export const LEVELS_V2: LevelV2[] = [
+  // 1 The Boat Kid (hero chart).
   hero(),
-  // Metro, Kevin: tutorial pace, HIT and one short MASH.
+  // 2 The Turnstile Ninja: tutorial pace, HIT and one short MASH.
   generated(2, "level1", "metro", "metro", ["#39ff14", "#00b3ff"], 0.95, {
     mashes: 1, mashLen: 4, holdOnDrops: false, holdOnBreakdowns: false, combo: 0, hold: 0, gapMin: 2, gapMax: 4,
   }),
-  // Kebab, Mehdi: adds COMBO.
+  // 3 Papi Raleur: adds COMBO.
   generated(3, "level2", "kebab", "kebab", ["#ff9f1c", "#ff3b30"], 0.9, {
     mashes: 1, mashLen: 5, holdOnDrops: false, holdOnBreakdowns: false, combo: 0.12, hold: 0, gapMin: 2, gapMax: 4,
   }),
-  // Parvis, His Holiness: built on HOLD, freezes on the organ drops.
+  // 4 La Parisienne: built on HOLD, freezes on the drops.
   generated(4, "level3", "parvis", "rooftop", ["#ffe066", "#8ecbff"], 0.85, {
     mashes: 0, mashLen: 4, holdOnDrops: true, holdOnBreakdowns: true, combo: 0.1, hold: 0.45, gapMin: 2, gapMax: 4,
   }),
-  // Voodoo stage, The Algorithm: everything, phase 2 at the midpoint of the boss track tightens the spacing.
+  // 5 Sporty Granny: everything, phase 2 at the midpoint of the boss track tightens the spacing.
   generated(5, "boss", "stage", "stage", ["#ff007f", "#00e5ff"], 0.75, {
     mashes: 2, mashLen: 5, holdOnDrops: false, holdOnBreakdowns: true, combo: 0.3, hold: 0.1, gapMin: 2, gapMax: 4,
   }, true),
 ];
+
+/**
+ * The level at a position of the run (0 = the Boat Kid on the first loop). Past the fifth opponent the roster
+ * loops, and each loop raises the difficulty vector: windows 10 percent tighter per loop (floored at 0.55) and the
+ * opponent farms more aura on his turns. Loop 0 is LEVELS_V2 as is.
+ */
+export function rosterLevel(index: number): LevelV2 {
+  const n = LEVELS_V2.length;
+  const i = Math.max(0, Math.floor(index));
+  const loop = Math.floor(i / n);
+  const l = LEVELS_V2[i % n];
+  if (loop === 0) return l;
+  return {
+    ...l,
+    windowScale: Math.max(0.55, l.windowScale * Math.pow(0.9, loop)),
+    opponentAura: Math.min(0.3, (l.opponentAura ?? 0.04) + 0.04 * loop),
+  };
+}
+
+/** Loop count of a run position (0 on the first pass through the roster). */
+export function rosterLoop(index: number): number {
+  return Math.floor(Math.max(0, Math.floor(index)) / LEVELS_V2.length);
+}
 
 /** Seconds of play at the track bpm. */
 export function levelSeconds(l: LevelV2): number {
@@ -341,11 +469,11 @@ export function pacingIssues(l: LevelV2): string[] {
   let prev = span(ev[0])[1];
   for (let i = 1; i < ev.length; i++) {
     const [a, b] = span(ev[i]);
-    if (a - prev > 8) out.push(`gap of ${a - prev} beats before beat ${a}`);
+    if (a - prev - opponentBeatsIn(l, prev, a) > 8) out.push(`gap of ${a - prev} beats before beat ${a}`);
     if (ev[i - 1].type === "mash" && a - prev < 2) out.push(`input on beat ${a} within 1 beat of the MASH release on ${prev}`);
     prev = b;
   }
-  if (l.lengthBeats - prev > 8) out.push(`dead tail of ${l.lengthBeats - prev} beats`);
+  if (l.lengthBeats - prev - opponentBeatsIn(l, prev, l.lengthBeats) > 8) out.push(`dead tail of ${l.lengthBeats - prev} beats`);
   const s = levelSeconds(l);
   if (s < 35 || s > 50) out.push(`level lasts ${s.toFixed(1)} s, outside 35..50`);
   const end = info.firstBeat + (prev * 60) / info.bpm;

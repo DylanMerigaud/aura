@@ -1,0 +1,14 @@
+{
+  "track": "level1",
+  "candidate": "c5",
+  "model": "gemini-3.1-pro-preview",
+  "note": "more funk, more bass",
+  "note_score": 5,
+  "note_evidence": "The track delivers authentic Brazilian funk montagem energy with a heavy, distorted tamborzao beat and massive, pitch-sliding 808 bass that hits hard starting at 0:07.",
+  "beat_clarity": 5,
+  "beat_evidence": "A clear, syncopated rhythm is established immediately at 0:00 with rhythmic vocal chops and percussion, providing a steady pulse for the player.",
+  "loop_or_ending": 5,
+  "loop_evidence": "The track starts with immediate energy, maintains a high-intensity groove without any long lulls, and ends on a hard cut at 0:39 that will loop seamlessly back to the intro.",
+  "intelligible_words": true,
+  "total": 5
+}

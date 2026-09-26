@@ -1,0 +1,14 @@
+{
+  "track": "level2",
+  "candidate": "c1",
+  "model": "gemini-3.1-pro-preview",
+  "note": "sidechain on the bass",
+  "note_score": 2,
+  "note_evidence": "The heavy distorted bass hits simultaneously with the kick throughout the track without any noticeable ducking or swelling, failing to provide the requested obvious pumping sidechain effect.",
+  "beat_clarity": 3,
+  "beat_evidence": "The first two seconds consist of a vocal chop and riser without a steady pulse, delaying the clear, tappable beat until the drop at 0:02.",
+  "loop_or_ending": 1,
+  "loop_evidence": "The track features a two-second build-up intro and trails off with a reverb tail starting at 0:38, which would create a noticeable lull and prevent a seamless, steady-energy loop.",
+  "intelligible_words": false,
+  "total": 2
+}

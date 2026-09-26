@@ -24,6 +24,7 @@
     "balance": "tsx scripts/balance-sim.ts",
     "snap": "tsx scripts/snap.ts",
     "sfx:render": "tsx scripts/render-sfx.ts",
+    "board": "tsx scripts/gen-board.ts",
     "evals:pacing": "tsx scripts/eval-pacing.ts",
     "evals:animation": "tsx scripts/eval-animation.ts",
     "evals": "tsx scripts/eval-pacing.ts; p=$?; tsx scripts/eval-animation.ts; a=$?; [ $p -eq 0 ] && [ $a -eq 0 ]"

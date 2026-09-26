@@ -365,3 +365,28 @@
     animation-iteration-count: 1 !important;
   }
 }
+
+/* Minimal mode: the badge and the viewer count on one small row in the bottom left corner, nothing else. */
+.live-root--minimal .live-handles,
+.live-root--minimal .live-feed,
+.live-root--minimal .live-hearts,
+.live-root--minimal .live-reactions,
+.live-root--minimal .live-toast {
+  display: none;
+}
+
+.live-root--minimal .live-topleft {
+  top: auto;
+  bottom: calc(10px + var(--live-safe-bottom));
+  left: calc(10px + var(--live-safe-left));
+  flex-direction: row;
+  align-items: center;
+  opacity: 0.85;
+}
+
+.live-root--minimal .live-badge,
+.live-root--minimal .live-viewers {
+  font-size: 11px;
+  padding: 2px 8px;
+  box-shadow: none;
+}

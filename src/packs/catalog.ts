@@ -53,6 +53,26 @@ export interface Item {
   tint?: string;
 }
 
+/**
+ * Emote id to the clip file under assets/3d/ (the manifest's `file`, or one of our mocap clips). The Boxing
+ * Taunt was rejected, so every chin up family emote plays the mocap chin up stare instead.
+ */
+export const EMOTE_CLIPS: Record<string, string> = {
+  "chin-up": "mocap/chinup_stare.glb",
+  "watch-check": "anims/pose_looking_around.glb",
+  "shoulder-brush": "mocap/over_shoulder_look.glb",
+  "palm-push": "anims/hit_left_housedance.glb",
+  "the-stare": "mocap/chinup_stare.glb",
+  "wrist-roll": "anims/boat_snake_hiphop.glb",
+  catwalk: "anims/walk_catwalk_strut.glb",
+  "point-at-lens": "anims/hit_up_hiphop_kickstep.glb",
+  "boat-sweep": "mocap/boat_arm_sweep.glb",
+  "look-back": "mocap/over_shoulder_look.glb",
+  "mewing-check": "mocap/chinup_stare.glb",
+  siuuu: "anims/celebration_siuuu_jump.glb",
+  "griddy-void": "anims/hit_right_runningman.glb",
+};
+
 const emote = (id: string, name: string, rarity: Rarity, mixamo: string, robot: string, flavor: string): Item => ({
   id,
   name,
@@ -60,7 +80,7 @@ const emote = (id: string, name: string, rarity: Rarity, mixamo: string, robot: 
   rarity,
   flavor,
   event: `emote:${id}`,
-  clip: null,
+  clip: EMOTE_CLIPS[id] ?? null,
   mixamo,
   robot,
 });

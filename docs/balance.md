@@ -17,58 +17,58 @@ accuracy (Perfect 1, Great 0.7, Ok 0.3), best combo over all runs (median in par
 best combo flame tier, then the end of battle aura meter as min / median / max and a six bin histogram:
 [KO loss, -1..-0.5, -0.5..0, 0..0.5, 0.5..1, KO win].
 
-## L1 The club, peak phonk hour (17 events, 39.7 s)
+## L1 Chatelet, 2am (19 events, 39.7 s)
 
 | bot | median score | win rate | accuracy | best combo | stars | tier | aura meter min / median / max [bins] |
 |-----|-------------:|---------:|---------:|-----------:|------:|-----:|--------------------------------------|
-| perfect | 7260 | 100.0% | 100.0% | 13 (13) | 3 | 1 | 1.00 / 1.00 / 1.00 [0 0 0 0 0 500] |
-| good | 6860 | 100.0% | 89.0% | 16 (13) | 3 | 2 | 0.47 / 1.00 / 1.00 [0 0 0 1 79 420] |
-| average | 4490 | 99.2% | 68.3% | 17 (9) | 3 | 2 | -0.12 / 0.68 / 1.00 [0 0 4 103 330 63] |
-| masher | 430 | 0.0% | 9.6% | 4 (1) | 0 | 0 | -1.00 / -1.00 / -0.41 [399 100 1 0 0 0] |
-
-Flags: **too easy: average bot wins 99 percent (over 85 percent)**
-
-## L2 Metro platform, 2am (17 events, 39.6 s)
-
-| bot | median score | win rate | accuracy | best combo | stars | tier | aura meter min / median / max [bins] |
-|-----|-------------:|---------:|---------:|-----------:|------:|-----:|--------------------------------------|
-| perfect | 8940 | 100.0% | 100.0% | 17 (17) | 3 | 2 | 0.99 / 0.99 / 0.99 [0 0 0 0 500 0] |
-| good | 7380 | 100.0% | 86.4% | 17 (17) | 3 | 2 | 0.24 / 0.86 / 0.99 [0 0 0 12 488 0] |
-| average | 4020 | 94.0% | 64.9% | 17 (8) | 3 | 2 | -0.35 / 0.38 / 0.91 [0 0 30 335 135 0] |
-| masher | 300 | 0.0% | 9.1% | 5 (1) | 0 | 1 | -1.00 / -1.00 / -0.60 [462 38 0 0 0 0] |
-
-Flags: **too easy: average bot wins 94 percent (over 85 percent)**
-
-## L3 Kebab shop, 4am (16 events, 39.2 s)
-
-| bot | median score | win rate | accuracy | best combo | stars | tier | aura meter min / median / max [bins] |
-|-----|-------------:|---------:|---------:|-----------:|------:|-----:|--------------------------------------|
-| perfect | 7800 | 100.0% | 100.0% | 16 (16) | 3 | 2 | 0.85 / 0.85 / 0.85 [0 0 0 0 500 0] |
-| good | 6200 | 99.8% | 82.9% | 16 (16) | 3 | 2 | -0.21 / 0.61 / 0.85 [0 0 1 143 356 0] |
-| average | 3500 | 59.4% | 59.5% | 16 (7) | 2 | 2 | -0.99 / 0.05 / 0.70 [0 19 184 280 17 0] |
-| masher | 360 | 0.0% | 9.9% | 5 (1) | 0 | 1 | -1.00 / -1.00 / -0.98 [498 2 0 0 0 0] |
+| perfect | 16500 | 100.0% | 100.0% | 17 (17) | 3 | 2 | 1.00 / 1.00 / 1.00 [0 0 0 0 0 500] |
+| good | 8760 | 99.8% | 85.5% | 19 (17) | 3 | 2 | -0.03 / 0.59 / 1.00 [0 0 1 149 334 16] |
+| average | 4950 | 74.0% | 66.1% | 19 (9) | 3 | 2 | -0.53 / 0.13 / 0.72 [0 1 129 361 9 0] |
+| masher | 530 | 0.0% | 12.6% | 6 (2) | 0 | 1 | -1.00 / -1.00 / -0.87 [491 9 0 0 0 0] |
 
 Flags: none, balanced.
 
-## L4 Parvis de Notre-Dame, dawn (13 events, 39.3 s)
+## L2 Metro platform, 2am (11 events, 39.6 s)
 
 | bot | median score | win rate | accuracy | best combo | stars | tier | aura meter min / median / max [bins] |
 |-----|-------------:|---------:|---------:|-----------:|------:|-----:|--------------------------------------|
-| perfect | 5100 | 100.0% | 100.0% | 13 (13) | 3 | 1 | 0.41 / 0.41 / 0.41 [0 0 0 500 0 0] |
-| good | 3400 | 68.0% | 77.5% | 13 (11) | 3 | 1 | -0.63 / 0.07 / 0.36 [0 5 155 340 0 0] |
-| average | 1900 | 1.4% | 48.2% | 12 (4) | 2 | 1 | -1.00 / -0.65 / 0.06 [66 278 149 7 0 0] |
-| masher | 0 | 0.0% | 4.9% | 2 (0) | 0 | 0 | -1.00 / -1.00 / -1.00 [500 0 0 0 0 0] |
+| perfect | 7140 | 100.0% | 100.0% | 11 (11) | 3 | 1 | 0.99 / 0.99 / 0.99 [0 0 0 0 500 0] |
+| good | 3620 | 99.6% | 82.6% | 11 (11) | 3 | 1 | -0.10 / 0.68 / 0.99 [0 0 2 86 412 0] |
+| average | 2520 | 77.4% | 61.2% | 11 (5) | 3 | 1 | -0.62 / 0.20 / 0.85 [0 3 110 335 52 0] |
+| masher | 500 | 0.0% | 17.8% | 5 (1) | 0 | 1 | -1.00 / -1.00 / -0.05 [394 101 5 0 0 0] |
+
+Flags: none, balanced.
+
+## L3 Kebab shop, 4am (11 events, 39.2 s)
+
+| bot | median score | win rate | accuracy | best combo | stars | tier | aura meter min / median / max [bins] |
+|-----|-------------:|---------:|---------:|-----------:|------:|-----:|--------------------------------------|
+| perfect | 6600 | 100.0% | 100.0% | 11 (11) | 3 | 1 | 0.82 / 0.82 / 0.82 [0 0 0 0 500 0] |
+| good | 3500 | 95.8% | 78.0% | 11 (10) | 3 | 1 | -0.47 / 0.39 / 0.82 [0 0 21 303 176 0] |
+| average | 2440 | 37.0% | 55.5% | 11 (5) | 2 | 1 | -1.00 / -0.11 / 0.54 [4 57 254 183 2 0] |
+| masher | 260 | 0.0% | 11.6% | 5 (1) | 0 | 1 | -1.00 / -1.00 / -0.61 [486 14 0 0 0 0] |
+
+Flags: none, balanced.
+
+## L4 Parvis de Notre-Dame, dawn (8 events, 39.3 s)
+
+| bot | median score | win rate | accuracy | best combo | stars | tier | aura meter min / median / max [bins] |
+|-----|-------------:|---------:|---------:|-----------:|------:|-----:|--------------------------------------|
+| perfect | 2700 | 100.0% | 100.0% | 8 (8) | 3 | 1 | 0.25 / 0.25 / 0.25 [0 0 0 500 0 0] |
+| good | 1800 | 33.2% | 74.6% | 8 (7) | 3 | 1 | -1.00 / -0.16 / 0.20 [1 33 300 166 0 0] |
+| average | 1100 | 1.0% | 46.0% | 8 (3) | 2 | 1 | -1.00 / -0.80 / 0.12 [170 240 85 5 0 0] |
+| masher | 0 | 0.0% | 7.2% | 2 (0) | 0 | 0 | -1.00 / -1.00 / -1.00 [500 0 0 0 0 0] |
 
 Flags: **too hard: average bot wins 1 percent (under 35 percent)**
 
-## L5 The Voodoo stage (26 events, 44.6 s)
+## L5 The Voodoo stage (17 events, 44.6 s)
 
 | bot | median score | win rate | accuracy | best combo | stars | tier | aura meter min / median / max [bins] |
 |-----|-------------:|---------:|---------:|-----------:|------:|-----:|--------------------------------------|
-| perfect | 15300 | 100.0% | 100.0% | 26 (26) | 3 | 3 | 0.38 / 0.38 / 0.38 [0 0 0 500 0 0] |
-| good | 8600 | 22.2% | 73.7% | 26 (15) | 3 | 3 | -0.69 / -0.14 / 0.28 [0 13 376 111 0 0] |
-| average | 4915 | 0.0% | 47.8% | 17 (6) | 0 | 2 | -1.00 / -0.81 / -0.01 [119 359 22 0 0 0] |
-| masher | 660 | 0.0% | 16.8% | 6 (2) | 0 | 1 | -1.00 / -1.00 / -1.00 [500 0 0 0 0 0] |
+| perfect | 14700 | 100.0% | 100.0% | 17 (17) | 3 | 2 | 0.39 / 0.39 / 0.39 [0 0 0 500 0 0] |
+| good | 5290 | 1.8% | 70.0% | 17 (9) | 3 | 2 | -1.00 / -0.37 / 0.12 [3 113 375 9 0 0] |
+| average | 3650 | 0.0% | 46.6% | 15 (5) | 0 | 2 | -1.00 / -0.97 / -0.29 [228 250 22 0 0 0] |
+| masher | 560 | 0.0% | 16.6% | 7 (2) | 0 | 1 | -1.00 / -1.00 / -1.00 [500 0 0 0 0 0] |
 
 Flags: **too hard: average bot wins 0 percent (under 35 percent)**
 
@@ -79,4 +79,4 @@ Flags: **too hard: average bot wins 0 percent (under 35 percent)**
 - mashable: the button masher wins over 10 percent of runs.
 - no top tier: the perfect bot never reaches 3 stars (win, accuracy 0.9 or more, no cringe).
 
-Unbalanced charts: L1 The club, peak phonk hour, L2 Metro platform, 2am, L4 Parvis de Notre-Dame, dawn, L5 The Voodoo stage.
+Unbalanced charts: L4 Parvis de Notre-Dame, dawn, L5 The Voodoo stage.

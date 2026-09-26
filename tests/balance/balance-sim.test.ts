@@ -122,19 +122,22 @@ describe("flags", () => {
 
 describe("report", () => {
   it("covers every chart and bot and renders a markdown table with the flags", () => {
-    const charts = simulateAll([trivial, impossible], 10);
+    // 30 runs like the flag tests: at 10 the average bot sits too close to the 85 percent line to flag reliably.
+    const charts = simulateAll([trivial, impossible], 30);
     expect(charts.map((c) => c.reports.map((r) => r.bot))).toEqual([BOTS.map((b) => b.name), BOTS.map((b) => b.name)]);
     for (const c of charts) for (const r of c.reports) {
       const b = r.meter.bins;
-      expect(b.ko + b.lose + b.behind + b.ahead + b.win + b.kowin).toBe(10);
+      expect(b.ko + b.lose + b.behind + b.ahead + b.win + b.kowin).toBe(30);
       expect(r.meter.min).toBeLessThanOrEqual(r.meter.median);
       expect(r.meter.median).toBeLessThanOrEqual(r.meter.max);
     }
-    const md = renderMarkdown(charts, 10);
+    const md = renderMarkdown(charts, 30);
     expect(md).toContain("# Chart balance");
     expect(md).toContain("## L1 trivial");
     expect(md).toContain("## L5 impossible");
-    expect(md).toContain("**too easy");
+    // Every flag the simulation raised is rendered in bold (which ones fire on the trivial chart depends on the
+    // metro track's grid, so the flag set itself is pinned by the "flags" tests above).
+    for (const c of charts) for (const f of c.flags) expect(md).toContain(`**${f}**`);
     expect(md).toContain("**too hard");
     expect(md).not.toMatch(/[\u2013\u2014]/);
   });

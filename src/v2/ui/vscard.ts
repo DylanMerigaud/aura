@@ -3,6 +3,7 @@
 // owned by this lane).
 import type { LevelV2 } from "../contracts";
 import { el } from "./dom";
+import { isTapKey } from "./flow";
 
 const SILHOUETTE = `<svg viewBox="0 0 100 160" preserveAspectRatio="xMidYMax meet">
   <circle cx="50" cy="26" r="20" fill="currentColor" />
@@ -27,7 +28,7 @@ export function buildVsCard(base: string, onFight: () => void) {
   const name = el("h2", "vs-level-name");
   const place = el("p", "vs-place");
   const bpm = el("p", "vs-bpm");
-  const prompt = el("p", "vs-prompt", "PRESS SPACE OR TAP TO FIGHT");
+  const prompt = el("p", "vs-prompt", "TAP TO FIGHT");
   info.appendChild(name);
   info.appendChild(place);
   info.appendChild(bpm);
@@ -40,19 +41,17 @@ export function buildVsCard(base: string, onFight: () => void) {
   });
   function show(level: LevelV2) {
     themArt.style.backgroundImage = `url("${base}art/opp-${level.artKey}.jpg")`;
-    them.style.setProperty("--opp-color", level.opponent.color || "#ff3df2");
+    them.style.setProperty("--opp-color", level.opponent.color || "#ffffff");
     name.textContent = level.opponent.name.toUpperCase();
     place.textContent = level.place;
     bpm.textContent = `${Math.round(level.bpm)} BPM`;
-    const touch = typeof matchMedia === "function" && matchMedia("(pointer: coarse)").matches;
-    prompt.textContent = touch ? "TAP TO FIGHT" : "PRESS SPACE OR TAP TO FIGHT";
     armed = false;
     setTimeout(() => (armed = true), 350);
   }
 
   function onKey(e: KeyboardEvent) {
     if (!armed) return;
-    if (e.code === "Enter" || e.code === "Space") onFight();
+    if (isTapKey(e)) onFight();
   }
 
   return { root, onKey, show };

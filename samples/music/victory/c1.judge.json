@@ -1,0 +1,14 @@
+{
+  "track": "victory",
+  "candidate": "c1",
+  "model": "gemini-3.1-pro-preview",
+  "note": "too smooth, more samba",
+  "note_score": 5,
+  "note_evidence": "The track features a highly authentic, raw street bateria sound with prominent whistle, surdos, caixas, and agogo bells starting right from 0:00.",
+  "beat_clarity": 5,
+  "beat_evidence": "A clear, steady pulse is established immediately by the whistle and initial percussion hits at 0:00, locking into a highly tappable groove at 0:05.",
+  "loop_or_ending": 5,
+  "loop_evidence": "The track concludes with a classic samba break that lands on a strong, definitive final hit at 0:11, making it a perfect victory stinger.",
+  "intelligible_words": false,
+  "total": 5
+}

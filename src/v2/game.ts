@@ -11,6 +11,8 @@ const COUNT_IN = 4;
 const RESUME_COUNT_IN = 3;
 /** Seconds between the decided battle and the results (the finish animation). */
 const FINISH = 3.2;
+/** The cast text version the taunt recordings must carry in voice/v2/index.json ("cast": CAST_TAG). */
+export const CAST_TAG = "roster-1625";
 /** A track still not decoded after this plays the battle on the clock alone (count in, SFX), never a black wait. */
 const TRACK_WAIT_MS = 12000;
 
@@ -73,10 +75,10 @@ export class Game implements GameApi {
     return p;
   }
 
-  /** Fetch and decode a level's track and voices ahead of time (the VS card calls this). */
-  preload(level: LevelV2) {
-    this.buffer(this.deps.trackInfo(level.track).file);
-    this.loadVoices(level);
+  /** Fetch and decode a level's track and voices ahead of time (the loading screen and the VS card call
+   * this; needs the AudioContext, created suspended during loading). Settles when both are in or failed. */
+  preload(level: LevelV2): Promise<void> {
+    return Promise.all([this.buffer(this.deps.trackInfo(level.track).file), this.loadVoices(level)]).then(() => {});
   }
 
   private async loadVoices(level: LevelV2) {
@@ -184,23 +186,23 @@ export class Game implements GameApi {
     if (!this.core || !this.clock || this.paused || this.endAt > 0) return;
     const t = this.songAt(i.at);
     if (i.kind === "dir") this.core.input({ kind: "dir", dir: i.dir, t });
-    else this.core.input({ kind: "space", down: i.down, t });
+    else this.core.input({ kind: i.kind, down: i.down, t });
   }
 
   touchMode(): "hit" | "mash" | "hold" | "none" {
     const c = this.core?.runner.current();
-    if (!c || !this.core) return "none";
+    if (!c || !this.core || this.core.ended) return "none";
     if (this.core.songTime < this.core.runner.opensAt(c.ev) - 0.3) return "hit";
     return c.ev.type === "mash" ? "mash" : c.ev.type === "hold" ? "hold" : "hit";
   }
 
   /** Whose turn it is, from the last frame (the play zone dims and ignores taps on "opponent"). */
   turn(): "player" | "opponent" {
-    return this.core ? this.lastTurn : "player";
+    return this.core && !this.core.ended ? this.lastTurn : "player";
   }
 
-  /** True over the last RELEASE_BEATS of the current MASH window: the two pads merge into RELEASE. */
-  releasing(beats = 1.5): boolean {
+  /** True over the last `beats` of the current MASH window: the ring closes, the pad asks for the drop tap. */
+  releasing(beats = 1): boolean {
     const c = this.core?.runner.current();
     if (!c || !this.core || c.ev.type !== "mash") return false;
     return this.core.songTime >= this.core.runner.targetAt(c.ev) - beats * this.core.runner.spb;
@@ -239,7 +241,11 @@ export class Game implements GameApi {
   private react(e: CoreEvent) {
     const L = this.core?.level;
     if (!L) return;
-    if (e.kind === "taunt") this.voice(`v2-l${L.id}-taunt-${e.index}`);
+    // Taunt voices only once they were recorded from the current cast text (voice/v2/index.json "cast"),
+    // so an old recording never speaks over a new subtitle.
+    if (e.kind === "taunt") {
+      if ((this.voices as Record<string, string> | null)?.cast === CAST_TAG) this.voice(`v2-l${L.id}-taunt-${e.index}`);
+    }
     else if (e.kind === "end") {
       this.endAt = ctx.currentTime + FINISH;
       const bar = (60 / L.bpm) * 4;

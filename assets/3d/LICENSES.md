@@ -19,6 +19,7 @@ One line per source file below, all Mixamo, same license as stated above.
 - characters/elizabeth_crowd_darker.glb, Mixamo "Elizabeth", https://www.mixamo.com
 - characters/adam_crowd_sporty.glb, Mixamo "Adam", https://www.mixamo.com
 - characters/josh_crowd_jacket.glb, Mixamo "Josh", https://www.mixamo.com
+- characters/boatkid_enemy.glb, Mixamo "Remy" (retextured: clothing materials tinted matte black, root node scaled to 1.35m, never a real name or face, archetype only), https://www.mixamo.com
 
 ## Animation clips
 

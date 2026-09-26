@@ -25,6 +25,8 @@ export interface LiveUIOptions {
   playerHandle: string;
   opponentHandle: string;
   seed: number | string;
+  /** Only the LIVE badge and the viewer count, small in the bottom left corner (the cut down battle HUD). */
+  minimal?: boolean;
 }
 
 export interface LiveUI {
@@ -110,7 +112,7 @@ export function createLiveUI(root: HTMLElement, opts: LiveUIOptions): LiveUI {
   const raf = rafOf(win);
   const picker = createPicker(opts.seed);
 
-  const shell = el(doc, "div", "live-root");
+  const shell = el(doc, "div", opts.minimal ? "live-root live-root--minimal" : "live-root");
   shell.setAttribute("aria-hidden", "true");
 
   // Top left: badge and viewers.

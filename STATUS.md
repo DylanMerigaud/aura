@@ -1,8 +1,39 @@
-15:20 CEST, INTEGRATION lane: PRs 2, 3, 4, 5, 6, 7, 8 and the packs branch merged; the latest build (v2) is now the Pages root and the itch zip root, v1 at /v1/
-GREEN: tests 620, typecheck clean, release:check ALL PASS, release:itch ALL PASS (128 files, 18.2 MB zip)
-RED: modules merged but not wired into the game yet (next); voices and music regeneration not started
-PLAY: https://dylanmerigaud.github.io/aura/ (v2 at the root; /v2/ redirects there; 2D at /v1/)
+16:30 CEST, GAME lane: the handoff's steps 1 to 4 are live at the ROOT, plus the roster and smoother animation
+GREEN: tests 690, typecheck clean; TAP ONLY notes and ring, the 67 mash and the hold; YOUR MOVE / HIS MOVE turns; loading, then the title scene tap, count in, battle, results card with XP and RANK UP, SHARE card; onboarding by doing (ghost finger, wide windows, first 15 s unlosable), windows tighten with the combo, FLOW; black playground, performer camera, like / dislike bar; level 1 is THE BOAT KID, then the Ninja and 3 more; Kevin in rank cosmetics; head speech bubbles; animation smoothness test (max 32.8 degrees per frame); pnpm balance: average bot 74 percent on level 1
+RED: taunt voices muted until INTEGRATION re-records them from the new cast (index.json "cast": "roster-1625"); the Boat Kid idles on the generic idle (the boat sweep plays on his turns); nothing seen on a phone since 15:35
+PLAY: https://dylanmerigaud.github.io/aura/
+NEED FROM DYLAN: play the root once on the phone, sound on: the first 20 seconds (title tap, count in, the first notes with the ghost finger) and the 67 on the drop
+
+16:25 CEST, GAME lane: the results card, the XP bar and the one tap flow at the ROOT
+GREEN: tests 680, typecheck clean; LOADING, then the TITLE over the arena (chrome AURA, TAP TO PLAY, small LOADOUT and SETTINGS buttons), then tap, count in, battle, results; no map, VS card, menu or multiplayer on the way; results card AURA FARMED / HUMBLED with score, accuracy, best combo, stars, roast, RETRY (NEXT after a win) and SHARE (a 1080x1920 PNG card); XP bar with RANK UP; a win moves to the next opponent; a double start that could show SCORE 0 is now refused
+RED: the Boat Kid as level 1, Kevin as the player, fixed opponent ranks and the head speech bubble (roster lane), the animation smoothness test; nothing seen on a phone since 15:35
+PLAY: https://dylanmerigaud.github.io/aura/
 NEED FROM DYLAN: nothing yet
+
+16:00 CEST, GAME lane: mastery, reactive taunts, the like / dislike bar at the ROOT
+GREEN: tests 666, typecheck clean; windows tighten with the combo (110 to 70 ms, the ring shrinks), FLOW x2 at 8 Perfects, ghost finger teaches tap, 67 and hold until first success, the ninja reacts on 8 triggers; like / dislike bar, flat white and black UI with one accent (#ffd400), hints retire; pnpm balance: average bot wins 74 percent on Chatelet (was 93)
+GREEN (16:05): the black playground (no metro set, one warm spot pool, white ring, dust, silhouette crowd with a cool rim), the camera frames the performer of each turn, two shot in profile on big moments, one failure reaction for every miss
+RED: results card, XP and ranks, the Boat Kid and Kevin (Dylan 16:15 to 16:50) next; nothing seen on a phone since 15:35
+PLAY: https://dylanmerigaud.github.io/aura/
+NEED FROM DYLAN: nothing yet
+
+15:35 CEST, GAME lane: TAP ONLY and the one input flow at the ROOT
+GREEN: tests 655, typecheck clean; notes fly to the ring and any tap hits, the 67 is rapid taps then one tap on the drop, hold is press and lift; loading screen, title scene tap starts Chatelet, results RETRY PACK MAP SHARE; YOUR MOVE / HIS MOVE turns with his canon move; animated silhouette crowd (5 rigs files, 12 on phones)
+RED: the black playground, the performer camera and the like/dislike bar (Dylan 16:00) not done yet; nothing seen on a phone since this push
+PLAY: https://dylanmerigaud.github.io/aura/
+NEED FROM DYLAN: nothing yet
+
+15:50 CEST, INTEGRATION lane: Lyria winners shipped, LOADOUT built, LIVE overlay cut to a small badge
+GREEN: music in game: level1, level2, victory and a boss phase 2 track from lyria-3-pro-preview (5 candidates each, judged twice); LOADOUT screen (8 real rigs with in engine portraits, victory emote from the packs); tests 657
+RED: voice batch (5 variants per line, plus SIX! SEVEN! and the crowd chant) still running; funk title loop: candidate 1 of 5 on the board; the GAME lane must wire the LOADOUT button on its new title and results
+PLAY: https://dylanmerigaud.github.io/aura/ ; REVIEW BOARD: https://claude.ai/artifact/71W8b3KRLnEyrcmHrDNbmb
+NEED FROM DYLAN: on the review board, PICK or REDO the voices and the funk title loop (the judge decides otherwise)
+
+15:05 CEST, GAME lane: v1 arrows (one prompt at a time, vertical in portrait), Space and touch play zone, Turnstile Ninja at Chatelet with nameplates, portrait camera and toon look: all deployed at the ROOT
+GREEN: tests 276, typecheck clean; v2 is now the root build (v1 at /v1/)
+RED: alternated turns (YOUR MOVE / HIS MOVE) not merged yet; crowd diversity in progress; nothing seen on a real phone since these merges
+PLAY: https://dylanmerigaud.github.io/aura/ (add ?debug=1 for the fps counter)
+NEED FROM DYLAN: play level 1 on the phone: does SPACE / the swipe feel right, is the portrait framing readable, the fps
 
 15:00 CEST, GAME lane: PR 9 (render and animation audit) and PR 10 (keyed poses) merged into main, deployed
 GREEN: tests 251, typecheck clean; turns contract in; five lanes running: v1 arrows port, Space and touch, alternated turns, Turnstile Ninja at Chatelet, portrait camera

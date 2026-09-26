@@ -45,10 +45,12 @@ function collectStrings(level: Level): { path: string; value: string }[] {
   return out;
 }
 
-/** Returns a list of human readable error strings. An empty array means the level is valid. */
-export function validateLevel(level: Level): string[] {
+/**
+ * Returns a list of human readable error strings. An empty array means the level is valid. `lo` is the first
+ * beat a QTE may use: 8 in v1 (its count in lives inside the song), 4 in v2 (the count in plays before beat 0).
+ */
+export function validateLevel(level: Level, lo = 8): string[] {
   const errors: string[] = [];
-  const lo = 8;
   const hi = level.lengthBeats - 4;
 
   for (const { path, value } of collectStrings(level)) {
