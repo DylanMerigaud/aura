@@ -1,5 +1,6 @@
 // The ring set: dark floor with a neon rim, gradient sky, fog, a curved backdrop carrying the level art,
-// emissive neon signs and 3 point lights pulsing on the beat. Rebuilt colors per level, geometry kept.
+// emissive signs, a warm key (the one shadow caster) plus a cool rim, and 3 point lights pulsing on the
+// beat. Rebuilt colors per level, geometry kept.
 import * as THREE from "three";
 import type { LevelV2 } from "../v2/contracts";
 import { LAYOUT } from "./director";
@@ -33,6 +34,8 @@ export class RingSet {
   private backdrop: THREE.MeshBasicMaterial;
   private signs: { mat: THREE.MeshBasicMaterial; base: THREE.Color; phase: number }[] = [];
   private lights: THREE.PointLight[] = [];
+  /** Warm key light, the only shadow caster (fighters cast, the floor receives). The stage turns its shadow off on low fps. */
+  readonly key: THREE.DirectionalLight;
   private neon: [THREE.Color, THREE.Color] = [new THREE.Color("#00e5ff"), new THREE.Color("#ff2bd6")];
   private loader = new THREE.TextureLoader();
   private artKey = "";
@@ -41,8 +44,9 @@ export class RingSet {
     scene.fog = new THREE.Fog(0x0a0614, 9, 30);
     scene.add(this.group);
 
-    this.floor = new THREE.MeshLambertMaterial({ color: 0x15121c });
+    this.floor = new THREE.MeshLambertMaterial({ color: 0x2b2635 });
     const floor = new THREE.Mesh(new THREE.CircleGeometry(RING_R, 40), this.floor);
+    floor.receiveShadow = true;
     floor.rotation.x = -Math.PI / 2;
     this.group.add(floor);
     const outer = new THREE.Mesh(new THREE.CircleGeometry(30, 24), new THREE.MeshLambertMaterial({ color: 0x07050b }));
@@ -89,10 +93,25 @@ export class RingSet {
       this.signs.push({ mat, base: new THREE.Color(), phase: i * 1.7 });
     });
 
-    this.scene.add(new THREE.HemisphereLight(0x6a5a8a, 0x100818, 1.4));
-    const key = new THREE.DirectionalLight(0xffffff, 1.4);
-    key.position.set(2, 6, 6);
-    this.scene.add(key);
+    // Clean and bright rather than neon: a neutral sky fill, a warm key from our side (lights the enemy's
+    // face and our back), a cool rim from behind the enemy (his silhouette, our face on the hero shots).
+    this.scene.add(new THREE.HemisphereLight(0xb4bedc, 0x2a2233, 1.1));
+    const key = new THREE.DirectionalLight(0xffd2a0, 2.4);
+    key.position.set(3, 7, 7);
+    key.castShadow = true;
+    key.shadow.mapSize.set(1024, 1024);
+    const sc = key.shadow.camera;
+    sc.left = sc.bottom = -5;
+    sc.right = sc.top = 5;
+    sc.near = 1;
+    sc.far = 25;
+    key.shadow.bias = -0.0005;
+    key.shadow.normalBias = 0.02;
+    this.scene.add(key, key.target);
+    this.key = key;
+    const rimLight = new THREE.DirectionalLight(0x7fb0ff, 2.0);
+    rimLight.position.set(-4, 5, -9);
+    this.scene.add(rimLight);
     const spots: [number, number, number][] = [
       [-4, 3.2, -2],
       [4, 3.2, -2],
@@ -131,9 +150,9 @@ export class RingSet {
 
   private applyColors(): void {
     const [a, b] = this.neon;
-    this.rim.color.copy(a).multiplyScalar(3);
-    this.rim2.color.copy(b).multiplyScalar(2);
-    this.signs.forEach((s, i) => s.base.copy(i % 2 ? b : a).multiplyScalar(2.6));
+    this.rim.color.copy(a).multiplyScalar(1.6);
+    this.rim2.color.copy(b).multiplyScalar(1.2);
+    this.signs.forEach((s, i) => s.base.copy(i % 2 ? b : a).multiplyScalar(1.6));
     this.lights[0].color.copy(a);
     this.lights[1].color.copy(b);
     this.lights[2].color.copy(a).lerp(b, 0.5).lerp(new THREE.Color(1, 1, 1), 0.4);
@@ -145,10 +164,11 @@ export class RingSet {
   update(beatPhase: number, energy: number, time: number): void {
     const kick = Math.pow(1 - Math.min(1, beatPhase * 2), 3);
     const e = 0.35 + 0.65 * energy;
-    this.lights[0].intensity = (4 + 14 * kick) * e;
-    this.lights[1].intensity = (4 + 14 * (1 - kick) * 0.5 + 6 * kick) * e;
-    this.lights[2].intensity = 5 + 6 * kick * e;
-    this.rim.color.copy(this.neon[0]).multiplyScalar(1.6 + 2.4 * kick * e);
+    // Softer pulses than the neon pass: the key and rim carry the look, the colored lights only breathe.
+    this.lights[0].intensity = (3 + 7 * kick) * e;
+    this.lights[1].intensity = (3 + 7 * (1 - kick) * 0.5 + 3 * kick) * e;
+    this.lights[2].intensity = 3 + 3 * kick * e;
+    this.rim.color.copy(this.neon[0]).multiplyScalar(1.1 + 0.9 * kick * e);
     for (const s of this.signs) {
       const flicker = Math.sin(time * 13 + s.phase) > 0.97 ? 0.3 : 1;
       s.mat.color.copy(s.base).multiplyScalar(flicker * (0.7 + 0.5 * kick * e));

@@ -237,15 +237,29 @@ function blobTexture(): THREE.CanvasTexture {
 }
 let blobTex: THREE.CanvasTexture | null = null;
 
-/** PS2 look: Lambert everywhere (cheap, skinning kept), optional tint toward a color. */
-function toLambert(root: THREE.Object3D, tint?: THREE.Color): void {
+/** Three step toon ramp (shadow, mid, lit), nearest filtered: the hard bands of a stylized look. */
+let toonRamp: THREE.DataTexture | null = null;
+function rampTexture(): THREE.DataTexture {
+  const t = new THREE.DataTexture(new Uint8Array([90, 170, 255]), 3, 1, THREE.RedFormat);
+  t.minFilter = t.magFilter = THREE.NearestFilter;
+  t.generateMipmaps = false;
+  t.needsUpdate = true;
+  return t;
+}
+
+/** Toon look: MeshToonMaterial with a 3 step ramp (skinning kept, cheap), optional tint toward a color. Casts the key light's shadow. */
+function toToon(root: THREE.Object3D, tint?: THREE.Color): void {
+  toonRamp ??= rampTexture();
+  const gradientMap = toonRamp;
   root.traverse((o) => {
     const mesh = o as THREE.Mesh;
     if (!mesh.isMesh) return;
     mesh.frustumCulled = false;
+    mesh.castShadow = true;
     const conv = (m: THREE.Material) => {
       const src = m as THREE.MeshStandardMaterial;
-      const out = new THREE.MeshLambertMaterial({
+      const out = new THREE.MeshToonMaterial({
+        gradientMap,
         color: src.color ? src.color.clone() : new THREE.Color(0xffffff),
         map: src.map ?? null,
         emissive: src.emissive ? src.emissive.clone() : new THREE.Color(0),
@@ -299,7 +313,7 @@ export class Fighter {
   private height = 1.8;
 
   constructor(model: THREE.Object3D, private clips: CastSource["clips"], private role: "player" | "enemy", tint?: THREE.Color) {
-    toLambert(model, tint);
+    toToon(model, tint);
     model.updateMatrixWorld(true);
     // Skinned bounds read the bone matrices, which are only filled by a skeleton update.
     model.traverse((o) => (o as THREE.SkinnedMesh).isSkinnedMesh && (o as THREE.SkinnedMesh).skeleton.update());
@@ -458,7 +472,7 @@ export class Fighter {
     this.mixer.stopAllAction();
     this.mixer.uncacheRoot(this.mixer.getRoot());
     this.root.removeFromParent();
-    // Materials are per fighter (toLambert, the blob); geometry is shared with the cast source, except the blob.
+    // Materials are per fighter (toToon, the blob; the shared toon ramp is kept); geometry is shared with the cast source, except the blob.
     this.root.traverse((o) => {
       const m = o as THREE.Mesh;
       if (!m.isMesh) return;

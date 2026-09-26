@@ -3,7 +3,7 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync, statSync } from "node:fs";
 import { PHRASE_S, pickClips, removeDrift, restartsOnPlay, withTimeout } from "../src/render3d/fighters";
-import { pixelRatioCap } from "../src/render3d/stage";
+import { pixelRatioCap, stepQuality, type QualityState } from "../src/render3d/stage";
 import { dropBoomTime } from "../src/audio/layers";
 
 const manifest = JSON.parse(readFileSync("assets/3d/manifest.json", "utf8")) as {
@@ -88,11 +88,35 @@ describe("withTimeout", () => {
 });
 
 describe("pixelRatioCap", () => {
-  it("caps phones at 1 and desktops at 1.5", () => {
-    expect(pixelRatioCap(3, true)).toBe(1);
-    expect(pixelRatioCap(2, false)).toBe(1.5);
-    expect(pixelRatioCap(1, false)).toBe(1);
-    expect(pixelRatioCap(0, true)).toBe(1);
+  it("renders at full resolution, the device ratio capped at 2", () => {
+    expect(pixelRatioCap(3)).toBe(2);
+    expect(pixelRatioCap(2)).toBe(2);
+    expect(pixelRatioCap(1.5)).toBe(1.5);
+    expect(pixelRatioCap(1)).toBe(1);
+    expect(pixelRatioCap(0)).toBe(1);
+  });
+});
+
+describe("stepQuality", () => {
+  const run = (q: QualityState, fps: number[], ratio: number) => fps.map((f) => stepQuality(q, f, ratio));
+  it("drops the pixel ratio after 2 s under 40 fps, then shadows and bloom after 2 more", () => {
+    const q: QualityState = { step: 0, low: 0 };
+    expect(run(q, [30, 30], 2)).toEqual([false, true]);
+    expect(q.step).toBe(1);
+    expect(run(q, [30, 30], 1)).toEqual([false, true]);
+    expect(q.step).toBe(2);
+    expect(run(q, [20, 20, 20], 1)).toEqual([false, false, false]);
+    expect(q.step).toBe(2);
+  });
+  it("needs two seconds in a row: one good second resets the count", () => {
+    const q: QualityState = { step: 0, low: 0 };
+    expect(run(q, [30, 50, 30, 45, 39.9], 2)).toEqual([false, false, false, false, false]);
+    expect(q.step).toBe(0);
+  });
+  it("skips the pixel ratio step when the ratio is already 1", () => {
+    const q: QualityState = { step: 0, low: 0 };
+    run(q, [25, 25], 1);
+    expect(q.step).toBe(2);
   });
 });
 

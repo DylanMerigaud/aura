@@ -1,9 +1,9 @@
 // Pure parts of the 3D director: the shot picker never repeats a shot family, every shot moves on its own
 // clock without a jump, the drop ramp and punch zoom curves.
 import { describe, expect, it } from "vitest";
-import { FAMILY, MOVE_S, isOts, pickShot, punchZoom, rampScale, shotPose, type ShotKind } from "../src/render3d/director";
+import { FAMILY, LAYOUT, MOVE_S, PORTRAIT, isOts, pickShot, portraitFov, project, punchZoom, rampScale, shotPose, type ShotKind, type V3 } from "../src/render3d/director";
 
-const KINDS: ShotKind[] = ["ots", "otsWide", "enemyClose", "heroLow", "topDown", "dollyEnemy"];
+const KINDS: ShotKind[] = ["ots", "otsWide", "enemyClose", "heroLow", "topDown", "dollyEnemy", "hands"];
 
 function lcg(seed: number) {
   let s = seed;
@@ -85,16 +85,17 @@ describe("shotPose", () => {
 
   const dist = (a: number[], b: number[]) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
 
-  it("moves every shot within its first bar (an orbit or a dolly of at least 20 cm in 2 s)", () => {
-    for (const k of KINDS) expect(dist(shotPose(k, 0, 0.5, 16 / 9).pos, shotPose(k, 2, 0.5, 16 / 9).pos)).toBeGreaterThan(0.2);
+  it("moves every shot within its first bar (an orbit or a dolly of at least 20 cm in 2 s), portrait too", () => {
+    for (const aspect of [16 / 9, 9 / 16])
+      for (const k of KINDS) expect(dist(shotPose(k, 0, 0.5, aspect).pos, shotPose(k, 2, 0.5, aspect).pos)).toBeGreaterThan(0.2);
   });
 
   it("never jumps inside a shot, even when it outlives its bar (the bar progress no longer moves it)", () => {
-    for (const k of KINDS) {
-      let prev = shotPose(k, 0, 0, 16 / 9).pos;
+    for (const aspect of [16 / 9, 9 / 16]) for (const k of KINDS) {
+      let prev = shotPose(k, 0, 0, aspect).pos;
       for (let t = 1 / 60; t <= MOVE_S + 2; t += 1 / 60) {
         // The bar wraps from 1 to 0 twice a second here: the pose must not care.
-        const pos = shotPose(k, t, (t * 2) % 1, 16 / 9).pos;
+        const pos = shotPose(k, t, (t * 2) % 1, aspect).pos;
         expect(dist(pos, prev)).toBeLessThan(0.05);
         prev = pos;
       }
@@ -105,5 +106,88 @@ describe("shotPose", () => {
     const out = { pos: [0, 0, 0] as [number, number, number], target: [0, 0, 0] as [number, number, number], fov: 0 };
     expect(shotPose("ots", 1, 0.5, 16 / 9, out)).toBe(out);
     expect(out.fov).toBe(48);
+  });
+});
+
+describe("portrait framing (9:16)", () => {
+  const [px, , pz] = LAYOUT.player;
+  const [ex, , ez] = LAYOUT.enemy;
+  const enemyHead: V3 = [ex, 1.65, ez];
+  const enemyFeet: V3 = [ex, 0, ez];
+  const playerHead: V3 = [px, 1.65, pz];
+  const playerShoulder: V3 = [px + 0.2, 1.45, pz];
+  const playerHands: V3 = [px, 1.0, pz];
+  const PHONES = [0.46, 9 / 16, 0.75];
+  const each = (k: ShotKind, fn: (at: (pt: V3) => [number, number, number]) => void) => {
+    for (const aspect of PHONES)
+      for (let t = 0; t <= MOVE_S + 1; t += 0.5) {
+        const pose = shotPose(k, t, 0, aspect);
+        fn((pt) => project(pose, aspect, pt));
+      }
+  };
+  const faceBand = ([x, y, z]: [number, number, number]) => {
+    expect(z).toBeGreaterThan(0);
+    expect(x).toBeGreaterThan(0.1);
+    expect(x).toBeLessThan(0.9);
+    expect(y).toBeGreaterThan(PORTRAIT.hudBand);
+    expect(y).toBeLessThan(PORTRAIT.faceMax);
+  };
+
+  it("behind shots: the enemy high (face out of the HUD band), standing on the ring near 60 percent, our shoulder bottom left", () => {
+    for (const k of ["ots", "otsWide"] as ShotKind[])
+      each(k, (at) => {
+        faceBand(at(enemyHead));
+        const feet = at(enemyFeet)[1];
+        expect(feet).toBeGreaterThan(0.5);
+        expect(feet).toBeLessThan(0.66);
+        const [sx, sy] = at(playerShoulder);
+        expect(sx).toBeGreaterThan(0.1);
+        expect(sx).toBeLessThan(0.5);
+        expect(sy).toBeGreaterThan(0.55);
+        // The enemy stays a readable size: at least 15 percent of the screen height.
+        expect(feet - at(enemyHead)[1]).toBeGreaterThan(0.15);
+      });
+  });
+
+  it("enemy shots keep the enemy face between the HUD band and the touch zone", () => {
+    for (const k of ["enemyClose", "dollyEnemy"] as ShotKind[]) each(k, (at) => faceBand(at(enemyHead)));
+  });
+
+  it("the hero low and the hands shots keep our face out of the HUD band and above the touch zone", () => {
+    each("heroLow", (at) => faceBand(at(playerHead)));
+    each("hands", (at) => {
+      faceBand(at(playerHead));
+      const [, y] = at(playerHands);
+      expect(y).toBeGreaterThan(0.35);
+      expect(y).toBeLessThan(PORTRAIT.touchTop);
+    });
+  });
+
+  it("the top shot keeps both fighters on screen, the enemy out of the HUD band", () => {
+    each("topDown", (at) => {
+      expect(at(enemyHead)[1]).toBeGreaterThan(PORTRAIT.hudBand);
+      expect(at(enemyFeet)[1]).toBeLessThan(PORTRAIT.touchTop);
+      expect(at([px, 0, pz])[1]).toBeLessThan(0.8);
+    });
+  });
+
+  it("landscape framing is untouched by the portrait pass", () => {
+    const p = shotPose("ots", 0, 0, 16 / 9);
+    expect(p.fov).toBe(48);
+    expect(p.pos[2]).toBeCloseTo(pz + 1.9);
+  });
+});
+
+describe("portraitFov", () => {
+  const hfov = (v: number, a: number) => 2 * Math.atan(Math.tan((v * Math.PI) / 360) * a);
+  it("is the 9:16 framing at 9:16 and keeps the horizontal field on a narrower phone", () => {
+    expect(portraitFov(50, 9 / 16)).toBeCloseTo(50);
+    const tall = portraitFov(50, 0.46);
+    expect(tall).toBeGreaterThan(50);
+    expect(hfov(tall, 0.46)).toBeCloseTo(hfov(50, 9 / 16), 5);
+  });
+  it("keeps the vertical field on a wider portrait and never exceeds 80 degrees", () => {
+    expect(portraitFov(50, 0.75)).toBeCloseTo(50);
+    expect(portraitFov(70, 0.3)).toBeLessThanOrEqual(80);
   });
 });
