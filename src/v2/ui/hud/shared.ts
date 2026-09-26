@@ -1,10 +1,10 @@
-// Shared constants for the battle HUD: grade colors, matching v1's palette (src/game/battle.ts GRADE_COLOR) so the two builds feel like the same game.
+// Shared constants for the battle HUD: grade colors, flat white with the one accent (no neon, addendum 16:00 item 2).
 import type { Grade } from "../../../qte/judge";
 
 export const GRADE_COLOR: Record<Grade, string> = {
-  perfect: "#fff36b",
-  great: "#5dfcff",
-  ok: "#b98cff",
-  miss: "#ff4d6d",
+  perfect: "#ffd400",
+  great: "#ffffff",
+  ok: "#d6d6d6",
+  miss: "#9a9a9a",
 };
-export const CRINGE_COLOR = "#ff3df2";
+export const CRINGE_COLOR = "#ffffff";

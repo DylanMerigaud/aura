@@ -10,10 +10,10 @@ import type { Frame } from "../../contracts";
 import { el } from "../dom";
 import { newGate, visiblePrompts } from "./queue";
 
-const CYAN = "#35e0ff";
-const CYAN_DIM = "#1b5b70";
-const MAGENTA = "#ff3df2";
-const YELLOW = "#fff36b";
+const CYAN = "#ffffff";
+const CYAN_DIM = "#5c5c5c";
+const MAGENTA = "#ffffff";
+const YELLOW = "#ffd400";
 const LANE_PX_PER_BEAT = 260;
 
 /** v1 particles.ts glowSprite: a radial white core fading through the color to transparent. */

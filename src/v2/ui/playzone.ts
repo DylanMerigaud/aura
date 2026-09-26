@@ -2,10 +2,41 @@
 // flying to the ring is the cue), one big pad for the 67 mash, the same pad asking for the drop tap as
 // the ring closes, the HOLD pad, dimmed with "HIS MOVE" on the opponent turn. Purely visual
 // (pointer-events none): the canvas under it takes every tap anywhere on the screen.
-import type { GameApi } from "../contracts";
+// Each hint disappears for the rest of the session after the first success of its kind (the mash
+// pads after a graded MASH release, the hold pad after a graded HOLD), and the pad outline fades
+// after the first hit. Session only: a module level Set, never localStorage.
+import type { CoreEvent, GameApi } from "../contracts";
 import { el } from "./dom";
 import { currentZone } from "./battleInput";
 import type { ZoneMode } from "./touch";
+
+export type HintKind = "tap" | "mash" | "hold";
+const learned = new Set<HintKind>();
+
+/** The hint kind a core event teaches (a success of that kind), or null. Pure. */
+export function lessonOf(e: CoreEvent): HintKind | null {
+  if (e.kind === "judged") return e.grade !== "miss" && !e.cringe ? "tap" : null;
+  if (e.kind === "release") return e.grade !== "miss" ? "mash" : null;
+  if (e.kind === "holdEnd") return e.grade !== "miss" ? "hold" : null;
+  return null;
+}
+
+/** Record a lesson; true when it is new this session. */
+export function learn(e: CoreEvent): boolean {
+  const k = lessonOf(e);
+  if (!k || learned.has(k)) return false;
+  learned.add(k);
+  return true;
+}
+
+export function hasLearned(k: HintKind): boolean {
+  return learned.has(k);
+}
+
+/** Tests only: forget the session's lessons. */
+export function resetLessons() {
+  learned.clear();
+}
 
 export function buildPlayZone(game: GameApi) {
   const root = el("div", "playzone zone-none");
@@ -22,6 +53,16 @@ export function buildPlayZone(game: GameApi) {
   const his = el("div", "pz-his", "HIS MOVE");
   for (const n of [mash, release, hold, his]) root.appendChild(n);
 
+  function syncLearned() {
+    for (const k of ["tap", "mash", "hold"] as HintKind[]) root.classList.toggle(`learned-${k}`, learned.has(k));
+  }
+  syncLearned();
+
+  /** Forwarded core events: the first success of a kind retires its hint for the session. */
+  function event(e: CoreEvent) {
+    if (learn(e)) syncLearned();
+  }
+
   let shown: ZoneMode = "none";
   /** Call every frame: switches the class only when the mode changes. */
   function frame() {
@@ -32,5 +73,5 @@ export function buildPlayZone(game: GameApi) {
     shown = m;
   }
 
-  return { root, frame };
+  return { root, frame, event };
 }

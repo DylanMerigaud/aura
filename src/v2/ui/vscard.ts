@@ -41,7 +41,7 @@ export function buildVsCard(base: string, onFight: () => void) {
   });
   function show(level: LevelV2) {
     themArt.style.backgroundImage = `url("${base}art/opp-${level.artKey}.jpg")`;
-    them.style.setProperty("--opp-color", level.opponent.color || "#ff3df2");
+    them.style.setProperty("--opp-color", level.opponent.color || "#ffffff");
     name.textContent = level.opponent.name.toUpperCase();
     place.textContent = level.place;
     bpm.textContent = `${Math.round(level.bpm)} BPM`;

@@ -70,7 +70,7 @@ export function buildPopups(base: string) {
   function showTurnCall(who: "player" | "opponent", level: LevelV2) {
     const text = turnCall(who);
     turnCallNode.textContent = text;
-    turnCallNode.style.color = who === "player" ? "#ffe600" : level.opponent.color || "#ff3df2";
+    turnCallNode.style.color = who === "player" ? "#ffd400" : level.opponent.color || "#ffffff";
     turnCallNode.classList.remove("hidden");
     if (typeof turnCallNode.animate === "function") {
       turnCallNode.animate(
@@ -126,7 +126,7 @@ export function buildPopups(base: string) {
     }
     if (e.kind === "taunt") {
       tauntPortrait.style.backgroundImage = `url("${base}art/opp-${level.artKey}.jpg")`;
-      tauntPortrait.style.setProperty("--opp-color", level.opponent.color || "#ff3df2");
+      tauntPortrait.style.setProperty("--opp-color", level.opponent.color || "#ffffff");
       tauntName.textContent = level.opponent.name.toUpperCase();
       tauntText.textContent = e.text;
       tauntBar.classList.remove("hidden");

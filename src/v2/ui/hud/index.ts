@@ -1,4 +1,4 @@
-// Battle HUD: assembles the meter/score/combo/tachometer bar, the QTE arrow canvas (src/v2/ui/hud/arrows.ts) and the
+// Battle HUD: assembles the like / dislike bar with score and combo, the QTE arrow canvas (src/v2/ui/hud/arrows.ts) and the
 // popups into one Listener the lead registers with game.listen(). Letterbox is the stage's job,
 // not duplicated here.
 import type { CoreEvent, Frame, LevelV2, Listener } from "../../contracts";
@@ -27,6 +27,7 @@ export function buildHud(base: string) {
     root.classList.remove("shown");
     loading.classList.remove("hidden");
     popups.reset();
+    meter.reset();
     arrows.reset();
   }
 
@@ -39,6 +40,7 @@ export function buildHud(base: string) {
       if (e.kind === "countIn") loading.classList.add("hidden");
       if (e.kind === "countIn" && e.n === 1) root.classList.add("shown");
       if (level) popups.event(e, level);
+      meter.event(e);
       if (e.kind === "judged" && e.grade !== "miss") vibrate(e.big ? 30 : 15);
       else if (e.kind === "release" || e.kind === "drop") vibrate(45);
       if (e.kind === "end") {
