@@ -26,6 +26,8 @@ export interface BattleStats {
 const PX = 360, OX = 920, GROUND = 640;
 const TARGET_X = 640, TARGET_Y = 300;
 const LANE_PX_PER_BEAT = 260;
+/** Aura drained per beat by opponent pressure, per level. */
+const PRESSURE = [0, 0.003, 0.006, 0.009, 0.011];
 const ROT: Record<Dir, number> = { right: 0, down: Math.PI / 2, left: Math.PI, up: -Math.PI / 2 };
 const GRADE_COLOR = { perfect: "#fff36b", great: "#5dfcff", ok: "#b98cff", miss: "#ff4d6d" };
 
@@ -238,6 +240,11 @@ export class Battle {
     if (b !== this.lastBeat) {
       this.lastBeat = b;
       this.beatAt = this.visT;
+    }
+
+    // Opponent pressure: aura drains toward the opponent a little every beat, harder each level.
+    if (this.endAt < 0 && beatPos > 0 && beatPos < this.level.lengthBeats) {
+      this.push((-(realDt / this.music.spb) * PRESSURE[Math.min(4, this.level.id - 1)]));
     }
 
     // Taunts on their scripted beats.
