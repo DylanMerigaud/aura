@@ -3777,6 +3777,74 @@
      "genz": 3,
      "note": "The delivery is a bit too flat and needs way more explosive esports caster energy to truly sell the hype."
     }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l1-win-0eb3b2/v6.mp3",
+    "role": "announcer",
+    "line": "l1-win",
+    "text": "Aura farmed.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: victorious, ecstatic, celebrating the player, crowd going wild. Push it further, more caricatural. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nAura farmed.",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "The delivery is incredibly hyped and perfectly captures the over-the-top esports caster vibe."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l1-win-0eb3b2/v8.mp3",
+    "role": "announcer",
+    "line": "l1-win",
+    "text": "Aura farmed.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The actor said farm instead of farmed, missing the correct slang term and forcing all scores to be capped at 2."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l1-win-0eb3b2/v9.mp3",
+    "role": "announcer",
+    "line": "l1-win",
+    "text": "Aura farmed.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: victorious, ecstatic, celebrating the player, crowd going wild. Make it iconic, like a meme sound. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nAura farmed.",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "This perfectly captures the chaotic esports caster energy and sells the slang flawlessly."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l1-win-0eb3b2/v10.mp3",
+    "role": "announcer",
+    "line": "l1-win",
+    "text": "Aura farmed.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Sadachbia",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: victorious, ecstatic, celebrating the player, crowd going wild. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nAura farmed.",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "The delivery is perfectly over-the-top and captures that unhinged esports caster energy flawlessly."
+    }
    }
   ],
   "announcer/l1-lose-4fe240": [
@@ -3829,6 +3897,91 @@
      "stereotype": 2,
      "genz": 2,
      "note": "This read is way too flat and polite instead of delivering the ruthless mocking energy required to roast the player."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l1-lose-4fe240/v6.mp3",
+    "role": "announcer",
+    "line": "l1-lose",
+    "text": "Humbled.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: roasting the player, mocking, laughing, ruthless but playful. Push it further, more caricatural. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nHumbled.",
+    "scores": {
+     "energy": 4,
+     "emotion": 4,
+     "stereotype": 4,
+     "genz": 4,
+     "note": "The punchy delivery perfectly captures the mocking battle rap host vibe without feeling too forced."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l1-lose-4fe240/v7.mp3",
+    "role": "announcer",
+    "line": "l1-lose",
+    "text": "Humbled.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Sadachbia",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: roasting the player, mocking, laughing, ruthless but playful. Even more attitude, exaggerate the character. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nHumbled.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "This read is completely dead and lacks the ruthless mocking energy required for a hype MC."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l1-lose-4fe240/v9.mp3",
+    "role": "announcer",
+    "line": "l1-lose",
+    "text": "Humbled.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: roasting the player, mocking, laughing, ruthless but playful. Make it iconic, like a meme sound. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nHumbled.",
+    "scores": {
+     "energy": 2,
+     "emotion": 3,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The delivery is too smug and quiet for a hype MC, lacking the loud esports-caster energy needed."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l1-lose-4fe240/v8.mp3",
+    "role": "announcer",
+    "line": "l1-lose",
+    "text": "Humbled.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "It hits the word but completely misses the explosive, mocking energy required for a hype MC."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l1-lose-4fe240/v10.mp3",
+    "role": "announcer",
+    "line": "l1-lose",
+    "text": "Humbled.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Sadachbia",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: roasting the player, mocking, laughing, ruthless but playful. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nHumbled.",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 3,
+     "genz": 3,
+     "note": "It hits the right word but lacks the exaggerated, mocking laugh required to truly roast the player."
     }
    }
   ],
@@ -3883,6 +4036,91 @@
      "genz": 1,
      "note": "The delivery is completely deadpan and lacks any of the required hype or energy for an MC."
     }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l2-win-204b31/v6.mp3",
+    "role": "announcer",
+    "line": "l2-win",
+    "text": "Sigma mogged.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: victorious, ecstatic, celebrating the player, crowd going wild. Push it further, more caricatural. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nSigma mogged.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The delivery is far too flat and lacks the explosive, ecstatic hype required for a battle MC."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l2-win-204b31/v8.mp3",
+    "role": "announcer",
+    "line": "l2-win",
+    "text": "Sigma mogged.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 1,
+     "note": "The delivery is way too flat and sounds like a corporate millennial reading slang off a script instead of a hyped esports caster."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l2-win-204b31/v7.mp3",
+    "role": "announcer",
+    "line": "l2-win",
+    "text": "Sigma mogged.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Sadachbia",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: victorious, ecstatic, celebrating the player, crowd going wild. Even more attitude, exaggerate the character. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nSigma mogged.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 1,
+     "note": "The actor said 'mod' instead of 'mogged', ruining the slang and capping all scores."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l2-win-204b31/v9.mp3",
+    "role": "announcer",
+    "line": "l2-win",
+    "text": "Sigma mogged.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: victorious, ecstatic, celebrating the player, crowd going wild. Make it iconic, like a meme sound. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nSigma mogged.",
+    "scores": {
+     "energy": 3,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The delivery sounds more like an angry streamer raging than a victorious hype MC and the loud desk slam at the end ruins the take."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l2-win-204b31/v10.mp3",
+    "role": "announcer",
+    "line": "l2-win",
+    "text": "Sigma mogged.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Sadachbia",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: victorious, ecstatic, celebrating the player, crowd going wild. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nSigma mogged.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The actor said mog instead of mogged so it is an automatic reject."
+    }
    }
   ],
   "announcer/l3-intro-dc586e": [
@@ -3936,6 +4174,91 @@
      "genz": 1,
      "note": "Way too flat and rushed, completely missing the hype and tension needed for a battle MC."
     }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l3-intro-dc586e/v6.mp3",
+    "role": "announcer",
+    "line": "l3-intro",
+    "text": "Respect elders.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: opening the battle, dead serious hype, building tension, then punching the last word. Push it further, more caricatural. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nRespect elders.",
+    "scores": {
+     "energy": 1,
+     "emotion": 1,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "wrong words (heard \"Opening battle. Dead serious hype, building tension, then punching the last word\"), capped at 2. The actor read the entire direction prompt out loud instead of just the line, making this take completely unusable."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l3-intro-dc586e/v7.mp3",
+    "role": "announcer",
+    "line": "l3-intro",
+    "text": "Respect elders.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Sadachbia",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: opening the battle, dead serious hype, building tension, then punching the last word. Even more attitude, exaggerate the character. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nRespect elders.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 1,
+     "note": "Way too fast and flat to build any tension for a hype battle opening."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l3-intro-dc586e/v8.mp3",
+    "role": "announcer",
+    "line": "l3-intro",
+    "text": "Respect elders.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "Way too flat and fast, completely missing the hype and tension needed for an MC."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l3-intro-dc586e/v9.mp3",
+    "role": "announcer",
+    "line": "l3-intro",
+    "text": "Respect elders.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: opening the battle, dead serious hype, building tension, then punching the last word. Make it iconic, like a meme sound. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nRespect elders.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "The delivery is completely flat and lacks the exaggerated hype required for a battle MC."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l3-intro-dc586e/v10.mp3",
+    "role": "announcer",
+    "line": "l3-intro",
+    "text": "Respect elders.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Sadachbia",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: opening the battle, dead serious hype, building tension, then punching the last word. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nRespect elders.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "This sounds like a boring public service announcement instead of an explosive underground battle MC."
+    }
    }
   ],
   "announcer/l2-lose-4c5628": [
@@ -3988,6 +4311,57 @@
      "stereotype": 2,
      "genz": 2,
      "note": "The delivery is far too dry and generic, completely missing the loud and mocking esports caster energy needed for this character."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l2-lose-4c5628/v6.mp3",
+    "role": "announcer",
+    "line": "l2-lose",
+    "text": "Fare dodged you.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: roasting the player, mocking, laughing, ruthless but playful. Push it further, more caricatural. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nFare dodged you.",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The delivery lacks the explosive hype of a battle rap host and feels too generic for a Gen Z audience."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l2-lose-4c5628/v8.mp3",
+    "role": "announcer",
+    "line": "l2-lose",
+    "text": "Fare dodged you.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "Way too casual and flat for a hype MC; we need explosive, ruthless energy and mocking laughter."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l2-lose-4c5628/v9.mp3",
+    "role": "announcer",
+    "line": "l2-lose",
+    "text": "Fare dodged you.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: roasting the player, mocking, laughing, ruthless but playful. Make it iconic, like a meme sound. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nFare dodged you.",
+    "scores": {
+     "energy": 2,
+     "emotion": 1,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "The delivery is awkward and completely ruined by a massive audio glitch at the end."
     }
    }
   ],
@@ -4095,6 +4469,91 @@
      "genz": 1,
      "note": "The delivery is completely flat and lacks the loud, ruthless mocking energy required for a hype MC."
     }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l3-lose-8e0072/v6.mp3",
+    "role": "announcer",
+    "line": "l3-lose",
+    "text": "Boomer wins.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: roasting the player, mocking, laughing, ruthless but playful. Push it further, more caricatural. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nBoomer wins.",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "The delivery is explosive and perfectly captures the mocking meme-worthy hype needed for this roast."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l3-lose-8e0072/v7.mp3",
+    "role": "announcer",
+    "line": "l3-lose",
+    "text": "Boomer wins.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Sadachbia",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: roasting the player, mocking, laughing, ruthless but playful. Even more attitude, exaggerate the character. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nBoomer wins.",
+    "scores": {
+     "energy": 5,
+     "emotion": 4,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "The deep-fried audio distortion makes this absolutely hilarious and perfect for a meme-heavy game."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l3-lose-8e0072/v8.mp3",
+    "role": "announcer",
+    "line": "l3-lose",
+    "text": "Boomer wins.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "Way too flat and casual for a hype MC, it needs explosive esports caster energy and a much more ruthless mocking tone."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l3-lose-8e0072/v9.mp3",
+    "role": "announcer",
+    "line": "l3-lose",
+    "text": "Boomer wins.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: roasting the player, mocking, laughing, ruthless but playful. Make it iconic, like a meme sound. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nBoomer wins.",
+    "scores": {
+     "energy": 3,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "This sounds like a generic 90s arcade fighting game announcer instead of a mocking Gen Z hype MC."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l3-lose-8e0072/v10.mp3",
+    "role": "announcer",
+    "line": "l3-lose",
+    "text": "Boomer wins.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Sadachbia",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: roasting the player, mocking, laughing, ruthless but playful. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nBoomer wins.",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "It lacks the explosive hype and ruthless mocking energy needed for a Gen Z esports caster."
+    }
    }
   ],
   "announcer/l4-intro-f83cb4": [
@@ -4113,6 +4572,91 @@
      "stereotype": 1,
      "genz": 1,
      "note": "The delivery sounds like a goofy cartoon character instead of a serious hype MC, completely missing the requested tension."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l4-intro-f83cb4/v6.mp3",
+    "role": "announcer",
+    "line": "l4-intro",
+    "text": "Oh la la.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: opening the battle, dead serious hype, building tension, then punching the last word. Push it further, more caricatural. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nOh la la.",
+    "scores": {
+     "energy": 2,
+     "emotion": 1,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "This sounds like a goofy cartoon French chef instead of a hype battle MC, completely missing the dead serious tension."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l4-intro-f83cb4/v7.mp3",
+    "role": "announcer",
+    "line": "l4-intro",
+    "text": "Oh la la.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Sadachbia",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: opening the battle, dead serious hype, building tension, then punching the last word. Even more attitude, exaggerate the character. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nOh la la.",
+    "scores": {
+     "energy": 4,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 1,
+     "note": "Sounds like a goofy cartoon chef instead of an underground battle rap host."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l4-intro-f83cb4/v8.mp3",
+    "role": "announcer",
+    "line": "l4-intro",
+    "text": "Oh la la.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 1,
+     "emotion": 1,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "Way too flat and casual for a hype MC lacking any of the requested tension or punch."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l4-intro-f83cb4/v9.mp3",
+    "role": "announcer",
+    "line": "l4-intro",
+    "text": "Oh la la.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: opening the battle, dead serious hype, building tension, then punching the last word. Make it iconic, like a meme sound. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nOh la la.",
+    "scores": {
+     "energy": 2,
+     "emotion": 1,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "This sounds like a goofy cartoon French caricature rather than a serious underground hype MC."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l4-intro-f83cb4/v10.mp3",
+    "role": "announcer",
+    "line": "l4-intro",
+    "text": "Oh la la.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Sadachbia",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: opening the battle, dead serious hype, building tension, then punching the last word. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nOh la la.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "This sounds like a cartoon villain instead of a hyped esports caster."
     }
    }
   ],
@@ -4167,6 +4711,57 @@
      "genz": 2,
      "note": "This sounds like a bored substitute teacher instead of a hyped underground MC roasting a player."
     }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l4-lose-56415b/v6.mp3",
+    "role": "announcer",
+    "line": "l4-lose",
+    "text": "Pas terrible.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: roasting the player, mocking, laughing, ruthless but playful. Push it further, more caricatural. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nPas terrible.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "wrong words (heard \"Hold up, hold up! That was wack! I mean, really? You think that's gonna cut it h\"), capped at 2. The actor delivered a long English rant instead of the expected French line, triggering the score cap."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l4-lose-56415b/v8.mp3",
+    "role": "announcer",
+    "line": "l4-lose",
+    "text": "Pas terrible.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "This delivery is completely flat and lacks the ruthless, mocking energy required for a hype MC."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l4-lose-56415b/v9.mp3",
+    "role": "announcer",
+    "line": "l4-lose",
+    "text": "Pas terrible.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: roasting the player, mocking, laughing, ruthless but playful. Make it iconic, like a meme sound. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nPas terrible.",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "The mocking laugh perfectly nails the ruthless yet playful MC vibe."
+    }
    }
   ],
   "announcer/l4-win-3f8a67": [
@@ -4219,6 +4814,91 @@
      "stereotype": 2,
      "genz": 2,
      "note": "The delivery is aggressive rather than ecstatic and the loud desk slam at the end makes this completely unusable."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l4-win-3f8a67/v6.mp3",
+    "role": "announcer",
+    "line": "l4-win",
+    "text": "Tres chic.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: victorious, ecstatic, celebrating the player, crowd going wild. Push it further, more caricatural. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nTres chic.",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The delivery is too theatrical and stiff, lacking the authentic unhinged hype of a modern battle MC."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l4-win-3f8a67/v8.mp3",
+    "role": "announcer",
+    "line": "l4-win",
+    "text": "Tres chic.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 1,
+     "emotion": 1,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "Way too flat and casual for a hype MC as we need explosive stadium-level energy."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l4-win-3f8a67/v9.mp3",
+    "role": "announcer",
+    "line": "l4-win",
+    "text": "Tres chic.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: victorious, ecstatic, celebrating the player, crowd going wild. Make it iconic, like a meme sound. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nTres chic.",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 4,
+     "note": "The ballroom MC energy is absolutely perfect for a hype dance battle."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l4-win-3f8a67/v7.mp3",
+    "role": "announcer",
+    "line": "l4-win",
+    "text": "Tres chic.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Sadachbia",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: victorious, ecstatic, celebrating the player, crowd going wild. Even more attitude, exaggerate the character. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nTres chic.",
+    "scores": {
+     "energy": 1,
+     "emotion": 1,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "The actor completely misread the line as Tracy instead of Tres chic and delivered it with zero hype."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l4-win-3f8a67/v10.mp3",
+    "role": "announcer",
+    "line": "l4-win",
+    "text": "Tres chic.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Sadachbia",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: victorious, ecstatic, celebrating the player, crowd going wild. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nTres chic.",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 4,
+     "note": "The drawn-out, explosive delivery perfectly captures the hype MC energy we need."
     }
    }
   ],
@@ -4538,6 +5218,91 @@
      "genz": 2,
      "note": "The delivery is serene but sounds like an adult meditation app rather than an aura-maxing kid."
     }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/boatkid/l1-taunt-6/v6.mp3",
+    "role": "boatkid",
+    "line": "l1-taunt-6",
+    "text": "Calm wins.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Achernar",
+    "direction": "# AUDIO PROFILE: THE BOAT KID\nTHE BOAT KID, a calm young kid, the boss of aura maxing, standing at the front of a racing boat, eyes half closed, serene, never impressed, speaks calm and quiet, almost a whisper, supremely confident.\n### DIRECTOR'S NOTES\nStyle: serene, amused, slow.\nAccent: neutral, soft, young.\nPacing: slow, calm, unhurried, a breath of silence feels natural.\n#### TRANSCRIPT\nCalm wins.",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 3,
+     "genz": 2,
+     "note": "You got the words right but the delivery is giving mindfulness app instead of final boss of aura maxing. It is too flat and generic. I need that quiet magnetic confidence with a slight smirk to make it truly meme worthy for the players."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/boatkid/l1-taunt-6/v7.mp3",
+    "role": "boatkid",
+    "line": "l1-taunt-6",
+    "text": "Calm wins.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Achernar",
+    "direction": "# AUDIO PROFILE: THE BOAT KID\nTHE BOAT KID, a calm young kid, the boss of aura maxing, standing at the front of a racing boat, eyes half closed, serene, never impressed, speaks calm and quiet, almost a whisper, supremely confident.\n### DIRECTOR'S NOTES\nStyle: serene, amused, slow.\nAccent: neutral, soft, young.\nPacing: slow, calm, unhurried, a breath of silence feels natural.\n#### TRANSCRIPT\nCalm wins.",
+    "scores": {
+     "energy": 2,
+     "emotion": 3,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "The delivery sounds like an older adult rather than a young kid, completely missing the supreme aura-maxing vibe required for this character."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/boatkid/l1-taunt-6/v8.mp3",
+    "role": "boatkid",
+    "line": "l1-taunt-6",
+    "text": "Calm wins.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed boatkid-2 vox_emb_dzfDWNCFz7TtcGvo",
+    "direction": "voice design: Calm kid, 11 to 13, soft low voice, speaks barely above a whisper, perfectly composed, unbothered, mysterious and confident, slow and gentle pacing. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "The delivery is perfectly unbothered and maxes out its aura with a flawless whispered confidence."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/boatkid/l1-taunt-6/v9.mp3",
+    "role": "boatkid",
+    "line": "l1-taunt-6",
+    "text": "Calm wins.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Achernar",
+    "direction": "# AUDIO PROFILE: THE BOAT KID\nTHE BOAT KID, a calm young kid, the boss of aura maxing, standing at the front of a racing boat, eyes half closed, serene, never impressed, speaks calm and quiet, almost a whisper, supremely confident.\n### DIRECTOR'S NOTES\nStyle: serene, amused, slow.\nAccent: neutral, soft, young.\nPacing: slow, calm, unhurried, a breath of silence feels natural.\n#### TRANSCRIPT\nCalm wins.",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The delivery is serene but sounds like an adult meditation guide rather than a young aura-maxing kid."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/boatkid/l1-taunt-6/v10.mp3",
+    "role": "boatkid",
+    "line": "l1-taunt-6",
+    "text": "Calm wins.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Achernar",
+    "direction": "# AUDIO PROFILE: THE BOAT KID\nTHE BOAT KID, a calm young kid, the boss of aura maxing, standing at the front of a racing boat, eyes half closed, serene, never impressed, speaks calm and quiet, almost a whisper, supremely confident.\n### DIRECTOR'S NOTES\nStyle: serene, amused, slow.\nAccent: neutral, soft, young.\nPacing: slow, calm, unhurried, a breath of silence feels natural.\n#### TRANSCRIPT\nCalm wins.",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The delivery is calm but sounds too much like a generic adult voiceover rather than a young aura-maxing kid."
+    }
    }
   ],
   "boatkid/l1-taunt-7": [
@@ -4697,6 +5462,91 @@
      "genz": 2,
      "note": "The delivery is way too dry and robotic, completely missing the smug Parisian street attitude required to make this line hit."
     }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-1-22bce4/v6.mp3",
+    "role": "ninja",
+    "line": "taunt-1",
+    "text": "T'es cuit.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: slow and cold, delivering a verdict, satisfied. Push it further, more caricatural. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nT'es cuit.",
+    "scores": {
+     "energy": 3,
+     "emotion": 4,
+     "stereotype": 4,
+     "genz": 4,
+     "note": "The cold delivery nails the smug Parisian vibe and perfectly captures that 'you're cooked' Gen Z energy."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-1-22bce4/v7.mp3",
+    "role": "ninja",
+    "line": "taunt-1",
+    "text": "T'es cuit.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: slow and cold, delivering a verdict, satisfied. Even more attitude, exaggerate the character. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nT'es cuit.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "Leaving the slate in adds extra words to the take, which automatically caps all your scores at a two."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-1-22bce4/v8.mp3",
+    "role": "ninja",
+    "line": "taunt-1",
+    "text": "T'es cuit.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed ninja-3 vox_emb_fDfTMIAGrwZmE0jG",
+    "direction": "voice design: Young man from Paris, 19, strong French accent, cocky trash talker, smirking, nasal and raspy, chill but provocative, playful arrogance, medium pace, street slang attitude. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 3,
+     "emotion": 4,
+     "stereotype": 4,
+     "genz": 3,
+     "note": "Accurate read and hits the cold verdict direction well. However, it lacks that extra layer of insufferable Parisian smugness needed to make it truly iconic and memeable for a Gen Z audience. Passable but could be punchier."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-1-22bce4/v9.mp3",
+    "role": "ninja",
+    "line": "taunt-1",
+    "text": "T'es cuit.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: slow and cold, delivering a verdict, satisfied. Make it iconic, like a meme sound. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nT'es cuit.",
+    "scores": {
+     "energy": 3,
+     "emotion": 4,
+     "stereotype": 3,
+     "genz": 3,
+     "note": "The delivery is too breathy and sounds more like an anime assassin than a smug Parisian street kid."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-1-22bce4/v10.mp3",
+    "role": "ninja",
+    "line": "taunt-1",
+    "text": "T'es cuit.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: slow and cold, delivering a verdict, satisfied. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nT'es cuit.",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 3,
+     "genz": 2,
+     "note": "The delivery is way too fast and casual instead of the slow cold verdict I asked for making it completely forgettable."
+    }
    }
   ],
   "ninja/taunt-2-d682af": [
@@ -4803,6 +5653,91 @@
      "genz": 2,
      "note": "You got the words right, but completely missed the vibe. There is zero French accent, no smugness, and you completely ignored the direction to add a laugh on frerot. It sounds like a robot reading a dictionary, not a cocky Parisian metro dodger. We need that unbothered street attitude to make this meme-worthy for the players. Do it again and actually act this time."
     }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-3-527d2b/v6.mp3",
+    "role": "ninja",
+    "line": "taunt-3",
+    "text": "I mog you.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: condescending, dismissive, a little laugh on frerot. Push it further, more caricatural. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nI mog you.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "The actor mispronounced the slang as 'mug' and completely failed to deliver the requested French accent."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-3-527d2b/v8.mp3",
+    "role": "ninja",
+    "line": "taunt-3",
+    "text": "I mog you.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed ninja-3 vox_emb_fDfTMIAGrwZmE0jG",
+    "direction": "voice design: Young man from Paris, 19, strong French accent, cocky trash talker, smirking, nasal and raspy, chill but provocative, playful arrogance, medium pace, street slang attitude. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The words are technically correct, but the delivery is completely flat. Where is the thick Parisian accent? You also completely ignored the direction to add a little laugh on frerot at the end. It sounds like a corporate millennial reading slang off a spreadsheet. Next."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-3-527d2b/v9.mp3",
+    "role": "ninja",
+    "line": "taunt-3",
+    "text": "I mog you.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: condescending, dismissive, a little laugh on frerot. Make it iconic, like a meme sound. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nI mog you.",
+    "scores": {
+     "energy": 1,
+     "emotion": 1,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "You mispronounced the slang as 'mug', completely missed the French accent, and forgot the requested laugh."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-3-527d2b/v10.mp3",
+    "role": "ninja",
+    "line": "taunt-3",
+    "text": "I mog you.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: condescending, dismissive, a little laugh on frerot. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nI mog you.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 1,
+     "note": "You said 'mug' instead of the Gen Z slang 'mog', completely changing the meaning from a looksmaxxing flex to a literal robbery. You also missed the requested laugh and 'frerot' entirely. Since the words are wrong, all scores are strictly capped at 2. Do you even know what mogging is? Next!"
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-3-527d2b/v7.mp3",
+    "role": "ninja",
+    "line": "taunt-3",
+    "text": "I mog you.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: condescending, dismissive, a little laugh on frerot. Even more attitude, exaggerate the character. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nI mog you.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "You completely missed the smug Parisian accent and the dismissive laugh requested in the direction, making it sound incredibly flat and generic."
+    }
    }
   ],
   "ninja/taunt-4-a62bbe": [
@@ -4838,6 +5773,74 @@
      "stereotype": 2,
      "genz": 2,
      "note": "The delivery lacks the required French accent and sounds way too timid for a cocky street ninja."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-4-a62bbe/v6.mp3",
+    "role": "ninja",
+    "line": "taunt-4",
+    "text": "Navigo? Who?",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: calm and final, flexing, like closing a deal. Push it further, more caricatural. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nNavigo? Who?",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The accent is completely missing and the delivery sounds confused rather than cocky."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-4-a62bbe/v7.mp3",
+    "role": "ninja",
+    "line": "taunt-4",
+    "text": "Navigo? Who?",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: calm and final, flexing, like closing a deal. Even more attitude, exaggerate the character. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nNavigo? Who?",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The actor said ooh instead of who, ruining the punchline and making this take completely unusable."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-4-a62bbe/v9.mp3",
+    "role": "ninja",
+    "line": "taunt-4",
+    "text": "Navigo? Who?",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: calm and final, flexing, like closing a deal. Make it iconic, like a meme sound. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nNavigo? Who?",
+    "scores": {
+     "energy": 1,
+     "emotion": 1,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "wrong words (heard \"Audio profile. The turnstile ninja. A young Parisian fare dodger from the banlie\"), capped at 2. The actor read the entire direction prompt out loud instead of just the required line. Scores are capped due to the extra words."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-4-a62bbe/v10.mp3",
+    "role": "ninja",
+    "line": "taunt-4",
+    "text": "Navigo? Who?",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: calm and final, flexing, like closing a deal. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nNavigo? Who?",
+    "scores": {
+     "energy": 3,
+     "emotion": 4,
+     "stereotype": 4,
+     "genz": 3,
+     "note": "The smug Parisian vibe is there but it needs slightly more projection to be truly meme-worthy."
     }
    }
   ],
@@ -4892,6 +5895,91 @@
      "genz": 1,
      "note": "wrong words (heard \"The Turnstile Ninja. A young Parisian fare dodger from the banlieue. Speaking En\"), capped at 2. The actor read the entire character description out loud instead of just the line, making it completely unusable."
     }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-5-dfb503/v6.mp3",
+    "role": "ninja",
+    "line": "taunt-5",
+    "text": "Pure sigma.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: playing dumb, fake confused, then smug. Push it further, more caricatural. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nPure sigma.",
+    "scores": {
+     "energy": 2,
+     "emotion": 1,
+     "stereotype": 2,
+     "genz": 1,
+     "note": "It completely misses the fake confused direction and delivers the slang with zero sauce, making it sound incredibly forced."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-5-dfb503/v7.mp3",
+    "role": "ninja",
+    "line": "taunt-5",
+    "text": "Pure sigma.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: playing dumb, fake confused, then smug. Even more attitude, exaggerate the character. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nPure sigma.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 3,
+     "genz": 2,
+     "note": "The French accent is okay, but the delivery completely misses the fake confused to smug transition and ends up sounding flat."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-5-dfb503/v8.mp3",
+    "role": "ninja",
+    "line": "taunt-5",
+    "text": "Pure sigma.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed ninja-3 vox_emb_fDfTMIAGrwZmE0jG",
+    "direction": "voice design: Young man from Paris, 19, strong French accent, cocky trash talker, smirking, nasal and raspy, chill but provocative, playful arrogance, medium pace, street slang attitude. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 3,
+     "genz": 2,
+     "note": "The French accent is decent but the delivery completely misses the fake confused direction and lacks smug energy."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-5-dfb503/v9.mp3",
+    "role": "ninja",
+    "line": "taunt-5",
+    "text": "Pure sigma.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: playing dumb, fake confused, then smug. Make it iconic, like a meme sound. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nPure sigma.",
+    "scores": {
+     "energy": 2,
+     "emotion": 1,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "Zero French accent and a completely lifeless delivery make this sound like a corporate dad trying to use slang."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-5-dfb503/v10.mp3",
+    "role": "ninja",
+    "line": "taunt-5",
+    "text": "Pure sigma.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: playing dumb, fake confused, then smug. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nPure sigma.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 3,
+     "genz": 2,
+     "note": "The French accent is passable but delivering slang with zero sauce completely misses the requested direction."
+    }
    }
   ],
   "ninja/taunt-6-80da34": [
@@ -4927,6 +6015,57 @@
      "stereotype": 2,
      "genz": 2,
      "note": "The actor said 'jumps' instead of 'jump', so all scores are capped at 2."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-6-80da34/v6.mp3",
+    "role": "ninja",
+    "line": "taunt-6",
+    "text": "Jump the gate.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: cool and low, swagger, chin up. Push it further, more caricatural. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nJump the gate.",
+    "scores": {
+     "energy": 1,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 1,
+     "note": "Way too sleepy and flat to capture that effortless Parisian street swagger."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-6-80da34/v7.mp3",
+    "role": "ninja",
+    "line": "taunt-6",
+    "text": "Jump the gate.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: cool and low, swagger, chin up. Even more attitude, exaggerate the character. Louder and more energetic than a normal read, provocative, big attitude, performed for a crowd.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nJump the gate.",
+    "scores": {
+     "energy": 3,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 1,
+     "note": "The accent sounds more like a cartoon vampire than a cool Parisian street kid making it totally cringe for a modern audience."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-6-80da34/v8.mp3",
+    "role": "ninja",
+    "line": "taunt-6",
+    "text": "Jump the gate.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed ninja-3 vox_emb_fDfTMIAGrwZmE0jG",
+    "direction": "voice design: Young man from Paris, 19, strong French accent, cocky trash talker, smirking, nasal and raspy, chill but provocative, playful arrogance, medium pace, street slang attitude. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "It hits the right words but completely lacks the smug Parisian street swagger needed to avoid sounding like cringe corporate slop."
     }
    }
   ],

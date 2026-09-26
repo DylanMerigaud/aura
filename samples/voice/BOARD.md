@@ -2,24 +2,18 @@
 
 Judge gemini-3.1-pro-preview, 1 to 5 on energy (E), emotion (Em), stereotype (S), Gen Z hype (G). Ship at 4 on every axis. Winner: highest min axis, then mean.
 
-Shipped winners at or above threshold: 41; below: 22.
+Shipped winners at or above threshold: 47; below: 16.
 
 Below threshold:
-- announcer/l1-win (min 3: The delivery is a bit too flat and needs way more explosive esports caster energy to truly sell the hype.)
-- announcer/l1-lose (min 2: The actor said Humble instead of Humbled, resulting in an automatic score cap for incorrect dialogue.)
 - announcer/l2-win (min 3: The slang is there but the delivery feels too restrained for a true underground hype MC.)
-- announcer/l2-lose (min 2: This is way too casual and quiet for a hype MC and needs significantly more projection and exaggerated swagger.)
+- announcer/l2-lose (min 2: The delivery lacks the explosive hype of a battle rap host and feels too generic for a Gen Z audience.)
 - announcer/l3-intro (min 2: You added an extra word so I have to cap all your scores at two.)
-- announcer/l3-lose (min 2: Way too casual and quiet for a hype MC, we need explosive esports energy.)
-- announcer/l4-intro (min 1: The delivery sounds like a goofy cartoon character instead of a serious hype MC, completely missing the requested tension.)
-- announcer/l4-win (min 2: The delivery is aggressive rather than ecstatic and the loud desk slam at the end makes this completely unusable.)
-- announcer/l4-lose (min 2: The delivery is loud but sounds more like a snobby cartoon villain than a modern Gen Z hype MC.)
-- boatkid/l1-taunt-6 (min 3: It hits the quiet requirement but feels a bit too flat to radiate true boss aura.)
-- ninja/taunt-1 (min 3: The delivery is appropriately cold but lacks the smug, punchy street attitude needed to make it truly hype.)
-- ninja/taunt-3 (min 1: Where is the French accent? This sounds like a generic teenager mumbling into a cheap mic. The delivery is completely flat, muffled, and lacks the smug Parisian street attitude requested. Zero hype. Recast.)
-- ninja/taunt-4 (min 3: The accent is decent but the delivery feels a bit rushed instead of smoothly arrogant.)
-- ninja/taunt-5 (min 1: The delivery is completely flat and misses the smug direction, making the slang sound incredibly forced and cringe.)
-- ninja/taunt-6 (min 2: The actor said 'jumps' instead of 'jump', so all scores are capped at 2.)
+- announcer/l4-intro (min 1: Sounds like a goofy cartoon chef instead of an underground battle rap host.)
+- ninja/taunt-1 (min 3: The cold delivery nails the smug Parisian vibe and perfectly captures that 'you're cooked' Gen Z energy.)
+- ninja/taunt-3 (min 2: You completely missed the smug Parisian accent and the dismissive laugh requested in the direction, making it sound incredibly flat and generic.)
+- ninja/taunt-4 (min 3: The smug Parisian vibe is there but it needs slightly more projection to be truly meme-worthy.)
+- ninja/taunt-5 (min 2: The French accent is okay, but the delivery completely misses the fake confused to smug transition and ends up sounding flat.)
+- ninja/taunt-6 (min 2: It hits the right words but completely lacks the smug Parisian street swagger needed to avoid sounding like cringe corporate slop.)
 - ninja/taunt-7 (min 3: It hits the French street vibe but lacks the theatrical, cocky movie-trailer energy needed to be truly meme-worthy.)
 - opp-papi-raleur/l3-taunt-1 (min 1: The actor completely missed the Parisian grandpa direction. There is zero French accent, making it sound like a generic angry American neighbor instead of a caricatural Papi Raleur. Additionally, there is a massive, jarring crash sound effect at the end of the file that renders the audio unusable. We need a thick, funny French accent and clean audio.)
 - opp-papi-raleur/l3-taunt-2 (min 2: It lacks the exaggerated French accent and heavy scoffing required to make this character truly meme-worthy.)
@@ -151,20 +145,29 @@ Winner note: The aggressive and over-the-top delivery perfectly captures the esp
 | variant | model | voice | scores | min | |
 |---|---|---|---|---|---|
 | v1.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E1 Em1 S1 G1 (mean 1) | 1 |  |
-| v2.mp3 | gemini-3.8-flash-tts | Fenrir | E3 Em3 S3 G3 (mean 3) | 3 | WINNER |
+| v2.mp3 | gemini-3.8-flash-tts | Fenrir | E3 Em3 S3 G3 (mean 3) | 3 |  |
 | v3.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E1 Em1 S1 G1 (mean 1) | 1 |  |
+| v6.mp3 | gemini-3.8-flash-tts | Fenrir | E5 Em5 S5 G5 (mean 5) | 5 | WINNER |
+| v8.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E2 Em2 S2 G2 (mean 2) | 2 |  |
+| v9.mp3 | gemini-3.8-flash-tts | Fenrir | E5 Em5 S5 G5 (mean 5) | 5 |  |
+| v10.mp3 | gemini-2.5-pro-preview-tts | Sadachbia | E5 Em5 S5 G5 (mean 5) | 5 |  |
 
-Winner note: The delivery is a bit too flat and needs way more explosive esports caster energy to truly sell the hype.
+Winner note: The delivery is incredibly hyped and perfectly captures the over-the-top esports caster vibe.
 
 ## announcer / l1-lose: "Humbled."
 
 | variant | model | voice | scores | min | |
 |---|---|---|---|---|---|
-| v1.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E2 Em2 S2 G2 (mean 2) | 2 | WINNER |
+| v1.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E2 Em2 S2 G2 (mean 2) | 2 |  |
 | v2.mp3 | gemini-3.8-flash-tts | Fenrir | E4 Em2 S2 G1 (mean 2.25) | 1 |  |
 | v3.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E2 Em2 S2 G2 (mean 2) | 2 |  |
+| v6.mp3 | gemini-3.8-flash-tts | Fenrir | E4 Em4 S4 G4 (mean 4) | 4 | WINNER |
+| v7.mp3 | gemini-2.5-pro-preview-tts | Sadachbia | E2 Em2 S2 G2 (mean 2) | 2 |  |
+| v8.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E2 Em2 S2 G2 (mean 2) | 2 |  |
+| v9.mp3 | gemini-3.8-flash-tts | Fenrir | E2 Em3 S2 G2 (mean 2.25) | 2 |  |
+| v10.mp3 | gemini-2.5-pro-preview-tts | Sadachbia | E3 Em3 S3 G3 (mean 3) | 3 |  |
 
-Winner note: The actor said Humble instead of Humbled, resulting in an automatic score cap for incorrect dialogue.
+Winner note: The punchy delivery perfectly captures the mocking battle rap host vibe without feeling too forced.
 
 ## announcer / l2-intro: "Lock in."
 
@@ -185,6 +188,11 @@ Winner note: The aggressive and over-the-top delivery perfectly captures the esp
 | v1.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E3 Em3 S3 G3 (mean 3) | 3 | WINNER |
 | v2.mp3 | gemini-3.8-flash-tts | Fenrir | E2 Em2 S2 G2 (mean 2) | 2 |  |
 | v3.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E1 Em1 S1 G1 (mean 1) | 1 |  |
+| v6.mp3 | gemini-3.8-flash-tts | Fenrir | E2 Em2 S2 G2 (mean 2) | 2 |  |
+| v7.mp3 | gemini-2.5-pro-preview-tts | Sadachbia | E2 Em2 S2 G1 (mean 1.75) | 1 |  |
+| v8.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E2 Em2 S2 G1 (mean 1.75) | 1 |  |
+| v9.mp3 | gemini-3.8-flash-tts | Fenrir | E3 Em2 S2 G2 (mean 2.25) | 2 |  |
+| v10.mp3 | gemini-2.5-pro-preview-tts | Sadachbia | E2 Em2 S2 G2 (mean 2) | 2 |  |
 
 Winner note: The slang is there but the delivery feels too restrained for a true underground hype MC.
 
@@ -193,10 +201,13 @@ Winner note: The slang is there but the delivery feels too restrained for a true
 | variant | model | voice | scores | min | |
 |---|---|---|---|---|---|
 | v1.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E2 Em2 S2 G2 (mean 2) | 2 |  |
-| v2.mp3 | gemini-3.8-flash-tts | Fenrir | E2 Em3 S2 G2 (mean 2.25) | 2 | WINNER |
+| v2.mp3 | gemini-3.8-flash-tts | Fenrir | E2 Em3 S2 G2 (mean 2.25) | 2 |  |
 | v3.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E3 Em2 S2 G2 (mean 2.25) | 2 |  |
+| v6.mp3 | gemini-3.8-flash-tts | Fenrir | E3 Em3 S2 G2 (mean 2.5) | 2 | WINNER |
+| v8.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E2 Em2 S2 G2 (mean 2) | 2 |  |
+| v9.mp3 | gemini-3.8-flash-tts | Fenrir | E2 Em1 S1 G1 (mean 1.25) | 1 |  |
 
-Winner note: This is way too casual and quiet for a hype MC and needs significantly more projection and exaggerated swagger.
+Winner note: The delivery lacks the explosive hype of a battle rap host and feels too generic for a Gen Z audience.
 
 ## announcer / l3-intro: "Respect elders."
 
@@ -205,6 +216,11 @@ Winner note: This is way too casual and quiet for a hype MC and needs significan
 | v1.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E2 Em2 S2 G1 (mean 1.75) | 1 |  |
 | v2.mp3 | gemini-3.8-flash-tts | Fenrir | E2 Em2 S2 G2 (mean 2) | 2 | WINNER |
 | v3.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E1 Em1 S1 G1 (mean 1) | 1 |  |
+| v6.mp3 | gemini-3.8-flash-tts | Fenrir | E1 Em1 S1 G1 (mean 1) | 1 |  |
+| v7.mp3 | gemini-2.5-pro-preview-tts | Sadachbia | E2 Em2 S2 G1 (mean 1.75) | 1 |  |
+| v8.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E2 Em2 S1 G1 (mean 1.5) | 1 |  |
+| v9.mp3 | gemini-3.8-flash-tts | Fenrir | E2 Em2 S1 G1 (mean 1.5) | 1 |  |
+| v10.mp3 | gemini-2.5-pro-preview-tts | Sadachbia | E2 Em2 S2 G2 (mean 2) | 2 |  |
 
 Winner note: You added an extra word so I have to cap all your scores at two.
 
@@ -224,37 +240,55 @@ Winner note: The explosive delivery and chaotic energy make this absolute peak m
 |---|---|---|---|---|---|
 | v1.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E2 Em2 S2 G1 (mean 1.75) | 1 |  |
 | v2.mp3 | gemini-3.8-flash-tts | Fenrir | E2 Em2 S2 G2 (mean 2) | 2 |  |
-| v3.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E2 Em3 S2 G2 (mean 2.25) | 2 | WINNER |
+| v3.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E2 Em3 S2 G2 (mean 2.25) | 2 |  |
+| v6.mp3 | gemini-3.8-flash-tts | Fenrir | E5 Em5 S5 G5 (mean 5) | 5 | WINNER |
+| v7.mp3 | gemini-2.5-pro-preview-tts | Sadachbia | E5 Em4 S5 G5 (mean 4.75) | 4 |  |
+| v8.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E2 Em2 S2 G2 (mean 2) | 2 |  |
+| v9.mp3 | gemini-3.8-flash-tts | Fenrir | E3 Em2 S2 G2 (mean 2.25) | 2 |  |
+| v10.mp3 | gemini-2.5-pro-preview-tts | Sadachbia | E3 Em3 S2 G2 (mean 2.5) | 2 |  |
 
-Winner note: Way too casual and quiet for a hype MC, we need explosive esports energy.
+Winner note: The delivery is explosive and perfectly captures the mocking meme-worthy hype needed for this roast.
 
 ## announcer / l4-intro: "Oh la la."
 
 | variant | model | voice | scores | min | |
 |---|---|---|---|---|---|
-| v2.mp3 | gemini-3.8-flash-tts | Fenrir | E3 Em2 S1 G1 (mean 1.75) | 1 | WINNER |
+| v2.mp3 | gemini-3.8-flash-tts | Fenrir | E3 Em2 S1 G1 (mean 1.75) | 1 |  |
+| v6.mp3 | gemini-3.8-flash-tts | Fenrir | E2 Em1 S1 G1 (mean 1.25) | 1 |  |
+| v7.mp3 | gemini-2.5-pro-preview-tts | Sadachbia | E4 Em2 S2 G1 (mean 2.25) | 1 | WINNER |
+| v8.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E1 Em1 S1 G1 (mean 1) | 1 |  |
+| v9.mp3 | gemini-3.8-flash-tts | Fenrir | E2 Em1 S1 G1 (mean 1.25) | 1 |  |
+| v10.mp3 | gemini-2.5-pro-preview-tts | Sadachbia | E2 Em2 S1 G1 (mean 1.5) | 1 |  |
 
-Winner note: The delivery sounds like a goofy cartoon character instead of a serious hype MC, completely missing the requested tension.
+Winner note: Sounds like a goofy cartoon chef instead of an underground battle rap host.
 
 ## announcer / l4-win: "Tres chic."
 
 | variant | model | voice | scores | min | |
 |---|---|---|---|---|---|
 | v1.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E2 Em2 S2 G1 (mean 1.75) | 1 |  |
-| v2.mp3 | gemini-3.8-flash-tts | Fenrir | E2 Em2 S2 G2 (mean 2) | 2 | WINNER |
+| v2.mp3 | gemini-3.8-flash-tts | Fenrir | E2 Em2 S2 G2 (mean 2) | 2 |  |
 | v3.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E2 Em2 S2 G1 (mean 1.75) | 1 |  |
+| v6.mp3 | gemini-3.8-flash-tts | Fenrir | E3 Em3 S2 G2 (mean 2.5) | 2 |  |
+| v7.mp3 | gemini-2.5-pro-preview-tts | Sadachbia | E1 Em1 S1 G1 (mean 1) | 1 |  |
+| v8.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E1 Em1 S1 G1 (mean 1) | 1 |  |
+| v9.mp3 | gemini-3.8-flash-tts | Fenrir | E5 Em5 S5 G4 (mean 4.75) | 4 | WINNER |
+| v10.mp3 | gemini-2.5-pro-preview-tts | Sadachbia | E5 Em5 S5 G4 (mean 4.75) | 4 |  |
 
-Winner note: The delivery is aggressive rather than ecstatic and the loud desk slam at the end makes this completely unusable.
+Winner note: The ballroom MC energy is absolutely perfect for a hype dance battle.
 
 ## announcer / l4-lose: "Pas terrible."
 
 | variant | model | voice | scores | min | |
 |---|---|---|---|---|---|
 | v1.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E1 Em1 S1 G1 (mean 1) | 1 |  |
-| v2.mp3 | gemini-3.8-flash-tts | Fenrir | E4 Em3 S2 G2 (mean 2.75) | 2 | WINNER |
+| v2.mp3 | gemini-3.8-flash-tts | Fenrir | E4 Em3 S2 G2 (mean 2.75) | 2 |  |
 | v3.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E2 Em2 S2 G2 (mean 2) | 2 |  |
+| v6.mp3 | gemini-3.8-flash-tts | Fenrir | E2 Em2 S2 G2 (mean 2) | 2 |  |
+| v8.mp3 | gradium-default (voice design) | designed announcer-2 vox_emb_IcBdtT87hIHTiUX9 | E2 Em2 S2 G2 (mean 2) | 2 |  |
+| v9.mp3 | gemini-3.8-flash-tts | Fenrir | E5 Em5 S5 G5 (mean 5) | 5 | WINNER |
 
-Winner note: The delivery is loud but sounds more like a snobby cartoon villain than a modern Gen Z hype MC.
+Winner note: The mocking laugh perfectly nails the ruthless yet playful MC vibe.
 
 ## announcer / l5-intro: "Final boss."
 
@@ -360,9 +394,14 @@ Winner note: The whispered delivery perfectly captures that supreme aura-maxing 
 |---|---|---|---|---|---|
 | v1.mp3 | gemini-3.8-flash-tts | Achernar | E3 Em3 S2 G2 (mean 2.5) | 2 |  |
 | v2.mp3 | gemini-2.5-pro-preview-tts | Achernar | E3 Em3 S2 G2 (mean 2.5) | 2 |  |
-| v3.mp3 | gradium-default (voice design) | designed boatkid-2 vox_emb_dzfDWNCFz7TtcGvo | E3 Em3 S4 G3 (mean 3.25) | 3 | WINNER |
+| v3.mp3 | gradium-default (voice design) | designed boatkid-2 vox_emb_dzfDWNCFz7TtcGvo | E3 Em3 S4 G3 (mean 3.25) | 3 |  |
+| v6.mp3 | gemini-3.8-flash-tts | Achernar | E3 Em3 S3 G2 (mean 2.75) | 2 |  |
+| v7.mp3 | gemini-2.5-pro-preview-tts | Achernar | E2 Em3 S1 G1 (mean 1.75) | 1 |  |
+| v8.mp3 | gradium-default (voice design) | designed boatkid-2 vox_emb_dzfDWNCFz7TtcGvo | E5 Em5 S5 G5 (mean 5) | 5 | WINNER |
+| v9.mp3 | gemini-3.8-flash-tts | Achernar | E3 Em3 S2 G2 (mean 2.5) | 2 |  |
+| v10.mp3 | gemini-2.5-pro-preview-tts | Achernar | E3 Em3 S2 G2 (mean 2.5) | 2 |  |
 
-Winner note: It hits the quiet requirement but feels a bit too flat to radiate true boss aura.
+Winner note: The delivery is perfectly unbothered and maxes out its aura with a flawless whispered confidence.
 
 ## boatkid / l1-taunt-7: "Watch me."
 
@@ -389,10 +428,15 @@ Winner note: The arrogant scoff perfectly sells the smug Parisian attitude and m
 | variant | model | voice | scores | min | |
 |---|---|---|---|---|---|
 | v1.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em2 S2 G2 (mean 2) | 2 |  |
-| v2.mp3 | gemini-3.8-flash-tts | Algenib | E3 Em3 S3 G3 (mean 3) | 3 | WINNER |
+| v2.mp3 | gemini-3.8-flash-tts | Algenib | E3 Em3 S3 G3 (mean 3) | 3 |  |
 | v3.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em2 S2 G2 (mean 2) | 2 |  |
+| v6.mp3 | gemini-3.8-flash-tts | Algenib | E3 Em4 S4 G4 (mean 3.75) | 3 | WINNER |
+| v7.mp3 | gemini-2.5-pro-preview-tts | Algenib | E2 Em2 S2 G2 (mean 2) | 2 |  |
+| v8.mp3 | gradium-default (voice design) | designed ninja-3 vox_emb_fDfTMIAGrwZmE0jG | E3 Em4 S4 G3 (mean 3.5) | 3 |  |
+| v9.mp3 | gemini-3.8-flash-tts | Algenib | E3 Em4 S3 G3 (mean 3.25) | 3 |  |
+| v10.mp3 | gemini-2.5-pro-preview-tts | Algenib | E3 Em3 S3 G2 (mean 2.75) | 2 |  |
 
-Winner note: The delivery is appropriately cold but lacks the smug, punchy street attitude needed to make it truly hype.
+Winner note: The cold delivery nails the smug Parisian vibe and perfectly captures that 'you're cooked' Gen Z energy.
 
 ## ninja / taunt-2: "Tickets are for NPCs."
 
@@ -408,39 +452,56 @@ Winner note: The thick French accent combined with the unbothered delivery makes
 
 | variant | model | voice | scores | min | |
 |---|---|---|---|---|---|
-| v1.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em2 S1 G2 (mean 1.75) | 1 | WINNER |
+| v1.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em2 S1 G2 (mean 1.75) | 1 |  |
 | v2.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em2 S1 G1 (mean 1.5) | 1 |  |
 | v3.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em1 S1 G2 (mean 1.5) | 1 |  |
+| v6.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em2 S1 G1 (mean 1.5) | 1 |  |
+| v7.mp3 | gemini-2.5-pro-preview-tts | Algenib | E2 Em2 S2 G2 (mean 2) | 2 | WINNER |
+| v8.mp3 | gradium-default (voice design) | designed ninja-3 vox_emb_fDfTMIAGrwZmE0jG | E2 Em2 S2 G2 (mean 2) | 2 |  |
+| v9.mp3 | gemini-3.8-flash-tts | Algenib | E1 Em1 S1 G1 (mean 1) | 1 |  |
+| v10.mp3 | gemini-2.5-pro-preview-tts | Algenib | E2 Em2 S2 G1 (mean 1.75) | 1 |  |
 
-Winner note: Where is the French accent? This sounds like a generic teenager mumbling into a cheap mic. The delivery is completely flat, muffled, and lacks the smug Parisian street attitude requested. Zero hype. Recast.
+Winner note: You completely missed the smug Parisian accent and the dismissive laugh requested in the direction, making it sound incredibly flat and generic.
 
 ## ninja / taunt-4: "Navigo? Who?"
 
 | variant | model | voice | scores | min | |
 |---|---|---|---|---|---|
-| v1.mp3 | gemini-3.8-flash-tts | Algenib | E3 Em3 S4 G3 (mean 3.25) | 3 | WINNER |
+| v1.mp3 | gemini-3.8-flash-tts | Algenib | E3 Em3 S4 G3 (mean 3.25) | 3 |  |
 | v3.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em2 S2 G2 (mean 2) | 2 |  |
+| v6.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em2 S2 G2 (mean 2) | 2 |  |
+| v7.mp3 | gemini-2.5-pro-preview-tts | Algenib | E2 Em2 S2 G2 (mean 2) | 2 |  |
+| v9.mp3 | gemini-3.8-flash-tts | Algenib | E1 Em1 S1 G1 (mean 1) | 1 |  |
+| v10.mp3 | gemini-2.5-pro-preview-tts | Algenib | E3 Em4 S4 G3 (mean 3.5) | 3 | WINNER |
 
-Winner note: The accent is decent but the delivery feels a bit rushed instead of smoothly arrogant.
+Winner note: The smug Parisian vibe is there but it needs slightly more projection to be truly meme-worthy.
 
 ## ninja / taunt-5: "Pure sigma."
 
 | variant | model | voice | scores | min | |
 |---|---|---|---|---|---|
-| v1.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em2 S2 G1 (mean 1.75) | 1 | WINNER |
+| v1.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em2 S2 G1 (mean 1.75) | 1 |  |
 | v2.mp3 | gemini-3.8-flash-tts | Algenib | E1 Em1 S1 G1 (mean 1) | 1 |  |
 | v3.mp3 | gemini-3.8-flash-tts | Algenib | E1 Em1 S1 G1 (mean 1) | 1 |  |
+| v6.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em1 S2 G1 (mean 1.5) | 1 |  |
+| v7.mp3 | gemini-2.5-pro-preview-tts | Algenib | E2 Em2 S3 G2 (mean 2.25) | 2 | WINNER |
+| v8.mp3 | gradium-default (voice design) | designed ninja-3 vox_emb_fDfTMIAGrwZmE0jG | E2 Em2 S3 G2 (mean 2.25) | 2 |  |
+| v9.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em1 S1 G1 (mean 1.25) | 1 |  |
+| v10.mp3 | gemini-2.5-pro-preview-tts | Algenib | E2 Em2 S3 G2 (mean 2.25) | 2 |  |
 
-Winner note: The delivery is completely flat and misses the smug direction, making the slang sound incredibly forced and cringe.
+Winner note: The French accent is okay, but the delivery completely misses the fake confused to smug transition and ends up sounding flat.
 
 ## ninja / taunt-6: "Jump the gate."
 
 | variant | model | voice | scores | min | |
 |---|---|---|---|---|---|
 | v1.mp3 | gemini-3.8-flash-tts | Algenib | E1 Em1 S1 G1 (mean 1) | 1 |  |
-| v3.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em2 S2 G2 (mean 2) | 2 | WINNER |
+| v3.mp3 | gemini-3.8-flash-tts | Algenib | E2 Em2 S2 G2 (mean 2) | 2 |  |
+| v6.mp3 | gemini-3.8-flash-tts | Algenib | E1 Em2 S2 G1 (mean 1.5) | 1 |  |
+| v7.mp3 | gemini-2.5-pro-preview-tts | Algenib | E3 Em2 S2 G1 (mean 2) | 1 |  |
+| v8.mp3 | gradium-default (voice design) | designed ninja-3 vox_emb_fDfTMIAGrwZmE0jG | E3 Em3 S2 G2 (mean 2.5) | 2 | WINNER |
 
-Winner note: The actor said 'jumps' instead of 'jump', so all scores are capped at 2.
+Winner note: It hits the right words but completely lacks the smug Parisian street swagger needed to avoid sounding like cringe corporate slop.
 
 ## ninja / taunt-7: "Too slow, frerot."
 
