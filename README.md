@@ -113,7 +113,7 @@ Amendment 10's rule: nothing generated ships without passing its gate, a fail re
 
 Every generated thing passes a gate before it ships, and every gate writes a row to `evals/ledger.jsonl`. `pnpm evals` runs the two mechanical gates, pacing (every chart: overlaps, dead spans, first QTE, level length, on screen text, the 69 release on a drop) and animation (every Mixamo clip: beat windows, root drift, loop seams, and the mechanical half of the ten instant cringe kills), prints a table, exits 1 on any fail and rewrites the line below. What each gate checks and why: [docs/evals.md](docs/evals.md).
 
-Evals: 413 checks, 334 pass, 79 fail, last run 2026-09-26T14:10:52.366Z
+Evals: 413 checks, 357 pass, 56 fail, last run 2026-09-26T14:24:03.363Z
 
 Full gate definitions and what actually shipped: `docs/evals.md`. A full pass over the mood spec against the running code, item by item: `docs/mood-audit.md`.
 

@@ -53,13 +53,14 @@ export function overlaps(slots: Slot[]): [Slot, Slot][] {
   return out;
 }
 
-/** Longest spans with no QTE window and no declared breakdown, from the first QTE to the end of the level. */
+/** Longest spans with no QTE window, no declared breakdown and no opponent move, from the first QTE to the end of the level. */
 export function deadSpans(c: Chart): { from: number; to: number; beats: number }[] {
   const slots = sortedSlots(c);
   if (!slots.length) return [];
   const covered: [number, number][] = [
     ...slots.map((s) => [s.b, slotEnd(s)] as [number, number]),
     ...(c.breakdowns ?? []).map(([a, b]) => [a, b] as [number, number]),
+    ...(c.opponentMoves ?? []).map(([a, b]) => [a, b] as [number, number]),
   ].sort((a, b) => a[0] - b[0]);
   const out: { from: number; to: number; beats: number }[] = [];
   let reach = slots[0].b;
