@@ -1,6 +1,6 @@
 // The visible, contextual play zone over the bottom of the screen, MOBILE ONLY: nothing on a HIT (the arrow
 // flying to the ring is the cue), one big pad for the 67 mash, the same pad asking for the drop tap as
-// the ring closes, the HOLD pad, dimmed with "HIS MOVE" on the opponent turn. Purely visual
+// the ring closes, the HOLD pad, dimmed on the opponent turn (no turn card, addendum 17:50). Purely visual
 // (pointer-events none): the canvas under it takes every tap anywhere on the screen.
 // Each hint disappears for the rest of the session after the first success of its kind (the mash
 // pads after a graded MASH release, the hold pad after a graded HOLD), and the pad outline fades
@@ -50,8 +50,7 @@ export function buildPlayZone(game: GameApi) {
   const hold = el("div", "pz-pad pz-hold");
   hold.appendChild(el("span", "pz-big", "HOLD"));
   hold.appendChild(el("span", "pz-small", "LIFT ON THE BEAT"));
-  const his = el("div", "pz-his", "HIS MOVE");
-  for (const n of [mash, release, hold, his]) root.appendChild(n);
+  for (const n of [mash, release, hold]) root.appendChild(n);
 
   function syncLearned() {
     for (const k of ["tap", "mash", "hold"] as HintKind[]) root.classList.toggle(`learned-${k}`, learned.has(k));

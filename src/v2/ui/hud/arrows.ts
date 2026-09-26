@@ -1,8 +1,11 @@
 // The QTE prompt layer: v1's prompt presentation (git tag v1-2d, src/game/battle.ts lane(),
 // timerRing(), label(), mashOrb()) on a transparent 2D canvas over the 3D stage, MOBILE ONLY (addendum
 // 17:15): a HIT is v1's ARROW flying along a visible lane into the ring, swipe its direction when it lands;
-// the hold is a long bar with an arrow head, the 67 a cluster of small left and right arrows, released
-// with a swipe up. v1's travel, size, glow and timing; same colors, glow sprites, beat pulse on the ring, timer rings and Arial Black labels.
+// arrows are ONLY for swipes (addendum 17:50): a TAP is a round note, the 67 is the big label over a
+// pulsing pad with a mash meter, the HOLD a ring filling around a press icon, the RELEASE the closing
+// ring with a small up swipe hint. No lane is drawn (v1 had none). v1's travel, size, glow and timing;
+// same colors, glow sprites, beat pulse on the ring, timer rings and Arial Black labels. Every
+// primitive records its shape name in `shapes()` for the snapshot test (tests/prompts.dom.test.ts).
 // Drawing happens in v1 units (the 1280x720 canvas) around the ring at (0, 0), scaled to the
 // viewport: landscape keeps v1's horizontal lane, portrait turns it vertical (arrows fall from the
 // top into a ring at 60 percent of the height, inside the safe width).
@@ -40,6 +43,11 @@ const STEP: Record<Dir, [number, number]> = { right: [1, 0], down: [0, 1], left:
 /** Prompt kinds the player has landed once this session: their ghost finger never shows again. */
 const taught = new Set<string>();
 
+/** Tests only: forget the session's first successes. */
+export function resetTaught() {
+  taught.clear();
+}
+
 /** `host` receives --ring-x, --ring-y, --ring-r (px) so the DOM judgments sit above the ring. */
 export function buildArrows(host: HTMLElement) {
   const canvas = el("canvas", "hud-arrows");
@@ -62,6 +70,9 @@ export function buildArrows(host: HTMLElement) {
   /** Onboarding by doing: the ghost finger shows each kind until its first success (session long). */
   const watched = new Map<string, EventState>();
   const shown: EventState[] = [];
+  /** Shape names drawn this frame, in order. */
+  const drawn: string[] = [];
+  const mark = (name: string) => drawn.push(name);
 
   function resize() {
     cssW = window.innerWidth;
@@ -98,6 +109,7 @@ export function buildArrows(host: HTMLElement) {
 
   /** v1's arrow glyph: glow sprite, the arrow shape, a white outline. */
   function arrow(x: number, y: number, dir: Dir, size: number, color: string, alpha = 1) {
+    mark("arrow");
     g.save();
     g.translate(x, y);
     g.rotate(ROT[dir]);
@@ -117,14 +129,15 @@ export function buildArrows(host: HTMLElement) {
     g.lineTo(0, k * 0.8);
     g.closePath();
     g.fill();
-    g.strokeStyle = "#000";
-    g.lineWidth = 4;
+    g.strokeStyle = "#fff";
+    g.lineWidth = 3;
     g.stroke();
     g.restore();
   }
 
   /** A TAP note: v1's arrow footprint (glow sprite, size, outline) as a round gem, any tap hits it. */
   function note(x: number, y: number, size: number, color: string) {
+    mark("note");
     g.save();
     g.translate(x, y);
     g.globalCompositeOperation = "lighter";
@@ -145,10 +158,8 @@ export function buildArrows(host: HTMLElement) {
   }
 
 
-
-
-
   function timerRing(x: number, y: number, t: number, color: string) {
+    mark("timer-ring");
     t = Math.max(0, Math.min(1, t));
     g.strokeStyle = color;
     g.lineWidth = 6;
@@ -160,6 +171,7 @@ export function buildArrows(host: HTMLElement) {
   }
 
   function label(text: string, x: number, y: number, color: string, size: number) {
+    mark(`label:${text}`);
     g.font = `900 ${size}px "Arial Black", Impact, sans-serif`;
     g.textAlign = "center";
     g.textBaseline = "middle";
@@ -172,6 +184,7 @@ export function buildArrows(host: HTMLElement) {
 
   /** The charge orb growing with the mash count (v1 drew it over the player; here behind the count). */
   function mashOrb(count: number, wob: number) {
+    mark("mash-orb");
     const r = Math.min(110, 20 + count * 2.4);
     const w = 1 + wob * 0.06;
     g.globalCompositeOperation = "lighter";
@@ -180,12 +193,56 @@ export function buildArrows(host: HTMLElement) {
     g.globalCompositeOperation = "source-over";
   }
 
+  /** The 67 pad: a round pad under the count, pulsing on the beat (bigger on each tap). */
+  function mashPad(pulse: number, count: number) {
+    mark("mash-pad");
+    const r = 78 + pulse * 10 + Math.min(12, count * 0.4);
+    g.fillStyle = `rgba(255,212,0,${0.14 + pulse * 0.16})`;
+    g.beginPath();
+    g.arc(0, 0, r, 0, Math.PI * 2);
+    g.fill();
+    g.strokeStyle = YELLOW;
+    g.lineWidth = 3;
+    g.stroke();
+  }
+
+  /** The mash meter filling with the taps (the burst caps at 3 taps a beat). */
+  function mashMeter(fill: number) {
+    mark("mash-meter");
+    g.fillStyle = "rgba(0,0,0,0.55)";
+    g.fillRect(-120, 110, 240, 18);
+    g.fillStyle = YELLOW;
+    g.fillRect(-120, 110, 240 * fill, 18);
+    g.strokeStyle = "#fff";
+    g.lineWidth = 2;
+    g.strokeRect(-120, 110, 240, 18);
+  }
+
+  /** The RELEASE hint: a small open chevron over the ring rising up (a swipe, not the arrow glyph). */
+  function swipeHint(t: number) {
+    mark("swipe-hint");
+    const y = -80 - t * 30;
+    g.save();
+    g.globalAlpha = 0.5 + 0.5 * (1 - t);
+    g.strokeStyle = YELLOW;
+    g.lineWidth = 6;
+    g.lineCap = "round";
+    g.lineJoin = "round";
+    g.beginPath();
+    g.moveTo(-18, y + 12);
+    g.lineTo(0, y - 6);
+    g.lineTo(18, y + 12);
+    g.stroke();
+    g.restore();
+  }
+
   function lanePos(beatsAway: number): [number, number] {
     return portrait ? [0, -beatsAway * laneUnits] : [beatsAway * laneUnits, 0];
   }
 
   /** The ghost finger over the ring: `press` 0 hovering, 1 down on the ring. */
   function ghost(press: number, alpha = 0.9) {
+    mark("ghost");
     g.save();
     g.globalAlpha = alpha;
     g.font = "64px sans-serif";
@@ -204,6 +261,7 @@ export function buildArrows(host: HTMLElement) {
 
   /** A press icon in the ring (the HOLD): a finger resting on a disc, `k` 0 hovering to 1 pressed. */
   function pressIcon(k: number) {
+    mark("press-icon");
     g.save();
     g.fillStyle = `rgba(255,255,255,${0.15 + 0.35 * k})`;
     g.beginPath();
@@ -267,6 +325,7 @@ export function buildArrows(host: HTMLElement) {
         if (!taught.has("hold")) label("HOLD", 0, 96, YELLOW, 28);
       } else {
         const p = f.holdProgress;
+        mark("hold-fill");
         g.strokeStyle = YELLOW;
         g.lineWidth = 12;
         g.beginPath();
@@ -280,32 +339,27 @@ export function buildArrows(host: HTMLElement) {
       if (f.mashing) {
         const wob = Math.sin(performance.now() / 1000 * 30);
         const closing = R - now < spb;
-        mashOrb(f.mashCount, wob);
-        // The mash meter filling with the taps (the burst caps at 3 taps a beat).
-        const cap = Math.max(1, 3 * ev.length);
-        const fill = Math.min(1, f.mashCount / cap);
-        g.fillStyle = "rgba(0,0,0,0.55)";
-        g.fillRect(-120, 70, 240, 18);
-        g.fillStyle = YELLOW;
-        g.fillRect(-120, 70, 240 * fill, 18);
-        g.strokeStyle = "#fff";
-        g.lineWidth = 2;
-        g.strokeRect(-120, 70, 240, 18);
-        label(`${f.mashCount}`, 0, 4, "#fff", 44 + Math.min(30, f.mashCount));
-        label("67", 0, -96, YELLOW, 56 + (closing ? 0 : wob * 4));
-        // The ring closes onto the note ring over the last beat: tap when they meet.
         if (closing) {
+          // RELEASE: the ring closes onto the note ring over the last beat, swipe up when they meet.
           const c = Math.max(0, (R - now) / spb);
+          mark("release-ring");
           g.strokeStyle = YELLOW;
           g.lineWidth = 8;
           g.beginPath();
           g.arc(0, 0, 50 + c * 90, 0, Math.PI * 2);
           g.stroke();
-          arrow(0, -150, "up", 40, YELLOW);
+          swipeHint((performance.now() / 600) % 1);
+          label(`${f.mashCount}`, 0, 4, "#fff", 44 + Math.min(30, f.mashCount));
           if (!taught.has("mash")) label("SWIPE UP ON THE DROP!", 0, 130, YELLOW, (portrait ? 24 : 32) + wob * 3);
         } else {
+          // 67 MASH: the big 67, a pulsing pad, the meter filling with the taps. No arrow.
+          mashPad(Math.exp(-f.beatPhase * spb * 7), f.mashCount);
+          mashOrb(f.mashCount, wob);
+          mashMeter(Math.min(1, f.mashCount / Math.max(1, 3 * ev.length)));
+          label(`${f.mashCount}`, 0, 4, "#fff", 44 + Math.min(30, f.mashCount));
+          label("67", 0, -120, YELLOW, 72 + wob * 4);
           timerRing(0, 0, (R - now) / (R - T), CYAN);
-          if (!taught.has("mash")) label("LEFT RIGHT LEFT RIGHT", 0, 130, CYAN, portrait ? 22 : 30);
+          if (!taught.has("mash")) label("LEFT RIGHT LEFT RIGHT", 0, 160, CYAN, portrait ? 22 : 30);
         }
       } else {
         label("67 INCOMING", 0, 0, YELLOW, 30);
@@ -314,6 +368,7 @@ export function buildArrows(host: HTMLElement) {
   }
 
   function clear() {
+    drawn.length = 0;
     if (!dirty) return;
     g.setTransform(1, 0, 0, 1, 0, 0);
     g.clearRect(0, 0, canvas.width, canvas.height);
@@ -327,6 +382,7 @@ export function buildArrows(host: HTMLElement) {
     g.setTransform(1, 0, 0, 1, 0, 0);
     g.clearRect(0, 0, canvas.width, canvas.height);
     dirty = true;
+    drawn.length = 0;
     const s = dpr * k;
     g.setTransform(s, 0, 0, s, dpr * ringX, dpr * ringY);
 
@@ -340,6 +396,7 @@ export function buildArrows(host: HTMLElement) {
     const ringK = Math.min(1.3, Math.max(0.75, (f.windowK ?? 0.846) / 0.846));
     g.arc(0, 0, 46 * ringK + pulse * 6, 0, Math.PI * 2);
     g.stroke();
+    mark("target-ring");
     if (opponent) return;
 
     for (const [kind, st] of watched) {
@@ -360,5 +417,8 @@ export function buildArrows(host: HTMLElement) {
     clear();
   }
 
-  return { root: canvas, frame, clear, reset };
+  /** The shape names drawn by the last frame (the snapshot test reads it). */
+  const shapes = (): readonly string[] => drawn;
+
+  return { root: canvas, frame, clear, reset, shapes };
 }
