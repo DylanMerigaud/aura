@@ -1,0 +1,14 @@
+{
+  "track": "level2",
+  "candidate": "c1",
+  "model": "gemini-3.1-pro-preview",
+  "note": "sidechain on the bass",
+  "note_score": 1,
+  "note_evidence": "The distorted bass lacks any audible ducking or pumping effect when the kick hits, remaining dynamically flat throughout the main section.",
+  "beat_clarity": 2,
+  "beat_evidence": "The track begins with a riser and vocal chops, lacking a clear kick drum pulse until the beat finally drops at 0:02.",
+  "loop_or_ending": 1,
+  "loop_evidence": "The track features a build-up intro and a distinct volume fade-out from 0:35 to the end, making it impossible to loop seamlessly.",
+  "intelligible_words": false,
+  "total": 1.33
+}

@@ -1,6 +1,6 @@
 # Cuts a raw Lyria 3 Pro candidate (samples/music/<track>/raw/c<N>.mp3) to its in point and target length,
 # encodes samples/music/<track>/c<N>.mp3 and writes c<N>.json with the manifest fields and the music gate checks.
-# In point rule (docs/evals.md): the first downbeat whose 2 bar mean energy reaches 60 percent of the track's loudest
+# In point rule: the first downbeat whose 2 bar mean energy reaches 60 percent of the track's loudest
 # 2 bar window, so the shipped file starts on the full groove; the cut lands 10 ms before that downbeat.
 # Usage: python3 scripts/process-music-v3.py <track> <n> [<n> ...]
 import json
@@ -23,6 +23,28 @@ def tempo_grid(y, sr, hint):
     auto = librosa.feature.tempo(onset_envelope=env, sr=sr, start_bpm=hint)[0]
     vals = [float(np.atleast_1d(free)[0]), float(np.atleast_1d(hinted)[0]), float(auto)]
     return vals, bt
+
+
+def best_window(y, sr, hint, secs, ip):
+    """Level tracks: the raw clip runs about 60 s with an intro and an outro. Among the downbeats from the in point on
+    where a full window still fits, keep the start whose weakest 2 bars are the loudest (no lull, no outro inside)."""
+    _, bt = tempo_grid(y, sr, hint)
+    rms = librosa.feature.rms(y=y)[0]
+    rt = librosa.frames_to_time(np.arange(len(rms)), sr=sr)
+    dur = len(y) / sr
+    best = (-1.0, ip)
+    for k in range(0, len(bt), 4):
+        s0 = float(bt[k]) - 0.01
+        if s0 < ip - 0.05 or s0 + secs > dur - 0.2:
+            continue
+        m = (rt >= s0) & (rt < s0 + secs)
+        spb2 = 8 * 60 / hint
+        w = rms[m]
+        step = max(1, int(spb2 * sr / 512))
+        mins = min(w[i:i + step].mean() for i in range(0, max(1, len(w) - step), max(1, step // 4)))
+        if mins > best[0]:
+            best = (float(mins), s0)
+    return max(0.0, best[1])
 
 
 def in_point(y, sr, hint, clip):
@@ -121,8 +143,10 @@ def process(track, n):
     y, sr = librosa.load(raw, sr=SR, mono=True)
     raw_dur = len(y) / sr
     ip, _ = in_point(y, sr, bpm_req, False)
+    if track != "victory":
+        ip = best_window(y, sr, bpm_req, secs, ip)
     length = min(secs, raw_dur - ip)
-    fade = 1.2 if track != "victory" else 0.6
+    fade = 0.25 if track != "victory" else 0.6
     out = os.path.join(base, f"c{n}.mp3")
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-ss", f"{ip:.3f}", "-t", f"{length:.3f}", "-i", raw,
                     "-af", f"afade=t=in:d=0.01,afade=t=out:st={length - fade:.3f}:d={fade}", "-b:a", "160k", out], check=True)

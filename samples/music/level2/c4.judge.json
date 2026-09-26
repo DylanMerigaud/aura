@@ -1,0 +1,14 @@
+{
+  "track": "level2",
+  "candidate": "c4",
+  "model": "gemini-3.1-pro-preview",
+  "note": "sidechain on the bass",
+  "note_score": 5,
+  "note_evidence": "The bass and synths exhibit a massive, obvious ducking and swelling effect on every kick hit from 0:00 to 0:10 and 0:28 to the end, making the pump a signature element of the groove.",
+  "beat_clarity": 4,
+  "beat_evidence": "A heavy, distorted kick drum starts immediately at 0:00, providing a very clear pulse to tap along to right from the first second, though the beat disappears during the middle section.",
+  "loop_or_ending": 2,
+  "loop_evidence": "The energy does not stay steady, as there is a significant 18-second lull from 0:10 to 0:28 where the drums drop out entirely, making it unsuitable for a continuous high-energy loop.",
+  "intelligible_words": false,
+  "total": 3.67
+}

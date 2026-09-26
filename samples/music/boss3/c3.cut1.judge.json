@@ -1,0 +1,14 @@
+{
+  "track": "boss3",
+  "candidate": "c3",
+  "model": "gemini-3.1-pro-preview",
+  "note": "boss phase 2: heavier, faster, more intense than phase 1",
+  "note_score": 4,
+  "note_evidence": "The track delivers aggressive, distorted bass and rapid vocal chops fitting a phase 2 boss, though the pressure drops during the breakdown at 00:28.",
+  "beat_clarity": 5,
+  "beat_evidence": "A heavy, distorted kick and snare pattern establishes a highly tappable and relentless pulse immediately at 00:00.",
+  "loop_or_ending": 3,
+  "loop_evidence": "While it starts with no dead intro, the track features a noticeable energy dip and beat drop-out from 00:28 to 00:35, making it less ideal for a continuous high-energy loop.",
+  "intelligible_words": false,
+  "total": 4
+}

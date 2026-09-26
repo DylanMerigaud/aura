@@ -1,0 +1,14 @@
+{
+  "track": "boss3",
+  "candidate": "c4",
+  "model": "gemini-3.1-pro-preview",
+  "note": "boss phase 2: heavier, faster, more intense than phase 1",
+  "note_score": 5,
+  "note_evidence": "The track delivers maximum pressure with heavily distorted bass and relentless aggressive vocal chops from 0:03 to the end, perfectly fitting an enraged phase 2 boss.",
+  "beat_clarity": 5,
+  "beat_evidence": "A fast pounding kick drum and syncopated funk percussion establish a highly tap-able driving pulse right from the first second at 0:00 and maintain it throughout.",
+  "loop_or_ending": 3,
+  "loop_evidence": "While the energy remains high with no dead intro or lulls, the track ends with a definitive final hit and reverb tail at 0:38 to 0:40 rather than being formatted for a seamless loop.",
+  "intelligible_words": true,
+  "total": 4.33
+}

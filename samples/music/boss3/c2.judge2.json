@@ -1,0 +1,14 @@
+{
+  "track": "boss3",
+  "candidate": "c2",
+  "model": "gemini-3.1-pro-preview",
+  "note": "boss phase 2: heavier, faster, more intense than phase 1",
+  "note_score": 3,
+  "note_evidence": "While the track features aggressive brass and fast percussion fitting a boss fight, the sudden drop in energy at 00:15 breaks the relentless pressure required for phase 2.",
+  "beat_clarity": 4,
+  "beat_evidence": "A heavy syncopated Brazilian funk kick drum establishes a clear and tappable pulse right from 00:00, though it briefly disappears during the breakdown.",
+  "loop_or_ending": 2,
+  "loop_evidence": "The track fails to maintain steady energy for a seamless loop due to a noticeable lull starting at 00:15 where the main beat drops out.",
+  "intelligible_words": false,
+  "total": 3
+}

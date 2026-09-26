@@ -1,0 +1,14 @@
+{
+  "track": "boss3",
+  "candidate": "c5",
+  "model": "gemini-3.1-pro-preview",
+  "note": "boss phase 2: heavier, faster, more intense than phase 1",
+  "note_score": 2,
+  "note_evidence": "While the track starts with a heavy and fast phonk beat, the massive 14-second riser section from 0:08 to 0:22 completely kills the relentless, high-pressure intensity required for a phase 2 boss.",
+  "beat_clarity": 4,
+  "beat_evidence": "A clear, fast Brazilian funk pulse is immediately established at 0:00, though the extended snare roll build-up in the middle obscures the primary tapping rhythm.",
+  "loop_or_ending": 1,
+  "loop_evidence": "The energy is highly inconsistent due to the long build-up in the middle, and the track ends with a sudden stop at 0:37, making it impossible to loop seamlessly at maximum energy.",
+  "intelligible_words": false,
+  "total": 2.33
+}

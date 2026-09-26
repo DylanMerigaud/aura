@@ -1,0 +1,14 @@
+{
+  "track": "level2",
+  "candidate": "c2",
+  "model": "gemini-3.1-pro-preview",
+  "note": "sidechain on the bass",
+  "note_score": 5,
+  "note_evidence": "The heavy distorted bass clearly ducks and pumps around the kick drum right from the start at 0:00, creating a strong, breathing sidechain effect.",
+  "beat_clarity": 5,
+  "beat_evidence": "A strong, syncopated kick and percussion pattern establishes a clear, tappable pulse immediately at 0:00.",
+  "loop_or_ending": 2,
+  "loop_evidence": "While the intro starts with high energy, the track enters a long breakdown at 0:18 and loses its driving rhythm, eventually trailing off at the end rather than maintaining steady looping energy.",
+  "intelligible_words": false,
+  "total": 4
+}

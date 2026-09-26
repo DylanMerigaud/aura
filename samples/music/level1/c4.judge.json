@@ -1,0 +1,14 @@
+{
+  "track": "level1",
+  "candidate": "c4",
+  "model": "gemini-3.1-pro-preview",
+  "note": "more funk, more bass",
+  "note_score": 5,
+  "note_evidence": "The track features a heavily distorted, chest-thumping 808 bass with pitch slides and a classic aggressive tamborzao rhythm starting right at 0:00.",
+  "beat_clarity": 5,
+  "beat_evidence": "A loud, syncopated but highly predictable percussion pattern establishes a clear pulse immediately at 0:00 and maintains it until the outro.",
+  "loop_or_ending": 1,
+  "loop_evidence": "The beat completely drops out at 0:34, leaving a 5-second gap of just spoken vocals which would create a massive lull when looping.",
+  "intelligible_words": true,
+  "total": 3.67
+}

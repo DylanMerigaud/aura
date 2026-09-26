@@ -1,7 +1,7 @@
 // Mood judge for the Lyria 3 Pro candidates: Gemini audio input on gemini-3.1-pro-preview, structured JSON output.
 // Scores 1 to 5 against Dylan's note for the track, beat clarity, and loop (levels) or ending (victory) quality.
 // Writes samples/music/<track>/c<N>.judge.json and one ledger row per axis (kind "music") to evals/ledger.jsonl.
-// Usage: tsx scripts/judge-music-v3.ts <track> <n1> [n2 ...]. Key from the macOS keychain, read in process.
+// Usage: tsx scripts/judge-music-v3.ts <track> <n1> [n2 ...] [--pass=2] (a second independent pass, averaged on the board). Key from the macOS keychain, read in process.
 import { execFileSync } from "node:child_process";
 import { appendFileSync, readFileSync, writeFileSync, existsSync } from "node:fs";
 
@@ -46,10 +46,10 @@ const SCHEMA = {
 async function judge(track: string, n: number, key: string) {
   const t = NOTES[track];
   const file = `samples/music/${track}/c${n}.mp3`;
-  const out = `samples/music/${track}/c${n}.judge.json`;
+  const out = `samples/music/${track}/c${n}.judge${PASS > 1 ? PASS : ""}.json`;
   if (existsSync(out)) return console.log(`${out} exists`);
   const prompt = `You are a strict music supervisor for ${t.context}. The previous version was rejected by the game director with the note: "${t.note}". Listen to this candidate and score it honestly, 1 to 5 on each axis, a 5 must be earned.\n\n1. ${t.criterion}\n2. BEAT CLARITY: can a player tap along to a clear, steady pulse from the first second?\n3. ${track === "victory" ? "ENDING: does it end on a strong final hit instead of trailing off or being cut mid phrase?" : "LOOP: does the energy stay steady and full so it can loop, without a dead intro, a long lull or a fade?"}\n\nGive one short concrete evidence sentence per axis (what you hear, with timestamps).`;
-  for (let attempt = 1; attempt <= 3; attempt++) {
+  for (let attempt = 1; attempt <= 4; attempt++) {
     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-goog-api-key": key },
@@ -57,7 +57,7 @@ async function judge(track: string, n: number, key: string) {
         contents: [{ role: "user", parts: [{ inlineData: { mimeType: "audio/mpeg", data: readFileSync(file).toString("base64") } }, { text: prompt }] }],
         generationConfig: { responseMimeType: "application/json", responseJsonSchema: SCHEMA, temperature: 0.2 },
       }),
-    });
+    }).catch((e) => ({ ok: false, status: String(e?.cause?.code ?? e), json: async () => ({}) }) as any);
     const body: any = await res.json().catch(() => ({}));
     const text = body?.candidates?.[0]?.content?.parts?.find((p: any) => p.text)?.text;
     if (!res.ok || !text) {
@@ -74,14 +74,16 @@ async function judge(track: string, n: number, key: string) {
       ["mood judge: " + t.note, j.note_score, j.note_evidence],
       ["mood judge: beat clarity", j.beat_clarity, j.beat_evidence],
       [track === "victory" ? "mood judge: ending quality" : "mood judge: loop quality", j.loop_or_ending, j.loop_evidence],
-    ].map(([gate, score, evidence]) => JSON.stringify({ ts, kind: "music", id: `${track}-c${n}`, gate, verdict: (score as number) >= 4 ? "pass" : "fail", score, evidence: { judge: MODEL, file, candidate_model: "lyria-3-pro-preview", threshold: 4, note: evidence, intelligible_words: j.intelligible_words } }));
+    ].map(([gate, score, evidence]) => JSON.stringify({ ts, kind: "music", id: `${track}-c${n}`, gate, verdict: (score as number) >= 4 ? "pass" : "fail", score, evidence: { judge: MODEL, pass: PASS, file, cut: track === "victory" ? "in point, 12 s" : "best 40 s window from the in point, 0.25 s end fade", candidate_model: "lyria-3-pro-preview", threshold: 4, note: evidence, intelligible_words: j.intelligible_words } }));
     appendFileSync("evals/ledger.jsonl", rows.join("\n") + "\n");
     console.log(`${track} c${n}: note ${j.note_score} beat ${j.beat_clarity} loop ${j.loop_or_ending} words ${j.intelligible_words} total ${total}`);
     return;
   }
 }
 
-const [track, ...ns] = process.argv.slice(2);
+const args = process.argv.slice(2);
+const PASS = Number(args.find((a) => a.startsWith("--pass="))?.slice(7) ?? 1);
+const [track, ...ns] = args.filter((a) => !a.startsWith("--"));
 if (!NOTES[track]) throw new Error(`unknown track ${track}`);
 const key = execFileSync("security", ["find-generic-password", "-s", "gemini-api-key-hackathon", "-a", "dylanmerigaud", "-w"], { encoding: "utf8" }).trim();
 for (const n of ns) await judge(track, Number(n), key);

@@ -1,0 +1,14 @@
+{
+  "track": "level2",
+  "candidate": "c4",
+  "model": "gemini-3.1-pro-preview",
+  "note": "sidechain on the bass",
+  "note_score": 5,
+  "note_evidence": "The distorted bass features a heavy, obvious sidechain pump that ducks on every kick, clearly audible from 00:02 to 00:20 and again at 00:30.",
+  "beat_clarity": 4,
+  "beat_evidence": "While the beat is heavy and clear from 00:02, the first two seconds consist of a drum fill rather than a steady, tappable pulse.",
+  "loop_or_ending": 2,
+  "loop_evidence": "The track contains a significant 10-second lull from 00:20 to 00:30 where the heavy kick and bass drop out, breaking the steady energy required for a seamless loop.",
+  "intelligible_words": false,
+  "total": 3.67
+}

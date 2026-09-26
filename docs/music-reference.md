@@ -107,7 +107,15 @@ The response is a JSON `interaction` object with a `steps` array. Each `model_ou
 `content` blocks: a `text` block (empty for an instrumental prompt) and an `audio` block with
 `mime_type` (`audio/mpeg`) and base64 `data`. Decode that `data` field to get the MP3 bytes.
 
-Two models were used:
+Regeneration after Dylan's review (2026-09-26 afternoon): level1, level2, the victory stinger and a new
+boss phase two track (`boss3`) come from `lyria-3-pro-preview` on the same Interactions call shape
+(`scripts/gen-music-v3.ts`). It returns about 60 second MP3 clips whatever length the prompt asks for,
+so `scripts/process-music-v3.py` cuts each at its in point and keeps the steadiest 40 second window
+(12 seconds for the stinger); five candidates per track are ranked on `samples/music/BOARD.md`. Three
+calls (one level2, two victory) came back HTTP 400 "Input blocked" and passed on a plain retry of
+the same text.
+
+The first generation used two models:
 
 - `lyria-3-clip-preview`, always returns a fixed 30 second, 44.1 kHz stereo MP3 clip. Used for the
   two 30 second assets (`title`, `boss2`) because its natural length matches the target exactly.

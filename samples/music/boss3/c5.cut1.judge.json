@@ -1,0 +1,14 @@
+{
+  "track": "boss3",
+  "candidate": "c5",
+  "model": "gemini-3.1-pro-preview",
+  "note": "boss phase 2: heavier, faster, more intense than phase 1",
+  "note_score": 2,
+  "note_evidence": "Although the drops feature heavy, fast Brazilian funk elements, the massive 14-second riser breakdown from 0:17 to 0:31 completely kills the relentless pressure required for a phase 2 boss.",
+  "beat_clarity": 2,
+  "beat_evidence": "The track starts with a vocal intro lacking a clear pulse for the first three seconds, and the rhythm completely disappears during the long middle build-up.",
+  "loop_or_ending": 2,
+  "loop_evidence": "The presence of a low-energy intro at 0:00 and a lengthy, beatless breakdown at 0:17 prevents the track from maintaining the steady, full energy needed for a seamless battle loop.",
+  "intelligible_words": true,
+  "total": 2
+}

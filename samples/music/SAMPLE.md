@@ -1,7 +1,7 @@
 # Music samples, first candidate per track
 
 Lyria 3 Pro (`lyria-3-pro-preview`, Gemini API Interactions endpoint) for the four tracks Dylan rejected.
-Each raw clip (about 60 s) is cut at its in point (first downbeat where the 2 bar energy reaches 60 percent of the track's loudest 2 bars) to the target length, fade out at the end. Scripts: `scripts/gen-music-v3.ts`, `scripts/process-music-v3.py`, `scripts/judge-music-v3.ts`.
+Snapshot of the first sample commit. The level and boss c1 files were later re-cut to their steadiest 40 s window and judged again; the current numbers are in `BOARD.md`. Each raw clip (about 60 s) is cut at its in point (first downbeat where the 2 bar energy reaches 60 percent of the track's loudest 2 bars) to the target length, fade out at the end. Scripts: `scripts/gen-music-v3.ts`, `scripts/process-music-v3.py`, `scripts/judge-music-v3.ts`.
 
 ## level1
 
