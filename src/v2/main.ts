@@ -45,7 +45,9 @@ function noWebglSoft() {
   document.body.appendChild(d);
   canvas.addEventListener("webglcontextrestored", () => d.remove(), { once: true });
 }
+// The stage also watches its canvas (ResizeObserver) and orientationchange itself; these cover the window.
 addEventListener("resize", () => stage.resize());
+addEventListener("orientationchange", () => stage.resize());
 // iOS suspends or interrupts the context (calls, lock screen, app switch): any gesture or coming back resumes it.
 addEventListener("pointerdown", wake);
 // iOS counts only the release as the gesture that may resume audio (the gate's own lesson): wake there too.

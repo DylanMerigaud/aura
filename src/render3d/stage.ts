@@ -15,6 +15,7 @@ import { cosmeticsFor, dress, opponentLook } from "./dress";
 import { LAYOUT, MOVE_S, SUBJECT, pickShot, punchZoom, rampScale, sameFamily, shotPose, turnShot, type Pose, type ShotKind } from "./director";
 import { Vfx } from "./vfx";
 import { createComposite } from "./vfx/composite";
+import { sizeChanged, stagePixelRatio, stageSize, type StageSize } from "./viewport";
 import { Nameplates } from "./nameplates";
 import { playerRank } from "../v2/xp";
 import { DEFAULT_HANDLE, getLoadout } from "../loadout/state";
@@ -30,7 +31,7 @@ function bar(parent: HTMLElement, top: boolean): HTMLDivElement {
 
 /** Pixel ratio of the canvas, which the scene target matches (full resolution): the device's, capped at 2. */
 export function pixelRatioCap(dpr: number): number {
-  return Math.min(2, dpr || 1);
+  return stagePixelRatio(dpr);
 }
 
 /** Adaptive quality: 0 full, 1 pixel ratio 1, 2 also no shadows and no bloom. Never a lower resolution than the screen's CSS pixels. */
@@ -86,7 +87,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
   // only receives a fullscreen quad, so a multisampled default framebuffer would cost memory for nothing.
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: "high-performance" });
   const coarse = typeof matchMedia === "function" && matchMedia("(pointer: coarse)").matches;
-  renderer.setPixelRatio(pixelRatioCap(devicePixelRatio));
+  renderer.setPixelRatio(pixelRatioCap(typeof devicePixelRatio === "number" ? devicePixelRatio : 1));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.1;
   // One soft shadow map (1024, the key light only); the adaptive quality turns it off.
@@ -224,22 +225,63 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
   const vTgt = new THREE.Vector3();
   const vHands = new THREE.Vector3();
 
+  /** The size last applied to the renderer, the targets, the composite and the camera (viewport.ts). */
+  let applied: StageSize | null = null;
+  const dprNow = () => (typeof devicePixelRatio === "number" ? devicePixelRatio : 1);
+  const measureSize = (): StageSize =>
+    stageSize(canvas.clientWidth, canvas.clientHeight, dprNow(), quality.step, typeof innerWidth === "number" ? innerWidth : 0, typeof innerHeight === "number" ? innerHeight : 0);
+
+  /**
+   * Every consumer follows the canvas's real box, landscape or portrait: the drawing buffer (and so the
+   * default viewport), the MSAA scene target and bloom's targets, the composite's uRes, the VFX pixel height
+   * and the camera aspect. Called on window resize, orientationchange, a ResizeObserver on the canvas, and by
+   * the per frame watchdog when any of them went stale (a missed event would leave a stale viewport: the
+   * scene in a corner of a larger buffer, the rest black).
+   */
   function resize(): void {
-    const w = Math.max(1, canvas.clientWidth || innerWidth);
-    const h = Math.max(1, canvas.clientHeight || innerHeight);
-    renderer.setSize(w, h, false);
-    const aspect = w / h;
-    // Full resolution: the scene renders at the canvas's own drawing buffer size.
+    const s = measureSize();
+    // Keep the last good size while the canvas is hidden (0 x 0) once a real one was applied.
+    if (!s.measured && applied?.measured) return;
+    if (renderer.getPixelRatio() !== s.pixelRatio) renderer.setPixelRatio(s.pixelRatio);
+    renderer.setSize(s.cssW, s.cssH, false);
+    renderer.setViewport(0, 0, s.cssW, s.cssH);
+    renderer.setScissorTest(false);
     renderer.getDrawingBufferSize(drawSize);
-    const lw = Math.max(1, Math.round(drawSize.x));
-    const lh = Math.max(1, Math.round(drawSize.y));
-    composer.setSize(lw, lh);
-    lowRes.set(lw, lh);
-    vfx.setPixelHeight(lh);
-    camera.aspect = aspect;
+    const tw = Math.max(1, Math.round(drawSize.x)) || s.targetW;
+    const th = Math.max(1, Math.round(drawSize.y)) || s.targetH;
+    composer.setSize(tw, th);
+    lowRes.set(tw, th);
+    vfx.setPixelHeight(th);
+    camera.aspect = Number.isFinite(s.aspect) && s.aspect > 0 ? s.aspect : 16 / 9;
     camera.updateProjectionMatrix();
+    applied = { ...s, targetW: tw, targetH: th, bufferW: tw, bufferH: th };
   }
   resize();
+  if (typeof ResizeObserver === "function") {
+    try {
+      new ResizeObserver(() => resize()).observe(canvas);
+    } catch {
+      // No observer: the window events and the watchdog still cover it.
+    }
+  }
+  if (typeof addEventListener === "function") addEventListener("orientationchange", () => resize());
+  let watchFrames = 0;
+  /** Cheap per frame check (no layout read except every 30 frames): resize when anything drifted. */
+  function watchSize(): void {
+    const a = applied;
+    const drift =
+      !a ||
+      canvas.width !== a.bufferW ||
+      canvas.height !== a.bufferH ||
+      a.pixelRatio !== stagePixelRatio(dprNow(), quality.step) ||
+      composer.readBuffer.width !== a.targetW ||
+      composer.readBuffer.height !== a.targetH;
+    if (drift || ++watchFrames >= 30) {
+      watchFrames = 0;
+      const s = measureSize();
+      if (drift || (s.measured && sizeChanged(a, s))) resize();
+    }
+  }
 
   function flash(amp: number, black: boolean, frames = 1): void {
     flashAmp = Math.max(flashAmp * (flashFrames > 0 ? 1 : 0), amp);
@@ -342,6 +384,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
   }
 
   function render(realDt: number): void {
+    watchSize();
     composer.render(realDt);
     composite.material.uniforms.tDiffuse.value = composer.readBuffer.texture;
     const fx = vfx.screen;
@@ -364,10 +407,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
       fpsFrames = 0;
       fpsAcc = 0;
       if (adapt && stepQuality(quality, fpsVal, renderer.getPixelRatio())) {
-        if (quality.step >= 1 && renderer.getPixelRatio() > 1) {
-          renderer.setPixelRatio(1);
-          resize();
-        }
+        if (quality.step >= 1 && renderer.getPixelRatio() > 1) resize();
         crowd.setBudget(crowdBudget(quality.step, coarse));
         if (quality.step >= 2) {
           set.key.castShadow = false;
