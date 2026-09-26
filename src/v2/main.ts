@@ -20,7 +20,7 @@ const canvas = document.getElementById("stage") as HTMLCanvasElement;
 function noWebgl(): never {
   const d = document.createElement("div");
   d.className = "no-webgl";
-  d.innerHTML = `<h1 class="logo">AURA</h1><p>This browser could not start 3D graphics (WebGL).</p><a href="../">PLAY THE 2D VERSION</a>`;
+  d.innerHTML = `<h1 class="logo">AURA</h1><p>This browser could not start 3D graphics (WebGL).</p><a href="${base ? "../" : "v1/"}">PLAY THE 2D VERSION</a>`;
   document.body.appendChild(d);
   throw new Error("WebGL unavailable");
 }
@@ -40,7 +40,7 @@ canvas.addEventListener("webglcontextlost", (e) => {
 function noWebglSoft() {
   const d = document.createElement("div");
   d.className = "no-webgl soft";
-  d.innerHTML = `<p>3D graphics were interrupted.</p><a href="">RELOAD</a> <a href="../">2D VERSION</a>`;
+  d.innerHTML = `<p>3D graphics were interrupted.</p><a href="">RELOAD</a> <a href="${base ? "../" : "v1/"}">2D VERSION</a>`;
   document.body.appendChild(d);
   canvas.addEventListener("webglcontextrestored", () => d.remove(), { once: true });
 }
