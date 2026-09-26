@@ -86,7 +86,7 @@ Timing is the score (`src/qte/judge.ts`, `src/v2/core.ts`, `src/v2/tempo.ts`):
 | Google DeepMind | Lyria `lyria-3.5` | The hero track of the first battle (`level4`, 130 BPM), La Parisienne's track (`level3`) and Sporty Granny's (`boss`) | build time, `assets/music/manifest.json` |
 | Google DeepMind | Lyria `lyria-3-pro-preview` | The Brazilian funk title loop (126 BPM, 16 bars that loop on a downbeat), the Turnstile Ninja's track (`level1`, 110 BPM grid) and Papi Raleur's (`level2`, 104 BPM); five candidates each, judged twice by Gemini on the audio. A boss phase two and a victory stinger were made the same way and are not played by the current build | build time, `scripts/gen-music-v3.ts`, `samples/music/BOARD.md` |
 | Google DeepMind | `gemini-3.8-flash-tts` | Most shipped voice lines: the announcer (voice Fenrir), the Turnstile Ninja (Algenib), La Parisienne (Kore), part of the Boat Kid, Papi Raleur and Sporty Granny | build time, `scripts/gen-voices-bakeoff.ts`, `public/voice/v2/` |
-| Google DeepMind | `gemini-2.5-pro-preview-tts` | Won 6 lines of the bake off (3 of the Ninja, 2 of the Boat Kid, 1 announcer line) | build time, same script |
+| Google DeepMind | `gemini-2.5-pro-preview-tts` | Won 9 lines of the bake off (3 of the Ninja, 2 of the Boat Kid, 2 of Sporty Granny, 1 of Papi Raleur, 1 announcer line) | build time, same script |
 | Gradium | Voice Design and TTS | Designed voices that won part of the announcer, the Boat Kid, Papi Raleur and Sporty Granny lines; the crowd chants in French, Brazilian Portuguese, SIX SEVEN and the Boat Kid chant (rendered in `public/voice/v2/crowd-*.mp3`, not yet in the battle mix) | build time, `scripts/gen-voices-bakeoff.ts`, `public/voice/v2/` |
 | Gradium | TTS, live | The Worker's live voice route (`worker/src/voice.ts`); the current build shows the roast as text and does not call it | runtime route, Cloudflare Worker |
 | Cognition | Devin | Wrote the Cloudflare Worker (pull request 1) and four modules: the TikTok LIVE overlay (PR 4), the world tour map (PR 5), the balance sim (PR 6), the input module (PR 7) | https://github.com/DylanMerigaud/aura/pulls?q=is%3Apr+author%3Aapp%2Fdevin-ai-integration |
@@ -95,9 +95,9 @@ The voice bake off (`samples/voice/BOARD.md`): every one of the 63 battle lines 
 Gradium Voice Design, `gemini-3.8-flash-tts` and `gemini-2.5-pro-preview-tts`, post processed
 (silence trim, 8 percent faster, a slap echo, compression, a sub thump under the big calls), and
 judged by `gemini-3.1-pro-preview` listening to the audio on energy, emotion, stereotype and Gen Z
-hype, 1 to 5, ship at 4 on every axis. The best take of each line ships: 42 lines from
-`gemini-3.8-flash-tts`, 15 from Gradium, 6 from `gemini-2.5-pro-preview-tts`; 47 of the 63 reach 4
-on every axis.
+hype, 1 to 5, ship at 4 on every axis. The bake off picked a winner for each of the 63 lines: 40 from
+`gemini-3.8-flash-tts`, 14 from Gradium, 9 from `gemini-2.5-pro-preview-tts`; 50 of the 63 reach 4
+on every axis, and 59 ship voiced (4 with a wrong word or the wrong character stay subtitles only).
 
 The shipped build holds no API key. The live call goes through `aura-proxy`, a Cloudflare Worker at
 https://aura-proxy.dylanmerigaud-pro.workers.dev (`worker/`): keys in its secret store, 30 requests
@@ -145,8 +145,8 @@ included:
 | music | 200 | 55 | 255 |
 | pacing | 425 | 136 | 561 |
 | text | 209 | 35 | 244 |
-| voice | 165 | 311 | 476 |
-| all | 1342 | 636 | 1978 |
+| voice | 168 | 348 | 516 |
+| all | 1345 | 673 | 2018 |
 
 Tests: 703 vitest tests (`pnpm test`). Balance: a headless bot simulation over the charts
 (`pnpm balance`, `docs/balance.md`).

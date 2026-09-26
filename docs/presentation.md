@@ -70,7 +70,7 @@ Hand the phone to a judge for one retry if the room allows it.
   gemini-3.1-pro-preview listened to each take and scored it. Gradium made the crowd chants."
 - "Cognition: Devin wrote the Worker and four modules, the LIVE overlay, the map, the balance sim,
   the input module, all merged as pull requests."
-- "Every generated asset passes an eval before it ships: 1978 rows in the ledger. 703 tests."
+- "Every generated asset passes an eval before it ships: 2018 rows in the ledger. 703 tests."
 - "Sixteen Gen Z sound effects, all synthesized in code, no sample."
 
 ## 4:15 to 5:00, close
