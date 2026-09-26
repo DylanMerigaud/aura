@@ -1,4 +1,4 @@
-// The 3D stage: the ring set, two fighters, the crowd, the camera director and the render pipeline
+// The 3D stage: the black playground (set.ts), two fighters, the crowd, the camera director and the render pipeline
 // (scene -> full resolution MSAA target with bloom -> linear blit through lane B's composite). Reads
 // CoreEvents and Frames only; owns the visual time scale (hit stop, drop ramp) and never touches audio.
 import * as THREE from "three";
@@ -7,11 +7,11 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import * as SkeletonUtils from "three/examples/jsm/utils/SkeletonUtils.js";
 import type { Anchors, CoreEvent, Frame, LevelV2, Stage } from "../v2/contracts";
-import { RingSet } from "./set";
+import { RIM_COLOR, RingSet } from "./set";
 import { Crowd } from "./crowd";
 import { crowdBudget } from "./crowdRoster";
 import { Fighter, loadCast, type CastSource, type ClipEvent } from "./fighters";
-import { LAYOUT, isOts, pickShot, punchZoom, rampScale, sameFamily, shotPose, turnShot, type Pose, type ShotKind } from "./director";
+import { LAYOUT, MOVE_S, SUBJECT, pickShot, punchZoom, rampScale, sameFamily, shotPose, turnShot, type Pose, type ShotKind } from "./director";
 import { Vfx } from "./vfx";
 import { createComposite } from "./vfx/composite";
 import { Nameplates } from "./nameplates";
@@ -93,7 +93,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(48, 16 / 9, 0.1, 120);
-  const set = new RingSet(scene, opts.base);
+  const set = new RingSet(scene);
   const plates = new Nameplates(canvas);
   const enemyHead = { x: 0, y: 0, z: 0 };
   const crowd = new Crowd();
@@ -115,7 +115,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
   composer.renderToScreen = false;
   composer.setPixelRatio(1);
   composer.addPass(new RenderPass(scene, camera));
-  // Subtle bloom on emissives only: in the half float target only the signs and the rim go above the
+  // Subtle bloom on emissives only: in the half float target only the ring line and the VFX go above the
   // threshold. No half float, no bloom (its own targets are half float).
   const bloom = floatOk ? new UnrealBloomPass(new THREE.Vector2(640, 360), 0.4, 0.3, 1.05) : null;
   if (bloom) composer.addPass(bloom);
@@ -165,7 +165,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
   let enemy: Fighter | null = null;
 
   // Director state.
-  let shot: ShotKind = "ots";
+  let shot: ShotKind = "twoShot";
   let shotT = 0;
   let whipT = -1;
   let whipFrom: Pose | null = null;
@@ -173,6 +173,10 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
   let cutCue = false;
   /** His turn in the dance battle: the camera stays on him, the downbeat cuts wait for yours. */
   let hisTurn = false;
+  /** Beat the current turn ends on, and whether its closing two shot already played. */
+  let turnEnd = Infinity;
+  let turnLen = 0;
+  let turnClosed = false;
   // Reused poses: the frame loop allocates none.
   const camPose: Pose = { pos: [0, 0, 0], target: [0, 0, 0], fov: 48 };
   const whipPose: Pose = { pos: [0, 0, 0], target: [0, 0, 0], fov: 48 };
@@ -304,7 +308,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
     vPos.set(pose.pos[0], pose.pos[1], pose.pos[2]);
     vTgt.set(pose.target[0], pose.target[1], pose.target[2]);
     // Charge: push in on our hands (only from the shots that see them).
-    if (charge > 0.001 && (isOts(shot) || shot === "heroLow") && !ending) {
+    if (charge > 0.001 && SUBJECT[shot] === "player" && !ending) {
       vHands.set(anchors.playerHands.x, anchors.playerHands.y, anchors.playerHands.z);
       vPos.lerp(vHands, 0.28 * charge);
       vTgt.lerp(vHands, 0.35 * charge);
@@ -364,6 +368,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
         crowd.setBudget(crowdBudget(quality.step, coarse));
         if (quality.step >= 2) {
           set.key.castShadow = false;
+          set.setQuality(quality.step);
           if (bloom) bloom.enabled = false;
           vfx.setQuality(0.5);
         }
@@ -375,6 +380,19 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
       if (fpsDiv)
         fpsDiv.textContent = `${fpsVal.toFixed(0)} fps ${lowRes.x}x${lowRes.y} q${quality.step}${bloom?.enabled ? "" : " nobloom"}${cast ? " " + cast.label : ""} ${crowd.label}`;
     }
+  }
+
+  /**
+   * A failed QTE, any type (a miss, a cringe, a missed hold end): the player cringes in place (the keyed
+   * cooked collapse over the idle's legs, the stumble clip when the rig cannot key it), the crowd goes
+   * "ooh" (a small recoil), the camera drops and tilts. Nothing travels, nobody changes size.
+   */
+  function fail(): void {
+    if (!player?.gesture("cookedCollapse", 60 / spb, Math.max(0.8, 3 * spb))) playP("miss_cringe");
+    if (enemy && !enemy.gesturing) playE("enemy_taunt");
+    crowd.recoil(1);
+    cringeT = 0;
+    trauma = Math.min(1, trauma + 0.25);
   }
 
   function playP(ev: ClipEvent, speed = 1) {
@@ -389,7 +407,8 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
   const stage: Stage = {
     async load(lv: LevelV2) {
       set.setLevel(lv);
-      crowd.setTint(new THREE.Color(lv.neon[1]));
+      // No neon (addendum 16:00): the charge ghost of the crowd takes the cool rim color.
+      crowd.setTint(new THREE.Color(RIM_COLOR));
       // Poll the manifest again while we are still on a fallback cast.
       if (!cast || !cast.label.startsWith("manifest")) {
         castTry ??= loadCast(opts.base);
@@ -414,9 +433,12 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
       enemy.root.position.set(...LAYOUT.enemy);
       scene.add(player.root, enemy.root);
       plates.enemyHandle = (lv.opponent as { handle?: string }).handle ?? "@" + lv.opponent.name.toLowerCase().replace(/\W+/g, "_");
-      // Fresh director for the battle.
-      cut("ots");
+      // Fresh director for the battle: the count in on the two shot, both fighters facing across the pool.
+      cut("twoShot");
       hisTurn = false;
+      turnEnd = Infinity;
+      turnLen = 0;
+      turnClosed = false;
       ending = false;
       endT = 0;
       rampArmed = false;
@@ -442,17 +464,21 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
             const jump = lastBarEnergy >= 0 && e.energy - lastBarEnergy > 0.3;
             if (jump) flash(1, Math.random() < 0.4);
             lastBarEnergy = e.energy;
-            // Cut on the downbeat only after a game event in the bar or on an energy jump; otherwise the shot keeps moving.
-            if (!hisTurn && (cutCue || jump) && (whipT < 0 || whipT > WHIP)) cut(pickShot(shot, Math.random));
+            const free = whipT < 0 || whipT > WHIP;
+            if (!turnClosed && turnLen >= 8 && e.beat >= turnEnd - 4 && e.beat < turnEnd) {
+              // Between turns: the last bar of a turn goes to the two shot in profile.
+              turnClosed = true;
+              cutTo("twoShot");
+            } else if (free && (jump || (cutCue && !hisTurn))) {
+              // Cut on the downbeat only after a game event in the bar or on an energy jump; otherwise the
+              // shot keeps moving. The pick frames the performer of the turn.
+              cut(pickShot(shot, Math.random, { who: hisTurn ? "opponent" : "player" }));
+            }
           }
           break;
         case "judged": {
-          const bad = e.cringe || e.grade === "miss";
-          if (bad) {
-            playP("miss_cringe");
-            playE("enemy_taunt");
-            cringeT = 0;
-            trauma = Math.min(1, trauma + 0.25);
+          if (e.cringe || e.grade === "miss") {
+            fail();
             break;
           }
           const dir = e.dir ?? ((hitAlt = !hitAlt) ? "left" : "right");
@@ -464,10 +490,11 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
           trauma = Math.min(1, trauma + (e.big ? 0.55 : e.grade === "perfect" ? 0.22 : 0.1));
           dutch *= 0.3;
           if (e.strong && e.grade === "perfect") hitStop = Math.max(hitStop, 0.08);
-          if (e.big && !ending && !sameFamily(shot, "enemyClose")) {
-            // Whip pan from where we are to the enemy close up, 6 frames (already on the enemy: no whip).
+          if (e.big) punchT = 0;
+          if (e.big && !ending && !sameFamily(shot, "twoShot")) {
+            // A big hit is a big moment: whip pan to the two shot, 6 frames (the move and his knockback together).
             whipFrom = shotPose(shot, shotT, 0.5, camera.aspect, whipPose);
-            shot = "enemyClose";
+            shot = "twoShot";
             shotT = 0;
             whipT = 0;
             cutCue = false;
@@ -493,6 +520,8 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
           trauma = Math.min(1, trauma + 0.7);
           flash(0.8, false, 2);
           crowd.jump(1);
+          // The release of the 67: the two shot, the burst crossing the pool.
+          if (!ending) cutTo("twoShot");
           break;
         case "holdStart":
           playP("hold_freeze");
@@ -501,7 +530,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
         case "holdEnd":
           holdFreezeIn = -1;
           player?.freeze(false);
-          if (e.grade === "miss") playP("miss_cringe");
+          if (e.grade === "miss") fail();
           else {
             playP("hit_up");
             crowd.jump(0.7);
@@ -510,6 +539,9 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
           break;
         case "turn":
           hisTurn = e.who === "opponent";
+          turnEnd = e.beat + e.lengthBeats;
+          turnLen = e.lengthBeats;
+          turnClosed = false;
           if (!ending) {
             const next = turnShot(e.who, shot);
             if (next !== shot) cut(next);
@@ -523,7 +555,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
         case "taunt":
           // He talks over his move without breaking it.
           if (!enemy?.gesturing) playE("enemy_taunt");
-          if (!ending) cutTo("dollyEnemy");
+          if (!ending) cutTo(pickShot(shot, Math.random, { taunt: true }));
           break;
         case "dropSoon":
           rampArmed = true;
@@ -535,7 +567,8 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
           trauma = Math.min(1, trauma + 0.6);
           flash(1, false, 2);
           crowd.jump(1);
-          if (!ending) cut(shot === "topDown" ? "ots" : "topDown");
+          // The drop: the two shot in profile (the top shot when the two shot is already on).
+          if (!ending) cut(pickShot(shot, Math.random, { drop: true }));
           break;
         case "end":
           ending = true;
@@ -590,7 +623,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
       player?.update(vdt, f.beatPhase, f.energy);
       enemy?.update(vdt, f.beatPhase, f.energy);
       crowd.update(vdt, f.beatPos, f.energy, ending ? 0.6 : 1);
-      set.update(f.beatPhase, f.energy, time);
+      set.update(f.beatPhase, f.energy, time, vdt);
 
       charge += ((f.mashing ? 1 : 0) - charge) * Math.min(1, dt * (f.mashing ? 3 : 8));
       crowd.ghost = charge;
@@ -628,13 +661,15 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
       player?.update(dt, beatPos % 1, 0.5);
       enemy?.update(dt, beatPos % 1, 0.5);
       crowd.update(dt, beatPos, 0.4, 0.6);
-      set.update(beatPos % 1, 0.4, time);
+      set.update(beatPos % 1, 0.4, time, dt);
       setLetterbox(false);
       plates.hide();
-      camera.position.set(Math.sin(idleAngle) * 8.5, 3.2, Math.cos(idleAngle) * 8.5);
-      camera.lookAt(0, 0.9, 0);
-      const fov = camera.aspect < 1 ? 70 : 50;
-      if (camera.fov !== fov) {
+      // The title is the arena: the two shot swaying back and forth on its own move (never through the crowd).
+      const pose = shotPose("twoShot", MOVE_S / 2 + Math.sin(idleAngle * 2) * (MOVE_S / 2), 0, camera.aspect, camPose);
+      camera.position.set(pose.pos[0], pose.pos[1], pose.pos[2]);
+      camera.lookAt(pose.target[0], pose.target[1], pose.target[2]);
+      const fov = pose.fov;
+      if (Math.abs(camera.fov - fov) > 0.01) {
         camera.fov = fov;
         camera.updateProjectionMatrix();
       }
