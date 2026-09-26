@@ -1,8 +1,10 @@
-12:08 CEST
-GREEN: full game live and hardened for Safari/iPhone: 5 levels (Gemini script + art), 30 Gradium voice lines, 4 QTE types, camera work, title, story, results, progress, touch, calibration, itch zip built
-RED: NOT YET PLAYED BY A HUMAN on a real device, and real fps not measured (the agent may not open a browser)
-PLAY: https://dylanmerigaud.github.io/aura/  (add ?debug=1 for the fps meter)
-NEED FROM DYLAN: play level 1 with sound on at the URL (laptop, then phone with ?debug=1 for the fps counter) and tell me: timing late, early or fine, the fps, anything broken
+13:30 CEST, v2 (3D) playable at /v2/, live roast Worker deployed
+GREEN: v1 untouched at the root; v2: 3D ring, Mixamo fighters, camera director, VFX, HUD, map, menu, tempo rule, layered SFX, hero level on the Lyria club track, new cast (Gemini, evals) and 30 Gradium lines; review found and fixed 8 first-play bugs; Worker aura-proxy live (Gemini roast and Gradium voice tested with curl, 403 on foreign origins)
+RED: nobody has seen v2 render yet (no GPU in my sandbox): black screen, framing and fps are unknown until you play
+PLAY: https://dylanmerigaud.github.io/aura/v2/?debug=1 (v1 stays at https://dylanmerigaud.github.io/aura/)
+NEED FROM DYLAN: play /v2/ level 1 with sound on the laptop now: does it render, the fps top right, timing early/late/fine, the worst thing you see
+
+## v1 status (12:08, the safety net)
 
 ## Milestones
 - 12:00 playable battle: DONE 11:26

@@ -2,7 +2,7 @@
 import { createStage } from "../render3d/stage";
 import { runDemo } from "../render3d/demo";
 import { AudioFx } from "../audio/layers";
-import { ctx } from "../audio/engine";
+import { ctx, wake } from "../audio/engine";
 import { startApp } from "./ui/app";
 import { Game } from "./game";
 import { LEVELS_V2 } from "./levels";
@@ -17,6 +17,12 @@ const base = /\/v2\/?/.test(location.pathname) ? "../" : "";
 const canvas = document.getElementById("stage") as HTMLCanvasElement;
 const stage = createStage(canvas, { base, debug });
 addEventListener("resize", () => stage.resize());
+// iOS suspends or interrupts the context (calls, lock screen, app switch): any gesture or coming back resumes it.
+addEventListener("pointerdown", wake);
+addEventListener("keydown", wake);
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) wake();
+});
 
 // The audio layers need a running AudioContext: created on the first battle, after the tap to start.
 let fx: AudioFx | null = null;
