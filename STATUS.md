@@ -10,11 +10,11 @@ RED: the black playground, the performer camera and the like/dislike bar (Dylan 
 PLAY: https://dylanmerigaud.github.io/aura/
 NEED FROM DYLAN: nothing yet
 
-15:40 CEST, INTEGRATION lane: first voice and music samples on the review board; all modules wired and on main
-GREEN: voice sample: Gradium Voice Design announcer judged 5/5/5/5, gemini-3.8-flash-tts Ninja 4/5/5/4; Lyria 3 Pro boss phase 2 and victory judged 5/5/5; tests 622, release checks pass
-RED: level1 music candidate 1 runs 107.7 BPM (asked 100) and scores 3 on "more funk, more bass"; level2 candidate 1 scores 2 on loop; four more candidates per track coming
-PLAY: https://dylanmerigaud.github.io/aura/ (v2 at the root, 2D at /v1/); REVIEW BOARD: https://claude.ai/artifact/71W8b3KRLnEyrcmHrDNbmb
-NEED FROM DYLAN: open the review board on your phone, tap PICK or REDO per voice and track (the five variant batch runs meanwhile, your picks override the judge)
+15:50 CEST, INTEGRATION lane: Lyria winners shipped, LOADOUT built, LIVE overlay cut to a small badge
+GREEN: music in game: level1, level2, victory and a boss phase 2 track from lyria-3-pro-preview (5 candidates each, judged twice); LOADOUT screen (8 real rigs with in engine portraits, victory emote from the packs); tests 657
+RED: voice batch (5 variants per line, plus SIX! SEVEN! and the crowd chant) still running; funk title loop: candidate 1 of 5 on the board; the GAME lane must wire the LOADOUT button on its new title and results
+PLAY: https://dylanmerigaud.github.io/aura/ ; REVIEW BOARD: https://claude.ai/artifact/71W8b3KRLnEyrcmHrDNbmb
+NEED FROM DYLAN: on the review board, PICK or REDO the voices and the funk title loop (the judge decides otherwise)
 
 15:05 CEST, GAME lane: v1 arrows (one prompt at a time, vertical in portrait), Space and touch play zone, Turnstile Ninja at Chatelet with nameplates, portrait camera and toon look: all deployed at the ROOT
 GREEN: tests 276, typecheck clean; v2 is now the root build (v1 at /v1/)
