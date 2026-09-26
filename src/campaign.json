@@ -6,102 +6,97 @@
    "place": "Metro platform, 2am",
    "artKey": "metro",
    "story": [
-    "Line 13, last train gone.",
-    "A guy in sunglasses says you have zero aura. Prove him wrong."
+    "The 2am downtown metro is completely deserted except for one kid blasting phonk through blown speakers.",
+    "He locks eyes with you, hits a stiff fortnite emote, and refuses to let you board."
    ],
    "opponent": {
-    "name": "Kevin Shades",
-    "persona": "Wears sunglasses underground. Has never been wrong.",
-    "color": "#35e0ff"
+    "name": "Kyle",
+    "persona": "A high school freshman trapped in an infinite scrolling loop of sigma grindset clips.",
+    "color": "#39ff14"
    },
    "taunts": [
     {
-     "beat": 2,
-     "text": "Zero aura detected."
+     "beat": 12,
+     "text": "Bro thinks he is the main character with that dollar store haircut."
     },
     {
-     "beat": 30,
-     "text": "Is that your final form?"
+     "beat": 28,
+     "text": "Minus ten thousand aura right off the bat, literally zero rizz."
     },
     {
-     "beat": 48,
-     "text": "My sunglasses have more aura than you."
+     "beat": 46,
+     "text": "Just look at the floor, you cannot match my mewing streak."
     }
    ],
    "announcer": {
-    "intro": "Round one. Metro. Fight!",
-    "win": "Aura secured!",
-    "lose": "You have been humbled."
+    "intro": "Midnight line duel. Prove your aura before the doors close!",
+    "win": "Massive aura check passed! Kyle has retreated to the next train car in shame.",
+    "lose": "Total defeat. Your aura is in the negatives and you missed the last train."
    },
    "bpm": 100,
-   "windowScale": 1.0,
+   "windowScale": 1,
    "lengthBeats": 64,
    "seed": 1,
    "events": [
     {
      "type": "hit",
      "beat": 8,
-     "dir": "left"
+     "dir": "up"
     },
     {
      "type": "hit",
      "beat": 10,
-     "dir": "right"
+     "dir": "down"
     },
     {
      "type": "hit",
      "beat": 12,
-     "dir": "up"
+     "dir": "left"
     },
     {
      "type": "hit",
      "beat": 14,
-     "dir": "down"
-    },
-    {
-     "type": "hit",
-     "beat": 16,
-     "dir": "left"
-    },
-    {
-     "type": "hit",
-     "beat": 18,
      "dir": "right"
     },
     {
-     "type": "hit",
-     "beat": 20,
-     "dir": "up"
-    },
-    {
-     "type": "hit",
-     "beat": 22,
-     "dir": "down"
-    },
-    {
      "type": "mash",
-     "beat": 24,
+     "beat": 16,
      "length": 4
     },
     {
      "type": "hit",
-     "beat": 30,
-     "dir": "right"
-    },
-    {
-     "type": "hit",
-     "beat": 32,
+     "beat": 22,
      "dir": "up"
     },
     {
      "type": "hit",
-     "beat": 34,
+     "beat": 24,
+     "dir": "left"
+    },
+    {
+     "type": "hit",
+     "beat": 26,
+     "dir": "right"
+    },
+    {
+     "type": "hit",
+     "beat": 28,
      "dir": "down"
+    },
+    {
+     "type": "hold",
+     "beat": 30,
+     "length": 3
+    },
+    {
+     "type": "hit",
+     "beat": 34,
+     "dir": "up"
     },
     {
      "type": "hit",
      "beat": 36,
-     "dir": "left"
+     "dir": "down"
     },
     {
      "type": "hit",
@@ -109,18 +104,17 @@
      "dir": "right"
     },
     {
-     "type": "hold",
-     "beat": 40,
-     "length": 2
+     "type": "combo",
+     "beat": 42,
+     "dirs": [
+      "left",
+      "up",
+      "right"
+     ]
     },
     {
      "type": "hit",
      "beat": 44,
-     "dir": "up"
-    },
-    {
-     "type": "hit",
-     "beat": 45,
      "dir": "down"
     },
     {
@@ -134,8 +128,113 @@
      "dir": "right"
     },
     {
+     "type": "mash",
+     "beat": 50,
+     "length": 4
+    },
+    {
+     "type": "hit",
+     "beat": 56,
+     "dir": "up"
+    },
+    {
+     "type": "hit",
+     "beat": 58,
+     "dir": "down"
+    }
+   ]
+  },
+  {
+   "id": 2,
+   "title": "Side character",
+   "place": "Kebab shop, 4am",
+   "artKey": "kebab",
+   "story": [
+    "It is 4am under flickering fluorescent bulbs, and the last garlic sauce tub is on the line.",
+    "A guy in a puffer jacket claims your aura does not deserve the doner meat."
+   ],
+   "opponent": {
+    "name": "Kev the Sauce Boss",
+    "persona": "Unemployed crypto trader who treats late night takeout like a competitive sport.",
+    "color": "#ff3b30"
+   },
+   "taunts": [
+    {
+     "beat": 16,
+     "text": "Negative ten thousand aura for ordering salad on your kebab, bro."
+    },
+    {
+     "beat": 36,
+     "text": "You are literally projecting NPC energy into this entire takeaway."
+    },
+    {
+     "beat": 56,
+     "text": "Skibidi out the door before I tax your fries, side character."
+    }
+   ],
+   "announcer": {
+    "intro": "Grease on the counter, pride on the line. Defend your kebab order!",
+    "win": "Clean victory! Kev drops his drink and walks into the night.",
+    "lose": "Embarrassing. You got demoted to background extra in someone else's vlog."
+   },
+   "bpm": 110,
+   "windowScale": 0.9,
+   "lengthBeats": 72,
+   "seed": 2,
+   "events": [
+    {
+     "type": "hit",
+     "beat": 8,
+     "dir": "down"
+    },
+    {
+     "type": "hit",
+     "beat": 10,
+     "dir": "up"
+    },
+    {
+     "type": "hit",
+     "beat": 12,
+     "dir": "left"
+    },
+    {
+     "type": "hit",
+     "beat": 14,
+     "dir": "right"
+    },
+    {
+     "type": "mash",
+     "beat": 16,
+     "length": 4
+    },
+    {
+     "type": "hit",
+     "beat": 21,
+     "dir": "down"
+    },
+    {
+     "type": "hit",
+     "beat": 23,
+     "dir": "left"
+    },
+    {
+     "type": "hold",
+     "beat": 25,
+     "length": 2
+    },
+    {
+     "type": "hit",
+     "beat": 28,
+     "dir": "up"
+    },
+    {
+     "type": "hit",
+     "beat": 30,
+     "dir": "right"
+    },
+    {
      "type": "combo",
-     "beat": 52,
+     "beat": 34,
      "dirs": [
       "left",
       "up",
@@ -143,11 +242,760 @@
      ]
     },
     {
+     "type": "hit",
+     "beat": 36,
+     "dir": "down"
+    },
+    {
+     "type": "hit",
+     "beat": 38,
+     "dir": "right"
+    },
+    {
+     "type": "hit",
+     "beat": 40,
+     "dir": "left"
+    },
+    {
      "type": "mash",
-     "beat": 56,
+     "beat": 42,
      "length": 4
+    },
+    {
+     "type": "hit",
+     "beat": 47,
+     "dir": "up"
+    },
+    {
+     "type": "hit",
+     "beat": 49,
+     "dir": "down"
+    },
+    {
+     "type": "hold",
+     "beat": 51,
+     "length": 2
+    },
+    {
+     "type": "hit",
+     "beat": 54,
+     "dir": "left"
+    },
+    {
+     "type": "hit",
+     "beat": 56,
+     "dir": "right"
+    },
+    {
+     "type": "combo",
+     "beat": 60,
+     "dirs": [
+      "up",
+      "down",
+      "left"
+     ]
+    },
+    {
+     "type": "hit",
+     "beat": 62,
+     "dir": "right"
+    },
+    {
+     "type": "mash",
+     "beat": 63,
+     "length": 4
+    },
+    {
+     "type": "hit",
+     "beat": 68,
+     "dir": "up"
     }
    ]
+  },
+  {
+   "id": 3,
+   "title": "Main character",
+   "place": "Rooftop",
+   "artKey": "rooftop",
+   "story": [
+    "The neon skyline buzzes as the rooftop wind blows your cape back.",
+    "He thinks he is the chosen protagonist, but you hold the camera."
+   ],
+   "opponent": {
+    "name": "Kaien Sigma",
+    "persona": "A self-proclaimed rooftop vigilante who practices brooding poses in 4K.",
+    "color": "#ff007f"
+   },
+   "taunts": [
+    {
+     "beat": 20,
+     "text": "Bro thinks he is in an anime edit, look at that posture."
+    },
+    {
+     "beat": 45,
+     "text": "Your aura is literally negative ten thousand right now."
+    },
+    {
+     "beat": 68,
+     "text": "Bro got hit with the off-screen NPC scaling!"
+    }
+   ],
+   "announcer": {
+    "intro": "Rooftop showdown! Prove who owns the soundtrack!",
+    "win": "Plot armor shattered! You are the true Main Character!",
+    "lose": "Faded to background extra! Go back to the lobby!"
+   },
+   "bpm": 120,
+   "windowScale": 0.8,
+   "lengthBeats": 80,
+   "seed": 3,
+   "events": [
+    {
+     "type": "hit",
+     "beat": 8,
+     "dir": "up"
+    },
+    {
+     "type": "hit",
+     "beat": 9,
+     "dir": "down"
+    },
+    {
+     "type": "hit",
+     "beat": 10,
+     "dir": "left"
+    },
+    {
+     "type": "hit",
+     "beat": 11,
+     "dir": "right"
+    },
+    {
+     "type": "hold",
+     "beat": 13,
+     "length": 2
+    },
+    {
+     "type": "hit",
+     "beat": 16,
+     "dir": "left"
+    },
+    {
+     "type": "hit",
+     "beat": 17,
+     "dir": "right"
+    },
+    {
+     "type": "mash",
+     "beat": 19,
+     "length": 5
+    },
+    {
+     "type": "hit",
+     "beat": 25,
+     "dir": "up"
+    },
+    {
+     "type": "hit",
+     "beat": 26,
+     "dir": "up"
+    },
+    {
+     "type": "combo",
+     "beat": 30,
+     "dirs": [
+      "left",
+      "right",
+      "up",
+      "down"
+     ]
+    },
+    {
+     "type": "hit",
+     "beat": 32,
+     "dir": "down"
+    },
+    {
+     "type": "hit",
+     "beat": 33,
+     "dir": "right"
+    },
+    {
+     "type": "hit",
+     "beat": 34,
+     "dir": "left"
+    },
+    {
+     "type": "mash",
+     "beat": 36,
+     "length": 5
+    },
+    {
+     "type": "hit",
+     "beat": 42,
+     "dir": "down"
+    },
+    {
+     "type": "hit",
+     "beat": 43,
+     "dir": "up"
+    },
+    {
+     "type": "hold",
+     "beat": 45,
+     "length": 3
+    },
+    {
+     "type": "hit",
+     "beat": 49,
+     "dir": "right"
+    },
+    {
+     "type": "hit",
+     "beat": 50,
+     "dir": "left"
+    },
+    {
+     "type": "hit",
+     "beat": 51,
+     "dir": "down"
+    },
+    {
+     "type": "combo",
+     "beat": 55,
+     "dirs": [
+      "up",
+      "down",
+      "right"
+     ]
+    },
+    {
+     "type": "hit",
+     "beat": 57,
+     "dir": "left"
+    },
+    {
+     "type": "hit",
+     "beat": 58,
+     "dir": "right"
+    },
+    {
+     "type": "mash",
+     "beat": 60,
+     "length": 6
+    },
+    {
+     "type": "hit",
+     "beat": 67,
+     "dir": "up"
+    },
+    {
+     "type": "hit",
+     "beat": 68,
+     "dir": "down"
+    },
+    {
+     "type": "hit",
+     "beat": 69,
+     "dir": "left"
+    },
+    {
+     "type": "hit",
+     "beat": 70,
+     "dir": "right"
+    },
+    {
+     "type": "hit",
+     "beat": 72,
+     "dir": "up"
+    },
+    {
+     "type": "hit",
+     "beat": 74,
+     "dir": "down"
+    },
+    {
+     "type": "hit",
+     "beat": 76,
+     "dir": "right"
+    }
+   ]
+  },
+  {
+   "id": 4,
+   "title": "Sigma",
+   "place": "Club",
+   "artKey": "club",
+   "story": [
+    "Bass vibrates the VIP lounge as neon lights bathe the dance floor.",
+    "Chadwick stands center stage, determined to out-mew your entire existence."
+   ],
+   "opponent": {
+    "name": "Chadwick Jawline",
+    "persona": "Self-proclaimed looksmaxxing club royalty with a permanent smug smirk.",
+    "color": "#ff007f"
+   },
+   "taunts": [
+    {
+     "beat": 16,
+     "text": "Bro, your rhythm aura is straight up negative right now."
+    },
+    {
+     "beat": 46,
+     "text": "Did you break your mewing streak just to miss that beat?"
+    },
+    {
+     "beat": 68,
+     "text": "L rizz detected on the dance floor, step aside amateur."
+    }
+   ],
+   "announcer": {
+    "intro": "The club lights lock onto the booth, it is time for an ultimate aura clash!",
+    "win": "Chadwick got utterly out-chadded, the Sigma aura crown is yours!",
+    "lose": "Zero aura remaining, banished straight to the coat check room forever."
+   },
+   "bpm": 128,
+   "windowScale": 0.7,
+   "lengthBeats": 88,
+   "seed": 4,
+   "events": [
+    {
+     "type": "hit",
+     "beat": 8,
+     "dir": "up"
+    },
+    {
+     "type": "hit",
+     "beat": 9,
+     "dir": "down"
+    },
+    {
+     "type": "hit",
+     "beat": 10,
+     "dir": "left"
+    },
+    {
+     "type": "hit",
+     "beat": 11,
+     "dir": "right"
+    },
+    {
+     "type": "mash",
+     "beat": 12,
+     "length": 6
+    },
+    {
+     "type": "hit",
+     "beat": 19,
+     "dir": "down"
+    },
+    {
+     "type": "hit",
+     "beat": 20,
+     "dir": "up"
+    },
+    {
+     "type": "hit",
+     "beat": 21,
+     "dir": "left"
+    },
+    {
+     "type": "combo",
+     "beat": 25,
+     "dirs": [
+      "left",
+      "right",
+      "up",
+      "down"
+     ]
+    },
+    {
+     "type": "hold",
+     "beat": 27,
+     "length": 3
+    },
+    {
+     "type": "hit",
+     "beat": 31,
+     "dir": "right"
+    },
+    {
+     "type": "hit",
+     "beat": 32,
+     "dir": "left"
+    },
+    {
+     "type": "hit",
+     "beat": 33,
+     "dir": "up"
+    },
+    {
+     "type": "mash",
+     "beat": 34,
+     "length": 6
+    },
+    {
+     "type": "hit",
+     "beat": 41,
+     "dir": "down"
+    },
+    {
+     "type": "hit",
+     "beat": 42,
+     "dir": "up"
+    },
+    {
+     "type": "hit",
+     "beat": 43,
+     "dir": "right"
+    },
+    {
+     "type": "hit",
+     "beat": 44,
+     "dir": "left"
+    },
+    {
+     "type": "combo",
+     "beat": 48,
+     "dirs": [
+      "up",
+      "up",
+      "down",
+      "right"
+     ]
+    },
+    {
+     "type": "hold",
+     "beat": 50,
+     "length": 3
+    },
+    {
+     "type": "hit",
+     "beat": 54,
+     "dir": "left"
+    },
+    {
+     "type": "hit",
+     "beat": 55,
+     "dir": "down"
+    },
+    {
+     "type": "hit",
+     "beat": 56,
+     "dir": "up"
+    },
+    {
+     "type": "hit",
+     "beat": 57,
+     "dir": "right"
+    },
+    {
+     "type": "mash",
+     "beat": 58,
+     "length": 6
+    },
+    {
+     "type": "hit",
+     "beat": 65,
+     "dir": "left"
+    },
+    {
+     "type": "hit",
+     "beat": 66,
+     "dir": "right"
+    },
+    {
+     "type": "combo",
+     "beat": 70,
+     "dirs": [
+      "down",
+      "left",
+      "right",
+      "up"
+     ]
+    },
+    {
+     "type": "hold",
+     "beat": 72,
+     "length": 3
+    },
+    {
+     "type": "mash",
+     "beat": 76,
+     "length": 6
+    },
+    {
+     "type": "hit",
+     "beat": 83,
+     "dir": "up"
+    },
+    {
+     "type": "hit",
+     "beat": 84,
+     "dir": "down"
+    }
+   ]
+  },
+  {
+   "id": 5,
+   "title": "Aura 9000",
+   "place": "Voodoo stage, final boss",
+   "artKey": "stage",
+   "story": [
+    "Baron Hex holds the spirit realm in a chokehold of pure negative rizz.",
+    "Banish the swamp phantom before your soul gets permanently ratioed."
+   ],
+   "opponent": {
+    "name": "Baron Hex",
+    "persona": "A swamp occultist who siphons your soul energy straight into his crypto wallet.",
+    "color": "#39ff14"
+   },
+   "taunts": [
+    {
+     "beat": 24,
+     "text": "Your soul debt is accruing interest, blud."
+    },
+    {
+     "beat": 58,
+     "text": "Octave dropped, camera shaking, you are cooked."
+    },
+    {
+     "beat": 86,
+     "text": "Minus one million aura for missing that swamp ritual."
+    }
+   ],
+   "announcer": {
+    "intro": "Final reckoning! Match the voodoo rhythm or drown in the bayou!",
+    "win": "Hex dispelled! Aura over nine thousand achieved!",
+    "lose": "Spirit snatched. You became swamp fertilizer."
+   },
+   "bpm": 136,
+   "windowScale": 0.6,
+   "lengthBeats": 112,
+   "seed": 5,
+   "events": [
+    {
+     "type": "hit",
+     "beat": 8,
+     "dir": "up"
+    },
+    {
+     "type": "hit",
+     "beat": 9,
+     "dir": "down"
+    },
+    {
+     "type": "hit",
+     "beat": 10,
+     "dir": "left"
+    },
+    {
+     "type": "hit",
+     "beat": 11,
+     "dir": "right"
+    },
+    {
+     "type": "hold",
+     "beat": 13,
+     "length": 3
+    },
+    {
+     "type": "hit",
+     "beat": 17,
+     "dir": "up"
+    },
+    {
+     "type": "hit",
+     "beat": 18,
+     "dir": "left"
+    },
+    {
+     "type": "combo",
+     "beat": 22,
+     "dirs": [
+      "down",
+      "left",
+      "right",
+      "up"
+     ]
+    },
+    {
+     "type": "hit",
+     "beat": 24,
+     "dir": "down"
+    },
+    {
+     "type": "hit",
+     "beat": 25,
+     "dir": "right"
+    },
+    {
+     "type": "mash",
+     "beat": 27,
+     "length": 6
+    },
+    {
+     "type": "hit",
+     "beat": 34,
+     "dir": "left"
+    },
+    {
+     "type": "hit",
+     "beat": 35,
+     "dir": "up"
+    },
+    {
+     "type": "combo",
+     "beat": 39,
+     "dirs": [
+      "up",
+      "down",
+      "up",
+      "left"
+     ]
+    },
+    {
+     "type": "hold",
+     "beat": 41,
+     "length": 4
+    },
+    {
+     "type": "hit",
+     "beat": 46,
+     "dir": "down"
+    },
+    {
+     "type": "hit",
+     "beat": 47,
+     "dir": "right"
+    },
+    {
+     "type": "mash",
+     "beat": 49,
+     "length": 6
+    },
+    {
+     "type": "hit",
+     "beat": 56,
+     "dir": "down"
+    },
+    {
+     "type": "hit",
+     "beat": 57,
+     "dir": "up"
+    },
+    {
+     "type": "hit",
+     "beat": 58,
+     "dir": "left"
+    },
+    {
+     "type": "hit",
+     "beat": 59,
+     "dir": "right"
+    },
+    {
+     "type": "combo",
+     "beat": 63,
+     "dirs": [
+      "down",
+      "up",
+      "right",
+      "left"
+     ]
+    },
+    {
+     "type": "hit",
+     "beat": 65,
+     "dir": "up"
+    },
+    {
+     "type": "hit",
+     "beat": 66,
+     "dir": "down"
+    },
+    {
+     "type": "hold",
+     "beat": 68,
+     "length": 4
+    },
+    {
+     "type": "hit",
+     "beat": 73,
+     "dir": "left"
+    },
+    {
+     "type": "hit",
+     "beat": 74,
+     "dir": "right"
+    },
+    {
+     "type": "mash",
+     "beat": 76,
+     "length": 7
+    },
+    {
+     "type": "hit",
+     "beat": 84,
+     "dir": "up"
+    },
+    {
+     "type": "hit",
+     "beat": 85,
+     "dir": "down"
+    },
+    {
+     "type": "combo",
+     "beat": 89,
+     "dirs": [
+      "left",
+      "right",
+      "down",
+      "up"
+     ]
+    },
+    {
+     "type": "hit",
+     "beat": 91,
+     "dir": "right"
+    },
+    {
+     "type": "hit",
+     "beat": 92,
+     "dir": "left"
+    },
+    {
+     "type": "mash",
+     "beat": 94,
+     "length": 6
+    },
+    {
+     "type": "hit",
+     "beat": 101,
+     "dir": "up"
+    },
+    {
+     "type": "hit",
+     "beat": 102,
+     "dir": "down"
+    },
+    {
+     "type": "combo",
+     "beat": 106,
+     "dirs": [
+      "right",
+      "up",
+      "left",
+      "down"
+     ]
+    },
+    {
+     "type": "hit",
+     "beat": 108,
+     "dir": "up"
+    }
+   ],
+   "phase2Beat": 56
   }
  ]
 }
