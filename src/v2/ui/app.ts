@@ -31,7 +31,7 @@ const WINDOW_SCALE = [1, 0.9, 0.8, 0.7, 0.6];
 /** The battle starts without its fighters rather than wait longer than this on the models. */
 const STAGE_WAIT_MS = 25000;
 /** The loading screen gives up on a slow asset after this and shows the title scene anyway. */
-const LOAD_WAIT_MS = 20000;
+const LOAD_WAIT_MS = 12000;
 
 export interface StartOpts {
   game: GameApi;
