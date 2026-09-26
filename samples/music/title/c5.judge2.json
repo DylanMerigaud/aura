@@ -1,0 +1,14 @@
+{
+  "track": "title",
+  "candidate": "c5",
+  "model": "gemini-3.1-pro-preview",
+  "note": "the title music is funk: a Brazilian funk title loop",
+  "note_score": 5,
+  "note_evidence": "The track is a quintessential Brazilian funk montagem featuring a heavy, distorted 808 bassline and classic tamborzao rhythms built from vocal chops, perfectly delivering the confident swagger needed for a dark arena dance battle.",
+  "beat_clarity": 5,
+  "beat_evidence": "A strong, syncopated kick and snare pattern establishes a highly tap-able and steady pulse right from the very first second.",
+  "loop_or_ending": 5,
+  "loop_evidence": "The seam at 30.48 seconds is perfectly seamless, with the heavy beat and vocal chops wrapping back to the start exactly on the downbeat without any gap, click, or drop in energy.",
+  "intelligible_words": false,
+  "total": 5
+}

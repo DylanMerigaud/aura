@@ -1,0 +1,14 @@
+{
+  "track": "title",
+  "candidate": "c4",
+  "model": "gemini-3.1-pro-preview",
+  "note": "the title music is funk: a Brazilian funk title loop",
+  "note_score": 5,
+  "note_evidence": "The track delivers pure Brazilian funk swagger with a classic tamborzao rhythm, aggressive vocal chops, and a heavy, distorted 808 drop at 0:12 that perfectly fits a dark arena vibe.",
+  "beat_clarity": 5,
+  "beat_evidence": "The syncopated percussion establishes a strong, steady, and easily tappable pulse right from the first second.",
+  "loop_or_ending": 4,
+  "loop_evidence": "The loop point at 31.22s connects cleanly on the beat without any audio glitches, though it does drop the energy back to the sparser intro arrangement.",
+  "intelligible_words": true,
+  "total": 4.67
+}

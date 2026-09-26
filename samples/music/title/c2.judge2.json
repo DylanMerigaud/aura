@@ -1,0 +1,14 @@
+{
+  "track": "title",
+  "candidate": "c2",
+  "model": "gemini-3.1-pro-preview",
+  "note": "the title music is funk: a Brazilian funk title loop",
+  "note_score": 5,
+  "note_evidence": "The track delivers unmistakable Brazilian funk swagger with its characteristic tamborzao rhythm, aggressive vocal chops, and heavy, distorted 808 bass.",
+  "beat_clarity": 5,
+  "beat_evidence": "A clear, syncopated percussion and vocal chop pattern establishes a strong, easily tappable pulse right from 0:00.",
+  "loop_or_ending": 5,
+  "loop_evidence": "The seam at 30.00 seconds is perfectly timed, cleanly dropping the heavy bass to wrap back to the intro percussion without any gaps, clicks, or timing stumbles.",
+  "intelligible_words": false,
+  "total": 5
+}
