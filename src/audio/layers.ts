@@ -11,6 +11,41 @@ import type { CoreEvent, Frame, Listener } from "../v2/contracts";
 
 const OPEN_HZ = 20000;
 
+/** Where the shared media sits: one level up from /v2/, next to the page at the root (as src/v2/main.ts). */
+const MEDIA_BASE = typeof location !== "undefined" && /\/v2\/?/.test(location.pathname) ? "../" : "";
+
+/** Gradium crowd chants (public/voice/v2): decoded once, on the first count in, played under the action. */
+const CHANTS = ["crowd-six-seven-1", "crowd-six-seven-2", "crowd-mix"] as const;
+type Chant = (typeof CHANTS)[number];
+const chantBufs = new Map<Chant, AudioBuffer>();
+let chantsLoading = false;
+
+function loadChants() {
+  if (chantsLoading) return;
+  chantsLoading = true;
+  for (const c of CHANTS) {
+    fetch(`${MEDIA_BASE}voice/v2/${c}.mp3`)
+      .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(r.status)))
+      .then((a) => ctx.decodeAudioData(a))
+      .then((b) => chantBufs.set(c, b))
+      .catch(() => {
+        /* a missing chant leaves the synthesized crowd alone */
+      });
+  }
+}
+
+/** Play a crowd chant at context time t under the music (never through the voice queue: it is the room, not a line). */
+function chant(c: Chant, t: number, gain = 0.55) {
+  const b = chantBufs.get(c);
+  if (!b) return;
+  const s = ctx.createBufferSource();
+  s.buffer = b;
+  const g = ctx.createGain();
+  g.gain.value = gain;
+  s.connect(g).connect(master);
+  s.start(Math.max(ctx.currentTime, t));
+}
+
 /** A Gen Z slot (src/sfx, docs/sfx.md) at context time t. A failure is logged, never thrown into the frame loop. */
 function gz(slot: Slot, t: number, opts: PlayOpts = {}) {
   try {
@@ -133,6 +168,10 @@ export class AudioFx implements Listener {
       case "phase2":
         downlifter(t);
         break;
+      case "mashStart":
+        // The room chants SIX SEVEN while the player charges the 67.
+        chant(Math.random() < 0.5 ? "crowd-six-seven-1" : "crowd-six-seven-2", t);
+        break;
       case "end":
         this.end(t, e.win);
         break;
@@ -204,6 +243,7 @@ export class AudioFx implements Listener {
     if (win) {
       sfx.boom(t, 1.4);
       gz("victory", t + 0.2, { bpm: this.bpm });
+      chant("crowd-mix", t + 0.3, 0.6);
       this.duckMusic(t);
       this.queueCrowd(t, "cheer", 2.2);
       this.bedGain?.gain.cancelScheduledValues(t);
@@ -257,6 +297,7 @@ export class AudioFx implements Listener {
   /** A kick plus a riser tick exactly at `at`, the crowd bed rising across the count in (called once per beat). */
   countIn(at: number, n: number) {
     this.ended = false;
+    loadChants();
     this.ensureBed(at);
     countKick(at);
     riserTick(at, n);
