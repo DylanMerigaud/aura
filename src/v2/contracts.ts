@@ -40,6 +40,19 @@ export interface LevelV2 extends Level {
   breakdownBeats: [number, number][];
   /** Palette of the set: two neon colors (CSS hex). */
   neon: [string, string];
+  /**
+   * Dance battle turns in beats, in order, never overlapping. A player QTE never intersects an opponent
+   * turn (validateTurns). Missing: the whole level is one player turn.
+   */
+  turns?: TurnSpec[];
+}
+
+/** One turn of the battle. `move` (opponent turns) is a gesture key of src/anim/gestures.ts GESTURES. */
+export interface TurnSpec {
+  who: Turn;
+  beat: number;
+  lengthBeats: number;
+  move?: string;
 }
 
 /** Combo tier drives the aura flame: 0 none, 1 blue (combo 5+), 2 purple (15+), 3 white hot (25+, sunglasses). */
