@@ -1,3 +1,9 @@
+17:18 CEST, GAME lane, fix from the phone capture: prompts off the performer
+GREEN: in portrait the ring moved from 60 to 83 percent of the height, on the empty floor under the feet, and the arrows fly in from the right edge on v1's horizontal lane (they used to fall through the body and land on his feet); the pads keep their box, the words (67, HOLD, SWIPE UP) are drawn once around the ring; a layout test pins the ring under the feet band on four phone sizes; tests green
+RED: nothing seen on a phone for this push yet
+PLAY: https://dylanmerigaud.github.io/aura/
+NEED FROM DYLAN: the first 20 seconds on the phone: taps, then the up arrow at 5.5 s coming in from the right under your feet
+
 17:16 CEST, GAME lane, fix from the phone capture of 55d37cf
 GREEN: the grey HIS MOVE panel over the bottom third on his turn is gone (addendum 17:05 point 2: the camera shows the turn, never text); the floor is confirmed on the phone (near black, warm pool fading to black at the ring); items 1 to 5 live; tests green
 RED: the capture's script cannot see arrows (they are drawn on the canvas, not in the DOM), so swipes are only judged by a human; level 1's first arrow (up) is at 5.5 s

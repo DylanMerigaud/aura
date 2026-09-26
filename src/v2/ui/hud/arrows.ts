@@ -4,8 +4,9 @@
 // the hold is a long bar with an arrow head, the 67 a cluster of small left and right arrows, released
 // with a swipe up. v1's travel, size, glow and timing; same colors, glow sprites, beat pulse on the ring, timer rings and Arial Black labels.
 // Drawing happens in v1 units (the 1280x720 canvas) around the ring at (0, 0), scaled to the
-// viewport: landscape keeps v1's horizontal lane, portrait turns it vertical (arrows fall from the
-// top into a ring at 60 percent of the height, inside the safe width).
+// viewport: landscape keeps v1's horizontal lane; portrait keeps it horizontal too, low on the floor
+// under the performer's feet (the ring at 83 percent of the height, arrows in from the right edge), so
+// no prompt ever crosses the framed performer (freeze item 2).
 import type { EventState } from "../../../qte/runner";
 import type { Dir } from "../../../qte/types";
 import type { Frame } from "../../contracts";
@@ -36,6 +37,21 @@ function glowSprite(color: string, size = 64): HTMLCanvasElement {
 const V1_ARROW = "#35e0ff";
 const ROT: Record<Dir, number> = { right: 0, down: Math.PI / 2, left: Math.PI, up: -Math.PI / 2 };
 const STEP: Record<Dir, [number, number]> = { right: [1, 0], down: [0, 1], left: [-1, 0], up: [0, -1] };
+
+/** Portrait ring height, as a share of the screen: under the feet band (PORTRAIT.padTop in the director). */
+export const PORTRAIT_RING_Y = 0.83;
+
+/** Portrait layout of the prompt layer, in CSS px: the ring center, the v1 unit scale and the lane length per
+ * beat (v1 units), from the viewport and its safe insets. Pure, unit tested. */
+export function portraitLayout(w: number, h: number, safe: { l: number; r: number }) {
+  const avail = w - safe.l - safe.r;
+  const k = Math.min(w * 0.92, 420, avail) / 480;
+  const ringX = safe.l + avail / 2;
+  const ringY = h * PORTRAIT_RING_Y;
+  // Two beats of approach from the right edge of the safe area into the ring.
+  const laneUnits = Math.min(LANE_PX_PER_BEAT, (safe.l + avail - ringX - 8) / 2 / k);
+  return { ringX, ringY, k, laneUnits };
+}
 
 /** Prompt kinds the player has landed once this session: their ghost finger never shows again. */
 const taught = new Set<string>();
@@ -80,14 +96,7 @@ export function buildArrows(host: HTMLElement) {
       const cs = getComputedStyle(probe);
       const l = parseFloat(cs.paddingLeft) || 0;
       const r = parseFloat(cs.paddingRight) || 0;
-      const t = parseFloat(cs.paddingTop) || 0;
-      const avail = cssW - l - r;
-      const safeW = Math.min(cssW * 0.92, 420, avail);
-      k = safeW / 480;
-      ringX = l + avail / 2;
-      ringY = cssH * 0.6;
-      // Two beats of approach from below the top HUD band.
-      laneUnits = Math.min(LANE_PX_PER_BEAT, (ringY - (t + 90)) / 2 / k);
+      ({ ringX, ringY, k, laneUnits } = portraitLayout(cssW, cssH, { l, r }));
     }
     host.style.setProperty("--ring-x", `${ringX}px`);
     host.style.setProperty("--ring-y", `${ringY}px`);
@@ -181,7 +190,7 @@ export function buildArrows(host: HTMLElement) {
   }
 
   function lanePos(beatsAway: number): [number, number] {
-    return portrait ? [0, -beatsAway * laneUnits] : [beatsAway * laneUnits, 0];
+    return [beatsAway * laneUnits, 0];
   }
 
   /** The ghost finger over the ring: `press` 0 hovering, 1 down on the ring. */
