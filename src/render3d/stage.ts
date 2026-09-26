@@ -10,7 +10,7 @@ import type { Anchors, CoreEvent, Frame, LevelV2, Stage } from "../v2/contracts"
 import { RingSet } from "./set";
 import { Crowd } from "./crowd";
 import { Fighter, loadCast, type CastSource, type ClipEvent } from "./fighters";
-import { LAYOUT, isOts, pickShot, punchZoom, rampScale, sameFamily, shotPose, type Pose, type ShotKind } from "./director";
+import { LAYOUT, isOts, pickShot, punchZoom, rampScale, sameFamily, shotPose, turnShot, type Pose, type ShotKind } from "./director";
 import { Vfx } from "./vfx";
 import { createComposite } from "./vfx/composite";
 
@@ -137,6 +137,8 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
   let whipFrom: Pose | null = null;
   /** A game event landed since the last cut: the next downbeat may cut (cuts follow the fight, not a metronome). */
   let cutCue = false;
+  /** His turn in the dance battle: the camera stays on him, the downbeat cuts wait for yours. */
+  let hisTurn = false;
   // Reused poses: the frame loop allocates none.
   const camPose: Pose = { pos: [0, 0, 0], target: [0, 0, 0], fov: 48 };
   const whipPose: Pose = { pos: [0, 0, 0], target: [0, 0, 0], fov: 48 };
@@ -366,6 +368,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
       scene.add(player.root, enemy.root);
       // Fresh director for the battle.
       cut("ots");
+      hisTurn = false;
       ending = false;
       endT = 0;
       rampArmed = false;
@@ -392,7 +395,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
             if (jump) flash(1, Math.random() < 0.4);
             lastBarEnergy = e.energy;
             // Cut on the downbeat only after a game event in the bar or on an energy jump; otherwise the shot keeps moving.
-            if ((cutCue || jump) && (whipT < 0 || whipT > WHIP)) cut(pickShot(shot, Math.random));
+            if (!hisTurn && (cutCue || jump) && (whipT < 0 || whipT > WHIP)) cut(pickShot(shot, Math.random));
           }
           break;
         case "judged": {
@@ -454,8 +457,21 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
             enemy?.knockback(0.5);
           }
           break;
+        case "turn":
+          hisTurn = e.who === "opponent";
+          if (!ending) {
+            const next = turnShot(e.who, shot);
+            if (next !== shot) cut(next);
+          }
+          break;
+        case "opponentMove":
+          // His canon move for the whole turn (visual seconds at the level tempo), then back to his idle.
+          enemy?.gesture(e.move, 60 / spb, e.lengthBeats * spb);
+          crowd.jump(0.4);
+          break;
         case "taunt":
-          playE("enemy_taunt");
+          // He talks over his move without breaking it.
+          if (!enemy?.gesturing) playE("enemy_taunt");
           if (!ending) cutTo("dollyEnemy");
           break;
         case "dropSoon":
