@@ -2,23 +2,62 @@
 
 How to use this file: copy everything between the two rules below into `README.md`, delete every `[TO VERIFY ...]` marker after checking it, and delete this header. A marker means the fact was not on disk, or was still moving, at 14:12 on 2026-09-26. Facts without a marker were read from the repo at that time. The checklist at the bottom repeats each marker with its check command. The current `README.md` (rewritten by the main session at 14:12, commit 055d7ba) describes the committed build: five levels, the neon look, the 2D game as the fallback at the root. This draft replaces it wholesale at 17:30, it does not patch it. Two things worth keeping from it are already folded in below: the Performance section and the Anton font credit.
 
-The decisions this draft follows: one playable battle at Chatelet (Paris) against His Holiness, an AURA WORLD TOUR map whose other stops are locked, a Fortnite-like look framed as a TikTok LIVE, an announcer with calls of 1 to 4 words, Brazilian funk montagem phonk from Lyria 3 Pro, voices chosen by a bake off, and a Cloudflare Worker written by Cognition's Devin.
+The decisions this draft follows: one playable battle at Chatelet (Paris) against His Holiness, an AURA WORLD TOUR map whose other stops are locked, a Fortnite-like look framed as a TikTok LIVE, an announcer with calls of 1 to 4 words, Brazilian funk montagem phonk from Lyria 3 Pro, voices chosen by a bake off, and a Cloudflare Worker written by Cognition's Devin. Since 14:35 (organizers to Dylan): the demo is on a phone, so the README is mobile first (portrait, touch, one hand) and leads with the three things the judges look for, easy onboarding, hard to master and stickiness, each with its proof. Most of those proofs were not on `origin/main` at 14:35: they carry a marker and a numbered row in the list at the bottom.
 
 ---
 
 # AURA
 
-A 3D aura battle in the browser, framed as a TikTok LIVE: you start with zero aura, every beat you land steals some from His Holiness, and the live crowd watches.
+A 3D aura battle in the browser, made for a phone (portrait, touch, one hand) and framed as a TikTok LIVE: you start with zero aura, every beat you land steals some from His Holiness, and the live crowd watches.
 
 Built in one day at the {Tech: Europe} AI Gaming Hack, Paris, 2026-09-26, by team Itchy & Scratchy (Dylan Merigaud, Dorian Poupard). Partners: Google DeepMind, Gradium, Cognition and Voodoo.
 
-**Play:** https://dylanmerigaud.github.io/aura/ (always the latest build) and https://dylanmerigaud.itch.io/aura [TO VERIFY: the itch.io page is Public]. Sound on, headphones help.
+**Play:** https://dylanmerigaud.github.io/aura/ (always the latest build) and https://dylanmerigaud.itch.io/aura [TO VERIFY: the itch.io page is Public]. Sound on, headphones help. On a phone, hold it upright and keep the ringer switch on.
 
 ![Chatelet, the fight in the LIVE frame](docs/screenshots/FILL-hero.png) [TO VERIFY: new screenshots exist. The files in `docs/screenshots/` today show the first 2D game]
 
+## Easy to learn, hard to master, made to replay
+
+The demo is on a phone and the judges look for three things. Each has its proof in the game.
+
+**Easy to learn.** There is no text tutorial. The first 20 seconds of the Chatelet battle teach by doing. [TO VERIFY 16: only the count in is on disk]
+
+- A four beat count in, so you hear the pulse before you act (`COUNT_IN` in `src/v2/game.ts`).
+- Single arrows only, with wide timing windows, and a ghost hand that shows the swipe once.
+- The 69 (the mash) is introduced with a two second hand demo.
+- The announcer calls the move names as they arrive.
+- The first 15 seconds cannot be lost.
+
+**Hard to master.**
+
+- The timing window tightens as your combo climbs: Perfect is 110 ms at combo 0 and 70 ms at combo 25, and the ring around each target shrinks to show it. [TO VERIFY 17: `WINDOWS` in `src/qte/judge.ts` is a fixed 45 ms Perfect, 90 ms Great, 130 ms Ok at 14:35]
+- The tempo rule: the better you play, the faster the song. Perfect +0.6 percent, Great +0.3, a miss or cringe -1.5, from 0.90 to 1.15 (`src/v2/tempo.ts`). [TO VERIFY 18: the decay is 1 percent a second, so it only speeds up above about 1.7 Perfects a second]
+- The 69 pays for timing: the burst you charge by mashing is multiplied when you release it, Perfect x2, Great x1.5, Ok x1, off the beat x0.5 (`src/v2/core.ts`).
+- FLOW: eight Perfects in a row put the sunglasses on and double the score. [TO VERIFY 19: not on disk, the sunglasses fire at combo 25 today]
+- Three stars need 90 percent accuracy and zero cringe (`src/v2/core.ts`). After a win, cringe mode asks for more. [TO VERIFY 19: cringe mode is in the first 2D build only]
+
+**Made to replay.**
+
+- One tap retries on the beat. [TO VERIFY 20: at 14:35 a win returns to the map and the prompt reads "TAP TO CONTINUE"]
+- Your personal best (score, stars, accuracy, best 69 burst) is kept on the device (`src/v2/ui/progress.ts`), and so is your rank. [TO VERIFY 20: the rank is not stored at 14:35]
+- Aura Packs: a pack opens after each battle, with emotes in five rarities. See the section below. [TO VERIFY 21: the code is on the branch `packs`, not on `main`]
+- A share card, a 1080 by 1920 image with your score, tier, combo, the roast, the stop and your handle, sent to TikTok or WhatsApp through the phone's Web Share sheet. [TO VERIFY 22: not on any branch at 14:35]
+- The world tour map shows the locked stops, so there is always a next one.
+
+## How to play on a phone
+
+Open the page, hold the phone upright, sound on. Everything is one thumb. [TO VERIFY 23: portrait layout on a phone]
+
+- **HIT and COMBO:** tap the edge of the screen in the arrow's direction, or swipe from the middle that way, on the beat.
+- **MASH (the 69):** tap the left and the right half as fast as you can, then tap the center third to release on the drop.
+- **HOLD:** press anywhere and release on the target beat.
+- **Lag:** if the timing feels early or late, run the latency calibration in Settings, and use headphones. [TO VERIFY 23: the calibration screen says "tap SPACE on each click", check it works by touch]
+
+The touch zones are in `src/v2/ui/touch.ts` and were read from it at 14:35.
+
 ## The game
 
-You are a nobody with zero aura, at Chatelet in Paris, at night, and across the ring stands His Holiness. The Pope is in Paris, that is the joke, and he is warm about it. A camera sits over your shoulder and a live comment feed scrolls past. Arrow prompts, a hold and a two key mash arrive on the beat of a Brazilian funk track, and an announcer calls what you did in one to four words. Land them and the aura bar slides toward you, miss and it slides toward him. First side to push the bar to the edge wins, or whoever is ahead when the song ends. The fight lasts about 40 seconds. At the end Gemini writes a roast of how you played and Gradium speaks it. [TO VERIFY: the LIVE frame (badge, viewer count, comments, hearts), the over the shoulder camera and the short announcer calls are in the shipped build. At 14:12 the committed build still had the neon look and 8 to 12 word announcer lines]
+You are a nobody with zero aura, at Chatelet in Paris, at night, and across the ring stands His Holiness. The Pope is in Paris, that is the joke, and he is warm about it. A camera sits over your shoulder and a live comment feed scrolls past. Arrow prompts, a hold and a left and right mash arrive on the beat of a Brazilian funk track, and an announcer calls what you did in one to four words. Land them and the aura bar slides toward you, miss and it slides toward him. First side to push the bar to the edge wins, or whoever is ahead when the song ends. The fight lasts about 40 seconds. At the end Gemini writes a roast of how you played and Gradium speaks it. [TO VERIFY: the LIVE frame (badge, viewer count, comments, hearts), the over the shoulder camera and the short announcer calls are in the shipped build. At 14:12 the committed build still had the neon look and 8 to 12 word announcer lines]
 
 ## The world tour
 
@@ -36,18 +75,18 @@ Tap a locked stop and you get the cancel blip, a SOON stamp and the silhouette s
 
 Progress (the best score, stars, accuracy and best 69 burst) is saved in `localStorage` on the device.
 
-## How to play
+## Controls and scoring
 
 | QTE | Keyboard | Touch |
 |---|---|---|
-| HIT | the arrow key (or WASD), on the beat | swipe that direction |
-| MASH ("the 69") | alternate LEFT and RIGHT, SPACE on the drop | tap the left and right halves, tap the center to release |
-| HOLD | hold SPACE, release on the target beat | hold anywhere, release on the target beat |
-| COMBO | the arrow sequence in order, the last press on the beat | swipes in order |
+| HIT | the arrow key (or WASD), on the beat | tap the screen edge in that direction, or swipe it |
+| MASH ("the 69") | alternate LEFT and RIGHT, SPACE on the drop | tap the left and right halves, tap the center third to release |
+| HOLD | hold SPACE, release on the target beat | press anywhere, release on the target beat |
+| COMBO | the arrow sequence in order, the last press on the beat | edge taps or swipes in order |
 
 [TO VERIFY: COMBO stays in the Chatelet chart, `rg -n "combo" src/v2/levels.ts`]
 
-- **Timing.** Perfect 45 ms, Great 90 ms, Ok 130 ms, anything wider is a miss (`src/qte/judge.ts`). A level can scale the windows (`windowScale` in `src/v2/levels.ts`).
+- **Timing.** Perfect, Great and Ok windows, anything wider is a miss. The Perfect window tightens with the combo, from 110 ms at combo 0 to 70 ms at combo 25. [TO VERIFY 17: what is on disk at 14:35 is fixed, Perfect 45 ms, Great 90 ms, Ok 130 ms (`src/qte/judge.ts`), scaled per level by `windowScale` in `src/v2/levels.ts`. Write the numbers the code prints, either side of the beat or full width as the code defines them]
 - **Score.** Perfect 300, Great 200, Ok 100, times a combo multiplier: x2 at 10, x3 at 25, x4 at 50. A miss resets the combo. The wrong arrow on a HIT or a COMBO is "cringe" and costs more aura than a miss.
 - **The 69.** Mash speed counts in one place, the burst you release on the drop: burst = the mash count (capped at 3 presses per beat of the window) times a release multiplier (Perfect x2, Great x1.5, Ok x1, off the beat x0.5). Key repeat and presses under 30 ms apart on one key are ignored, so a turbo key gains nothing (`src/v2/core.ts`).
 - **The tempo rule.** Each judged press nudges the song speed: Perfect +0.6 percent, Great +0.3 percent, miss or cringe -1.5 percent, eased in over 250 ms, decaying back to 1.0 at 1 percent a second, clamped to 0.90 to 1.15 (`src/v2/tempo.ts`). The QTE grid follows the song through the rate changes (`src/v2/clock.ts`).
@@ -55,6 +94,10 @@ Progress (the best score, stars, accuracy and best 69 burst) is saved in `localS
 - **Latency.** Settings has a calibration: tap on the click, the median offset is saved and added to the latency the browser reports. Redo it when the speakers or headphones change. [TO VERIFY: shipped as "Settings", 8 taps]
 
 There is no BPM on any screen, on purpose. The tempo lives in the data.
+
+## Aura Packs
+
+A pack opens after every battle: a glowing pack, tap to tear, the cards fly out and flip one by one with rarity light rays, a rising tone and confetti. A win opens 3 cards, a loss 1. The cards are emotes (canon aura farming moves, named after `docs/aura-farming-spec.md` section 3) and a few cosmetics. Five rarities: common 60 percent, rare 25, epic 10, legendary 4, unfathomable 1 (tested over 100,000 draws, every rarity within 0.5 percent of its odds). A duplicate becomes aura shards, and 100 shards fill a tier of a 10 tier Aura Pass. The equipped emote is your flex on the victory screen. Everything is local, saved in `localStorage` under `aura.packs.v1`: no money, no shop, no timers. Code in `src/packs/`, tests in `tests/packs/`, notes in `docs/packs.md`. [TO VERIFY 21: all of this is on the branch `packs` (commits 14c5e21 and 601c449), `rg -n -i "pack" src/v2` prints nothing on `main`. Delete the section if the branch is not merged and wired into the results screen. The clip column of the emotes is null until the Mixamo clips ship, the robot fallback plays meanwhile]
 
 ## Partner technologies
 
@@ -189,6 +232,14 @@ The world tour is the roadmap. Each locked stop is a level waiting for its track
 13. `LICENSE` file added.
 14. The 2D build paragraphs and the `sim` sentence: keep or remove according to what ships.
 15. `rg -nP "\x{2014}|\x{2013}" README.md docs/` prints nothing.
+16. Easy to learn. On disk at 14:35: the four beat count in (`COUNT_IN = 4`, `src/v2/game.ts`). Not on disk: the ghost hand, wide windows on the first arrows, the two second demo of the 69, the announcer calling move names, the protected first 15 seconds (`rg -n -i "ghost|tutorial|demo" src/v2` finds only the crowd's ghost copy). Check: give a phone to someone who never saw the game and say nothing for 20 seconds. Delete each bullet the build lacks, and if there is no tutorial behaviour at all, delete "There is no text tutorial" and the whole paragraph.
+17. The tightening window and the ring: `rg -n "WINDOWS" src`, play to combo 25 and read the ring. Replace the 110 and 70 ms with what the code prints, and fix the Timing bullet and the closing screen row of `docs/presentation.md` with them.
+18. The tempo rule is on disk (`src/v2/tempo.ts`, applied in `src/v2/game.ts`). It only climbs above about 1.7 Perfects a second because of the 1 percent a second decay, so hear it on a run of Perfects. If it is inaudible in the fight, say "misses slow the song down" and drop "the better you play, the faster the song".
+19. FLOW and cringe mode. `rg -n -w -i "streak|perfectRun|flow mode" src/v2 src/render3d` finds no Perfect streak logic at 14:35, and the sunglasses in `src/render3d/stage.ts` fire at combo 25. Cringe mode exists in the first 2D build only (`src/main.ts`, it halves the windows after the last level). Delete the FLOW bullet, or the cringe sentence, if the build lacks it.
+20. Retry and personal best. Check a win and a loss in the shipped build: one tap restarts with the count in. The progress store keeps score, stars, accuracy and best 69 (`src/v2/ui/progress.ts`), not a rank. Delete "and so is your rank" and "on the beat" if they do not hold.
+21. Aura Packs: merge state of the branch `packs`. Check `git log origin/main..origin/packs`, `rg -n -i "pack" src/v2`, and open a pack in the shipped build (`?packs=1` opens a demo per `docs/packs.md`). Recount the emotes and rarities from `src/packs/catalog.ts` if the catalog changed.
+22. The share card. `rg -n -i "navigator.share" src` must print something, the card must be 1080 by 1920, and the Web Share sheet must open on a phone from GitHub Pages and from the itch embed. If it did not ship, delete the bullet and the sentence "and sent to TikTok or WhatsApp".
+23. Phone controls. Open the page on a phone upright and play the whole battle with one thumb. The zones were read from `src/v2/ui/touch.ts` (edge margin 20 percent, swipe threshold 30 px, mash halves, release in the center third from 38 to 62 percent of the width). If the battle is landscape on a phone, delete "hold the phone upright" and "portrait". The calibration screen text says SPACE: check it works by touch or add a touch prompt.
 
 ## docs/apis.md changes
 
@@ -203,3 +254,4 @@ The world tour is the roadmap. Each locked stop is a level waiting for its track
 7. GitHub Pages row: the root is now the latest build, not the 2D game, and `/v2/` may go away. Check `curl -sI https://dylanmerigaud.github.io/aura/v2/ | head -1`.
 8. Canvas 2D, @napi-rs/canvas and the 2D esbuild rows: delete them if the 2D build is removed, otherwise keep and say it is the fallback.
 9. Google Fonts row: still true only if the HUD keeps Anton.
+10. Add a Web Share API row (the share card) if it ships (`rg -n -i "navigator.share" src`), and an Aura Packs note (localStorage `aura.packs.v1`) to the localStorage row if the branch `packs` is merged.

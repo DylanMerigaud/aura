@@ -14,9 +14,9 @@ switch Visibility to Public (see "Save and publish" at the end).
 |---|---|
 | Title | AURA |
 | Project URL | aura |
-| Short description or tagline | You have zero aura. Fix that, live, one beat at a time. |
+| Short description or tagline | Easy to learn, hard to master, made to replay. Zero aura, one thumb. |
 
-The tagline is 55 characters and does not repeat the title, as the form asks.
+The tagline is 68 characters, leads with the three things the judges look for (easy onboarding, hard to master, stickiness) and does not repeat the title, as the form asks. The older tagline, "You have zero aura. Fix that, live, one beat at a time.", stays the tagline of `docs/submission.md`.
 
 ## Classification and kind
 
@@ -41,9 +41,9 @@ payment account needed.
   prints one line.
 - Tick "This file will be played in the browser" on the uploaded file. The embed options appear only
   after an HTML file is uploaded, so they were not on the form when it was read. Set them like this:
-  - Viewport: 1280 x 720
+  - Viewport: 1280 x 720 [TO VERIFY 15: keep it if the build lays out landscape on a laptop, and 720 x 1280 if the build is portrait only]
   - Fullscreen button: ON
-  - Mobile friendly: ON, orientation landscape
+  - Mobile friendly: ON, orientation portrait (the demo is on a phone held upright) [TO VERIFY 15]
   - Automatically start on page load: OFF (the browser blocks audio until a tap, the gate screen asks
     for one)
   - Scrollbars: OFF
@@ -57,10 +57,12 @@ payment account needed.
 | Field | Value |
 |---|---|
 | Genre | Rhythm |
-| Tags (10, no genre or platform words) | aura-farming, meme, funk, phonk, qte, 3d, arcade, singleplayer, funny, ai-generated |
+| Tags (10, the form's maximum) | mobile, touch, rhythm, one-hand, aura-farming, meme, funk, qte, 3d, ai-generated |
 | AI generation disclosure | Yes ("This project contains the output of Generative AI") |
 | App store links | none, leave every toggle off |
 | Custom noun | leave blank |
+
+The form says "Avoid using the genre or platforms provided above": `rhythm` repeats the Genre and is kept because the organizers' brief asked for it, and `mobile` and `touch` are how players filter browser games on a phone. To fit the four new tags under the maximum of 10, `phonk`, `arcade`, `singleplayer` and `funny` were dropped from the earlier list.
 
 The disclosure is a plain Yes or No radio with no text box, so the precise statement lives in the
 "Made with AI" block of the description below. Answering Yes is not optional: the project contains
@@ -79,12 +81,18 @@ Paste it into the rich text editor, in this order. The pitch is under 150 words 
 other blocks are reference material for whoever scrolls down. Headings use the "format" dropdown of
 the editor.
 
-Pitch (143 words):
+Pitch (148 words, leads with the three things the judges look for):
 
 ```
-You have zero aura, and a TikTok LIVE crowd is watching you fix that.
+Easy to learn. Hard to master. Made to replay. Built for your phone: portrait, touch, one hand.
 
-AURA is a 3D rhythm battle in your browser. One perfect fight at Chatelet in Paris, against His Holiness, who is visiting and is very calm about it. Arrows, holds and a mash land on the beat of a Brazilian funk track, an announcer calls every hit, and the mash charges the 69, released on the drop. Land perfects and the song speeds up a little, miss and it slows down. At the end, Gemini writes a roast of how you played and Gradium reads it out. Then the world tour map: Shibuya, a Rio rooftop and the Pacu Jalur boat race in Riau are locked, for now.
+You have zero aura, and a TikTok LIVE crowd is watching you fix that. AURA is a 3D rhythm battle at Chatelet in Paris, against His Holiness, who is very calm about it.
+
+Easy to learn: no tutorial text, the first 20 seconds teach by doing.
+Hard to master: your Perfect window tightens as your combo climbs, and the better you play, the faster the song gets.
+Made to replay: one tap retries on the beat, and a share card sends your score to TikTok or WhatsApp.
+
+At the end Gemini writes a roast of how you played and Gradium reads it out. Shibuya, Rio and Pacu Jalur are locked.
 
 Built in one day at the {Tech: Europe} AI Gaming Hack in Paris by Itchy & Scratchy. Play with sound on.
 ```
@@ -92,8 +100,8 @@ Built in one day at the {Tech: Europe} AI Gaming Hack in Paris by Itchy & Scratc
 Heading "Controls" and its text:
 
 ```
-Keyboard: arrow keys or WASD to hit on the beat. Alternate LEFT and RIGHT to mash, then SPACE to release on the drop. Hold SPACE for a hold and release it on the target beat. For a combo, press the arrows in order, the last one on the beat.
-Touch: swipe the direction, tap the left and right halves to mash, tap the center to release, hold anywhere for a hold.
+On a phone, held upright, with one thumb: tap the edge of the screen in the arrow's direction, or swipe from the middle that way, on the beat. For a mash, tap the left and right halves, then tap the center to release on the drop. For a hold, press anywhere and release on the target beat.
+On a keyboard: arrow keys or WASD to hit on the beat. Alternate LEFT and RIGHT to mash, then SPACE to release on the drop. Hold SPACE for a hold and release it on the target beat. For a combo, press the arrows in order, the last one on the beat.
 Timing feels late or early? Open Settings and run the latency calibration. Headphones help.
 ```
 
@@ -135,13 +143,14 @@ Source: https://github.com/DylanMerigaud/aura
   100 px wide thumbnail. The subject stays centered so a square or a wide crop still reads.
 - **Gameplay video or trailer** (URL, YouTube or Vimeo): leave empty unless a recorded run exists by
   18:30. The live demo is at 20:00, a video is not required by the form.
-- **Screenshots** ("Add screenshots", 3 uploaded in this order, 630 x 500 or the game's 16:9 at 1280 x 720,
-  the form asks for 3 to 5). The itch form has no caption field, so the captions below are the file
+- **Screenshots** ("Add screenshots", 3 to 5 uploaded in this order, from a phone in portrait, 1080 x 1920 or a 630 x 500 crop, the form asks for 3 to 5). The itch form has no caption field, so the captions below are the file
   names' meaning, the alt text in the README and the line to say if someone asks what a shot is.
   Each is a real frame from the shipped build, captured in engine, no mockups, no debug counter.
-  1. "Chatelet at night, His Holiness across the ring, the LIVE frame with viewers, comments and hearts." Capture: the fight at combo 25 or more, arrows on screen, the aura bar leaning to the player, the announcer's call on screen.
+  1. "Chatelet at night, His Holiness across the ring, the LIVE frame with viewers, comments and hearts." Capture: the fight at combo 25 or more, arrows on screen, the ring shrunk, the aura bar leaning to the player, the announcer's call on screen. Take it on a phone held upright, the game's real portrait frame.
   2. "The drop. Slow motion ends, the 69 hits." Capture: the 69 release on the drop, flash and punch zoom in frame, the burst on its way to His Holiness.
   3. "AURA WORLD TOUR: one stop open, the rest locked." Capture: the map with the figure on Chatelet, the padlocked stops under their label plates, no BPM anywhere.
+  4. "The share card." Capture: the 1080 x 1920 card with the score, tier, combo, roast, the stop and the handle. Only if the share card shipped (TO VERIFY 16).
+  5. "A pack opens." Capture: a rare or better card mid flip with its light rays. Only if Aura Packs shipped (TO VERIFY 16).
 
 ## Save and publish
 
@@ -165,13 +174,11 @@ the replacement if the check fails. Delete a row when it is done.
    "the LIVE frame with viewers, comments and hearts" from screenshot 1. If Chatelet or His Holiness is
    not the fight, rewrite the second paragraph of the pitch to what the build shows.
 2. The world tour map. Check: the map screen shows the open stop and the padlocked ones by name. The
-   pitch names Shibuya, a Rio rooftop and Pacu Jalur. If Barbes (Paris) ships as a stop, add it, if a
-   named stop is absent, delete its name. If there is no map, delete the whole "Then the world tour
-   map" sentence and screenshot 3.
-3. "an announcer calls every hit". Check by ear: short calls of one to four words on the hits.
-4. "Land perfects and the song speeds up a little, miss and it slows down". On disk in `src/v2/tempo.ts`
-   (Perfect +0.6 percent, Great +0.3, miss -1.5, range 0.90 to 1.15) and applied to the music rate in
-   `src/v2/game.ts`. Check by ear in the shipped build.
+   pitch names Shibuya, Rio and Pacu Jalur. If Barbes (Paris) ships as a stop, add it, if a
+   named stop is absent, delete its name. If there is no map, delete the sentence "Shibuya, Rio and Pacu Jalur are locked." and
+   screenshot 3.
+3. The announcer. The pitch no longer says "an announcer calls every hit", but screenshot 1 shows the announcer's call on screen. Check by ear: short calls of one to four words on the hits, and the move names in the first 20 seconds.
+4. "The better you play, the faster the song gets". On disk in `src/v2/tempo.ts` (Perfect +0.6 percent, Great +0.3, miss -1.5, range 0.90 to 1.15, decay 1 percent a second) and applied to the music rate in `src/v2/game.ts`. The decay out-pays one Perfect a second, so the song only speeds up above about 1.7 Perfects a second. Check by ear on a run of Perfects in the shipped build. If it is inaudible, replace the clause with "miss and the song slows down".
 5. "Gemini writes a roast of how you played and Gradium reads it out" and the live line in Made with AI.
    FOUND at 14:12: `/roast` answered in 4.8 to 6.5 s (four tries, curl from the laptop) and the game
    stops waiting after 3 s (`src/v2/net/live.ts`), so the roast would almost never appear. The voice
@@ -202,7 +209,7 @@ the replacement if the check fails. Delete a row when it is done.
 10. Controls text. Combos: `rg -n "combo" src/v2/levels.ts` shows the Chatelet chart still has them,
     otherwise delete the combo sentence. Settings and the calibration: `src/v2/ui/settings.ts`, check
     it is reachable from the title screen under the name Settings.
-11. Word count of the pitch: 143 at the time of writing, limit 150. Recount after any edit:
+11. Word count of the pitch: see the count in the line above the pitch block, limit 150. Recount after any edit:
     `pbpaste | wc -w` on the pitch block.
 12. Screenshots and cover. Capture them from the shipped build after the last visual change, at the
     sizes above, into `docs/screenshots/`. The files there today (`itch-1.png` to `itch-3.png`,
@@ -211,3 +218,6 @@ the replacement if the check fails. Delete a row when it is done.
     Open https://helpx.adobe.com/creative-cloud/faq/mixamo-faq.html and
     https://ai.google.dev/gemini-api/terms once and confirm the wording of the credit lines.
 14. No dash characters: `rg -nP "\x{2014}|\x{2013}" docs/itch-page.md` prints nothing.
+15. Embed orientation and viewport. The first pass set landscape at 1280 x 720. The demo is on a phone, so the mobile setting is portrait. Check both: open the itch preview on a phone held upright (the game fills the screen, no letterbox) and on a laptop (the fullscreen button works, the embed is readable at 1280 x 720). If the build is portrait only, set the viewport to 720 x 1280. The itch form only shows these options after an HTML file is uploaded, so the exact labels are read at that step, not before.
+16. The three judge words in the pitch, each with its proof. Easy to learn (no tutorial text, the first 20 seconds teach by doing): the count in is on disk, the ghost hand, wide windows, the 69 demo and the protected opening are not (`rg -n -i "ghost|tutorial|demo" src/v2`). Hard to master (the window tightens as the combo climbs): `WINDOWS` in `src/qte/judge.ts` is fixed at 45, 90 and 130 ms at 14:35, the tightening and the ring are not on disk; the tempo rule is (`src/v2/tempo.ts`) and only speeds the song above about 1.7 Perfects a second. Made to replay: one tap retry (the win prompt is "TAP TO CONTINUE" and goes to the map at 14:35), the best score is kept (`src/v2/ui/progress.ts`), packs are on the branch `packs` and not on `main`, the share card is on no branch. Replace each failing clause with the shorter true one: "no tutorial text" alone, "the window tightens as your combo climbs" or delete the line, "one tap retries" and "your best score is kept". Delete the pack and share card screenshots if they did not ship. Recount the pitch after every edit (`pbpaste | wc -w`, 148 words at the time of writing, limit 150).
+17. Tags. `rhythm` repeats the Genre and `mobile` names a platform, and the form says to avoid both. If the page shows a warning on save, remove `rhythm` first, then `mobile`, and put `phonk` and `arcade` back.
