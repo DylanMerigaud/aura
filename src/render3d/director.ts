@@ -2,13 +2,13 @@
 // ramp before a drop, the punch zoom curve and the camera pose of each shot. No three.js scene access,
 // so it is unit tested in tests/render3d.test.ts.
 
-export type ShotKind = "ots" | "otsWide" | "enemyClose" | "heroLow" | "topDown" | "dollyEnemy";
+export type ShotKind = "ots" | "otsWide" | "enemyClose" | "heroLow" | "topDown" | "dollyEnemy" | "hands";
 
 const OTS_FAMILY: ShotKind[] = ["ots", "otsWide"];
-const OTHERS: ShotKind[] = ["enemyClose", "heroLow"];
+const OTHERS: ShotKind[] = ["enemyClose", "heroLow", "hands"];
 
 /** What a shot looks at: two shots of one family in a row read as the same shot (both OTS are "behind"). */
-export type ShotFamily = "behind" | "enemy" | "hero" | "top";
+export type ShotFamily = "behind" | "enemy" | "hero" | "top" | "hands";
 export const FAMILY: Record<ShotKind, ShotFamily> = {
   ots: "behind",
   otsWide: "behind",
@@ -16,6 +16,7 @@ export const FAMILY: Record<ShotKind, ShotFamily> = {
   dollyEnemy: "enemy",
   heroLow: "hero",
   topDown: "top",
+  hands: "hands",
 };
 
 export function sameFamily(a: ShotKind, b: ShotKind): boolean {
@@ -93,17 +94,17 @@ function setPose(p: Pose, x: number, y: number, z: number, tx: number, ty: numbe
  * Pose of a shot, written into `out` (the frame loop passes a reused one, nothing is allocated). `t` is
  * the shot's own visual clock and drives every move: each shot orbits or dollies from its first frame, on
  * that clock only (a move on the bar progress jumped back when a shot outlived its bar). `bar` is kept for
- * callers and no longer moves the camera. `aspect` widens the FOV in portrait.
+ * callers and no longer moves the camera. `aspect` below 1 switches to the portrait framing (portraitPose).
  */
 export function shotPose(kind: ShotKind, t: number, bar: number, aspect: number, out?: Pose): Pose {
+  const p = out ?? { pos: [0, 0, 0], target: [0, 0, 0], fov: 48 };
+  if (aspect < 1) return portraitPose(kind, t, aspect, p);
   const [px, , pz] = LAYOUT.player;
   const [ex, , ez] = LAYOUT.enemy;
   const h = LAYOUT.height;
-  const p = out ?? { pos: [0, 0, 0], target: [0, 0, 0], fov: 48 };
   const sway = Math.sin(t * 0.9) * 0.06;
   const drift = Math.min(Math.max(0, t), MOVE_S);
   const orbit = drift * 0.05;
-  const portrait = aspect < 1;
   switch (kind) {
     case "ots":
       // Truck right and push in behind the shoulder.
@@ -133,7 +134,119 @@ export function shotPose(kind: ShotKind, t: number, bar: number, aspect: number,
       setPose(p, ex + 0.3 - orbit * 2, h * 0.55, ez + d, ex, h * 0.72, ez, 38);
       break;
     }
+    case "hands": {
+      // In front of us, low, orbiting slowly around the hands.
+      const a = Math.PI - 0.5 + orbit * 3;
+      setPose(p, px + Math.sin(a) * 1.5 + sway, h * 0.5, pz + Math.cos(a) * 1.5, px, h * 0.58, pz, 40);
+      break;
+    }
   }
-  if (portrait) p.fov = Math.min(80, p.fov / Math.max(0.5, aspect) * 0.8);
   return p;
+}
+
+/** Screen bands of the portrait layout, as fractions of the height from the top: the HUD owns the top
+ * band, the touch zone (arrow ring at 60 percent) the bottom. Faces stay between the two. */
+export const PORTRAIT = { hudBand: 0.15, touchTop: 0.6, faceMax: 0.55 };
+
+/**
+ * Vertical FOV in portrait. Each shot is framed at 9:16 with `fov916`; a narrower phone (19.5:9) keeps
+ * the same horizontal field (the fighters keep their width, the frame gains height), a wider portrait
+ * (3:4 tablet) keeps the vertical one. Clamped to 80 degrees.
+ */
+export function portraitFov(fov916: number, aspect: number): number {
+  const a = Math.min(9 / 16, Math.max(0.3, aspect));
+  const half = Math.atan(Math.tan((fov916 * Math.PI) / 360) * (9 / 16 / a));
+  return Math.min(80, (half * 360) / Math.PI);
+}
+
+/**
+ * The 9:16 framing of every shot family: the enemy high in frame, our shoulder bottom left, the ring floor
+ * around 60 percent of the height, no face in the top HUD band nor behind the touch zone. The same moves
+ * as the landscape shots (orbit, dolly, crane, sway) on the same clock. Pinned by tests/render3d.test.ts.
+ */
+export function portraitPose(kind: ShotKind, t: number, aspect: number, p: Pose): Pose {
+  const [px, , pz] = LAYOUT.player;
+  const [ex, , ez] = LAYOUT.enemy;
+  const h = LAYOUT.height;
+  const sway = Math.sin(t * 0.9) * 0.05;
+  const drift = Math.min(Math.max(0, t), MOVE_S);
+  const orbit = drift * 0.05;
+  switch (kind) {
+    case "ots":
+      setPose(p, px + P.otsX + sway + orbit * 0.6, h * P.otsY + drift * 0.03, pz + P.otsZ + drift * 0.09, ex + P.otsAimX, P.otsAimY, ez, P.otsFov);
+      break;
+    case "otsWide":
+      setPose(p, px + P.wideX - orbit * 0.8, h * P.wideY + sway - drift * 0.04, pz + P.wideZ - drift * 0.16, ex + P.wideAimX, P.wideAimY, ez, P.wideFov);
+      break;
+    case "enemyClose": {
+      const a = orbit * 3;
+      setPose(p, ex + Math.sin(a) * P.ecD, h * P.ecY, ez + Math.cos(a) * P.ecD, ex, P.ecAimY + sway * 0.3, ez, P.ecFov);
+      break;
+    }
+    case "heroLow": {
+      const a = Math.PI - orbit * 3;
+      setPose(p, px + Math.sin(a) * P.hlD + sway, h * P.hlY, pz + Math.cos(a) * P.hlD, px, P.hlAimY, pz, P.hlFov);
+      break;
+    }
+    case "topDown": {
+      // High and tilted from behind us rather than straight down: the ring reads as a tall shape.
+      const a = t * 0.3;
+      setPose(p, Math.sin(a) * 1.2, P.tdY, pz + P.tdZ + Math.cos(a) * 0.8, 0, 0, P.tdAimZ, P.tdFov);
+      break;
+    }
+    case "dollyEnemy": {
+      const d = P.deFar - Math.min(1, t / 2) * (P.deFar - P.deNear);
+      setPose(p, ex + 0.25 - orbit * 2, h * P.deY, ez + d, ex, P.deAimY, ez, P.deFov);
+      break;
+    }
+    case "hands": {
+      const a = Math.PI - 0.5 + orbit * 3;
+      setPose(p, px + Math.sin(a) * P.haD + sway, h * P.haY, pz + Math.cos(a) * P.haD, px, P.haAimY, pz, P.haFov);
+      break;
+    }
+  }
+  p.fov = portraitFov(p.fov, aspect);
+  return p;
+}
+
+/** Portrait framing numbers (tuned with project() against the PORTRAIT bands, see the tests). */
+const P = {
+  otsX: 0.45, otsY: 1.08, otsZ: 1.8, otsAimX: -0.2, otsAimY: 0.55, otsFov: 50,
+  wideX: 0.9, wideY: 1.3, wideZ: 3.0, wideAimX: -0.3, wideAimY: 0.45, wideFov: 46,
+  ecD: 2.4, ecY: 0.55, ecAimY: 1.05, ecFov: 50,
+  hlD: 2.6, hlY: 0.3, hlAimY: 1.05, hlFov: 55,
+  tdY: 9, tdZ: 3.5, tdAimZ: 0.4, tdFov: 58,
+  deFar: 4.8, deNear: 2.6, deY: 0.55, deAimY: 1.05, deFov: 48,
+  haD: 2.0, haY: 0.5, haAimY: 1.05, haFov: 50,
+};
+
+/**
+ * Where a world point lands on screen for a pose (no roll): [x, y] as fractions of the width and the
+ * height, from the top left, and the depth. Pure, for the framing tests.
+ */
+export function project(pose: Pose, aspect: number, pt: V3): [number, number, number] {
+  let fx = pose.target[0] - pose.pos[0];
+  let fy = pose.target[1] - pose.pos[1];
+  let fz = pose.target[2] - pose.pos[2];
+  const fl = Math.hypot(fx, fy, fz) || 1;
+  fx /= fl;
+  fy /= fl;
+  fz /= fl;
+  // right = forward x up(0, 1, 0), up' = right x forward
+  let rx = -fz;
+  let rz = fx;
+  const rl = Math.hypot(rx, rz) || 1;
+  rx /= rl;
+  rz /= rl;
+  const ux = -rz * fy;
+  const uy = rz * fx - rx * fz;
+  const uz = rx * fy;
+  const dx = pt[0] - pose.pos[0];
+  const dy = pt[1] - pose.pos[1];
+  const dz = pt[2] - pose.pos[2];
+  const z = dx * fx + dy * fy + dz * fz;
+  const x = dx * rx + dz * rz;
+  const y = dx * ux + dy * uy + dz * uz;
+  const tv = Math.tan((pose.fov * Math.PI) / 360);
+  return [0.5 + x / (z * tv * aspect) / 2, 0.5 - y / (z * tv) / 2, z];
 }

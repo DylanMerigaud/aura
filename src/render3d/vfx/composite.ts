@@ -1,5 +1,6 @@
-// Final fullscreen blit of the low res target: chroma split, glitch slices, fake radial blur,
-// vignette, desaturation, scanlines and a white or black flash in a single pass.
+// Final fullscreen blit of the full resolution target: chroma split, glitch slices, fake radial blur,
+// vignette, desaturation and a white or black flash in a single pass. No scanlines (the clean look).
+// ScreenFx.scanline is ignored.
 // The vertex shader ignores the camera: use it on a PlaneGeometry(2, 2) (any camera, frustumCulled off).
 import * as THREE from "three";
 import type { ScreenFx } from "./screen";
@@ -23,7 +24,6 @@ uniform float uGlitch;
 uniform float uRadial;
 uniform float uVignette;
 uniform float uDesat;
-uniform float uScanline;
 varying vec2 vUv;
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
@@ -56,7 +56,6 @@ void main() {
   col *= 1.0 - uVignette * smoothstep(0.35, 1.05, d) * 1.3;
   float lum = dot(col, vec3(0.299, 0.587, 0.114));
   col = mix(col, vec3(lum), uDesat);
-  col *= 1.0 - uScanline * (0.5 + 0.5 * sin(vUv.y * uRes.y * 3.14159265));
   col = mix(col, vec3(1.0 - uFlashBlack), uFlash);
   gl_FragColor = vec4(max(col, 0.0), 1.0);
   #include <tonemapping_fragment>
@@ -80,7 +79,6 @@ export function createComposite(): {
       uRadial: { value: 0 },
       uVignette: { value: 0.25 },
       uDesat: { value: 0 },
-      uScanline: { value: 0.08 },
     },
     vertexShader: vertex,
     fragmentShader: fragment,
@@ -100,7 +98,6 @@ export function createComposite(): {
       u.uRadial.value = fx.radial;
       u.uVignette.value = fx.vignette;
       u.uDesat.value = fx.desat;
-      u.uScanline.value = fx.scanline;
     },
   };
 }
