@@ -68,6 +68,7 @@ export class Battle {
     this.gain = 1.15 / Math.max(8, level.events.length);
     this.player = new Character(PX, GROUND, 1, "#2b6cff", "#e8b98f", false);
     this.opp = new Character(OX, GROUND, -1, level.opponent.color || "#ff3df2", "#c98f6a", true);
+    this.opp.hat = (["none", "beanie", "chef", "cap", "headphones", "crown"] as const)[level.id] ?? "none";
     this.offset = getOffset();
     const ids = [lineId.intro(level.id), lineId.win(level.id), lineId.lose(level.id), ...level.taunts.map((_, i) => lineId.taunt(level.id, i))];
     preload(ids);
@@ -101,7 +102,7 @@ export class Battle {
       this.runner.input({ ...i, t: at });
       if (cur.progress > before) {
         this.player.set("charge", 0.3);
-        this.parts.burst(PX + 70, GROUND - 260, 3, 120, 0, 24);
+        this.parts.burst(PX + 95, GROUND - 330, 3, 120, 0, 24);
         this.cam.shake(0.08 + Math.min(0.2, cur.progress * 0.004));
       }
       return;
@@ -119,7 +120,7 @@ export class Battle {
     this.meter = Math.max(-1, Math.min(1, this.meter + delta));
   }
 
-  private popup(text: string, color: string, big = false, x = TARGET_X, y = TARGET_Y - 90) {
+  private popup(text: string, color: string, big = false, x = TARGET_X, y = TARGET_Y + 120) {
     this.popups.push({ text, color, t: 0, x, y, big });
     if (this.popups.length > 6) this.popups.shift();
   }
@@ -201,7 +202,7 @@ export class Battle {
     this.cam.kick(0.18);
     this.cam.shake(0.9);
     for (let i = 0; i < 60 + power * 3; i++) {
-      this.parts.emit(PX + 80, GROUND - 260, 500 + Math.random() * 900, (Math.random() - 0.5) * 300, 0.5 + Math.random() * 0.5, 40 + Math.random() * 40, Math.random() < 0.3 ? 2 : 0);
+      this.parts.emit(PX + 95, GROUND - 330, 500 + Math.random() * 900, (Math.random() - 0.5) * 300, 0.5 + Math.random() * 0.5, 40 + Math.random() * 40, Math.random() < 0.3 ? 2 : 0);
     }
     this.parts.burst(OX, GROUND - 230, 50, 500, 3, 40);
     const label = mult >= 2 ? "PERFECT RELEASE" : mult >= 1.5 ? "GREAT RELEASE" : mult >= 1 ? "RELEASE" : "WEAK RELEASE";
@@ -267,6 +268,7 @@ export class Battle {
     // MASH charge tone and camera.
     const cur = this.runner.current();
     const mashing = !!cur && cur.ev.type === "mash" && now >= this.runner.opensAt(cur.ev);
+    this.mashing = mashing;
     if (mashing && !this.charge) this.charge = sfx.charge();
     if (!mashing && this.charge) {
       this.charge.stop();
@@ -277,7 +279,7 @@ export class Battle {
       if (Math.random() < 0.6) {
         const a = Math.random() * Math.PI * 2;
         const rad = 40 + cur.progress * 2;
-        this.parts.emit(PX + 80 + Math.cos(a) * rad, GROUND - 260 + Math.sin(a) * rad, -Math.cos(a) * 90, -Math.sin(a) * 90, 0.5, 22, 0);
+        this.parts.emit(PX + 95 + Math.cos(a) * rad, GROUND - 330 + Math.sin(a) * rad, -Math.cos(a) * 90, -Math.sin(a) * 90, 0.5, 22, 0);
       }
     }
 
@@ -335,6 +337,7 @@ export class Battle {
   }
 
   private phase2Shown = false;
+  private mashing = false;
 
   private finishBattle() {
     const win = this.meter > 0;
@@ -385,6 +388,13 @@ export class Battle {
       g.fillStyle = grd;
       g.fillRect(-200, -200, W + 400, H + 400);
     }
+    // Kick pulse on the whole set.
+    if (pulse > 0.05) {
+      g.globalCompositeOperation = "lighter";
+      g.fillStyle = `rgba(120,60,255,${pulse * 0.08})`;
+      g.fillRect(-200, -200, W + 400, H + 400);
+      g.globalCompositeOperation = "source-over";
+    }
     // Floor glow and vignette under the fighters.
     g.fillStyle = "rgba(5,2,12,0.55)";
     g.fillRect(-200, GROUND - 10, W + 400, 400);
@@ -409,22 +419,23 @@ export class Battle {
     this.player.draw(g, time, 1, pulse);
     this.parts.draw(g);
     this.mashOrb(g, now);
-    if (this.taunt) this.bubble(g, this.taunt.text);
     // Foreground crowd jumps with the meter.
     this.crowd(g, cam.parallax(1.35), H + 40, 1.6, "#000", 1 + this.crowdHype * 2, 11);
     g.restore();
+    if (this.mashing) this.speedLines(g);
+    if (this.taunt) this.bubble(g, this.taunt.text);
     // The QTE lane lives in screen space so it stays readable through every camera move.
     this.lane(g, now, pulse);
     this.drawPopups(g);
 
-    this.hud(g, pulse);
-    // Letterbox and flash.
+    // Letterbox, then the HUD on top of it.
     const lb = cam.letterbox * 70;
     if (lb > 1) {
       g.fillStyle = "#000";
       g.fillRect(0, 0, W, lb);
       g.fillRect(0, H - lb, W, lb);
     }
+    this.hud(g, pulse);
     if (this.flash > 0) {
       g.fillStyle = `rgba(255,255,255,${this.flash * 0.8})`;
       g.fillRect(0, 0, W, H);
@@ -533,17 +544,31 @@ export class Battle {
         const R = T + ev.length * spb;
         if (now >= this.runner.opensAt(ev)) {
           const left = s.lastDir !== "left";
-          this.arrow(g, TARGET_X - 90, TARGET_Y, "left", left ? 44 : 32, left ? "#35e0ff" : "#1b5b70");
-          this.arrow(g, TARGET_X + 90, TARGET_Y, "right", left ? 32 : 44, left ? "#1b5b70" : "#35e0ff");
-          this.label(g, `${s.progress}`, TARGET_X, TARGET_Y + 14, "#fff", 44);
-          this.label(g, "MASH", TARGET_X, TARGET_Y - 80, "#35e0ff", 40);
-          this.timerRing(g, TARGET_X, TARGET_Y, (R - now) / (R - T), "#fff36b");
-          if (R - now < 1.5 * spb) this.label(g, "SPACE TO RELEASE", TARGET_X, TARGET_Y + 110, "#fff36b", 30);
+          const mx = 960, my = 330;
+          this.arrow(g, mx - 90, my, "left", left ? 44 : 32, left ? "#35e0ff" : "#1b5b70");
+          this.arrow(g, mx + 90, my, "right", left ? 32 : 44, left ? "#1b5b70" : "#35e0ff");
+          this.label(g, `${s.progress}`, mx, my + 4, "#fff", 44 + Math.min(30, s.progress));
+          this.label(g, "MASH", mx, my - 90, "#35e0ff", 44);
+          this.timerRing(g, mx, my, (R - now) / (R - T), "#fff36b");
+          if (R - now < 1.5 * spb) this.label(g, "SPACE TO RELEASE!", mx, my + 130, "#fff36b", 34 + Math.sin(this.visT * 30) * 3);
         } else {
           this.label(g, "MASH INCOMING", TARGET_X, TARGET_Y, "#35e0ff", 30);
         }
       }
     }
+  }
+
+  private speedLines(g: CanvasRenderingContext2D) {
+    g.strokeStyle = "rgba(255,255,255,0.18)";
+    g.lineWidth = 3;
+    g.beginPath();
+    for (let i = 0; i < 28; i++) {
+      const a = (i / 28) * Math.PI * 2 + ((this.visT * 7) % 1) * 0.2;
+      const r0 = 380 + ((i * 97) % 120) + Math.sin(this.visT * 40 + i) * 40;
+      g.moveTo(W / 2 + Math.cos(a) * r0, H / 2 + Math.sin(a) * r0);
+      g.lineTo(W / 2 + Math.cos(a) * 900, H / 2 + Math.sin(a) * 900);
+    }
+    g.stroke();
   }
 
   private timerRing(g: CanvasRenderingContext2D, x: number, y: number, k: number, color: string) {
@@ -572,7 +597,7 @@ export class Battle {
     const cur = this.runner.current();
     if (!cur || cur.ev.type !== "mash" || now < this.runner.opensAt(cur.ev)) return;
     const r = 20 + cur.progress * 2.4;
-    const x = PX + 80, y = GROUND - 260;
+    const x = PX + 95, y = GROUND - 330;
     g.globalCompositeOperation = "lighter";
     const sp = this.parts.sprites;
     const wob = 1 + Math.sin(this.visT * 30) * 0.06;
@@ -592,21 +617,37 @@ export class Battle {
     }
   }
 
+  /** Taunt as a cinematic subtitle: opponent portrait plus the line, above the bottom letterbox. */
   private bubble(g: CanvasRenderingContext2D, text: string) {
-    g.font = `800 24px "Arial Black", Impact, sans-serif`;
-    const w = Math.min(460, g.measureText(text).width + 40);
-    const x = OX - w / 2 + 20, y = 150;
-    g.fillStyle = "#fff";
+    g.font = `800 26px "Arial Black", Impact, sans-serif`;
+    const w = Math.min(900, g.measureText(text).width + 60);
+    const x = W / 2 - w / 2 + 50, y = H - 160;
+    g.fillStyle = "rgba(255,255,255,0.95)";
     g.beginPath();
-    g.roundRect(x, y, w, 64, 18);
-    g.moveTo(OX - 10, y + 64);
-    g.lineTo(OX + 10, y + 100);
-    g.lineTo(OX + 24, y + 64);
+    g.roundRect(x, y, w, 60, 14);
     g.fill();
     g.fillStyle = "#111";
     g.textAlign = "center";
     g.textBaseline = "middle";
-    g.fillText(text, x + w / 2, y + 33, w - 24);
+    g.fillText(text, x + w / 2 + 20, y + 31, w - 70);
+    const p = img(`opp-${this.level.artKey}`);
+    const cx = x - 10, cy = y + 30, r = 56;
+    g.save();
+    g.beginPath();
+    g.arc(cx, cy, r, 0, Math.PI * 2);
+    g.clip();
+    if (p) g.drawImage(p, cx - r, cy - r, r * 2, r * 2);
+    else {
+      g.fillStyle = this.level.opponent.color;
+      g.fillRect(cx - r, cy - r, r * 2, r * 2);
+    }
+    g.restore();
+    g.strokeStyle = this.level.opponent.color || "#ff3df2";
+    g.lineWidth = 5;
+    g.beginPath();
+    g.arc(cx, cy, r, 0, Math.PI * 2);
+    g.stroke();
+    this.label(g, this.level.opponent.name.toUpperCase(), x + 70, y - 14, this.level.opponent.color || "#ff3df2", 20);
   }
 
   private hud(g: CanvasRenderingContext2D, pulse: number) {

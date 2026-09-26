@@ -18,6 +18,7 @@ export class Character {
   rig: Rig = { ...POSES.idle };
   pose: Pose = "idle";
   poseTimer = 0;
+  hat: "none" | "beanie" | "chef" | "cap" | "headphones" | "crown" = "none";
   constructor(public x: number, public y: number, public facing: 1 | -1, public color: string, public skin: string, public shades: boolean) {}
 
   set(p: Pose, hold = 0.45) {
@@ -35,6 +36,53 @@ export class Character {
     const r = this.rig as unknown as Record<string, number>;
     const tt = t as unknown as Record<string, number>;
     for (const key in tt) r[key] += (tt[key] - r[key]) * k;
+  }
+
+  private drawHat(g: CanvasRenderingContext2D) {
+    const h = this.hat;
+    if (h === "beanie") {
+      g.fillStyle = shade(this.color, -50);
+      g.beginPath();
+      g.ellipse(0, -42, 34, 26, 0, Math.PI, Math.PI * 2);
+      g.fill();
+      g.fillRect(-34, -46, 68, 10);
+    } else if (h === "chef") {
+      g.fillStyle = "#f5f5f5";
+      g.fillRect(-26, -78, 52, 30);
+      g.beginPath();
+      g.arc(-14, -82, 18, 0, Math.PI * 2);
+      g.arc(14, -82, 18, 0, Math.PI * 2);
+      g.arc(0, -92, 18, 0, Math.PI * 2);
+      g.fill();
+    } else if (h === "cap") {
+      g.fillStyle = "#111";
+      g.beginPath();
+      g.ellipse(0, -42, 33, 22, 0, Math.PI, Math.PI * 2);
+      g.fill();
+      g.fillRect(0, -46, 52, 8);
+    } else if (h === "headphones") {
+      g.strokeStyle = "#222";
+      g.lineWidth = 8;
+      g.beginPath();
+      g.arc(0, -22, 36, Math.PI * 1.05, Math.PI * 1.95);
+      g.stroke();
+      g.fillStyle = "#ff3df2";
+      g.fillRect(-40, -30, 14, 26);
+    } else if (h === "crown") {
+      g.fillStyle = "#ffd23f";
+      g.shadowColor = "#ffd23f";
+      g.shadowBlur = 30;
+      g.beginPath();
+      g.moveTo(-30, -48);
+      g.lineTo(-30, -80);
+      g.lineTo(-15, -62);
+      g.lineTo(0, -88);
+      g.lineTo(15, -62);
+      g.lineTo(30, -80);
+      g.lineTo(30, -48);
+      g.closePath();
+      g.fill();
+    }
   }
 
   draw(g: CanvasRenderingContext2D, time: number, scale: number, beatPulse: number) {
@@ -90,6 +138,7 @@ export class Character {
     g.beginPath();
     g.ellipse(-2, -40, 32, 18, -0.15, Math.PI, Math.PI * 2);
     g.fill();
+    this.drawHat(g);
     if (this.shades) {
       g.fillStyle = "#050505";
       roundRect(g, -4, -26, 34, 12, 4);
