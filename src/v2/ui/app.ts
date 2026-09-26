@@ -2,18 +2,16 @@
 // the canvas, the stage and the game, calls startApp, registers the returned hud with
 // game.listen, and drives the animation frame loop itself.
 //
-// The flow (addendum 16:15): LOADING (automatic, the current opponent fully preloaded), then the TITLE
-// SCENE over the idling arena, whose first tap unlocks audio and starts the battle (the 4 beat count in
-// is game.play's), then RESULTS. The title carries only small LOADOUT and SETTINGS corner buttons. The
+// The flow (addenda 16:15, 17:40): the TITLE SCENE at once over the idling arena (no loading screen:
+// the fighters pop in when their rigs arrive), whose first tap unlocks audio and starts the battle (the
+// 4 beat count in is game.play's), then RESULTS. The title carries small LOADOUT and SETTINGS buttons. The
 // opponent sequence (addendum 16:40 point 3): a win moves to the next level, the roster loops with
 // tighter windows each loop, a loss replays the same opponent; persisted in the progress store. The map,
 // the VS card, the menu list and multiplayer are out of the flow (their modules stay, unreachable).
 import type { GameApi, LevelV2, Listener, Stage, Stats } from "../contracts";
-import { initAudio, ctx } from "../../audio/engine";
+import { ctx } from "../../audio/engine";
 import { openPacks, setPackHooks } from "../../packs";
 import { buildGate } from "./gate";
-import { buildLoading } from "./loading";
-import { trackSettled } from "./flow";
 import { buildSettings } from "./settings";
 import { buildLoadout } from "./loadout";
 import { buildResults, setShareCard } from "./results";
@@ -28,10 +26,10 @@ import { liveListener } from "../../live/battle";
 import { addXp, loadXp, saveXp, xpFor } from "../xp";
 import cast from "../cast.json";
 
-/** The battle starts without its fighters rather than wait longer than this on the models. */
+/** The battle starts without its fighters rather than wait longer than this on the models (RETRY, NEXT). */
 const STAGE_WAIT_MS = 25000;
-/** The loading screen gives up on a slow asset after this and shows the title scene anyway. */
-const LOAD_WAIT_MS = 12000;
+/** A title tap before the rigs are in waits this long at most (the GETTING READY pulse), then counts in. */
+const TAP_WAIT_MS = 1000;
 
 export interface StartOpts {
   game: GameApi;
@@ -71,11 +69,10 @@ export function startApp(opts: StartOpts): { hud: Listener } {
   const battle: ScreenCtl = { root: hudCtl.root };
 
   // Declared before anything calls stageLevel (preloadFirst runs synchronously from here).
-  let staged: { level: LevelV2; ready: Promise<void> } | null = null;
+  let staged: { level: LevelV2; ready: Promise<void>; done: boolean } | null = null;
   /** Bumped by every battle start: a battle whose number is no longer current never shows its results. */
   let battleGen = 0;
-  const loading = buildLoading();
-  const gate = buildGate(() => void startBattle(opponentSlot(progress.opp ?? 0, levels.length)), {
+  const gate = buildGate(() => void tapStart(), {
     loadout: () => openLoadout(goScene),
     settings: () => goSettings(),
   });
@@ -100,7 +97,7 @@ export function startApp(opts: StartOpts): { hud: Listener } {
     }
   }
 
-  const screens: ScreenCtl[] = [loading, gate, settings, loadout, battle, results];
+  const screens: ScreenCtl[] = [gate, settings, loadout, battle, results];
   for (const s of screens) {
     s.root.classList.add("screen");
     uiRoot.appendChild(s.root);
@@ -117,27 +114,41 @@ export function startApp(opts: StartOpts): { hud: Listener } {
   }
 
   addEventListener("keydown", (e) => current?.onKey?.(e));
-  showScreen(loading);
-  void preloadFirst();
+  goScene();
+  preloadFirst();
 
-  /** The current opponent in full before the title scene: the set and fighters, the track and the voices.
-   * The AudioContext is created now (suspended until the first tap) so the music decodes during loading. */
-  async function preloadFirst() {
+  /** Nothing blocks the title (addendum 17:40): the current opponent's set, rigs and level clips start now
+   * (the fighters pop in when they land), the track's bytes download, and it decodes on the tap. */
+  function preloadFirst() {
     const first = levels[slot.index] ?? levels[0];
+    void stageLevel(first);
     try {
-      initAudio();
+      void (game as GameApi & { preload?(l: LevelV2): Promise<unknown> | void }).preload?.(first);
     } catch {
-      /* no Web Audio: the track job fails fast and the battle runs on its visuals */
+      /* the battle fetches its track itself */
     }
-    const jobs: Promise<unknown>[] = [stageLevel(first)];
-    const pre = (game as GameApi & { preload?(l: LevelV2): Promise<unknown> | void }).preload?.(first);
-    if (pre) jobs.push(pre);
-    // Fonts are part of the look: the logo in Anton, not in the fallback face.
-    const fonts = (document as Document & { fonts?: { ready: Promise<unknown> } }).fonts;
-    if (fonts?.ready) jobs.push(fonts.ready);
-    await trackSettled(jobs, (f) => loading.set(f), LOAD_WAIT_MS);
-    loading.set(1);
-    goScene();
+  }
+
+  /** The title tap: at most TAP_WAIT_MS of GETTING READY when the rigs are not in yet, then the count in. */
+  let tapping = false;
+  async function tapStart() {
+    if (tapping || current === battle) return;
+    tapping = true;
+    try {
+      const s = opponentSlot(progress.opp ?? 0, levels.length);
+      const level = levels[s.index] ?? levels[0];
+      const ready = stageLevel(level);
+      if (!staged?.done) {
+        gate.waiting(true);
+        await Promise.race([ready, new Promise((r) => setTimeout(r, TAP_WAIT_MS))]);
+        gate.waiting(false);
+        // LOADOUT or SETTINGS opened during the wait: that screen wins, the title re-arms on the way back.
+        if (current !== gate) return;
+      }
+      void startBattle(s, 0);
+    } finally {
+      tapping = false;
+    }
   }
 
   /** The title scene: the loaded stage idles behind the overlay, the next tap plays the current opponent. */
@@ -159,17 +170,30 @@ export function startApp(opts: StartOpts): { hud: Listener } {
   // The stage builds the set and the fighters per level: started on the VS card, awaited by the battle,
   // dropped after each battle so a retry gets a fresh director.
   function stageLevel(l: LevelV2): Promise<void> {
-    if (!staged || staged.level !== l) staged = { level: l, ready: stage.load(l).catch(() => {}) };
+    if (!staged || staged.level !== l) {
+      const entry: { level: LevelV2; ready: Promise<void>; done: boolean } = { level: l, ready: Promise.resolve(), done: false };
+      let p: Promise<void>;
+      try {
+        p = Promise.resolve(stage.load(l));
+      } catch {
+        p = Promise.resolve();
+      }
+      entry.ready = p.catch(() => {}).then(() => {
+        entry.done = true;
+      });
+      staged = entry;
+    }
     return staged.ready;
   }
 
   function preloadLevel(l: LevelV2 | undefined) {
     if (!l) return;
     void stageLevel(l);
-    void (game as GameApi & { preload?(l: LevelV2): Promise<unknown> | void }).preload?.(l);
+    // After a battle the context runs: the next track may decode now.
+    void (game as GameApi & { preload?(l: LevelV2, decode?: boolean): Promise<unknown> | void }).preload?.(l, true);
   }
 
-  async function startBattle(s: OpponentSlot) {
+  async function startBattle(s: OpponentSlot, stageWait = STAGE_WAIT_MS) {
     // One battle at a time: the same tap seen twice (pointer down then click, a key and a click, a double
     // tap on RETRY) must not start a second game.play, whose quit() would orphan the first one.
     if (current === battle) return;
@@ -182,7 +206,9 @@ export function startApp(opts: StartOpts): { hud: Listener } {
     battleInput.show();
     // The menu loop fades out across the count in bar: the kick and the level track take over.
     bed.stop((60 / level.bpm) * 4);
-    await Promise.race([stageLevel(level), new Promise((r) => setTimeout(r, STAGE_WAIT_MS))]);
+    // The title tap already gave the rigs their second: the count in starts with whatever is there.
+    if (stageWait > 0) await Promise.race([stageLevel(level), new Promise((r) => setTimeout(r, stageWait))]);
+    else void stageLevel(level);
     if (gen !== battleGen) return;
     staged = null;
     const stats = await game.play(level, battleWindow(level, s));

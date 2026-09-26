@@ -39,6 +39,7 @@ export class Game implements GameApi {
   private srcGain: GainNode | null = null;
   private track: TrackInfo | null = null;
   private buffers = new Map<string, Promise<AudioBuffer | null>>();
+  private raw = new Map<string, Promise<ArrayBuffer | null>>();
   private voices: Record<string, string> | null = null;
   private voiceBufs = new Map<string, AudioBuffer>();
   private offset = 0;
@@ -64,14 +65,34 @@ export class Game implements GameApi {
     this.react(e);
   };
 
-  private buffer(file: string): Promise<AudioBuffer | null> {
-    let p = this.buffers.get(file);
+  /** The track's compressed bytes, fetched once (safe before any gesture: no AudioContext needed). */
+  private bytes(file: string): Promise<ArrayBuffer | null> {
+    let p = this.raw.get(file);
     if (!p) {
       p = fetch(`${this.deps.base}music/${file}`)
         .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(r.status)))
-        .then((a) => ctx.decodeAudioData(a))
         .catch(() => {
           // A failed download is not cached: the next battle tries again.
+          this.raw.delete(file);
+          return null;
+        });
+      this.raw.set(file, p);
+    }
+    return p;
+  }
+
+  /** The decoded track: decoding waits for the first call here (the tap), the bytes may already be in. */
+  private buffer(file: string): Promise<AudioBuffer | null> {
+    let p = this.buffers.get(file);
+    if (!p) {
+      p = this.bytes(file)
+        .then((a) => {
+          if (!a) return Promise.reject(new Error("no bytes"));
+          // decodeAudioData detaches the bytes: the decoded promise is the cache from here on.
+          this.raw.delete(file);
+          return ctx.decodeAudioData(a);
+        })
+        .catch(() => {
           this.buffers.delete(file);
           return null;
         });
@@ -80,10 +101,11 @@ export class Game implements GameApi {
     return p;
   }
 
-  /** Fetch and decode a level's track and voices ahead of time (the loading screen and the VS card call
-   * this; needs the AudioContext, created suspended during loading). Settles when both are in or failed. */
-  preload(level: LevelV2): Promise<void> {
-    return Promise.all([this.buffer(this.deps.trackInfo(level.track).file), this.loadVoices(level)]).then(() => {});
+  /** Ahead of a battle (addendum 17:40): only the track's bytes download, nothing decodes before the tap,
+   * the voices stream during the battle. `decode` (after a battle, the context running) decodes it too. */
+  preload(level: LevelV2, decode = false): Promise<void> {
+    const file = this.deps.trackInfo(level.track).file;
+    return (decode ? this.buffer(file) : this.bytes(file)).then(() => {});
   }
 
   private async loadVoices(level: LevelV2) {
