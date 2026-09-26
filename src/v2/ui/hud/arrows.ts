@@ -32,6 +32,8 @@ function glowSprite(color: string, size = 64): HTMLCanvasElement {
   return c;
 }
 
+/** v1's arrow color, exactly (the flat UI accent made a white on white blob). */
+const V1_ARROW = "#35e0ff";
 const ROT: Record<Dir, number> = { right: 0, down: Math.PI / 2, left: Math.PI, up: -Math.PI / 2 };
 const STEP: Record<Dir, [number, number]> = { right: [1, 0], down: [0, 1], left: [-1, 0], up: [0, -1] };
 
@@ -43,7 +45,7 @@ export function buildArrows(host: HTMLElement) {
   const canvas = el("canvas", "hud-arrows");
   const g = canvas.getContext("2d")!;
   const probe = el("div", "hud-safe-probe");
-  const sprites = [CYAN, MAGENTA, YELLOW, "#ffffff"].map((c) => glowSprite(c));
+  const sprites = [CYAN, MAGENTA, YELLOW, "#ffffff", V1_ARROW].map((c) => glowSprite(c));
 
   let cssW = 0;
   let cssH = 0;
@@ -101,7 +103,7 @@ export function buildArrows(host: HTMLElement) {
     g.rotate(ROT[dir]);
     g.globalAlpha = alpha;
     g.globalCompositeOperation = "lighter";
-    g.drawImage(sprites[color === CYAN || color === CYAN_DIM ? 0 : color === YELLOW ? 2 : 1], -size * 1.8, -size * 1.8, size * 3.6, size * 3.6);
+    g.drawImage(sprites[color === V1_ARROW ? 4 : color === CYAN || color === CYAN_DIM ? 0 : color === YELLOW ? 2 : 1], -size * 1.8, -size * 1.8, size * 3.6, size * 3.6);
     g.globalCompositeOperation = "source-over";
     g.fillStyle = color;
     g.beginPath();
@@ -142,18 +144,7 @@ export function buildArrows(host: HTMLElement) {
     g.restore();
   }
 
-  /** The visible lane the arrows travel along, from its spawn point into the ring. */
-  function lane() {
-    const [x, y] = lanePos(2.2);
-    g.strokeStyle = "rgba(255,255,255,0.14)";
-    g.lineWidth = 64;
-    g.lineCap = "round";
-    g.beginPath();
-    g.moveTo(0, 0);
-    g.lineTo(x, y);
-    g.stroke();
-    g.lineCap = "butt";
-  }
+
 
 
 
@@ -211,6 +202,20 @@ export function buildArrows(host: HTMLElement) {
     g.restore();
   }
 
+  /** A press icon in the ring (the HOLD): a finger resting on a disc, `k` 0 hovering to 1 pressed. */
+  function pressIcon(k: number) {
+    g.save();
+    g.fillStyle = `rgba(255,255,255,${0.15 + 0.35 * k})`;
+    g.beginPath();
+    g.arc(0, 0, 40, 0, Math.PI * 2);
+    g.fill();
+    g.font = "54px sans-serif";
+    g.textAlign = "center";
+    g.textBaseline = "middle";
+    g.fillText("\u{1F446}", 0, 6 - (1 - k) * 12);
+    g.restore();
+  }
+
   /** The ghost finger swiping `dir` through the ring as the arrow lands (dt = seconds to the target). */
   function ghostSwipe(dir: Dir, dt: number) {
     const p = Math.max(0, Math.min(1, 0.5 - dt * 2.5));
@@ -243,7 +248,7 @@ export function buildArrows(host: HTMLElement) {
     if (ev.type === "hit") {
       const [x, y] = lanePos((T - now) / spb);
       if (ev.tap) note(x, y, 38, CYAN);
-      else arrow(x, y, ev.dir, 38, CYAN);
+      else arrow(x, y, ev.dir, 38, V1_ARROW);
     } else if (ev.type === "combo") {
       const n = ev.dirs.length;
       const gap = portrait ? Math.min(84, 440 / Math.max(1, n)) : 84;
@@ -256,21 +261,10 @@ export function buildArrows(host: HTMLElement) {
       label("COMBO", 0, 8, MAGENTA, 26);
     } else if (ev.type === "hold") {
       if (!s.held) {
-        // A long bar with an arrow head flying in: the head lands on the press, the tail is the hold length.
-        const [hx, hy] = lanePos(Math.max(0, (T - now) / spb));
-        const [tx, ty] = lanePos(Math.max(0, (T - now) / spb) + ev.length * 0.5);
-        g.strokeStyle = YELLOW;
-        g.globalAlpha = 0.75;
-        g.lineWidth = 26;
-        g.lineCap = "round";
-        g.beginPath();
-        g.moveTo(hx, hy);
-        g.lineTo(tx, ty);
-        g.stroke();
-        g.lineCap = "butt";
-        g.globalAlpha = 1;
-        arrow(hx, hy, portrait ? "down" : "left", 34, YELLOW);
-        if (!taught.has("hold")) label("HOLD", 0, 70, YELLOW, 28);
+        // A ring closing onto the press, with a press icon: no arrow (addendum 17:50).
+        timerRing(0, 0, (T - now) / (2 * spb), YELLOW);
+        pressIcon(1 - Math.min(1, Math.max(0, (T - now) / spb)));
+        if (!taught.has("hold")) label("HOLD", 0, 96, YELLOW, 28);
       } else {
         const p = f.holdProgress;
         g.strokeStyle = YELLOW;
@@ -278,7 +272,8 @@ export function buildArrows(host: HTMLElement) {
         g.beginPath();
         g.arc(0, 0, 58, -Math.PI / 2, -Math.PI / 2 + p * Math.PI * 2);
         g.stroke();
-        label(p >= 0.97 ? "LIFT!" : "HOLD...", 0, 10, "#fff", 26);
+        pressIcon(1);
+        label(p >= 0.97 ? "LIFT!" : "HOLD...", 0, 96, "#fff", 26);
       }
     } else if (ev.type === "mash") {
       const R = f.targetAt(ev);
@@ -286,12 +281,16 @@ export function buildArrows(host: HTMLElement) {
         const wob = Math.sin(performance.now() / 1000 * 30);
         const closing = R - now < spb;
         mashOrb(f.mashCount, wob);
-        // The cluster of small arrows: left and right, the side to tap next lit.
-        const nextLeft = s.lastDir !== "left";
-        for (let i = 0; i < 3; i++) {
-          arrow(-80 - i * 30, (i - 1) * 34, "left", 20, nextLeft ? CYAN : CYAN_DIM, nextLeft ? 1 : 0.5);
-          arrow(80 + i * 30, (i - 1) * 34, "right", 20, nextLeft ? CYAN_DIM : CYAN, nextLeft ? 0.5 : 1);
-        }
+        // The mash meter filling with the taps (the burst caps at 3 taps a beat).
+        const cap = Math.max(1, 3 * ev.length);
+        const fill = Math.min(1, f.mashCount / cap);
+        g.fillStyle = "rgba(0,0,0,0.55)";
+        g.fillRect(-120, 70, 240, 18);
+        g.fillStyle = YELLOW;
+        g.fillRect(-120, 70, 240 * fill, 18);
+        g.strokeStyle = "#fff";
+        g.lineWidth = 2;
+        g.strokeRect(-120, 70, 240, 18);
         label(`${f.mashCount}`, 0, 4, "#fff", 44 + Math.min(30, f.mashCount));
         label("67", 0, -96, YELLOW, 56 + (closing ? 0 : wob * 4));
         // The ring closes onto the note ring over the last beat: tap when they meet.
@@ -348,7 +347,6 @@ export function buildArrows(host: HTMLElement) {
       watched.delete(kind);
       if (st.result && st.result.grade !== "miss" && !st.result.cringe) taught.add(kind);
     }
-    lane();
     for (const p of visiblePrompts(f.prompts, f.songTime, f.spb, gate, shown)) {
       prompt(p, f);
       teach(p, f);

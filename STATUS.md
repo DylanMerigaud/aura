@@ -1,3 +1,9 @@
+16:45 CEST, GAME lane: Dylan's calls up to 17:50 at the ROOT
+GREEN: tests 700, typecheck clean; no loading screen: the title shows at once over the lit arena, the fighters grow in when their rigs land, LOADOUT and SETTINGS centered under TAP TO PLAY; prompts: TAP note round (any tap), SWIPE note = v1's cyan arrow exactly, the 67 = big 67, pulsing pad and a mash meter (no arrows), HOLD = a filling ring with a press icon, RELEASE = the closing ring with a swipe up hint; level 1 opens on taps then arrows one direction at a time; pack first after a win; one voice queue; render follows the real canvas size
+RED: recorded voices silent until the bake off winner lands (index.json "voice": "bakeoff-winner", "cast": "roster-1625"); pnpm balance flags levels 4 and 5 too hard (level 1 is at 74 percent); nothing seen on a phone since 15:35
+PLAY: https://dylanmerigaud.github.io/aura/
+NEED FROM DYLAN: play the root once on the phone, sound on: the title tap, the first taps with the ghost finger, the first swipe arrows, the 67 swipe up on the drop
+
 16:35 CEST, GAME lane: Dylan's 17:05 and 17:15 calls at the ROOT
 GREEN: tests 700, typecheck clean; MOBILE ONLY gestures: swipe the arrow's direction (v1 arrows on a visible lane), the 67 is alternating left and right taps then a swipe up on the drop, hold is press and lift, no keys; no YOUR MOVE / HIS MOVE text or call; the pack pops first after a win, then the results card; one voice queue (calls, then lines, then taunts, never overlapping), the robotic browser voice is gone; the render follows the real canvas size in landscape and portrait (resize test)
 RED: all recorded voices are silent until the bake off winner lands in voice/v2/index.json with "voice": "bakeoff-winner" (and "cast": "roster-1625" for taunts); the animation eval k10 flags the one direction onboarding (asked by Dylan 17:15); nothing seen on a phone since 15:35
