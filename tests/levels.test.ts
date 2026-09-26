@@ -109,7 +109,7 @@ describe("hero level", () => {
 describe("turn validator", () => {
   const hero = LEVELS_V2[0];
   it("refuses a player QTE inside an opponent turn", () => {
-    const bad: LevelV2 = { ...hero, events: [...hero.events, { type: "hit", beat: 18, dir: "up" }].sort((a, b) => a.beat - b.beat) };
+    const bad: LevelV2 = { ...hero, events: [...hero.events, { type: "hit" as const, beat: 18, dir: "up" as const }].sort((a, b) => a.beat - b.beat) };
     expect(turnIssues(bad).join()).toMatch(/hit on beat 18 .* intersects the opponent turn 16..24/);
   });
   it("refuses a HOLD whose release runs into an opponent turn", () => {
