@@ -12,7 +12,7 @@ export type ClipEvent =
 
 interface Manifest {
   characters: { file: string; name: string; role?: string; preferred?: boolean }[];
-  clips: { file: string; event: string; name?: string; loop?: boolean; fps?: number }[];
+  clips: { file: string; event: string; name?: string; loop?: boolean; fps?: number; canon?: string }[];
 }
 
 /** RobotExpressive clip per event (it has Dance, Death, Idle, Jump, No, Punch, Running, ThumbsUp, Wave, Yes...). */
@@ -58,6 +58,26 @@ function hipsRestY(root: THREE.Object3D): number | undefined {
   return y;
 }
 
+/**
+ * Remove the linear floor drift (x, z) of a Hips position track, keeping the sway and the height: a clip
+ * that travels (stumble 1.3 m back, knocked out 0.8 m, shoved 1.4 m) ends on its own mark, so the blend
+ * back to the idle does not slide the fighter home, and the shots framed on LAYOUT keep it in frame.
+ */
+export function removeDrift(track: { times: ArrayLike<number>; values: { [k: number]: number; length: number } }): void {
+  const n = track.times.length;
+  if (n < 2 || track.values.length !== n * 3) return;
+  const t0 = track.times[0];
+  const span = track.times[n - 1] - t0;
+  if (!(span > 0)) return;
+  const dx = track.values[(n - 1) * 3] - track.values[0];
+  const dz = track.values[(n - 1) * 3 + 2] - track.values[2];
+  for (let k = 0; k < n; k++) {
+    const f = (track.times[k] - t0) / span;
+    track.values[k * 3] -= dx * f;
+    track.values[k * 3 + 2] -= dz * f;
+  }
+}
+
 const retargeted = new WeakMap<THREE.AnimationClip, Map<string, THREE.AnimationClip>>();
 /** Rename a clip's tracks onto this model's bone names (dropping bones it lacks) and scale the Hips
  * translation from the clip rig's rest height to the model's, so feet stay on the floor. */
@@ -75,7 +95,10 @@ function retarget(clip: THREE.AnimationClip, names: Map<string, string>, hipsK: 
     if (!node) continue;
     const c = t.clone();
     c.name = node + t.name.slice(i);
-    if (hipsK !== 1 && boneKey(node) === "Hips" && t.name.endsWith(".position")) for (let k = 0; k < c.values.length; k++) c.values[k] *= hipsK;
+    if (boneKey(node) === "Hips" && t.name.endsWith(".position")) {
+      if (hipsK !== 1) for (let k = 0; k < c.values.length; k++) c.values[k] *= hipsK;
+      removeDrift(c);
+    }
     tracks.push(c);
   }
   const out = new THREE.AnimationClip(clip.name, clip.duration, tracks);
@@ -112,16 +135,16 @@ const ESSENTIAL_MS = 6000;
 const CLIP_MS = 30000;
 
 /**
- * The clips the stage plays: one per event (the first manifest entry wins, so the aura farming canon
- * listed first is picked every time), crowd and entrance clips skipped since nothing plays them.
+ * The clips the stage plays: one per event, decided from the manifest alone (never by load order): the
+ * first aura farming canon clip of the event, else its first entry, so a generic alternate never plays
+ * when a canon move exists. Crowd and entrance clips are skipped since nothing plays them.
  */
-export function pickClips<T extends { event: string }>(clips: T[]): T[] {
-  const seen = new Set<string>();
+export function pickClips<T extends { event: string; canon?: string }>(clips: T[]): T[] {
   const out: T[] = [];
   for (const c of clips) {
-    if (!CLIP_EVENTS.has(c.event) || seen.has(c.event)) continue;
-    seen.add(c.event);
-    out.push(c);
+    if (!CLIP_EVENTS.has(c.event) || out.some((o) => o.event === c.event)) continue;
+    const same = clips.filter((o) => o.event === c.event);
+    out.push(same.find((o) => o.canon && o.canon !== "generic") ?? c);
   }
   return out;
 }
@@ -140,7 +163,8 @@ async function fromManifest(base: string): Promise<CastSource> {
   const ec = byRole(/enemy|opponent|boss/i) ?? m.characters.find((c) => c !== pc) ?? pc;
   const clips: CastSource["clips"] = new Map();
   // Every clip starts downloading now, alongside the characters; only the idles are waited for.
-  const loads = pickClips(m.clips).map((c) => {
+  const picked = pickClips(m.clips);
+  const loads = picked.map((c) => {
     const p = withTimeout(loadGltf(`${base}models/${c.file}`), CLIP_MS, c.file)
       .then((g) => {
         const clip = (c.name && g.animations.find((a) => a.name === c.name)) || g.animations[0];
@@ -160,8 +184,11 @@ async function fromManifest(base: string): Promise<CastSource> {
     Promise.all(loads.filter((l) => ESSENTIAL.has(l.event)).map((l) => l.p)),
     new Promise((r) => setTimeout(r, ESSENTIAL_MS)),
   ]);
-  // Clips baked into the character file count too, by event name.
-  for (const a of pg.animations) if (!clips.has(a.name)) clips.set(a.name, { clip: a, loop: LOOPING.has(a.name) });
+  // Clips baked into the character file count too, by event name, but only for events the manifest does
+  // not pick: a baked clip set now and overwritten by a file that lands later would differ per battle.
+  for (const a of pg.animations) {
+    if (!clips.has(a.name) && !picked.some((c) => c.event === a.name)) clips.set(a.name, { clip: a, loop: LOOPING.has(a.name) });
+  }
   const player = pg.scene;
   const enemy = eg ? eg.scene : SkeletonUtils.clone(pg.scene);
   return { player, enemy, clips, label: `manifest ${pc.name} vs ${ec.name}` };
@@ -210,15 +237,29 @@ function blobTexture(): THREE.CanvasTexture {
 }
 let blobTex: THREE.CanvasTexture | null = null;
 
-/** PS2 look: Lambert everywhere (cheap, skinning kept), optional tint toward a color. */
-function toLambert(root: THREE.Object3D, tint?: THREE.Color): void {
+/** Three step toon ramp (shadow, mid, lit), nearest filtered: the hard bands of a stylized look. */
+let toonRamp: THREE.DataTexture | null = null;
+function rampTexture(): THREE.DataTexture {
+  const t = new THREE.DataTexture(new Uint8Array([90, 170, 255]), 3, 1, THREE.RedFormat);
+  t.minFilter = t.magFilter = THREE.NearestFilter;
+  t.generateMipmaps = false;
+  t.needsUpdate = true;
+  return t;
+}
+
+/** Toon look: MeshToonMaterial with a 3 step ramp (skinning kept, cheap), optional tint toward a color. Casts the key light's shadow. */
+function toToon(root: THREE.Object3D, tint?: THREE.Color): void {
+  toonRamp ??= rampTexture();
+  const gradientMap = toonRamp;
   root.traverse((o) => {
     const mesh = o as THREE.Mesh;
     if (!mesh.isMesh) return;
     mesh.frustumCulled = false;
+    mesh.castShadow = true;
     const conv = (m: THREE.Material) => {
       const src = m as THREE.MeshStandardMaterial;
-      const out = new THREE.MeshLambertMaterial({
+      const out = new THREE.MeshToonMaterial({
+        gradientMap,
         color: src.color ? src.color.clone() : new THREE.Color(0xffffff),
         map: src.map ?? null,
         emissive: src.emissive ? src.emissive.clone() : new THREE.Color(0),
@@ -235,6 +276,23 @@ function toLambert(root: THREE.Object3D, tint?: THREE.Color): void {
 }
 
 const tmp = new THREE.Vector3();
+const tmp2 = new THREE.Vector3();
+
+/** Blend into a move, and back to the idle groove (slower, so a reaction never snaps home). */
+const FADE_IN_S = 0.12;
+const FADE_BACK_S = 0.3;
+/** A clip this long is a dance phrase: it resumes where it left off. Shorter ones are poses and reactions. */
+export const PHRASE_S = 8;
+
+/**
+ * Whether replaying an action restarts it from its first frame. Loops and dance phrases are persistent and
+ * resume from their own time; poses and reactions restart; a phrase that already played to its end restarts.
+ */
+export function restartsOnPlay(loopOnce: boolean, duration: number, time: number): boolean {
+  if (!loopOnce) return false;
+  if (duration < PHRASE_S) return true;
+  return time >= duration - 1e-3;
+}
 
 /** One fighter: normalized to 1.8 m, facing +z inside `root`, with a mixer, a blob shadow and bone anchors. */
 export class Fighter {
@@ -255,7 +313,7 @@ export class Fighter {
   private height = 1.8;
 
   constructor(model: THREE.Object3D, private clips: CastSource["clips"], private role: "player" | "enemy", tint?: THREE.Color) {
-    toLambert(model, tint);
+    toToon(model, tint);
     model.updateMatrixWorld(true);
     // Skinned bounds read the bone matrices, which are only filled by a skeleton update.
     model.traverse((o) => (o as THREE.SkinnedMesh).isSkinnedMesh && (o as THREE.SkinnedMesh).skeleton.update());
@@ -320,23 +378,27 @@ export class Fighter {
     return this.role === "enemy" && this.clips.has("enemy_idle") ? "enemy_idle" : "idle_groove";
   }
 
-  /** Cross fade to the clip of an event (0.12 s); a missing clip is idle plus a squash. */
+  /**
+   * Cross fade from the pose on screen to the clip of an event (0.12 s in, 0.3 s back to the idle); a missing
+   * clip is idle plus a squash. Actions are persistent: a loop or a long dance phrase resumes from its own
+   * time, only poses and reactions restart (restartsOnPlay), so a hit never snaps a dance to its first frame.
+   */
   play(ev: ClipEvent | string, speed = 1): void {
     this.frozen = false;
     const want = this.action(ev);
-    const next = want ?? this.action(this.idleName) ?? null;
+    const idle = this.action(this.idleName);
+    const next = want ?? idle ?? null;
     if (!want) this.squash = 1;
     if (!next) return;
+    const prev = this.current;
+    const restart = restartsOnPlay(next.loop === THREE.LoopOnce, next.getClip().duration, next.time);
     next.enabled = true;
     next.paused = false;
     next.setEffectiveTimeScale(speed);
     next.setEffectiveWeight(1);
-    const oneShot = next.loop === THREE.LoopOnce;
-    if (next !== this.current || !next.isRunning() || oneShot) {
-      next.reset();
-      if (this.current && this.current !== next) next.crossFadeFrom(this.current, 0.12, false);
-      next.play();
-    }
+    if (restart) next.reset();
+    if (prev && prev !== next) next.crossFadeFrom(prev, next === idle ? FADE_BACK_S : FADE_IN_S, false);
+    next.play();
     this.current = next;
   }
 
@@ -386,7 +448,7 @@ export class Fighter {
   }
   handsPos(out: { x: number; y: number; z: number }): void {
     if (this.hands.length === 2) {
-      const a = this.hands[0].getWorldPosition(new THREE.Vector3());
+      const a = this.hands[0].getWorldPosition(tmp2);
       const b = this.hands[1].getWorldPosition(tmp);
       out.x = (a.x + b.x) / 2;
       out.y = (a.y + b.y) / 2;
@@ -410,7 +472,7 @@ export class Fighter {
     this.mixer.stopAllAction();
     this.mixer.uncacheRoot(this.mixer.getRoot());
     this.root.removeFromParent();
-    // Materials are per fighter (toLambert, the blob); geometry is shared with the cast source, except the blob.
+    // Materials are per fighter (toToon, the blob; the shared toon ramp is kept); geometry is shared with the cast source, except the blob.
     this.root.traverse((o) => {
       const m = o as THREE.Mesh;
       if (!m.isMesh) return;

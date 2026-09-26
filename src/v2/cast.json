@@ -2,27 +2,38 @@
  "levels": [
   {
    "id": 1,
-   "title": "Phonk God",
-   "place": "The club, peak phonk hour",
+   "model": "gemini-3.1-pro-preview",
+   "title": "Turnstile Sigma",
+   "place": "Chatelet, 2am",
    "story": [
-    "Bass rattles the floor as strobe lights freeze the sweat in midair.",
-    "DJ Montagem stares down from the booth, ready to harvest your remaining aura."
+    "Chatelet at 2am, face the ultimate gatekeeper."
    ],
    "opponent": {
-    "name": "DJ Montagem",
-    "persona": "Brazilian phonk maestro radiating absolute main character energy from the booth.",
-    "color": "#ff007f"
+    "name": "THE TURNSTILE NINJA",
+    "handle": "@turnstile_ninja",
+    "persona": "Silent, cocky, hands in pockets, chin up. Never paid a metro ticket.",
+    "color": "#35e0ff"
    },
    "taunts": [
-    "You are completely cooked by this 808 drop.",
-    "One slip and your sigma streak snaps instantly.",
-    "My kick drum just erased ten thousand aura."
+    "Wesh, you validated your ticket?",
+    "T'es cuit, your aura's gone.",
+    "Controllers literally fear my jumps.",
+    "Tickets are for NPCs, frerot.",
+    "C'est carre, I mog you.",
+    "Navigo? Never heard of it.",
+    "No pass, just sigma energy.",
+    "Gate hopping is main character."
    ],
    "announcer": {
-    "intro": "The bass drops, fight for the dance floor.",
-    "win": "Massive W, you cleared the entire booth.",
-    "lose": "Cooked on beat, step off the stage."
-   }
+    "intro": "Lock in.",
+    "win": "Aura strictly secured.",
+    "lose": "You are totally cooked."
+   },
+   "references": [
+    "aura farming",
+    "mog and NPC"
+   ],
+   "edited": "3 taunts swapped for the seed lines, persona completed by hand"
   },
   {
    "id": 2,

@@ -1,0 +1,367 @@
+/* TikTok LIVE overlay: DOM chrome layered over the full screen game canvas.
+   Bright Fortnite style chrome: bold rounded shapes, condensed bold type,
+   white on dark translucent panels, TikTok red and cyan as the only accents.
+   Everything is pointer events none so the game keeps every input. */
+
+.live-root {
+  --live-red: #fe2c55;
+  --live-cyan: #25f4ee;
+  --live-panel: rgba(12, 12, 16, 0.55);
+  --live-panel-strong: rgba(10, 10, 14, 0.78);
+  --live-pad: 12px;
+  --live-safe-top: env(safe-area-inset-top, 0px);
+  --live-safe-left: env(safe-area-inset-left, 0px);
+  --live-safe-right: env(safe-area-inset-right, 0px);
+  --live-safe-bottom: env(safe-area-inset-bottom, 0px);
+
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 20;
+  color: #fff;
+  font-family: "Bebas Neue", "Archivo Narrow", "Oswald", "Helvetica Neue", system-ui, sans-serif;
+  font-weight: 700;
+  font-stretch: condensed;
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.55);
+  -webkit-font-smoothing: antialiased;
+  contain: layout paint size;
+}
+
+.live-root * {
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+/* Top left stack: LIVE badge then the viewer count. */
+.live-topleft {
+  position: absolute;
+  top: calc(var(--live-pad) + var(--live-safe-top));
+  left: calc(var(--live-pad) + var(--live-safe-left));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.live-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--live-red);
+  font-size: clamp(12px, 2.6vmin, 18px);
+  text-transform: uppercase;
+  box-shadow: 0 4px 14px rgba(254, 44, 85, 0.45);
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff;
+  animation: live-pulse 1.4s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes live-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.6);
+    opacity: 0.45;
+  }
+}
+
+.live-viewers {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--live-panel);
+  backdrop-filter: blur(6px);
+  font-size: clamp(11px, 2.4vmin, 16px);
+  font-variant-numeric: tabular-nums;
+}
+
+.live-viewers-eye {
+  color: var(--live-cyan);
+}
+
+/* Top center: the two handles. */
+.live-handles {
+  position: absolute;
+  top: calc(var(--live-pad) + var(--live-safe-top));
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 70vw;
+}
+
+.live-handle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px 4px 4px;
+  border-radius: 999px;
+  background: var(--live-panel);
+  backdrop-filter: blur(6px);
+  font-size: clamp(11px, 2.2vmin, 15px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.live-avatar {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3a3a46, #16161c);
+  border: 2px solid var(--live-cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+}
+
+.live-handle--opponent .live-avatar {
+  border-color: var(--live-red);
+}
+
+.live-vs {
+  font-size: clamp(11px, 2.2vmin, 15px);
+  color: var(--live-cyan);
+}
+
+/* Bottom left: the comment feed, newest at the bottom. */
+.live-feed {
+  position: absolute;
+  left: calc(var(--live-pad) + var(--live-safe-left));
+  bottom: calc(var(--live-pad) + var(--live-safe-bottom));
+  width: min(58vw, 340px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.live-comment {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 12px;
+  background: var(--live-panel);
+  backdrop-filter: blur(4px);
+  font-size: clamp(11px, 2.2vmin, 15px);
+  line-height: 1.2;
+  animation: live-comment-in 260ms ease-out both;
+  will-change: transform, opacity;
+}
+
+.live-comment--fading {
+  animation: live-comment-out 220ms ease-in both;
+}
+
+.live-comment-handle {
+  color: var(--live-cyan);
+  flex: 0 0 auto;
+}
+
+.live-comment-text {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.live-comment-gift {
+  flex: 0 0 auto;
+}
+
+@keyframes live-comment-in {
+  from {
+    transform: translate3d(0, 14px, 0);
+    opacity: 0;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes live-comment-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Bottom right: floating hearts. */
+.live-hearts {
+  position: absolute;
+  right: calc(var(--live-pad) + var(--live-safe-right));
+  bottom: calc(var(--live-pad) + var(--live-safe-bottom));
+  width: 90px;
+  height: 46vh;
+}
+
+.live-heart {
+  position: absolute;
+  bottom: 0;
+  right: var(--live-heart-x, 10px);
+  font-size: var(--live-heart-size, 22px);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.live-heart--fly {
+  animation: live-heart-rise var(--live-heart-dur, 2200ms) ease-out both;
+  animation-delay: var(--live-heart-delay, 0ms);
+}
+
+@keyframes live-heart-rise {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.6);
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  50% {
+    transform: translate3d(-22px, -40vh, 0) scale(1.1);
+  }
+  100% {
+    transform: translate3d(14px, -80vh, 0) scale(0.9);
+    opacity: 0;
+  }
+}
+
+/* Right edge: the hype bar reaction burst. */
+.live-reactions {
+  position: absolute;
+  right: calc(var(--live-pad) + var(--live-safe-right));
+  top: 18vh;
+  width: 64px;
+  height: 60vh;
+}
+
+.live-reaction {
+  position: absolute;
+  right: 0;
+  top: var(--live-reaction-y, 50%);
+  font-size: var(--live-reaction-size, 20px);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.live-reaction--pop {
+  animation: live-reaction-pop var(--live-reaction-dur, 900ms) ease-out both;
+  animation-delay: var(--live-reaction-delay, 0ms);
+}
+
+@keyframes live-reaction-pop {
+  0% {
+    transform: translate3d(28px, 0, 0) scale(0.4);
+    opacity: 0;
+  }
+  30% {
+    transform: translate3d(-6px, -6px, 0) scale(1.15);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(-34px, -46px, 0) scale(0.8);
+    opacity: 0;
+  }
+}
+
+/* Center: the gift toast for the big moments. */
+.live-toast {
+  position: absolute;
+  top: 38%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0) scale(0.9);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  border-radius: 18px;
+  background: var(--live-panel-strong);
+  border: 2px solid var(--live-red);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  visibility: hidden;
+  font-size: clamp(14px, 3.4vmin, 24px);
+  text-transform: uppercase;
+  white-space: nowrap;
+  will-change: transform, opacity;
+}
+
+.live-toast--show {
+  visibility: visible;
+  animation: live-toast-in 1600ms ease-out both;
+}
+
+.live-toast-icon {
+  font-size: 1.2em;
+}
+
+.live-toast-tier {
+  color: var(--live-cyan);
+}
+
+@keyframes live-toast-in {
+  0% {
+    transform: translate3d(-50%, -30%, 0) scale(0.7);
+    opacity: 0;
+  }
+  14% {
+    transform: translate3d(-50%, -50%, 0) scale(1.06);
+    opacity: 1;
+  }
+  22% {
+    transform: translate3d(-50%, -50%, 0) scale(1);
+  }
+  82% {
+    transform: translate3d(-50%, -50%, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(-50%, -66%, 0) scale(0.94);
+    opacity: 0;
+  }
+}
+
+/* Landscape on a phone: keep the chrome out of the play area. */
+@media (orientation: landscape) and (max-height: 520px) {
+  .live-root {
+    --live-pad: 8px;
+  }
+
+  .live-feed {
+    width: min(38vw, 280px);
+  }
+
+  .live-hearts {
+    height: 60vh;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live-root * {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

@@ -1,6 +1,6 @@
-// The 3D stage: the ring set, two fighters, the crowd, the camera director and the PS2 low res pipeline
-// (scene -> 640x360 target with bloom -> nearest blit through lane B's composite). Reads CoreEvents and
-// Frames only; owns the visual time scale (hit stop, drop ramp) and never touches audio.
+// The 3D stage: the ring set, two fighters, the crowd, the camera director and the render pipeline
+// (scene -> full resolution MSAA target with bloom -> linear blit through lane B's composite). Reads
+// CoreEvents and Frames only; owns the visual time scale (hit stop, drop ramp) and never touches audio.
 import * as THREE from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
@@ -10,11 +10,11 @@ import type { Anchors, CoreEvent, Frame, LevelV2, Stage } from "../v2/contracts"
 import { RingSet } from "./set";
 import { Crowd } from "./crowd";
 import { Fighter, loadCast, type CastSource, type ClipEvent } from "./fighters";
-import { LAYOUT, isOts, pickShot, punchZoom, rampScale, shotPose, type Pose, type ShotKind } from "./director";
+import { LAYOUT, isOts, pickShot, punchZoom, rampScale, sameFamily, shotPose, type Pose, type ShotKind } from "./director";
 import { Vfx } from "./vfx";
 import { createComposite } from "./vfx/composite";
+import { Nameplates } from "./nameplates";
 
-const BASE_H = 360;
 const WHIP = 0.1;
 
 function bar(parent: HTMLElement, top: boolean): HTMLDivElement {
@@ -24,9 +24,29 @@ function bar(parent: HTMLElement, top: boolean): HTMLDivElement {
   return d;
 }
 
-/** Pixel ratio of the final blit: the scene is a 360 p target anyway, so a phone gains nothing past 1. */
-export function pixelRatioCap(dpr: number, coarse: boolean): number {
-  return Math.min(coarse ? 1 : 1.5, dpr || 1);
+/** Pixel ratio of the canvas, which the scene target matches (full resolution): the device's, capped at 2. */
+export function pixelRatioCap(dpr: number): number {
+  return Math.min(2, dpr || 1);
+}
+
+/** Adaptive quality: 0 full, 1 pixel ratio 1, 2 also no shadows and no bloom. Never a lower resolution than the screen's CSS pixels. */
+export interface QualityState {
+  step: number;
+  /** Consecutive one second fps samples under the floor. */
+  low: number;
+}
+export const QUALITY_FPS_FLOOR = 40;
+
+/**
+ * One fps sample a second. Two seconds in a row under 40 fps step the quality down once (and restart the
+ * count); a pixel ratio already at 1 skips straight to step 2. Returns true when the step changed.
+ */
+export function stepQuality(q: QualityState, fps: number, pixelRatio: number): boolean {
+  q.low = fps < QUALITY_FPS_FLOOR ? q.low + 1 : 0;
+  if (q.low < 2 || q.step >= 2) return false;
+  q.low = 0;
+  q.step = q.step === 0 && pixelRatio > 1 ? 1 : 2;
+  return true;
 }
 
 /**
@@ -58,34 +78,44 @@ function overlay(parent: HTMLElement): HTMLDivElement {
 
 export function createStage(canvas: HTMLCanvasElement, opts: { base: string; debug: boolean }): Stage {
   // Throws when WebGL is unavailable: main.ts catches it and offers the 2D version.
+  // antialias off on the canvas on purpose: the scene renders into the MSAA target below and the canvas
+  // only receives a fullscreen quad, so a multisampled default framebuffer would cost memory for nothing.
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: "high-performance" });
   const coarse = typeof matchMedia === "function" && matchMedia("(pointer: coarse)").matches;
-  renderer.setPixelRatio(pixelRatioCap(devicePixelRatio, coarse));
+  renderer.setPixelRatio(pixelRatioCap(devicePixelRatio));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.15;
+  renderer.toneMappingExposure = 1.1;
+  // One soft shadow map (1024, the key light only); the adaptive quality turns it off.
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(48, 16 / 9, 0.1, 120);
   const set = new RingSet(scene, opts.base);
+  const plates = new Nameplates(canvas);
+  const enemyHead = { x: 0, y: 0, z: 0 };
   const crowd = new Crowd();
   scene.add(crowd.group);
   const vfx = new Vfx(scene, camera);
   const glasses = vfx.sunglasses();
   scene.add(glasses);
 
-  // Low res target with bloom, nearest filtered so the blit keeps the chunky pixels.
+  // Full resolution target with bloom and MSAA (the blit is a fullscreen quad, so the canvas's own
+  // antialias would do nothing: the edges are resolved here), linear filtered for a clean look.
   const floatOk = halfFloatOk(renderer);
   const rt = new THREE.WebGLRenderTarget(640, 360, {
     type: floatOk ? THREE.HalfFloatType : THREE.UnsignedByteType,
-    minFilter: THREE.NearestFilter,
-    magFilter: THREE.NearestFilter,
+    samples: coarse ? 2 : 4,
   });
   const composer = new EffectComposer(renderer, rt);
   composer.renderToScreen = false;
   composer.setPixelRatio(1);
   composer.addPass(new RenderPass(scene, camera));
-  if (floatOk) composer.addPass(new UnrealBloomPass(new THREE.Vector2(640, 360), 0.85, 0.35, 0.95));
+  // Subtle bloom on emissives only: in the half float target only the signs and the rim go above the
+  // threshold. No half float, no bloom (its own targets are half float).
+  const bloom = floatOk ? new UnrealBloomPass(new THREE.Vector2(640, 360), 0.4, 0.3, 1.05) : null;
+  if (bloom) composer.addPass(bloom);
 
   const composite = createComposite();
   const blitScene = new THREE.Scene();
@@ -93,7 +123,11 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
   quad.frustumCulled = false;
   blitScene.add(quad);
   const blitCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+  /** Size of the scene target in pixels (the canvas's drawing buffer). */
   const lowRes = new THREE.Vector2(640, 360);
+  const drawSize = new THREE.Vector2();
+  // Clean look at full resolution: scanlines at pixel pitch only add a moire.
+  vfx.screen.scanline = 0;
 
   const host = canvas.parentElement ?? document.body;
   const lbTop = bar(host, true);
@@ -132,6 +166,11 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
   let shotT = 0;
   let whipT = -1;
   let whipFrom: Pose | null = null;
+  /** A game event landed since the last cut: the next downbeat may cut (cuts follow the fight, not a metronome). */
+  let cutCue = false;
+  // Reused poses: the frame loop allocates none.
+  const camPose: Pose = { pos: [0, 0, 0], target: [0, 0, 0], fov: 48 };
+  const whipPose: Pose = { pos: [0, 0, 0], target: [0, 0, 0], fov: 48 };
   let punchT = 9;
   let hitStop = 0;
   let trauma = 0;
@@ -156,11 +195,11 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
   let battleFx = false;
 
   // Fps and adaptive quality.
-  let quality = 1;
+  const quality: QualityState = { step: 0, low: 0 };
+  let qualityLogged = false;
   let fpsVal = 60;
   let fpsFrames = 0;
   let fpsAcc = 0;
-  let lowSeconds = 0;
 
   const anchors: Anchors = {
     playerFeet: { x: 0, y: 0, z: 0 },
@@ -178,14 +217,10 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
     const h = Math.max(1, canvas.clientHeight || innerHeight);
     renderer.setSize(w, h, false);
     const aspect = w / h;
-    let lw: number, lh: number;
-    if (aspect >= 1) {
-      lh = Math.round(BASE_H * quality);
-      lw = Math.round(lh * aspect);
-    } else {
-      lw = Math.round(BASE_H * quality);
-      lh = Math.round(lw / aspect);
-    }
+    // Full resolution: the scene renders at the canvas's own drawing buffer size.
+    renderer.getDrawingBufferSize(drawSize);
+    const lw = Math.max(1, Math.round(drawSize.x));
+    const lh = Math.max(1, Math.round(drawSize.y));
     composer.setSize(lw, lh);
     lowRes.set(lw, lh);
     vfx.setPixelHeight(lh);
@@ -204,6 +239,12 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
     shot = next;
     shotT = 0;
     whipT = -1;
+    cutCue = false;
+  }
+
+  /** An event's own shot, skipped when that family is already on screen (never the same family twice). */
+  function cutTo(next: ShotKind): void {
+    if (!sameFamily(next, shot)) cut(next);
   }
 
   function computeAnchors(): void {
@@ -235,9 +276,16 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
       const a = Math.max(0, endT - 0.5) * 0.25 + 0.5;
       const [cx, , cz] = endWin ? LAYOUT.player : LAYOUT.enemy;
       const front = endWin ? -1 : 1;
-      pose = { pos: [cx + Math.sin(a) * 4.2, 1.5, cz + Math.cos(a) * 4.2 * front], target: [cx, 1.1, cz], fov: 42 };
+      pose = camPose;
+      pose.pos[0] = cx + Math.sin(a) * 4.2;
+      pose.pos[1] = 1.5;
+      pose.pos[2] = cz + Math.cos(a) * 4.2 * front;
+      pose.target[0] = cx;
+      pose.target[1] = 1.1;
+      pose.target[2] = cz;
+      pose.fov = 42;
     } else {
-      pose = shotPose(shot, shotT, barPos, aspect);
+      pose = shotPose(shot, shotT, barPos, aspect, camPose);
       if (whipT >= 0 && whipFrom) {
         const k = Math.min(1, whipT / WHIP);
         const e = k * k * (3 - 2 * k);
@@ -248,8 +296,8 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
         pose.fov = whipFrom.fov + (pose.fov - whipFrom.fov) * e;
       }
     }
-    vPos.set(...pose.pos);
-    vTgt.set(...pose.target);
+    vPos.set(pose.pos[0], pose.pos[1], pose.pos[2]);
+    vTgt.set(pose.target[0], pose.target[1], pose.target[2]);
     // Charge: push in on our hands (only from the shots that see them).
     if (charge > 0.001 && (isOts(shot) || shot === "heroLow") && !ending) {
       vHands.set(anchors.playerHands.x, anchors.playerHands.y, anchors.playerHands.z);
@@ -295,21 +343,31 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
     renderer.render(blitScene, blitCam);
   }
 
-  function measure(realDt: number): void {
+  /** `adapt`: only battle frames step the quality down (a model load stalling the menu is not the fight's fps). */
+  function measure(realDt: number, adapt: boolean): void {
     fpsFrames++;
     fpsAcc += realDt;
     if (fpsAcc >= 1) {
       fpsVal = fpsFrames / fpsAcc;
       fpsFrames = 0;
       fpsAcc = 0;
-      if (fpsVal < 45) lowSeconds++;
-      else lowSeconds = 0;
-      if (lowSeconds >= 2 && quality > 0.5) {
-        quality = 0.5;
-        resize();
-        vfx.setQuality(0.5);
+      if (adapt && stepQuality(quality, fpsVal, renderer.getPixelRatio())) {
+        if (quality.step >= 1 && renderer.getPixelRatio() > 1) {
+          renderer.setPixelRatio(1);
+          resize();
+        }
+        if (quality.step >= 2) {
+          set.key.castShadow = false;
+          if (bloom) bloom.enabled = false;
+          vfx.setQuality(0.5);
+        }
+        if (!qualityLogged) {
+          qualityLogged = true;
+          console.info(`[aura] under ${QUALITY_FPS_FLOOR} fps for 2 s: quality step ${quality.step} (1 = pixel ratio 1, 2 = no shadows nor bloom)`);
+        }
       }
-      if (fpsDiv) fpsDiv.textContent = `${fpsVal.toFixed(0)} fps ${lowRes.x}x${lowRes.y}${floatOk ? "" : " nobloom"}${cast ? " " + cast.label : ""}`;
+      if (fpsDiv)
+        fpsDiv.textContent = `${fpsVal.toFixed(0)} fps ${lowRes.x}x${lowRes.y} q${quality.step}${bloom?.enabled ? "" : " nobloom"}${cast ? " " + cast.label : ""}`;
     }
   }
 
@@ -347,6 +405,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
       player.root.rotation.y = Math.PI;
       enemy.root.position.set(...LAYOUT.enemy);
       scene.add(player.root, enemy.root);
+      plates.enemyHandle = (lv.opponent as { handle?: string }).handle ?? "@" + lv.opponent.name.toLowerCase().replace(/\W+/g, "_");
       // Fresh director for the battle.
       cut("ots");
       ending = false;
@@ -363,6 +422,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
 
     event(e: CoreEvent) {
       vfx.event(e, anchors);
+      if (e.kind === "judged" || e.kind === "release" || e.kind === "mashStart" || e.kind === "holdStart" || e.kind === "holdEnd") cutCue = true;
       switch (e.kind) {
         case "countIn":
           // n = 4..1: a quarter of the black lifts on each click, clear on the downbeat.
@@ -370,9 +430,11 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
           break;
         case "beat":
           if (e.downbeat && !ending) {
-            if (lastBarEnergy >= 0 && e.energy - lastBarEnergy > 0.3) flash(1, Math.random() < 0.4);
+            const jump = lastBarEnergy >= 0 && e.energy - lastBarEnergy > 0.3;
+            if (jump) flash(1, Math.random() < 0.4);
             lastBarEnergy = e.energy;
-            if (whipT < 0 || whipT > WHIP) cut(pickShot(shot, Math.random));
+            // Cut on the downbeat only after a game event in the bar or on an energy jump; otherwise the shot keeps moving.
+            if ((cutCue || jump) && (whipT < 0 || whipT > WHIP)) cut(pickShot(shot, Math.random));
           }
           break;
         case "judged": {
@@ -385,24 +447,28 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
             break;
           }
           const dir = e.dir ?? ((hitAlt = !hitAlt) ? "left" : "right");
-          playP(`hit_${dir}` as ClipEvent, 1.3);
+          // The canon moves at their documented pace (spec cringe 8: a move played fast reads as trying hard).
+          playP(`hit_${dir}` as ClipEvent);
           playE(e.big ? "enemy_big_hit" : "enemy_hit", 1.2);
           enemy?.knockback(e.big ? 1 : e.grade === "perfect" ? 0.55 : 0.3);
           crowd.jump(e.big ? 1 : e.grade === "perfect" ? 0.6 : 0.2);
           trauma = Math.min(1, trauma + (e.big ? 0.55 : e.grade === "perfect" ? 0.22 : 0.1));
           dutch *= 0.3;
           if (e.strong && e.grade === "perfect") hitStop = Math.max(hitStop, 0.08);
-          if (e.big && !ending) {
-            // Whip pan from where we are to the enemy close up, 6 frames.
-            whipFrom = shotPose(shot, shotT, 0.5, camera.aspect);
+          if (e.big && !ending && !sameFamily(shot, "enemyClose")) {
+            // Whip pan from where we are to the enemy close up, 6 frames (already on the enemy: no whip).
+            whipFrom = shotPose(shot, shotT, 0.5, camera.aspect, whipPose);
             shot = "enemyClose";
             shotT = 0;
             whipT = 0;
+            cutCue = false;
           }
           break;
         }
         case "mashStart":
           playP("mash_charge", 1.5);
+          // The hands family: the charge seen on our hands.
+          if (!ending) cutTo("hands");
           break;
         case "mashStep":
           trauma = Math.min(0.35, trauma + 0.03);
@@ -434,7 +500,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
           break;
         case "taunt":
           playE("enemy_taunt");
-          if (!ending) cut("dollyEnemy");
+          if (!ending) cutTo("dollyEnemy");
           break;
         case "dropSoon":
           rampArmed = true;
@@ -473,13 +539,13 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
         lastTier = 0;
       }
       // Combo 25: the sunglasses drop, seen from the hero low angle in front of us.
-      if (f.tier === 3 && lastTier < 3 && !ending && whipT < 0) cut("heroLow");
+      if (f.tier === 3 && lastTier < 3 && !ending && whipT < 0) cutTo("heroLow");
       lastTier = f.tier;
       battleFx = true;
       spb = f.spb;
       const dt = Math.min(0.1, Math.max(0, realDt));
       time += dt;
-      measure(dt);
+      measure(dt, true);
       // Visual time scale: hit stop, then the drop ramp, the ending freeze and slow motion.
       if (hitStop > 0) {
         timeScale = 0;
@@ -517,6 +583,8 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
       computeAnchors();
       placeGlasses();
       applyCamera(f, dt, vdt);
+      enemy?.headPos(enemyHead);
+      plates.update(camera, player ? anchors.playerHead : null, enemy ? enemyHead : null, f.meter, !ending);
       vfx.update(vdt, f, anchors);
       render(dt);
     },
@@ -531,7 +599,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
       }
       const dt = Math.min(0.1, Math.max(0, realDt));
       time += dt;
-      measure(dt);
+      measure(dt, false);
       idleAngle += dt * 0.12;
       const beatPos = time * 2;
       player?.update(dt, beatPos % 1, 0.5);
@@ -539,6 +607,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
       crowd.update(dt, beatPos, 0.4, 0.6);
       set.update(beatPos % 1, 0.4, time);
       setLetterbox(false);
+      plates.hide();
       camera.position.set(Math.sin(idleAngle) * 8.5, 3.2, Math.cos(idleAngle) * 8.5);
       camera.lookAt(0, 0.9, 0);
       const fov = camera.aspect < 1 ? 70 : 50;

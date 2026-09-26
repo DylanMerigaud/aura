@@ -1,4 +1,5 @@
 // AURA v2 entry: the WebGL stage, the battle driver, the audio layers and the DOM app, one frame loop.
+import { bindMenuSounds } from "../audio/menu-sfx";
 import { createStage } from "../render3d/stage";
 import { runDemo } from "../render3d/demo";
 import { AudioFx } from "../audio/layers";
@@ -20,7 +21,7 @@ const canvas = document.getElementById("stage") as HTMLCanvasElement;
 function noWebgl(): never {
   const d = document.createElement("div");
   d.className = "no-webgl";
-  d.innerHTML = `<h1 class="logo">AURA</h1><p>This browser could not start 3D graphics (WebGL).</p><a href="../">PLAY THE 2D VERSION</a>`;
+  d.innerHTML = `<h1 class="logo">AURA</h1><p>This browser could not start 3D graphics (WebGL).</p><a href="${base ? "../" : "v1/"}">PLAY THE 2D VERSION</a>`;
   document.body.appendChild(d);
   throw new Error("WebGL unavailable");
 }
@@ -40,13 +41,15 @@ canvas.addEventListener("webglcontextlost", (e) => {
 function noWebglSoft() {
   const d = document.createElement("div");
   d.className = "no-webgl soft";
-  d.innerHTML = `<p>3D graphics were interrupted.</p><a href="">RELOAD</a> <a href="../">2D VERSION</a>`;
+  d.innerHTML = `<p>3D graphics were interrupted.</p><a href="">RELOAD</a> <a href="${base ? "../" : "v1/"}">2D VERSION</a>`;
   document.body.appendChild(d);
   canvas.addEventListener("webglcontextrestored", () => d.remove(), { once: true });
 }
 addEventListener("resize", () => stage.resize());
 // iOS suspends or interrupts the context (calls, lock screen, app switch): any gesture or coming back resumes it.
 addEventListener("pointerdown", wake);
+// iOS counts only the release as the gesture that may resume audio (the gate's own lesson): wake there too.
+addEventListener("pointerup", wake);
 addEventListener("keydown", wake);
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden) wake();
@@ -69,6 +72,7 @@ game.listen({
   frame: (f: Frame, dt: number) => fx?.frame(f, dt),
 });
 
+bindMenuSounds(() => game.running());
 if (params.has("demo")) runDemo(stage);
 else {
   const { hud } = startApp({ game, stage, levels: LEVELS_V2, base, debug, canvas });

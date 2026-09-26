@@ -119,12 +119,12 @@ const HERO_EVENTS: QteEvent[] = [
 ];
 
 function hero(): LevelV2 {
-  const { c, level } = base(1, "level4", "club", "club", ["#b14dff", "#00e5ff"], 1, 86);
+  const { c, level } = base(1, "level4", "metro", "metro", ["#ffb347", "#35e0ff"], 1, 86);
   return {
     ...level,
     events: HERO_EVENTS,
     // Beat 3 before the first QTE, 33 before the breakdown, 84 after the last input.
-    taunts: taunts(HERO_EVENTS, c.taunts, [3, 33, 84]),
+    taunts: taunts(HERO_EVENTS, c.taunts, [3, 14, 24, 33, 46, 58, 76, 84]),
     dropBeats: [4, 68],
     breakdownBeats: [[37, 44], [45, 52], [53, 60], [61, 68]],
   };

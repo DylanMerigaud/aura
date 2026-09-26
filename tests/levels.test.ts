@@ -7,7 +7,7 @@ import { trackInfo } from "../src/v2/tracks";
 describe("LEVELS_V2", () => {
   it("has the five v2 levels in campaign order", () => {
     expect(LEVELS_V2.map((l) => [l.id, l.track, l.stage])).toEqual([
-      [1, "level4", "club"],
+      [1, "level4", "metro"],
       [2, "level1", "metro"],
       [3, "level2", "kebab"],
       [4, "level3", "parvis"],
@@ -73,5 +73,17 @@ describe("hero level", () => {
     const combos = hero.events.filter((e) => e.type === "combo").length;
     expect(combos).toBeGreaterThanOrEqual(2);
     expect(combos).toBeLessThanOrEqual(3);
+  });
+});
+
+describe("nameplates rank", () => {
+  it("maps the meter to the 5 rank words, enemy mirrored", async () => {
+    const { rankOf } = await import("../src/render3d/nameplates");
+    expect(rankOf(-1)).toBe("NPC");
+    expect(rankOf(-0.5)).toBe("Side character");
+    expect(rankOf(0)).toBe("Main character");
+    expect(rankOf(0.5)).toBe("Sigma");
+    expect(rankOf(1)).toBe("Aura 9000");
+    expect(rankOf(Number.NaN)).toBe("Main character");
   });
 });

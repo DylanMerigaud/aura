@@ -1,3 +1,15 @@
+15:20 CEST, INTEGRATION lane: all 7 PRs and the packs branch merged; Gen Z SFX, the LIVE overlay, the 3D world tour map, Aura Packs wired into the game; v2 is the Pages root
+GREEN: tests 622, typecheck clean, release:check and release:itch ALL PASS; voice bake off and Lyria regeneration running in their own branches (samples ~15:45)
+RED: nobody has seen the LIVE overlay, the map or the packs render on a phone yet; balance flags Chatelet too easy (average bot wins 96 percent), handed to the GAME lane; input module (src/input) merged but not used, the GAME lane's battleInput stays the handler
+PLAY: https://dylanmerigaud.github.io/aura/ (v2 at the root; /v2/ redirects there; 2D at /v1/)
+NEED FROM DYLAN: nothing yet; voice and music samples land in samples/ around 15:45
+
+15:00 CEST, GAME lane: PR 9 (render and animation audit) and PR 10 (keyed poses) merged into main, deployed
+GREEN: tests 251, typecheck clean; turns contract in; five lanes running: v1 arrows port, Space and touch, alternated turns, Turnstile Ninja at Chatelet, portrait camera
+RED: arrows, Space, turns, ninja, portrait not merged yet (next push ~15:45)
+PLAY: https://dylanmerigaud.github.io/aura/v2/ (root switch to v2 asked to INTEGRATION)
+NEED FROM DYLAN: nothing yet; play after the 15:45 push
+
 14:05 CEST, v2 (3D) at /v2/ with the mood pass and mobile load fixes; live roast Worker up
 GREEN: v1 untouched at the root; v2: 3D ring, Mixamo fighters, camera director, VFX, HUD, map, menu, tempo rule, layered SFX, hero level on the Lyria club track, new cast (Gemini, evals) and 30 Gradium lines; review found and fixed 8 first-play bugs; Worker aura-proxy live (Gemini roast and Gradium voice tested with curl, 403 on foreign origins)
 RED: nobody has seen v2 render yet (no GPU in my sandbox): render, framing, fps and timing feel are unknown until you play; build is 23 MB

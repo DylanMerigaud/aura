@@ -41,8 +41,14 @@ export class BattleCore {
   songTime = -99;
   private showsAt: Frame["showsAt"] = (ev) => this.runner.showsAt(ev);
   private targetAt: Frame["targetAt"] = (ev) => this.runner.targetAt(ev);
+  /** Reused every frame (read synchronously by the listeners, never kept). */
+  private prompts: Frame["prompts"] = [];
 
-  constructor(public level: LevelV2, public track: TrackInfo, windowScale: number, private emit: (e: CoreEvent) => void) {
+  /**
+   * `tauntShift` rotates which line each taunt slot says (the slots keep their beats): the driver passes
+   * the attempt number, so a retry does not open on the same taunt as the last try.
+   */
+  constructor(public level: LevelV2, public track: TrackInfo, windowScale: number, private emit: (e: CoreEvent) => void, private tauntShift = 0) {
     this.spb = 60 / level.bpm;
     this.runner = new QteRunner(level.events, this.spb, windowScale, (r) => this.onResult(r));
     this.gain = 1.15 / Math.max(8, level.events.length);
@@ -141,7 +147,8 @@ export class BattleCore {
     if (beatPos > 0 && beatPos < L.lengthBeats) this.push(-(realDt / this.spb) * PRESSURE[Math.min(4, L.id - 1)]);
     const ta = L.taunts[this.tauntIdx];
     if (ta && beatPos >= ta.beat) {
-      this.emit({ kind: "taunt", text: ta.text, index: this.tauntIdx });
+      const k = (this.tauntIdx + this.tauntShift) % L.taunts.length;
+      this.emit({ kind: "taunt", text: L.taunts[k].text, index: k });
       this.tauntIdx++;
       this.push(-0.05);
     }
@@ -189,8 +196,10 @@ export class BattleCore {
     const holding = !!cur && cur.ev.type === "hold" && cur.held;
     let holdProgress = 0;
     if (holding && cur && cur.ev.type === "hold") holdProgress = Math.max(0, Math.min(1, (t - cur.ev.beat * this.spb) / (cur.ev.length * this.spb)));
-    const nextDrop = this.level.dropBeats.find((d) => d > beatPos);
-    const prompts = [];
+    let nextDrop: number | undefined;
+    for (const d of this.level.dropBeats) if (d > beatPos) { nextDrop = d; break; }
+    const prompts = this.prompts;
+    prompts.length = 0;
     for (let i = 0; i < this.runner.states.length; i++) {
       const s = this.runner.states[i];
       if (s.phase === "done") continue;
@@ -202,7 +211,7 @@ export class BattleCore {
       meter: this.meter, combo: this.combo, tier: tierOf(this.combo), score: this.score, rate: this.tempo.rate,
       energy: this.energyAt(Math.floor(beatPos)), beatsToDrop: nextDrop === undefined ? Infinity : nextDrop - beatPos,
       mashing, mashCount: mashing && cur ? Math.min(cur.progress, this.mashCap((cur.ev as { length: number }).length)) : 0,
-      holding, holdProgress, phase2: this.phase2Fired, ending: this.ended, win: this.win, prompts,
+      holding, holdProgress, phase2: this.phase2Fired, turn: "player", ending: this.ended, win: this.win, prompts,
       showsAt: this.showsAt, targetAt: this.targetAt, level: this.level,
     };
   }
