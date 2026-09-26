@@ -24,6 +24,8 @@ import { bindBattleInput } from "./battleInput";
 import { buildPlayZone } from "./playzone";
 import { loadProgress, nextProgress, saveProgress } from "./progress";
 import { buildBed } from "./bed";
+import { liveListener } from "../../live/battle";
+import cast from "../cast.json";
 
 const WINDOW_SCALE = [1, 0.9, 0.8, 0.7, 0.6];
 /** The battle starts without its fighters rather than wait longer than this on the models. */
@@ -61,6 +63,8 @@ export function startApp(opts: StartOpts): { hud: Listener } {
   const bed = buildBed(base);
   const zone = buildPlayZone(game);
   hudCtl.root.appendChild(zone.root);
+  const handles = new Map((cast as { levels: { id: number; opponent?: { handle?: string } }[] }).levels.map((c) => [c.id, c.opponent?.handle]));
+  const live = liveListener(hudCtl.root, () => handles.get(levels[levelIdx]?.id) ?? "@rival");
   // Battle keys are read by battleInput on window (capture phase), not through the screen switcher.
   const battle: ScreenCtl = { root: hudCtl.root };
 
@@ -194,9 +198,13 @@ export function startApp(opts: StartOpts): { hud: Listener } {
   }
 
   const hud: Listener = {
-    event: (e) => hudCtl.listener.event(e),
+    event: (e) => {
+      hudCtl.listener.event(e);
+      live.event(e);
+    },
     frame: (f, dt) => {
       hudCtl.listener.frame?.(f, dt);
+      live.frame?.(f, dt);
       zone.frame();
     },
   };

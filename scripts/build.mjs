@@ -40,7 +40,7 @@ if (dev) {
   // /v1/ and reads the shared media one level up through <base href="../">. /v2/ stays as a redirect for old links.
   rmSync("dist", { recursive: true, force: true });
   mkdirSync("dist");
-  cpSync("public", "dist", { recursive: true, filter: (p) => !generated(p) && !/^public\/(sfx-preview|v2)(\/|$)/.test(p) && !/^public\/(index\.html|game\.css)$/.test(p) });
+  cpSync("public", "dist", { recursive: true, filter: (p) => !generated(p) && !/^public\/(sfx-preview|v2|packs)(\/|$)/.test(p) && !/^public\/(index\.html|game\.css)$/.test(p) });
   const v2 = existsSync("src/v2/main.ts");
   mkdirSync("dist/v1", { recursive: true });
   cpSync("public/game.css", "dist/v1/game.css");
