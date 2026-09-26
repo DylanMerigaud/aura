@@ -1,26 +1,31 @@
-// Bundles src/main.ts with esbuild: --dev serves public/ with watch, default writes dist/ for itch.io and Pages.
+// Bundles v1 (src/main.ts, the 2D canvas game) and v2 (src/v2/main.ts, the 3D game) with esbuild.
+// --dev serves public/ with watch (v1 at /, v2 at /v2/), default writes dist/ for itch.io and Pages.
+// Shared media (music, models) is copied from assets/ into public/ so both builds read ../music and ../models.
 import * as esbuild from "esbuild";
-import { cpSync, rmSync, mkdirSync } from "node:fs";
+import { cpSync, rmSync, mkdirSync, existsSync, readdirSync } from "node:fs";
 
 const dev = process.argv.includes("--dev");
-const common = {
-  entryPoints: ["src/main.ts"],
-  bundle: true,
-  format: "iife",
-  target: "es2020",
-  sourcemap: dev,
-  minify: !dev,
-  logLevel: "info",
-};
+const common = { bundle: true, format: "iife", target: "es2020", sourcemap: dev, minify: !dev, logLevel: "info" };
+const generated = (p) => /\/(game\.js|game\.js\.map)$/.test(p);
+
+function syncMedia() {
+  mkdirSync("public/music", { recursive: true });
+  for (const f of readdirSync("assets/music")) if (f.endsWith(".mp3")) cpSync(`assets/music/${f}`, `public/music/${f}`);
+  if (existsSync("assets/3d")) cpSync("assets/3d", "public/models", { recursive: true, filter: (p) => !p.endsWith(".fbx") });
+}
+syncMedia();
 
 if (dev) {
-  const ctx = await esbuild.context({ ...common, outfile: "public/game.js" });
-  await ctx.watch();
-  const { port } = await ctx.serve({ servedir: "public", port: 5173 });
-  console.log(`AURA dev server on http://localhost:${port}`);
+  const v1 = await esbuild.context({ ...common, entryPoints: ["src/main.ts"], outfile: "public/game.js" });
+  const v2 = await esbuild.context({ ...common, entryPoints: ["src/v2/main.ts"], outfile: "public/v2/game.js" });
+  await v1.watch();
+  await v2.watch();
+  const { port } = await v1.serve({ servedir: "public", port: 5173 });
+  console.log(`AURA dev server on http://localhost:${port} (v2 at /v2/)`);
 } else {
   rmSync("dist", { recursive: true, force: true });
   mkdirSync("dist");
-  cpSync("public", "dist", { recursive: true, filter: (p) => !p.endsWith("game.js") && !p.endsWith("game.js.map") });
-  await esbuild.build({ ...common, outfile: "dist/game.js" });
+  cpSync("public", "dist", { recursive: true, filter: (p) => !generated(p) });
+  await esbuild.build({ ...common, entryPoints: ["src/main.ts"], outfile: "dist/game.js" });
+  if (existsSync("src/v2/main.ts")) await esbuild.build({ ...common, entryPoints: ["src/v2/main.ts"], outfile: "dist/v2/game.js" });
 }

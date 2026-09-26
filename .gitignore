@@ -6,3 +6,10 @@ aura-itch.zip
 .DS_Store
 public/game.js
 public/game.js.map
+
+# Reference only, never shipped (amendment 5)
+assets/instants/
+public/v2/game.js
+public/v2/game.js.map
+public/music/
+public/models/
