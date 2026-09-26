@@ -4,8 +4,9 @@
 // for live progress. DOM nodes are pooled: created once, only transform and opacity animate.
 import type { EventState } from "../../../qte/runner";
 import type { Frame } from "../../contracts";
-import { el } from "../dom";
+import { el, setText } from "../dom";
 import { ARROW, clamp01 } from "./shared";
+import { visiblePrompts } from "./queue";
 
 const HIT_POOL = 6;
 
@@ -93,7 +94,7 @@ export function buildPrompts() {
       return;
     }
     hintEl.classList.remove("hidden");
-    hintEl.textContent = HINTS[current.ev.type];
+    setText(hintEl, HINTS[current.ev.type]);
   }
 
   function layoutHit(states: EventState[], f: Frame) {
@@ -106,7 +107,7 @@ export function buildPrompts() {
       const targetAt = f.targetAt(s.ev);
       const t = clamp01((f.songTime - showsAt) / Math.max(0.001, targetAt - showsAt));
       n.classList.remove("hidden");
-      n.textContent = ARROW[s.ev.dir];
+      setText(n, ARROW[s.ev.dir]);
       n.style.transform = `translateX(${(1 - t) * 46}vw)`;
       n.style.opacity = String(0.35 + t * 0.65);
     }
@@ -132,7 +133,7 @@ export function buildPrompts() {
         return;
       }
       slot.classList.remove("hidden");
-      slot.textContent = ARROW[dirs[i]];
+      setText(slot, ARROW[dirs[i]]);
       slot.classList.toggle("done", i < s.progress);
       slot.classList.toggle("next", i === s.progress);
     });
@@ -154,10 +155,10 @@ export function buildPrompts() {
       const press = s.ev.beat * f.spb;
       const t = clamp01((f.songTime - showsAt) / Math.max(0.001, press - showsAt));
       holdFill.setAttribute("stroke-dashoffset", String(HOLD_CIRC * t));
-      holdLabel.textContent = "HOLD SPACE";
+      setText(holdLabel, "HOLD SPACE");
     } else {
       holdFill.setAttribute("stroke-dashoffset", String(HOLD_CIRC * (1 - f.holdProgress)));
-      holdLabel.textContent = f.holdProgress > 0.97 ? "RELEASE!" : "HOLD...";
+      setText(holdLabel, f.holdProgress > 0.97 ? "RELEASE!" : "HOLD...");
     }
   }
 
@@ -170,12 +171,12 @@ export function buildPrompts() {
     mashRoot.classList.remove("hidden");
     const targetAt = f.targetAt(s.ev);
     if (!f.mashing) {
-      mashCount.textContent = "SOON";
+      setText(mashCount, "SOON");
       mashTimerFill.style.width = "0%";
       mashRelease.classList.add("hidden");
       return;
     }
-    mashCount.textContent = String(f.mashCount);
+    setText(mashCount, String(f.mashCount));
     // Fill from the press beat (not showsAt, which leads by a fixed 2 beats regardless of
     // type) to the release target: an accurate "time left to mash" bar.
     const pressAt = s.ev.beat * f.spb;
@@ -188,8 +189,11 @@ export function buildPrompts() {
     mashRelease.classList.toggle("hidden", remainingBeats >= 1.5);
   }
 
+  const shown: EventState[] = [];
+
   function frame(f: Frame) {
-    const states = f.prompts;
+    // One prompt at a time: a HOLD ring never sits over a HIT arrow, queued prompts wait their turn.
+    const states = visiblePrompts(f.prompts, shown);
     layoutHit(states, f);
     layoutCombo(states, f);
     layoutHold(states, f);

@@ -2,22 +2,35 @@
 // timeouts never hang the battle start, the pixel ratio cap and the drop boom scheduled on the heard clock.
 import { describe, expect, it } from "vitest";
 import { readFileSync, statSync } from "node:fs";
-import { pickClips, withTimeout } from "../src/render3d/fighters";
+import { PHRASE_S, pickClips, removeDrift, restartsOnPlay, withTimeout } from "../src/render3d/fighters";
 import { pixelRatioCap } from "../src/render3d/stage";
 import { dropBoomTime } from "../src/audio/layers";
 
 const manifest = JSON.parse(readFileSync("assets/3d/manifest.json", "utf8")) as {
   characters: { file: string; role?: string }[];
-  clips: { file: string; event: string }[];
+  clips: { file: string; event: string; canon?: string }[];
 };
 
 describe("pickClips", () => {
   const picked = pickClips(manifest.clips);
+  const isCanon = (c: { canon?: string }) => !!c.canon && c.canon !== "generic";
 
-  it("keeps exactly one clip per event, the first listed", () => {
+  it("keeps exactly one clip per event: the first canon one, else the first listed", () => {
     const events = picked.map((c) => c.event);
     expect(new Set(events).size).toBe(events.length);
-    for (const c of picked) expect(manifest.clips.find((x) => x.event === c.event)).toBe(c);
+    for (const c of picked) {
+      const same = manifest.clips.filter((x) => x.event === c.event);
+      expect(c).toBe(same.find(isCanon) ?? same[0]);
+    }
+  });
+
+  it("never plays a generic alternate when the event has a canon move (the taunt is the chin up stare)", () => {
+    for (const c of picked) if (manifest.clips.some((x) => x.event === c.event && isCanon(x))) expect(isCanon(c)).toBe(true);
+    expect(picked.find((c) => c.event === "enemy_taunt")?.file).toBe("anims/pose_taunt_chinup.glb");
+  });
+
+  it("is decided by the manifest alone: the same pick on every call, whatever finishes loading first", () => {
+    expect(pickClips(manifest.clips).map((c) => c.file)).toEqual(picked.map((c) => c.file));
   });
 
   it("skips the crowd and entrance clips nothing plays", () => {
@@ -28,6 +41,40 @@ describe("pickClips", () => {
   it("downloads a fraction of the clip files", () => {
     const size = (files: Iterable<string>) => [...new Set(files)].reduce((n, f) => n + statSync(`assets/3d/${f}`).size, 0);
     expect(size(picked.map((c) => c.file))).toBeLessThan(0.85 * size(manifest.clips.map((c) => c.file)));
+  });
+});
+
+describe("restartsOnPlay", () => {
+  it("never restarts a loop: the idle and the mash groove resume where they were", () => {
+    expect(restartsOnPlay(false, 2.3, 1.1)).toBe(false);
+    expect(restartsOnPlay(false, 15, 0)).toBe(false);
+  });
+  it("resumes a long dance phrase mid way, restarts it once it played to its end", () => {
+    expect(restartsOnPlay(true, 16.8, 3.2)).toBe(false);
+    expect(restartsOnPlay(true, 16.8, 16.8)).toBe(true);
+  });
+  it("restarts a pose or a reaction from its first frame", () => {
+    expect(restartsOnPlay(true, 1.62, 0.8)).toBe(true);
+    expect(restartsOnPlay(true, PHRASE_S - 0.01, 2)).toBe(true);
+  });
+});
+
+describe("removeDrift", () => {
+  it("brings a travelling Hips track back to its start on the floor, keeping the height and the sway", () => {
+    // Stumble backwards: 1.3 m back on z, down to the floor, a sway on x in the middle.
+    const track = { times: [0, 1, 2], values: [0, 0.7, 0, 0.2, 0.5, -0.6, 0, 0.1, -1.3] };
+    removeDrift(track);
+    expect(track.values[6]).toBeCloseTo(0);
+    expect(track.values[8]).toBeCloseTo(0);
+    expect(track.values[7]).toBeCloseTo(0.1);
+    expect(track.values[3]).toBeCloseTo(0.2);
+    expect(track.values[5]).toBeCloseTo(0.05);
+  });
+  it("leaves a clip that does not travel untouched", () => {
+    const track = { times: [0, 1, 2], values: [0, 0.7, 0, 0.1, 0.72, 0.05, 0, 0.7, 0] };
+    const before = [...track.values];
+    removeDrift(track);
+    expect(track.values).toEqual(before);
   });
 });
 

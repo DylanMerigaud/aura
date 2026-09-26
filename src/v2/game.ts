@@ -42,6 +42,8 @@ export class Game implements GameApi {
   private setRate = 1;
   /** Count in clicks already scheduled on the audio clock, announced to the listeners as they are heard. */
   private pendingCount: { n: number; at: number }[] = [];
+  /** Battles started per level id: rotates the taunt lines so a retry hears a new one first. */
+  private attempts = new Map<number, number>();
 
   constructor(private deps: GameDeps) {}
 
@@ -115,7 +117,9 @@ export class Game implements GameApi {
     this.loadVoices(level);
     // The download keeps going after the timeout: the cached promise serves the retry.
     const buf = await Promise.race([this.buffer(info.file), new Promise<null>((r) => setTimeout(() => r(null), TRACK_WAIT_MS))]);
-    this.core = new BattleCore(level, info, windowScale, this.emit);
+    const attempt = this.attempts.get(level.id) ?? 0;
+    this.attempts.set(level.id, attempt + 1);
+    this.core = new BattleCore(level, info, windowScale, this.emit, attempt);
     this.endAt = -1;
     this.paused = false;
     this.startSource(buf, 0, COUNT_IN, 0.25);

@@ -97,6 +97,19 @@ describe("BattleCore", () => {
     expect(core.stats().stars).toBe(0);
   });
 
+  it("rotates the taunt lines per attempt, the slots keep their beats and the voice index follows the line", () => {
+    const taunts = [{ beat: 2, text: "a" }, { beat: 6, text: "b" }, { beat: 10, text: "c" }];
+    const said = (shift: number) => {
+      const out: CoreEvent[] = [];
+      const core = new BattleCore(level([], { taunts }), track, 1, (e) => out.push(e), shift);
+      for (let t = 0; t < 6; t += 0.02) core.update(t, 0.02);
+      return out.flatMap((e) => (e.kind === "taunt" ? [`${e.index}:${e.text}`] : []));
+    };
+    expect(said(0)).toEqual(["0:a", "1:b", "2:c"]);
+    expect(said(1)).toEqual(["1:b", "2:c", "0:a"]);
+    expect(said(4)).toEqual(["1:b", "2:c", "0:a"]);
+  });
+
   it("stars: 3 at 90 percent with no cringe", () => {
     const { core } = run([{ type: "hit", beat: 8, dir: "up" }], { lengthBeats: 10 });
     core.input({ kind: "dir", dir: "up", t: 4.0 });

@@ -4,7 +4,7 @@ import { comboMultiplier } from "../../../qte/judge";
 import type { Frame } from "../../contracts";
 import { tierOf } from "../../contracts";
 import { approach } from "../format";
-import { el } from "../dom";
+import { el, setText } from "../dom";
 
 export function buildMeter() {
   const root = el("div", "hud-top");
@@ -37,22 +37,27 @@ export function buildMeter() {
   root.appendChild(tach);
 
   let rate = 1;
+  let lastMid = NaN;
 
   function frame(f: Frame, realDt: number) {
     // A single divider bar (v1 parity): cyan fills the left portion up to it, magenta the rest.
     // At meter 1 (full win) it is 100% cyan, at -1 (full loss) 100% magenta.
-    const mid = 50 + f.meter * 50;
-    meterYou.style.width = `${mid}%`;
-    meterThem.style.width = `${100 - mid}%`;
-    meterThumb.style.left = `${mid}%`;
-    score.textContent = String(Math.round(f.score));
+    // Width is a layout write: only when the bar moved a visible tenth of a percent (the pressure drifts it every frame).
+    const mid = Math.round((50 + f.meter * 50) * 10) / 10;
+    if (mid !== lastMid) {
+      lastMid = mid;
+      meterYou.style.width = `${mid}%`;
+      meterThem.style.width = `${100 - mid}%`;
+      meterThumb.style.left = `${mid}%`;
+    }
+    setText(score, String(Math.round(f.score)));
     if (f.combo >= 2) {
       comboRow.classList.remove("hidden");
-      comboNum.textContent = String(f.combo);
+      setText(comboNum, String(f.combo));
       const m = comboMultiplier(f.combo);
-      comboMult.textContent = m > 1 ? `x${m}` : "";
-      const tier = tierOf(f.combo);
-      comboRow.dataset.tier = String(tier);
+      setText(comboMult, m > 1 ? `x${m}` : "");
+      const tier = String(tierOf(f.combo));
+      if (comboRow.dataset.tier !== tier) comboRow.dataset.tier = tier;
     } else {
       comboRow.classList.add("hidden");
     }

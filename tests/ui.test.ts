@@ -4,6 +4,9 @@ import { describe, expect, it } from "vitest";
 import { loadProgress, nextProgress, saveProgress, type ProgressV2 } from "../src/v2/ui/progress";
 import { edgeDir, mashTap, onPointerDown, swipeDir } from "../src/v2/ui/touch";
 import { approach, clamp, pct, starGlyphs } from "../src/v2/ui/format";
+import { visiblePrompts } from "../src/v2/ui/hud/queue";
+import type { EventState } from "../src/qte/runner";
+import type { QteEvent } from "../src/qte/types";
 
 describe("progress", () => {
   it("loads a default when nothing was saved", () => {
@@ -89,5 +92,37 @@ describe("touch zone routing", () => {
     expect(onPointerDown("hit", 0.5, 0.5)).toBeNull();
     expect(onPointerDown("hit", 0.02, 0.5)).toEqual({ kind: "dir", dir: "left" });
     expect(onPointerDown("none", 0.5, 0.5)).toBeNull();
+  });
+});
+
+describe("prompt queue", () => {
+  const st = (ev: QteEvent, phase: EventState["phase"] = "pending"): EventState => ({ ev, phase, held: false, progress: 0, lastDir: null, result: null });
+  const hit = (beat: number) => st({ type: "hit", beat, dir: "up" });
+
+  it("never shows a HOLD ring over a HIT arrow: the hold waits until the hit resolves", () => {
+    const h = hit(8);
+    const hold = st({ type: "hold", beat: 10, length: 2 });
+    expect(visiblePrompts([h, hold])).toEqual([h]);
+    h.phase = "done";
+    expect(visiblePrompts([h, hold])).toEqual([hold]);
+  });
+
+  it("shows one panel at a time, and what is queued behind a panel waits", () => {
+    const combo = st({ type: "combo", beat: 12, dirs: ["up", "left", "down"] });
+    const mash = st({ type: "mash", beat: 14, length: 4 });
+    expect(visiblePrompts([combo, mash, hit(20)])).toEqual([combo]);
+  });
+
+  it("lets a run of HIT arrows share the lane, up to the next panel", () => {
+    const a = hit(8);
+    const b = hit(9);
+    const hold = st({ type: "hold", beat: 10, length: 2 });
+    expect(visiblePrompts([a, b, hold, hit(14)])).toEqual([a, b]);
+  });
+
+  it("reuses the output array (no allocation per frame)", () => {
+    const out: EventState[] = [];
+    expect(visiblePrompts([hit(8)], out)).toBe(out);
+    expect(visiblePrompts([], out)).toEqual([]);
   });
 });

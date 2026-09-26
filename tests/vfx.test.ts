@@ -117,7 +117,7 @@ describe("screen fx decay", () => {
 function frame(over: Partial<Frame>): Frame {
   return {
     songTime: 1, beatPos: 2, beatPhase: 0, spb: 0.5, meter: 0, combo: 0, tier: 0, score: 0, rate: 1, energy: 0.7,
-    beatsToDrop: Infinity, mashing: false, mashCount: 0, holding: false, holdProgress: 0, phase2: false,
+    beatsToDrop: Infinity, mashing: false, mashCount: 0, holding: false, holdProgress: 0, phase2: false, turn: "player",
     ending: false, win: null, prompts: [], showsAt: () => 0, targetAt: () => 0,
     level: {} as Frame["level"], ...over,
   };
