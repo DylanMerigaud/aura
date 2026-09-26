@@ -174,6 +174,7 @@ function drawTitle(t: number) {
   text(g, title ? `current title: ${title}` : "you have zero aura. fix that.", W / 2, 380, "#35e0ff", 30, "center", 800);
   if (Math.sin(t * 5) > -0.3) text(g, "PRESS SPACE OR TAP", W / 2, 540, "#fff36b", 40);
   text(g, "arrows / WASD, SPACE    |    down arrow: latency calibration", W / 2, 670, "#ccc", 18, "center", 700);
+  if (innerHeight > innerWidth) text(g, "rotate your phone for the full show", W / 2, 620, "#ff3df2", 34);
 }
 
 function drawSelect(t: number) {
