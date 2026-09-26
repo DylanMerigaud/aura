@@ -3,7 +3,11 @@
 // the results card shows the numbers of the Stats it is given.
 import { describe, expect, it, vi } from "vitest";
 
-vi.mock("../src/v2/net/live", () => ({ fetchRoast: () => Promise.resolve(null), speakLive: () => Promise.resolve(false) }));
+const live = vi.hoisted(() => ({ roast: null as { roast: string; title: string } | null, spoken: 0 }));
+vi.mock("../src/v2/net/live", () => ({
+  fetchRoast: () => Promise.resolve(live.roast),
+  speakLive: () => ((live.spoken += 1), Promise.resolve(true)),
+}));
 
 import { buildGate } from "../src/v2/ui/gate";
 import { buildResults } from "../src/v2/ui/results";
@@ -111,6 +115,16 @@ describe("results", () => {
     expect(r.root.querySelector(".rc-next")!.classList.contains("locked")).toBe(false);
     expect(q(".rc-gain")).toBe("+2234 XP");
     expect((r.root.querySelector(".rc-xp") as HTMLElement).dataset.rank).toBe("Side character");
+  });
+
+  it("the live roast is read on the card, never spoken (no voice lines, freeze item 5)", async () => {
+    live.roast = { roast: "cooked", title: "t" };
+    const r = buildResults({ retry: vi.fn(), next: vi.fn(), loadout: vi.fn() });
+    r.show(played, lvl);
+    await new Promise((res) => setTimeout(res, 0));
+    live.roast = null;
+    expect(r.root.textContent).toContain("cooked");
+    expect(live.spoken).toBe(0);
   });
 
   it("a second show with other Stats never keeps the first numbers; a loss says HUMBLED, RETRY, locked preview", () => {

@@ -1,3 +1,9 @@
+16:54 CEST, GAME lane, freeze item 5: NO VOICES
+GREEN: no voice plays in the root build: the recorded lines and calls stay silent (voice/v2/index.json is empty, no bake off winner in INTEGRATION's STATUS), and the live Gradium roast on the results card is now read only, never spoken (a DOM test holds it); the crowd bed, the SFX and the music carry the sound; tests green
+RED: nothing seen on a phone for items 2 to 5 yet
+PLAY: https://dylanmerigaud.github.io/aura/
+NEED FROM DYLAN: one full battle, sound on: no voice anywhere, the roast only as text on the card
+
 16:52 CEST, GAME lane, freeze item 4: THE WIN
 GREEN: a win hands over 1.2 s after the last beat (was 3.2 s): the pack pops first, then the results card; a loss keeps its 3.2 s slowing tape then the card with the XP bar and RETRY; the primary button (RETRY, NEXT after a win) takes one tap 300 ms after the card shows; tests green
 RED: nothing seen on a phone for this push yet

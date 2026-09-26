@@ -6,7 +6,7 @@
 import type { LevelV2, Stats } from "../contracts";
 import { starGlyphs } from "./format";
 import { el, replay } from "./dom";
-import { fetchRoast, speakLive } from "../net/live";
+import { fetchRoast } from "../net/live";
 import { isTapKey, shareData, shareUrl, type ShareData } from "./flow";
 import { RANKS, rankFill, rankIndex, type XpGain } from "../xp";
 
@@ -242,9 +242,7 @@ export function buildResults(on: ResultsHandlers) {
         roast.textContent = r.roast;
         roastTag.textContent = "roast written live by Gemini";
         roastTag.classList.remove("hidden");
-        return speakLive(r.roast).then((ok) => {
-          if (ok && myGen === genAtShow) roastTag.textContent = "roast written live by Gemini, voiced live by Gradium";
-        });
+        // Read, never spoken: no voice line ships until a bake off winner scores 4 on every axis (freeze item 5).
       })
       .catch(() => {
         /* offline or the worker is down: the announcer line already shown stands */
