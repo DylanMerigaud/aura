@@ -23,7 +23,7 @@ refresh it.
   words, a lull in the game's own analysis, or a BPM off the request by over 8 percent) and
   `scripts/ship-music-v3.py` ships the winners with their manifest entries.
 - **pacing** (`scripts/eval-pacing.ts`): per chart, overlaps, arrows inside an open window, rest
-  after a release, first QTE, dead spans, level length, count in, on screen text, the 69 window and
+  after a release, first QTE, dead spans, level length, count in, on screen text, the 67 window and
   its release on a drop. Detail in "Mechanical gates" below.
 - **animation** (`scripts/eval-animation.ts`): per Mixamo clip and per game event, one animation per
   file, root drift, loop seams, beat windows, canon clip played, and the mechanical half of the ten
@@ -69,10 +69,38 @@ regeneration rounds did not converge (see the `manual_patch` row on `l2-announce
 
 ## Voices
 
-All 30 lines in `public/voice/v2/` (5 levels times 3 taunts plus intro, win, lose) passed the
-mechanical gate on first render, no trims or regenerations were needed. Distinct Gradium voices per
-opponent (Sterling, Reuben, Maeve, Freya, Garrett for the level 5 boss), a shared announcer voice
-(Marcus), same roster as v1's `scripts/gen-voices.ts`.
+Voice bake off (`scripts/gen-voices-bakeoff.ts`, every judgment a `voice` row with gate
+`bakeoff_judge` in the ledger). Three candidates per role, sampled first
+(`samples/voice/SAMPLE.md`): Gradium Voice Design (temp 1.2, padding_bonus -2),
+`gemini-3.8-flash-tts` and `gemini-2.5-pro-preview-tts` with a director's notes prompt per line.
+Every render is trimmed, sped up 8 percent, compressed, given a slap echo (and a 52 Hz thump under
+big announcer calls), then judged on the audio by `gemini-3.1-pro-preview`: energy, emotion,
+stereotype, Gen Z hype, 1 to 5, ship at 4 on every axis, with a transcript check (extra or missing
+words cap every axis at 2). Winner per line: highest min axis, then mean.
+
+Sample winners: announcer, the Gradium designed voice (mean 5.0) and `gemini-3.8-flash-tts` Fenrir
+(4.75), so they split the variants; Turnstile Ninja, `gemini-3.8-flash-tts` Algenib (4.5); Boat
+Kid, a three way tie at 5.0 (flash Achernar, pro Achernar, Gradium designed boatkid-2), split three ways.
+`gemini-2.5-pro-preview-tts` lost the announcer and the Ninja samples.
+
+Final roster (cast `roster-1625`, 63 lines: 8 announcer calls including SIX SEVEN, 15 intro, win,
+lose, 40 taunts). Five variants for the calls, three for the roster lines (clock), plus a rescue
+round of up to five more on lines under threshold (partial, cut at 17:03).
+
+| role | lines | all axes >= 4 | winner mean | winning model count |
+|---|---:|---:|---:|---|
+| announcer | 23 | 19 | 4.46 | flash 18, Gradium 4, pro 1 |
+| The Boat Kid | 8 | 8 | 5.00 | flash 4, Gradium 2, pro 2 |
+| The Turnstile Ninja | 8 | 2 | 3.34 | flash 4, pro 3, Gradium 1 |
+| Papi Raleur | 8 | 5 | 3.47 | Gradium 4, flash 4 |
+| La Parisienne | 8 | 8 | 4.59 | flash 7, Gradium 1 |
+| Sporty Granny | 8 | 5 | 3.59 | flash 5, Gradium 3 |
+
+47 of 63 ship at 4 or more on every axis, 16 below; every line still ships its best variant (never
+silence), listed with the judge note in `samples/voice/BOARD.md`. Crowd one shots (Gradium only,
+three French and three Brazilian Portuguese designed voices, layered and panned): `crowd-fr`,
+`crowd-br`, `crowd-mix`, the 67 chant `crowd-six-seven-1` and `-2`, the Boat Kid chant
+`crowd-boat-kid-1` and `-2`. Gradium spend: 3,742 credits by balance delta (cap 60,000).
 
 ## Mechanical gates (pacing, animation)
 
@@ -128,7 +156,7 @@ one of them while the live roast loads), the announcer call is `announcer.intro`
 | `text_roast` | each roast line 12 words or fewer |
 | `text_announcer` | each announcer call 1 to 4 words |
 | `text_total` | story + taunts + the longest roast + announcer calls, under 40 words |
-| `mash_length` | each 69 charge lasts 2 to 8 beats |
+| `mash_length` | each 67 charge lasts 2 to 8 beats |
 | `release_on_drop` | each MASH release lands within 120 ms of a `drops_s` time of its track (`assets/music/manifest.json` or the refined `src/v2/analysis.json`), when the track is in the manifest |
 
 A word is a whitespace separated token holding a letter or a digit.
@@ -173,7 +201,7 @@ to its window, not the whole Mixamo take. The gate judges the raw clip, even tho
 ### First run, 2026-09-26 11:10 UTC
 
 Pacing, 68 checks, 48 pass, 20 fail. The five v2 charts pass every timing gate (no overlap, first
-QTE on beat 8, longest dead span 5 beats, 39 to 45 s, every 69 release within 0 ms of a refined
+QTE on beat 8, longest dead span 5 beats, 39 to 45 s, every 67 release within 0 ms of a refined
 drop). All 20 fails are text: story cards of 15 to 25 words (max 8), taunts of 6 to 8 words (max 5),
 announcer intros of 7 or 8 words (max 4), 52 to 64 words per level (under 40). The roast lines pass.
 
