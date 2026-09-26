@@ -79,7 +79,8 @@ function sunglasses(): THREE.Group {
     arm.position.set(x, 0.006, -0.045);
     g.add(arm);
   }
-  g.position.set(0, 0.075, 0.1);
+  // Measured on Josh and James (head bone 1.56 m, crown 1.79 m, bone axes y up z forward): the eye line.
+  g.position.set(0, 0.1, 0.105);
   return g;
 }
 
