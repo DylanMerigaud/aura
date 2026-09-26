@@ -1,7 +1,7 @@
 // The v2 campaign charts: validator, pacing gate, beats inside the track, the hero's 67 release on the biggest drop.
 import { describe, expect, it } from "vitest";
 import { validateLevel } from "../src/qte/validate";
-import { LEVELS_V2, OPPONENT_MOVES, alternate, generateChart, pacingIssues, rise, span, turnIssues } from "../src/v2/levels";
+import { LEVELS_V2, OPPONENT_MOVES, alternate, generateChart, pacingIssues, rise, rosterLevel, rosterLoop, span, turnIssues } from "../src/v2/levels";
 import { GESTURES } from "../src/anim/gestures";
 import type { LevelV2 } from "../src/v2/contracts";
 import { trackInfo } from "../src/v2/tracks";
@@ -157,5 +157,36 @@ describe("turn validator", () => {
     expect(turnIssues({ ...hero, lengthBeats: 64, events: r.events, turns: r.turns })).toEqual([]);
     expect(r.events.some((e) => e.type === "mash")).toBe(true);
     for (const t of r.turns) if (t.who === "opponent") expect(OPPONENT_MOVES).toContain(t.move);
+  });
+});
+
+describe("roster (addendum 16:40)", () => {
+  it("runs Boat Kid, Ninja, Papi Raleur, La Parisienne, Sporty Granny with fixed ranks, handles and rigs", () => {
+    expect(LEVELS_V2.map((l) => [l.id, l.opponent.name, l.opponent.handle, l.opponent.rank, l.opponent.rig])).toEqual([
+      [1, "THE BOAT KID", "@boat_kid_riau", "Aura 9000", "boatkid_enemy.glb"],
+      [2, "THE TURNSTILE NINJA", "@turnstile_ninja", "Sigma", "ninja_enemy.glb"],
+      [3, "PAPI RALEUR", "@papi_raleur", "Side character", "abe_enemy_elder.glb"],
+      [4, "LA PARISIENNE", "@la_parisienne", "Main character", "sophie_crowd_casual.glb"],
+      [5, "SPORTY GRANNY", "@sporty_granny", "Main character", "sportygranny_crowd_older.glb"],
+    ]);
+    expect(new Set(LEVELS_V2.map((l) => l.opponent.light)).size).toBe(5);
+  });
+
+  it("gives every level 8 taunts on distinct beats, the Boat Kid rows on every turn", () => {
+    for (const l of LEVELS_V2) {
+      expect(l.taunts).toHaveLength(8);
+      for (const t of l.taunts) expect(Number.isInteger(t.beat)).toBe(true);
+    }
+    for (const t of LEVELS_V2[0].turns!) if (t.who === "opponent") expect(t.move).toBe("boatSweep");
+  });
+
+  it("loops past the fifth opponent with a harder difficulty vector each loop", () => {
+    expect(rosterLevel(0)).toBe(LEVELS_V2[0]);
+    expect(rosterLevel(4)).toBe(LEVELS_V2[4]);
+    expect(rosterLevel(5).id).toBe(1);
+    expect(rosterLoop(5)).toBe(1);
+    expect(rosterLevel(5).windowScale).toBeLessThan(LEVELS_V2[0].windowScale);
+    expect(rosterLevel(10).windowScale).toBeLessThan(rosterLevel(5).windowScale);
+    expect(rosterLevel(10).opponentAura!).toBeGreaterThan(rosterLevel(5).opponentAura!);
   });
 });

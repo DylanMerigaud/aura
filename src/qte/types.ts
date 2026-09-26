@@ -25,7 +25,19 @@ export interface Level {
   /** Key of public/art/<artKey>.jpg */
   artKey: string;
   story: [string, string];
-  opponent: { name: string; persona: string; color: string };
+  opponent: {
+    name: string;
+    persona: string;
+    color: string;
+    /** Nameplate handle, e.g. "@boat_kid_riau". */
+    handle?: string;
+    /** Fixed rank word on his plate (a src/v2/xp.ts RANKS word), never read from the meter. */
+    rank?: string;
+    /** Arena light color for this opponent (CSS hex); the arena is the same black playground. */
+    light?: string;
+    /** Rig file under assets/3d/characters/ for this opponent. */
+    rig?: string;
+  };
   taunts: Taunt[];
   announcer: { intro: string; win: string; lose: string };
   bpm: number;

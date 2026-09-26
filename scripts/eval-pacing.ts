@@ -155,9 +155,11 @@ export function pacingChecks(c: Chart, drops?: TrackDrops): Check[] {
     }, (mashes.length - bad.length) / mashes.length));
 
     if (c.track && drops) {
+      const declared = (c.dropBeats ?? []).map((b) => ({ t: drops.firstBeatS + beatsToSeconds(b, c.bpm), from: "chart dropBeats" }));
+      const all = [...drops.drops, ...declared];
       const releases = mashes.map((m) => {
         const t = drops.firstBeatS + beatsToSeconds(slotEnd(m), c.bpm);
-        const near = drops.drops.reduce<{ t: number; from: string } | null>((best, d) => (!best || Math.abs(d.t - t) < Math.abs(best.t - t) ? d : best), null);
+        const near = all.reduce<{ t: number; from: string } | null>((best, d) => (!best || Math.abs(d.t - t) < Math.abs(best.t - t) ? d : best), null);
         return { release: where(m), releaseS: fmt(t), nearestDropS: near ? fmt(near.t) : null, from: near?.from ?? null, deltaMs: near ? Math.round(Math.abs(near.t - t) * 1000) : null };
       });
       const off = releases.filter((r) => r.deltaMs === null || r.deltaMs > PACING.dropToleranceS * 1000);

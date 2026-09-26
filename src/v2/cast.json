@@ -2,134 +2,88 @@
  "levels": [
   {
    "id": 1,
-   "model": "gemini-3.1-pro-preview",
-   "title": "Turnstile Sigma",
-   "place": "Chatelet, 2am",
-   "story": [
-    "Chatelet at 2am, face the ultimate gatekeeper."
-   ],
+   "title": "Aura Farmer",
+   "place": "The black playground",
+   "story": ["The boss of aura maxing waits, perfectly still."],
    "opponent": {
-    "name": "THE TURNSTILE NINJA",
-    "handle": "@turnstile_ninja",
-    "persona": "Silent, cocky, hands in pockets, chin up. Never paid a metro ticket.",
-    "color": "#35e0ff"
+    "name": "THE BOAT KID",
+    "handle": "@boat_kid_riau",
+    "rank": "Aura 9000",
+    "persona": "An archetype, the boss of aura maxing: kid sized, black traditional outfit, sunglasses, a serious face. Silence and calm, the boat arm sweep.",
+    "color": "#ffd166",
+    "light": "#fff1dc",
+    "rig": "boatkid_enemy.glb"
    },
-   "taunts": [
-    "Wesh, you validated your ticket?",
-    "T'es cuit, your aura's gone.",
-    "Controllers literally fear my jumps.",
-    "Tickets are for NPCs, frerot.",
-    "C'est carre, I mog you.",
-    "Navigo? Never heard of it.",
-    "No pass, just sigma energy.",
-    "Gate hopping is main character."
-   ],
-   "announcer": {
-    "intro": "Lock in.",
-    "win": "Aura strictly secured.",
-    "lose": "You are totally cooked."
-   },
-   "references": [
-    "aura farming",
-    "mog and NPC"
-   ],
-   "edited": "3 taunts swapped for the seed lines, persona completed by hand"
+   "taunts": ["...", "Stay still.", "Aura is quiet.", "Breathe.", "...", "Row slower.", "Calm wins.", "Watch me."],
+   "announcer": { "intro": "Lock in.", "win": "Aura farmed.", "lose": "Humbled." }
   },
   {
    "id": 2,
-   "title": "Corporate Synergy God",
-   "place": "Metro platform, 2am",
-   "story": [
-    "The 2am metro platform echoes with empty buzzwords.",
-    "Kevin adjusts his branded lanyard and challenges your vibe."
-   ],
+   "title": "Turnstile Sigma",
+   "place": "The black playground",
+   "story": ["Hands in pockets, he never paid a ticket."],
    "opponent": {
-    "name": "Kevin from Marketing",
-    "persona": "Overcaffeinated intern flexing negative aura and secondhand buzzwords.",
-    "color": "#39ff14"
+    "name": "THE TURNSTILE NINJA",
+    "handle": "@turnstile_ninja",
+    "rank": "Sigma",
+    "persona": "Silent, cocky, hands in pockets, chin up. Never paid a metro ticket.",
+    "color": "#35e0ff",
+    "light": "#d6e8ff",
+    "rig": "ninja_enemy.glb"
    },
-   "taunts": [
-    "Frerot, your beat drop lacks pure synergy.",
-    "Let us circle back, you total NPC.",
-    "My rhythm roadmap has maximum rizz."
-   ],
-   "announcer": {
-    "intro": "Lanyard on, thinks he has main character energy.",
-    "win": "Massive W, you sent him back to HR.",
-    "lose": "Unbelievable L, outpaced by an unpaid intern."
-   }
+   "taunts": ["Ticket? Never.", "T'es cuit.", "Tickets are for NPCs.", "I mog you.", "Navigo? Who?", "Pure sigma.", "Jump the gate.", "Too slow, frerot."],
+   "announcer": { "intro": "Lock in.", "win": "Sigma mogged.", "lose": "Fare dodged you." }
   },
   {
    "id": 3,
-   "title": "Sauce Boss",
-   "place": "Kebab shop, 4am",
-   "story": [
-    "Neon lights flicker over sizzling spit at 4am.",
-    "Mehdi Aura spins the tongs without blinking."
-   ],
+   "title": "Grumpy Legend",
+   "place": "The black playground",
+   "story": ["Papi hates your music and your haircut."],
    "opponent": {
-    "name": "Mehdi Aura",
-    "persona": "Late night grillmaster with effortless main character energy.",
-    "color": "#ff5e36"
+    "name": "PAPI RALEUR",
+    "handle": "@papi_raleur",
+    "rank": "Side character",
+    "persona": "A grumpy grandpa who complains about everything, then dances better than you.",
+    "color": "#ff9f43",
+    "light": "#ffdcb8",
+    "rig": "abe_enemy_elder.glb"
    },
-   "taunts": [
-    "T'es cuit, extra onions won't save you.",
-    "My spit spins faster than your delulu combo.",
-    "Too much sauce, your rhythm got ratioed."
-   ],
-   "announcer": {
-    "intro": "Midnight snack battle, clock in for pure aura.",
-    "win": "Massive W, you earned the chef's special.",
-    "lose": "You got chopped up by the grillmaster."
-   }
+   "taunts": ["C'etait mieux avant.", "Turn it down.", "In my day...", "Pfff.", "Get a job.", "Too loud.", "Watch, gamin.", "Back pain. Still better."],
+   "announcer": { "intro": "Respect elders.", "win": "Papi retired.", "lose": "Boomer wins." }
   },
   {
    "id": 4,
-   "title": "Aura Saint",
-   "place": "Parvis de Notre-Dame, dawn",
-   "story": [
-    "Dawn breaks over Notre-Dame as supreme stillness approaches.",
-    "His motionless presence radiates impossible main character energy."
-   ],
+   "title": "Rive Gauche",
+   "place": "The black playground",
+   "story": ["She judged your outfit before the beat."],
    "opponent": {
-    "name": "His Holiness",
-    "persona": "A serene presence exuding pure main character energy.",
-    "color": "#fff275"
+    "name": "LA PARISIENNE",
+    "handle": "@la_parisienne",
+    "rank": "Main character",
+    "persona": "Effortless, unimpressed, a coffee in hand, judges everyone in silence.",
+    "color": "#ff6bd6",
+    "light": "#ffdbe9",
+    "rig": "sophie_crowd_casual.glb"
    },
-   "taunts": [
-    "Receive this peaceful W for your soul.",
-    "May your inner rhythm find true peace, friend.",
-    "Breathe gently, your aura is completely restored."
-   ],
-   "announcer": {
-    "intro": "Dawn breaks, face the ultimate aura test!",
-    "win": "Massive W, you have been absolved.",
-    "lose": "Rest now, your rhythm was completely cooked."
-   }
+   "taunts": ["Non.", "Bof.", "C'est tout?", "Mais non.", "So basic.", "Pas mal. Joking.", "Ciao.", "Try Milan."],
+   "announcer": { "intro": "Oh la la.", "win": "Tres chic.", "lose": "Pas terrible." }
   },
   {
    "id": 5,
-   "title": "Algorithm Breaker",
-   "place": "The Voodoo stage",
-   "story": [
-    "The feed detects zero retention in your rhythm.",
-    "Survive the sudden patch note before you vanish."
-   ],
+   "title": "Granny Gains",
+   "place": "The black playground",
+   "story": ["She runs marathons and still out grooves you."],
    "opponent": {
-    "name": "The Algorithm",
-    "persona": "Cold corporate feed engine that has killed more than 2,000 prototypes this year.",
-    "color": "#00ff66"
+    "name": "SPORTY GRANNY",
+    "handle": "@sporty_granny",
+    "rank": "Main character",
+    "persona": "Tracksuit, sweatband, 80 years of cardio, zero mercy.",
+    "color": "#7cff6b",
+    "light": "#dcffe0",
+    "rig": "sportygranny_crowd_older.glb"
    },
-   "taunts": [
-    "Phase two drops down, your frame rate collapses.",
-    "It is giving zero engagement, strictly unindexed.",
-    "Massive L on retention, terminating feed access."
-   ],
-   "announcer": {
-    "intro": "Final feed gatekeeper approaches, show main character energy.",
-    "win": "Infinite aura unlocked, you broke the entire feed!",
-    "lose": "Shadowbanned forever, total loss of user momentum."
-   }
+   "taunts": ["Keep up, dear.", "Warm up done.", "Cardio, darling.", "Hydrate.", "Knees of steel.", "Nap time? No.", "Again, faster.", "Granny mogs."],
+   "announcer": { "intro": "Final boss.", "win": "Granny benched.", "lose": "Out cardioed." }
   }
  ]
 }

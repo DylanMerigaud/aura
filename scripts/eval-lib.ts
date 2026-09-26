@@ -66,6 +66,8 @@ export interface Chart {
   countInBeats?: number;
   /** Declared breakdowns in beats, [start, end]. */
   breakdowns?: [number, number][];
+  /** Drops the chart declares by hand, in beats (an 808 slam the analysis misses); they count as drops. */
+  dropBeats?: number[];
   /** Key into assets/music/manifest.json ("level4" for level4.mp3). */
   track?: string;
   text?: ChartText;
@@ -117,6 +119,7 @@ export interface GameLevel {
   taunts?: { beat: number; text: string }[];
   announcer?: { intro?: string; win?: string; lose?: string };
   breakdownBeats?: [number, number][];
+  dropBeats?: number[];
 }
 
 export function slotFromEvent(e: GameEvent): Slot {
@@ -148,6 +151,7 @@ export function chartFromLevel(l: GameLevel, prefix = "v2", countInBeats?: numbe
     slots: l.events.map(slotFromEvent),
     countInBeats,
     breakdowns: l.breakdownBeats,
+    dropBeats: l.dropBeats,
     track: l.track,
     text: {
       story: l.story?.filter((s) => s.trim()),
