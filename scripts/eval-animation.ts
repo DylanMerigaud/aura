@@ -411,7 +411,7 @@ export function animationChecks(input: AnimationInput): Check[] {
     shared,
   }));
 
-  // Chart level kills: held beat between HIT moves (7), the same HIT move twice in a row (10).
+  // Chart level kills: held beat between HIT moves (7), the same HIT move twice in a row (10) after the onboarding.
   for (const chart of input.charts ?? []) {
     const hits = sortedSlots(chart).filter((s) => s.type === "hit");
     const all = sortedSlots(chart);
@@ -423,7 +423,8 @@ export function animationChecks(input: AnimationInput): Check[] {
       const b = all[i];
       if (a.type !== "hit" || b.type !== "hit") continue;
       if (b.b - a.b < ANIM.minHitGapBeats) tight.push(`${a.move}@${a.b} then ${b.move}@${b.b}`);
-      if (a.move && a.move === b.move) repeats.push(`${a.move}@${a.b} and @${b.b}`);
+      // The onboarding repeats one direction on purpose (Dylan, 17:15: the first 4 bars teach a single swipe).
+      if (a.move && a.move === b.move && b.b >= ONBOARDING_BEATS) repeats.push(`${a.move}@${a.b} and @${b.b}`);
     }
     out.push(check(chart.id, "k7_held_beat", tight.length === 0, {
       note: tight.length ? tight.join(", ") : `every HIT pair at least ${ANIM.minHitGapBeats} beats apart`,
@@ -436,6 +437,9 @@ export function animationChecks(input: AnimationInput): Check[] {
   }
   return out;
 }
+
+/** The first 4 bars are the onboarding: k10 does not count a repeated direction there. */
+export const ONBOARDING_BEATS = 16;
 
 export async function runAnimation(root = ROOT): Promise<Check[]> {
   const mPath = join(root, "assets", "3d", "manifest.json");
