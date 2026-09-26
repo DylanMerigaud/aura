@@ -1,0 +1,14 @@
+{
+  "track": "victory",
+  "candidate": "c4",
+  "model": "gemini-3.1-pro-preview",
+  "note": "too smooth, more samba",
+  "note_score": 5,
+  "note_evidence": "The track delivers a highly energetic, raw street bateria sound featuring prominent whistles, caixas, repinique, and surdos right from 0:00.",
+  "beat_clarity": 5,
+  "beat_evidence": "A fast, driving samba pulse is established immediately at 0:00 by the layered percussion, making the beat extremely clear and easy to follow.",
+  "loop_or_ending": 5,
+  "loop_evidence": "The track builds to a definitive, synchronized final hit from the entire ensemble at 0:10, providing a perfect stinger resolution.",
+  "intelligible_words": false,
+  "total": 5
+}

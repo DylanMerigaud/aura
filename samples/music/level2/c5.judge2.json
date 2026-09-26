@@ -1,0 +1,14 @@
+{
+  "track": "level2",
+  "candidate": "c5",
+  "model": "gemini-3.1-pro-preview",
+  "note": "sidechain on the bass",
+  "note_score": 2,
+  "note_evidence": "The distorted bass that enters at 00:18 is mostly sustained and lacks the exaggerated, breathing volume ducking on the kick required for a heavy sidechain effect.",
+  "beat_clarity": 5,
+  "beat_evidence": "A strong, fast kick and percussion pattern establishes a highly tap-able, steady pulse immediately at 00:00.",
+  "loop_or_ending": 5,
+  "loop_evidence": "The track starts with immediate energy and maintains a steady, loopable intensity throughout, ending abruptly at 00:39 without a fade.",
+  "intelligible_words": false,
+  "total": 4
+}

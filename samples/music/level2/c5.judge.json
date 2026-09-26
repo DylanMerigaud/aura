@@ -1,0 +1,14 @@
+{
+  "track": "level2",
+  "candidate": "c5",
+  "model": "gemini-3.1-pro-preview",
+  "note": "sidechain on the bass",
+  "note_score": 2,
+  "note_evidence": "The distorted bass creates a constant wall of sound without a noticeable ducking and swelling effect on the kicks throughout the track.",
+  "beat_clarity": 5,
+  "beat_evidence": "The fast kick drum and rhythmic vocal chops provide a clear and steady pulse starting exactly at 00:00.",
+  "loop_or_ending": 2,
+  "loop_evidence": "The track maintains high energy initially but features a noticeable fade-out from 00:36 to 00:39, preventing a seamless loop.",
+  "intelligible_words": false,
+  "total": 3
+}

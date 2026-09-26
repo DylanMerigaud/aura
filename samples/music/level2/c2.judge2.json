@@ -1,0 +1,14 @@
+{
+  "track": "level2",
+  "candidate": "c2",
+  "model": "gemini-3.1-pro-preview",
+  "note": "sidechain on the bass",
+  "note_score": 5,
+  "note_evidence": "The heavy distorted bass clearly ducks and swells back up on every kick drum hit right from 0:00, creating a very obvious and rhythmic pumping effect.",
+  "beat_clarity": 5,
+  "beat_evidence": "A strong syncopated funk beat and heavy kick drum establish a clear and tappable pulse immediately at 0:00.",
+  "loop_or_ending": 2,
+  "loop_evidence": "While the energy is steady for most of the track, the instruments drop out abruptly at 0:38 leaving a reverb tail and silence that would ruin a seamless loop.",
+  "intelligible_words": false,
+  "total": 4
+}

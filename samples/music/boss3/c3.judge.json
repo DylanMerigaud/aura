@@ -1,0 +1,14 @@
+{
+  "track": "boss3",
+  "candidate": "c3",
+  "model": "gemini-3.1-pro-preview",
+  "note": "boss phase 2: heavier, faster, more intense than phase 1",
+  "note_score": 5,
+  "note_evidence": "The track delivers relentless pressure with aggressive phonk cowbells and heavy distorted bass from 0:00 to the end, perfectly fitting an enraged boss phase.",
+  "beat_clarity": 5,
+  "beat_evidence": "A fast, driving kick and percussion pattern establishes a highly tap-able and steady pulse right from the first second.",
+  "loop_or_ending": 5,
+  "loop_evidence": "The track starts at maximum energy with no intro and maintains a full arrangement until the abrupt cut at 0:40, making it ideal for a seamless loop.",
+  "intelligible_words": false,
+  "total": 5
+}

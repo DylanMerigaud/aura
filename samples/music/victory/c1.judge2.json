@@ -1,0 +1,14 @@
+{
+  "track": "victory",
+  "candidate": "c1",
+  "model": "gemini-3.1-pro-preview",
+  "note": "too smooth, more samba",
+  "note_score": 5,
+  "note_evidence": "The track features a highly authentic live-sounding street bateria with prominent whistle, surdo, and repinique starting from 00:00, perfectly capturing the raw samba energy requested.",
+  "beat_clarity": 5,
+  "beat_evidence": "The whistle and drum hits establish a very clear and fast pulse from the first second, leading into a steady driving groove at 00:06.",
+  "loop_or_ending": 5,
+  "loop_evidence": "The stinger concludes with a perfectly synchronized and strong final drum hit at 00:11, providing a definitive victory ending.",
+  "intelligible_words": false,
+  "total": 5
+}

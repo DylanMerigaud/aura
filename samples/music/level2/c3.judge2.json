@@ -1,0 +1,14 @@
+{
+  "track": "level2",
+  "candidate": "c3",
+  "model": "gemini-3.1-pro-preview",
+  "note": "sidechain on the bass",
+  "note_score": 5,
+  "note_evidence": "The heavy distorted bass clearly ducks out of the way of the kick drum starting at 0:02, creating a pronounced and rhythmic pumping effect throughout the track.",
+  "beat_clarity": 5,
+  "beat_evidence": "A strong kick drum and syncopated percussion establish a clear and tap-able pulse right from the first second.",
+  "loop_or_ending": 5,
+  "loop_evidence": "The track maintains a consistently high energy level from the drop at 0:02 and ends abruptly at full volume at 0:39, making it ideal for a seamless loop.",
+  "intelligible_words": true,
+  "total": 5
+}

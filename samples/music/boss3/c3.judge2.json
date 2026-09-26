@@ -1,0 +1,14 @@
+{
+  "track": "boss3",
+  "candidate": "c3",
+  "model": "gemini-3.1-pro-preview",
+  "note": "boss phase 2: heavier, faster, more intense than phase 1",
+  "note_score": 4,
+  "note_evidence": "The distorted bass and fast tempo provide high intensity from 0:00, though the breakdown at 0:17 momentarily relieves the relentless pressure.",
+  "beat_clarity": 5,
+  "beat_evidence": "A heavy, syncopated kick and snare pattern provides a highly tap-able, steady pulse right from 0:00.",
+  "loop_or_ending": 3,
+  "loop_evidence": "The track starts at full energy without a dead intro, but the structural breakdown from 0:17 to 0:24 introduces a lull that disrupts a steady loop.",
+  "intelligible_words": false,
+  "total": 4
+}
