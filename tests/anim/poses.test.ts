@@ -23,10 +23,12 @@ function one(pose: Pose, over: Partial<Gesture> = {}): Gesture {
   return { name: "t", source: "test", beats: 1, loop: false, mirror: false, layer: "upper", keys: [{ at: 0, pose }], ...over };
 }
 
+/** three's own interpolant of a track (set at runtime by setInterpolation, missing from the typings). */
+const interpolant = (track: THREE.KeyframeTrack) => (track as unknown as { createInterpolant(): THREE.Interpolant }).createInterpolant();
+
 /** Value of a quaternion track at time t, through three's own interpolant. */
 function sample(track: THREE.KeyframeTrack, t: number): THREE.Quaternion {
-  const it = track.createInterpolant();
-  return new THREE.Quaternion().fromArray(Array.from(it.evaluate(t)));
+  return new THREE.Quaternion().fromArray(Array.from(interpolant(track).evaluate(t)));
 }
 
 describe("pose axes (character space: +X left, +Y up, +Z forward)", () => {
@@ -144,7 +146,7 @@ describe("buildClip", () => {
   it("moves the hips by the offset in meters on a full layer gesture", () => {
     const g: Gesture = one({ hipsOffset: [0.1, -0.05, 0] }, { layer: "full" });
     const tr = buildClip(g, 60, rig).tracks.find((t) => t.name === "mixamorig9Hips.position")!;
-    const v = new THREE.Vector3().fromArray(Array.from(tr.createInterpolant().evaluate(0.5)));
+    const v = new THREE.Vector3().fromArray(Array.from(interpolant(tr).evaluate(0.5)));
     expect(v.clone().sub(rig.hips!.rest).length()).toBeCloseTo(0.1118 * rig.unit, 3);
   });
 
