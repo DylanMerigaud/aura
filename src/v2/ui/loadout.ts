@@ -2,7 +2,7 @@
 // Packs you own. Big cards, one tap to pick, saved at once. Portraits are in engine captures of the real rigs
 // (src/loadout/preview.ts), never a generated face. Reached from a small button on the title and the results.
 import { CATALOG, equip, getEquipped, getInventory } from "../../packs";
-import { CHARACTER_POOL, getLoadout, setLoadout } from "../../loadout/state";
+import { CHARACTER_POOL, DEFAULT_HANDLE, getLoadout, setLoadout, toHandle } from "../../loadout/state";
 import { disposePreviews, portrait } from "../../loadout/preview";
 import "../../loadout/loadout.css";
 import { el } from "./dom";
@@ -10,6 +10,19 @@ import { el } from "./dom";
 export function buildLoadout(onBack: () => void, base = "") {
   const root = el("section", "screen loadout lo");
   root.appendChild(el("h2", "lo-title", "LOADOUT"));
+  const name = el("input", "lo-handle");
+  name.id = "lo-handle";
+  name.type = "text";
+  name.maxLength = 17;
+  name.autocomplete = "off";
+  name.spellcheck = false;
+  name.setAttribute("aria-label", "Your handle");
+  name.addEventListener("change", () => {
+    const h = toHandle(name.value);
+    if (h) setLoadout({ handle: h });
+    name.value = getLoadout().handle ?? DEFAULT_HANDLE;
+  });
+  root.appendChild(name);
   root.appendChild(el("p", "lo-label", "FIGHTER"));
   const fighters = el("div", "lo-fighters");
   root.appendChild(fighters);
@@ -52,6 +65,7 @@ export function buildLoadout(onBack: () => void, base = "") {
 
   function paint() {
     const lo = getLoadout();
+    if (document.activeElement !== name) name.value = lo.handle ?? DEFAULT_HANDLE;
     const chosen = lo.character ?? CHARACTER_POOL[0].file;
     for (const { c, b } of cards) b.classList.toggle("picked", c.file === chosen);
     const owned = new Set(getInventory().emotes.map((e) => e.id));
@@ -74,6 +88,7 @@ export function buildLoadout(onBack: () => void, base = "") {
   }
 
   function onKey(e: KeyboardEvent) {
+    if (e.target === name) return;
     if (e.code === "Escape" || e.code === "Enter") onBack();
   }
 

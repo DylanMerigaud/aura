@@ -20,6 +20,16 @@ export interface Loadout {
   character?: string;
   /** A packs emote id (src/packs/catalog.ts), or undefined for the equipped one. */
   emote?: string;
+  /** The player's handle on the nameplate, always "@" plus 2 to 16 of [a-z0-9_.]; DEFAULT_HANDLE when unset. */
+  handle?: string;
+}
+
+export const DEFAULT_HANDLE = "@kevin_npc";
+
+/** A typed name to a handle: lower case, spaces to underscores, only [a-z0-9_.], 2 to 16 characters, or null. */
+export function toHandle(input: string): string | null {
+  const body = input.trim().replace(/^@+/, "").toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_.]/g, "").slice(0, 16);
+  return body.length >= 2 ? `@${body}` : null;
 }
 
 export interface KV {
@@ -45,7 +55,8 @@ export function getLoadout(kv: KV | null = store()): Loadout {
     const v = JSON.parse(raw) as Loadout;
     const character = CHARACTER_POOL.some((c) => c.file === v.character) ? v.character : undefined;
     const emote = typeof v.emote === "string" ? v.emote : undefined;
-    return { character, emote };
+    const handle = typeof v.handle === "string" ? (toHandle(v.handle) ?? undefined) : undefined;
+    return { character, emote, handle };
   } catch {
     return { ...memory };
   }

@@ -32,3 +32,8 @@
   background: #fff; color: #000; font: inherit; font-size: 18px; letter-spacing: 0.1em; cursor: pointer;
 }
 .lo button:focus-visible { outline: 2px solid #ffd23a; outline-offset: 2px; }
+.lo-handle {
+  align-self: center; width: min(100%, 260px); padding: 8px 12px; border-radius: 999px; border: 2px solid #333;
+  background: #111; color: #fff; font: inherit; font-size: 16px; text-align: center;
+}
+.lo-handle:focus { outline: none; border-color: #ffd400; }
