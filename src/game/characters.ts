@@ -144,6 +144,37 @@ export class Character {
     } else {
       g.fillStyle = "#050505";
       g.fillRect(12, -24, 6, 6);
+      // Eyebrow tells the mood.
+      g.strokeStyle = "#15101c";
+      g.lineWidth = 4;
+      g.beginPath();
+      const brow = this.pose === "cringe" || this.pose === "hit" ? 5 : this.pose === "charge" || this.pose === "release" ? -4 : 0;
+      g.moveTo(8, -32 - brow);
+      g.lineTo(22, -32 + brow);
+      g.stroke();
+    }
+    // Mouth per pose.
+    g.strokeStyle = "#3a1010";
+    g.fillStyle = "#3a1010";
+    g.lineWidth = 3.5;
+    g.beginPath();
+    if (this.pose === "victory" || this.pose === "release") {
+      g.arc(16, -6, 8, 0, Math.PI);
+      g.fill();
+    } else if (this.pose === "cringe") {
+      g.moveTo(6, -4);
+      g.lineTo(11, -8);
+      g.lineTo(16, -4);
+      g.lineTo(21, -8);
+      g.lineTo(26, -4);
+      g.stroke();
+    } else if (this.pose === "hit" || this.pose === "charge") {
+      g.ellipse(17, -5, 4, 6, 0, 0, Math.PI * 2);
+      g.fill();
+    } else {
+      g.moveTo(9, -5);
+      g.quadraticCurveTo(17, this.shades ? -1 : -3, 25, -7);
+      g.stroke();
     }
     g.restore();
     g.restore();

@@ -426,8 +426,16 @@ export class Battle {
     this.player.draw(g, time, 1, pulse);
     this.parts.draw(g);
     this.mashOrb(g, now);
-    // Foreground crowd jumps with the meter.
-    this.crowd(g, cam.parallax(1.35), H + 40, 1.6, "#000", 1 + this.crowdHype * 2, 11);
+    // Foreground crowd jumps with the meter, and smears past the lens during a MASH charge.
+    const fg = cam.parallax(1.35);
+    if (this.mashing) {
+      for (let k = 3; k >= 1; k--) {
+        g.globalAlpha = 0.18;
+        this.crowd(g, { x: fg.x - k * 38 - ((this.visT * 900) % 120), y: fg.y }, H + 40, 1.6, "#000", 1, 11);
+      }
+      g.globalAlpha = 1;
+    }
+    this.crowd(g, fg, H + 40, 1.6, "#000", 1 + this.crowdHype * 2, 11);
     g.restore();
     if (this.mashing) this.speedLines(g);
     if (this.taunt) this.bubble(g, this.taunt.text);
@@ -495,7 +503,7 @@ export class Battle {
     g.rotate(ROT[dir]);
     g.globalAlpha = alpha;
     g.globalCompositeOperation = "lighter";
-    g.drawImage(this.parts.sprites[color === "#35e0ff" ? 0 : color === "#fff36b" ? 2 : 1], -size * 1.8, -size * 1.8, size * 3.6, size * 3.6);
+    g.drawImage(this.parts.sprites[color === "#35e0ff" || color === "#1b5b70" ? 0 : color === "#fff36b" ? 2 : 1], -size * 1.8, -size * 1.8, size * 3.6, size * 3.6);
     g.globalCompositeOperation = "source-over";
     g.fillStyle = color;
     g.beginPath();
