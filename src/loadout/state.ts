@@ -5,11 +5,11 @@ export const LOADOUT_KEY = "aura.loadout.v1";
 /** The player pool: every textured rig in assets/3d/characters that is not the rival. File paths are the
  * manifest's `file`, so the stage can find the entry. */
 export const CHARACTER_POOL: { file: string; name: string }[] = [
+  { file: "characters/josh_crowd_jacket.glb", name: "KEVIN" },
   { file: "characters/james_player_streetwear.glb", name: "JAMES" },
   { file: "characters/michelle_crowd_darker.glb", name: "MICHELLE" },
   { file: "characters/adam_crowd_sporty.glb", name: "ADAM" },
   { file: "characters/sophie_crowd_casual.glb", name: "SOPHIE" },
-  { file: "characters/josh_crowd_jacket.glb", name: "JOSH" },
   { file: "characters/elizabeth_crowd_darker.glb", name: "ELIZABETH" },
   { file: "characters/kaya_crowd.glb", name: "KAYA" },
   { file: "characters/sportygranny_crowd_older.glb", name: "GRANNY" },

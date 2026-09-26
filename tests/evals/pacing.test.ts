@@ -188,3 +188,12 @@ describe("chart adapters", () => {
     expect((await loadCharts([bad], dir)).errors.length).toBe(1);
   });
 });
+
+describe("dead spans and opponent turns", () => {
+  it("an opponent turn with a move is not a dead span", async () => {
+    const { deadSpans } = await import("../../scripts/eval-pacing");
+    const base = { id: "t", bpm: 120, bars: 6, slots: [{ b: 0, dur: 0, type: "hit" as const }, { b: 20, dur: 0, type: "hit" as const }] };
+    expect(deadSpans(base).some((d) => d.beats >= 16)).toBe(true);
+    expect(deadSpans({ ...base, opponentMoves: [[2, 18]] }).some((d) => d.beats >= 16)).toBe(false);
+  });
+});
