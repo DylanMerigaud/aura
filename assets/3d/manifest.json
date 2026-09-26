@@ -13,7 +13,8 @@
       "name": "Ninja",
       "role": "enemy",
       "height_m": 1.75,
-      "source": "Mixamo (ninja, with skin, FBX Binary, 512px textures)"
+      "source": "Mixamo (ninja, with skin, FBX Binary, 512px textures)",
+      "preferred": true
     },
     {
       "file": "characters/kaya_crowd.glb",
@@ -36,7 +37,7 @@
       "role": "enemy",
       "height_m": 1.78,
       "source": "Mixamo (abe, with skin, FBX Binary, 512px textures)",
-      "preferred": true
+      "preferred": false
     },
     {
       "file": "characters/sophie_crowd_casual.glb",
@@ -44,6 +45,41 @@
       "role": "crowd",
       "height_m": 1.76,
       "source": "Mixamo (sophie, with skin, FBX Binary, 512px textures)"
+    },
+    {
+      "file": "characters/sportygranny_crowd_older.glb",
+      "name": "Sporty Granny (older, visor, tracksuit)",
+      "role": "crowd",
+      "height_m": 1.95,
+      "source": "Mixamo (sportygranny, with skin, FBX Binary, 512px webp textures)"
+    },
+    {
+      "file": "characters/michelle_crowd_darker.glb",
+      "name": "Michelle (darker skin, afro puffs, streetwear)",
+      "role": "crowd",
+      "height_m": 1.66,
+      "source": "Mixamo (michelle, with skin, FBX Binary, 512px textures)"
+    },
+    {
+      "file": "characters/elizabeth_crowd_darker.glb",
+      "name": "Elizabeth (darker skin, striped sweater)",
+      "role": "crowd",
+      "height_m": 1.78,
+      "source": "Mixamo (elizabeth, with skin, FBX Binary, 512px textures)"
+    },
+    {
+      "file": "characters/adam_crowd_sporty.glb",
+      "name": "Adam (sporty tracksuit)",
+      "role": "crowd",
+      "height_m": 1.78,
+      "source": "Mixamo (adam, with skin, FBX Binary, 512px webp textures)"
+    },
+    {
+      "file": "characters/josh_crowd_jacket.glb",
+      "name": "Josh (casual jacket)",
+      "role": "crowd",
+      "height_m": 1.79,
+      "source": "Mixamo (josh, with skin, FBX Binary, 512px textures)"
     }
   ],
   "clips": [
@@ -294,6 +330,22 @@
       "loop": true,
       "canon": "walk",
       "source": "Mixamo: Catwalk Walk Forward HighKnees, In Place, aura farming spec bonus entrance/exit strut. Bonus event, not in the required list."
+    },
+    {
+      "file": "anims/crowd_jump_excited.glb",
+      "event": "crowd_excited",
+      "name": "Excited",
+      "loop": true,
+      "canon": "crowd",
+      "source": "Mixamo: Excited (Super Excited), same file already used for crowd_jump, additional event alias requested for crowd diversity"
+    },
+    {
+      "file": "anims/crowd_bounce_bboy.glb",
+      "event": "crowd_bounce",
+      "name": "Bboy Hip Hop Move (Variation One)",
+      "loop": true,
+      "canon": "crowd",
+      "source": "Mixamo: Bboy Hip Hop Move, crowd bounce style"
     }
   ]
 }

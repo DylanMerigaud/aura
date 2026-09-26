@@ -13,6 +13,7 @@ import { Fighter, loadCast, type CastSource, type ClipEvent } from "./fighters";
 import { LAYOUT, isOts, pickShot, punchZoom, rampScale, sameFamily, shotPose, type Pose, type ShotKind } from "./director";
 import { Vfx } from "./vfx";
 import { createComposite } from "./vfx/composite";
+import { Nameplates } from "./nameplates";
 
 const WHIP = 0.1;
 
@@ -23,9 +24,29 @@ function bar(parent: HTMLElement, top: boolean): HTMLDivElement {
   return d;
 }
 
-/** Pixel ratio of the canvas, which the scene target now matches (full resolution): 1 on phones, 1.5 on desktops. */
-export function pixelRatioCap(dpr: number, coarse: boolean): number {
-  return Math.min(coarse ? 1 : 1.5, dpr || 1);
+/** Pixel ratio of the canvas, which the scene target matches (full resolution): the device's, capped at 2. */
+export function pixelRatioCap(dpr: number): number {
+  return Math.min(2, dpr || 1);
+}
+
+/** Adaptive quality: 0 full, 1 pixel ratio 1, 2 also no shadows and no bloom. Never a lower resolution than the screen's CSS pixels. */
+export interface QualityState {
+  step: number;
+  /** Consecutive one second fps samples under the floor. */
+  low: number;
+}
+export const QUALITY_FPS_FLOOR = 40;
+
+/**
+ * One fps sample a second. Two seconds in a row under 40 fps step the quality down once (and restart the
+ * count); a pixel ratio already at 1 skips straight to step 2. Returns true when the step changed.
+ */
+export function stepQuality(q: QualityState, fps: number, pixelRatio: number): boolean {
+  q.low = fps < QUALITY_FPS_FLOOR ? q.low + 1 : 0;
+  if (q.low < 2 || q.step >= 2) return false;
+  q.low = 0;
+  q.step = q.step === 0 && pixelRatio > 1 ? 1 : 2;
+  return true;
 }
 
 /**
@@ -57,16 +78,23 @@ function overlay(parent: HTMLElement): HTMLDivElement {
 
 export function createStage(canvas: HTMLCanvasElement, opts: { base: string; debug: boolean }): Stage {
   // Throws when WebGL is unavailable: main.ts catches it and offers the 2D version.
+  // antialias off on the canvas on purpose: the scene renders into the MSAA target below and the canvas
+  // only receives a fullscreen quad, so a multisampled default framebuffer would cost memory for nothing.
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: "high-performance" });
   const coarse = typeof matchMedia === "function" && matchMedia("(pointer: coarse)").matches;
-  renderer.setPixelRatio(pixelRatioCap(devicePixelRatio, coarse));
+  renderer.setPixelRatio(pixelRatioCap(devicePixelRatio));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.15;
+  renderer.toneMappingExposure = 1.1;
+  // One soft shadow map (1024, the key light only); the adaptive quality turns it off.
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(48, 16 / 9, 0.1, 120);
   const set = new RingSet(scene, opts.base);
+  const plates = new Nameplates(canvas);
+  const enemyHead = { x: 0, y: 0, z: 0 };
   const crowd = new Crowd();
   scene.add(crowd.group);
   const vfx = new Vfx(scene, camera);
@@ -84,7 +112,10 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
   composer.renderToScreen = false;
   composer.setPixelRatio(1);
   composer.addPass(new RenderPass(scene, camera));
-  if (floatOk) composer.addPass(new UnrealBloomPass(new THREE.Vector2(640, 360), 0.85, 0.35, 0.95));
+  // Subtle bloom on emissives only: in the half float target only the signs and the rim go above the
+  // threshold. No half float, no bloom (its own targets are half float).
+  const bloom = floatOk ? new UnrealBloomPass(new THREE.Vector2(640, 360), 0.4, 0.3, 1.05) : null;
+  if (bloom) composer.addPass(bloom);
 
   const composite = createComposite();
   const blitScene = new THREE.Scene();
@@ -92,7 +123,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
   quad.frustumCulled = false;
   blitScene.add(quad);
   const blitCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-  /** Size of the scene target in pixels (the drawing buffer times the adaptive quality). */
+  /** Size of the scene target in pixels (the canvas's drawing buffer). */
   const lowRes = new THREE.Vector2(640, 360);
   const drawSize = new THREE.Vector2();
   // Clean look at full resolution: scanlines at pixel pitch only add a moire.
@@ -164,11 +195,11 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
   let battleFx = false;
 
   // Fps and adaptive quality.
-  let quality = 1;
+  const quality: QualityState = { step: 0, low: 0 };
+  let qualityLogged = false;
   let fpsVal = 60;
   let fpsFrames = 0;
   let fpsAcc = 0;
-  let lowSeconds = 0;
 
   const anchors: Anchors = {
     playerFeet: { x: 0, y: 0, z: 0 },
@@ -186,10 +217,10 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
     const h = Math.max(1, canvas.clientHeight || innerHeight);
     renderer.setSize(w, h, false);
     const aspect = w / h;
-    // Full resolution: the scene renders at the canvas's own drawing buffer size, scaled by the adaptive quality.
+    // Full resolution: the scene renders at the canvas's own drawing buffer size.
     renderer.getDrawingBufferSize(drawSize);
-    const lw = Math.max(1, Math.round(drawSize.x * quality));
-    const lh = Math.max(1, Math.round(drawSize.y * quality));
+    const lw = Math.max(1, Math.round(drawSize.x));
+    const lh = Math.max(1, Math.round(drawSize.y));
     composer.setSize(lw, lh);
     lowRes.set(lw, lh);
     vfx.setPixelHeight(lh);
@@ -312,21 +343,31 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
     renderer.render(blitScene, blitCam);
   }
 
-  function measure(realDt: number): void {
+  /** `adapt`: only battle frames step the quality down (a model load stalling the menu is not the fight's fps). */
+  function measure(realDt: number, adapt: boolean): void {
     fpsFrames++;
     fpsAcc += realDt;
     if (fpsAcc >= 1) {
       fpsVal = fpsFrames / fpsAcc;
       fpsFrames = 0;
       fpsAcc = 0;
-      if (fpsVal < 45) lowSeconds++;
-      else lowSeconds = 0;
-      if (lowSeconds >= 2 && quality > 0.5) {
-        quality = 0.5;
-        resize();
-        vfx.setQuality(0.5);
+      if (adapt && stepQuality(quality, fpsVal, renderer.getPixelRatio())) {
+        if (quality.step >= 1 && renderer.getPixelRatio() > 1) {
+          renderer.setPixelRatio(1);
+          resize();
+        }
+        if (quality.step >= 2) {
+          set.key.castShadow = false;
+          if (bloom) bloom.enabled = false;
+          vfx.setQuality(0.5);
+        }
+        if (!qualityLogged) {
+          qualityLogged = true;
+          console.info(`[aura] under ${QUALITY_FPS_FLOOR} fps for 2 s: quality step ${quality.step} (1 = pixel ratio 1, 2 = no shadows nor bloom)`);
+        }
       }
-      if (fpsDiv) fpsDiv.textContent = `${fpsVal.toFixed(0)} fps ${lowRes.x}x${lowRes.y}${floatOk ? "" : " nobloom"}${cast ? " " + cast.label : ""}`;
+      if (fpsDiv)
+        fpsDiv.textContent = `${fpsVal.toFixed(0)} fps ${lowRes.x}x${lowRes.y} q${quality.step}${bloom?.enabled ? "" : " nobloom"}${cast ? " " + cast.label : ""}`;
     }
   }
 
@@ -364,6 +405,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
       player.root.rotation.y = Math.PI;
       enemy.root.position.set(...LAYOUT.enemy);
       scene.add(player.root, enemy.root);
+      plates.enemyHandle = (lv.opponent as { handle?: string }).handle ?? "@" + lv.opponent.name.toLowerCase().replace(/\W+/g, "_");
       // Fresh director for the battle.
       cut("ots");
       ending = false;
@@ -425,6 +467,8 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
         }
         case "mashStart":
           playP("mash_charge", 1.5);
+          // The hands family: the charge seen on our hands.
+          if (!ending) cutTo("hands");
           break;
         case "mashStep":
           trauma = Math.min(0.35, trauma + 0.03);
@@ -501,7 +545,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
       spb = f.spb;
       const dt = Math.min(0.1, Math.max(0, realDt));
       time += dt;
-      measure(dt);
+      measure(dt, true);
       // Visual time scale: hit stop, then the drop ramp, the ending freeze and slow motion.
       if (hitStop > 0) {
         timeScale = 0;
@@ -539,6 +583,8 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
       computeAnchors();
       placeGlasses();
       applyCamera(f, dt, vdt);
+      enemy?.headPos(enemyHead);
+      plates.update(camera, player ? anchors.playerHead : null, enemy ? enemyHead : null, f.meter, !ending);
       vfx.update(vdt, f, anchors);
       render(dt);
     },
@@ -553,7 +599,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
       }
       const dt = Math.min(0.1, Math.max(0, realDt));
       time += dt;
-      measure(dt);
+      measure(dt, false);
       idleAngle += dt * 0.12;
       const beatPos = time * 2;
       player?.update(dt, beatPos % 1, 0.5);
@@ -561,6 +607,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
       crowd.update(dt, beatPos, 0.4, 0.6);
       set.update(beatPos % 1, 0.4, time);
       setLetterbox(false);
+      plates.hide();
       camera.position.set(Math.sin(idleAngle) * 8.5, 3.2, Math.cos(idleAngle) * 8.5);
       camera.lookAt(0, 0.9, 0);
       const fov = camera.aspect < 1 ? 70 : 50;

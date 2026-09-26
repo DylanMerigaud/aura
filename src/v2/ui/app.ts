@@ -11,6 +11,7 @@ import { buildLoadout } from "./loadout";
 import { buildResults } from "./results";
 import { buildHud } from "./hud/index";
 import { bindBattleInput } from "./battleInput";
+import { buildPlayZone } from "./playzone";
 import { loadProgress, nextProgress, saveProgress } from "./progress";
 import { buildBed } from "./bed";
 
@@ -47,7 +48,10 @@ export function startApp(opts: StartOpts): { hud: Listener } {
   const battleInput = bindBattleInput(canvas, game);
   const hudCtl = buildHud(base);
   const bed = buildBed(base);
-  const battle: ScreenCtl = { root: hudCtl.root, onKey: battleInput.onKey };
+  const zone = buildPlayZone(game);
+  hudCtl.root.appendChild(zone.root);
+  // Battle keys are read by battleInput on window (capture phase), not through the screen switcher.
+  const battle: ScreenCtl = { root: hudCtl.root };
 
   const gate = buildGate(() => goTitle());
   const title = buildTitle(levels, () => progress, {
@@ -142,5 +146,12 @@ export function startApp(opts: StartOpts): { hud: Listener } {
     else void startBattle();
   }
 
-  return { hud: hudCtl.listener };
+  const hud: Listener = {
+    event: (e) => hudCtl.listener.event(e),
+    frame: (f, dt) => {
+      hudCtl.listener.frame?.(f, dt);
+      zone.frame();
+    },
+  };
+  return { hud };
 }

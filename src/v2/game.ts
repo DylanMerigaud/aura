@@ -44,6 +44,7 @@ export class Game implements GameApi {
   private pendingCount: { n: number; at: number }[] = [];
   /** Battles started per level id: rotates the taunt lines so a retry hears a new one first. */
   private attempts = new Map<number, number>();
+  private lastTurn: "player" | "opponent" = "player";
 
   constructor(private deps: GameDeps) {}
 
@@ -119,6 +120,7 @@ export class Game implements GameApi {
     const buf = await Promise.race([this.buffer(info.file), new Promise<null>((r) => setTimeout(() => r(null), TRACK_WAIT_MS))]);
     const attempt = this.attempts.get(level.id) ?? 0;
     this.attempts.set(level.id, attempt + 1);
+    this.lastTurn = "player";
     this.core = new BattleCore(level, info, windowScale, this.emit, attempt);
     this.endAt = -1;
     this.paused = false;
@@ -192,6 +194,18 @@ export class Game implements GameApi {
     return c.ev.type === "mash" ? "mash" : c.ev.type === "hold" ? "hold" : "hit";
   }
 
+  /** Whose turn it is, from the last frame (the play zone dims and ignores taps on "opponent"). */
+  turn(): "player" | "opponent" {
+    return this.core ? this.lastTurn : "player";
+  }
+
+  /** True over the last RELEASE_BEATS of the current MASH window: the two pads merge into RELEASE. */
+  releasing(beats = 1.5): boolean {
+    const c = this.core?.runner.current();
+    if (!c || !this.core || c.ev.type !== "mash") return false;
+    return this.core.songTime >= this.core.runner.targetAt(c.ev) - beats * this.core.runner.spb;
+  }
+
   running() {
     return !!this.core;
   }
@@ -255,6 +269,7 @@ export class Game implements GameApi {
     }
     core.update(this.songAt(heard), realDt);
     const f = core.frame();
+    this.lastTurn = f.turn;
     for (const l of this.listeners) l.frame?.(f, realDt);
     if (this.endAt > 0 && now >= this.endAt && this.done) {
       const done = this.done;
