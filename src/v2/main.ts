@@ -47,6 +47,8 @@ function noWebglSoft() {
 addEventListener("resize", () => stage.resize());
 // iOS suspends or interrupts the context (calls, lock screen, app switch): any gesture or coming back resumes it.
 addEventListener("pointerdown", wake);
+// iOS counts only the release as the gesture that may resume audio (the gate's own lesson): wake there too.
+addEventListener("pointerup", wake);
 addEventListener("keydown", wake);
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden) wake();

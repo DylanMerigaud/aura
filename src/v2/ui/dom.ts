@@ -8,6 +8,11 @@ export function el<K extends keyof HTMLElementTagNameMap>(tag: K, className?: st
   return n;
 }
 
+/** Write a text only when it changed: the same string written again still replaces the text node and dirties layout. */
+export function setText(n: Node, v: string) {
+  if (n.textContent !== v) n.textContent = v;
+}
+
 export function clear(n: Element) {
   while (n.firstChild) n.removeChild(n.firstChild);
 }

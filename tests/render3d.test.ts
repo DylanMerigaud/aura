@@ -1,6 +1,9 @@
-// Pure parts of the 3D director: the shot picker never repeats, the drop ramp and punch zoom curves.
+// Pure parts of the 3D director: the shot picker never repeats a shot family, every shot moves on its own
+// clock without a jump, the drop ramp and punch zoom curves.
 import { describe, expect, it } from "vitest";
-import { isOts, pickShot, punchZoom, rampScale, shotPose, type ShotKind } from "../src/render3d/director";
+import { FAMILY, MOVE_S, isOts, pickShot, punchZoom, rampScale, shotPose, type ShotKind } from "../src/render3d/director";
+
+const KINDS: ShotKind[] = ["ots", "otsWide", "enemyClose", "heroLow", "topDown", "dollyEnemy"];
 
 function lcg(seed: number) {
   let s = seed;
@@ -8,18 +11,22 @@ function lcg(seed: number) {
 }
 
 describe("pickShot", () => {
-  it("never picks the same shot twice in a row, drops and taunts included", () => {
+  it("never picks two shots of the same family in a row, drops and taunts included", () => {
     const rnd = lcg(7);
     let prev: ShotKind = "ots";
     for (let i = 0; i < 5000; i++) {
       const r = rnd();
       const next = pickShot(prev, rnd, { drop: r < 0.05, taunt: r > 0.95 });
-      expect(next).not.toBe(prev);
+      expect(FAMILY[next]).not.toBe(FAMILY[prev]);
       prev = next;
     }
   });
 
-  it("keeps the over the shoulder family around 60 percent", () => {
+  it("never follows an over the shoulder shot with the other one (two behind shots read as one)", () => {
+    for (const prev of ["ots", "otsWide"] as ShotKind[]) for (let i = 0; i < 200; i++) expect(isOts(pickShot(prev, Math.random))).toBe(false);
+  });
+
+  it("keeps the over the shoulder family the base shot, just under half the cuts", () => {
     const rnd = lcg(3);
     let prev: ShotKind = "ots";
     let ots = 0;
@@ -28,8 +35,8 @@ describe("pickShot", () => {
       prev = pickShot(prev, rnd);
       if (isOts(prev)) ots++;
     }
-    expect(ots / n).toBeGreaterThan(0.5);
-    expect(ots / n).toBeLessThan(0.7);
+    expect(ots / n).toBeGreaterThan(0.4);
+    expect(ots / n).toBeLessThanOrEqual(0.5);
   });
 
   it("goes top down on a drop and dollies on a taunt", () => {
@@ -68,11 +75,35 @@ describe("punchZoom", () => {
 
 describe("shotPose", () => {
   it("returns finite poses for every shot in both orientations", () => {
-    for (const k of ["ots", "otsWide", "enemyClose", "heroLow", "topDown", "dollyEnemy"] as ShotKind[])
+    for (const k of KINDS)
       for (const aspect of [16 / 9, 9 / 16]) {
         const p = shotPose(k, 1.3, 0.4, aspect);
         for (const v of [...p.pos, ...p.target, p.fov]) expect(Number.isFinite(v)).toBe(true);
         expect(p.fov).toBeLessThanOrEqual(80);
       }
+  });
+
+  const dist = (a: number[], b: number[]) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+
+  it("moves every shot within its first bar (an orbit or a dolly of at least 20 cm in 2 s)", () => {
+    for (const k of KINDS) expect(dist(shotPose(k, 0, 0.5, 16 / 9).pos, shotPose(k, 2, 0.5, 16 / 9).pos)).toBeGreaterThan(0.2);
+  });
+
+  it("never jumps inside a shot, even when it outlives its bar (the bar progress no longer moves it)", () => {
+    for (const k of KINDS) {
+      let prev = shotPose(k, 0, 0, 16 / 9).pos;
+      for (let t = 1 / 60; t <= MOVE_S + 2; t += 1 / 60) {
+        // The bar wraps from 1 to 0 twice a second here: the pose must not care.
+        const pos = shotPose(k, t, (t * 2) % 1, 16 / 9).pos;
+        expect(dist(pos, prev)).toBeLessThan(0.05);
+        prev = pos;
+      }
+    }
+  });
+
+  it("writes into the pose it is given (no allocation in the frame loop)", () => {
+    const out = { pos: [0, 0, 0] as [number, number, number], target: [0, 0, 0] as [number, number, number], fov: 0 };
+    expect(shotPose("ots", 1, 0.5, 16 / 9, out)).toBe(out);
+    expect(out.fov).toBe(48);
   });
 });

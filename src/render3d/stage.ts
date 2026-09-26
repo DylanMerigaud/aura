@@ -1,6 +1,6 @@
-// The 3D stage: the ring set, two fighters, the crowd, the camera director and the PS2 low res pipeline
-// (scene -> 640x360 target with bloom -> nearest blit through lane B's composite). Reads CoreEvents and
-// Frames only; owns the visual time scale (hit stop, drop ramp) and never touches audio.
+// The 3D stage: the ring set, two fighters, the crowd, the camera director and the render pipeline
+// (scene -> full resolution MSAA target with bloom -> linear blit through lane B's composite). Reads
+// CoreEvents and Frames only; owns the visual time scale (hit stop, drop ramp) and never touches audio.
 import * as THREE from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
@@ -10,11 +10,10 @@ import type { Anchors, CoreEvent, Frame, LevelV2, Stage } from "../v2/contracts"
 import { RingSet } from "./set";
 import { Crowd } from "./crowd";
 import { Fighter, loadCast, type CastSource, type ClipEvent } from "./fighters";
-import { LAYOUT, isOts, pickShot, punchZoom, rampScale, shotPose, type Pose, type ShotKind } from "./director";
+import { LAYOUT, isOts, pickShot, punchZoom, rampScale, sameFamily, shotPose, type Pose, type ShotKind } from "./director";
 import { Vfx } from "./vfx";
 import { createComposite } from "./vfx/composite";
 
-const BASE_H = 360;
 const WHIP = 0.1;
 
 function bar(parent: HTMLElement, top: boolean): HTMLDivElement {
@@ -24,7 +23,7 @@ function bar(parent: HTMLElement, top: boolean): HTMLDivElement {
   return d;
 }
 
-/** Pixel ratio of the final blit: the scene is a 360 p target anyway, so a phone gains nothing past 1. */
+/** Pixel ratio of the canvas, which the scene target now matches (full resolution): 1 on phones, 1.5 on desktops. */
 export function pixelRatioCap(dpr: number, coarse: boolean): number {
   return Math.min(coarse ? 1 : 1.5, dpr || 1);
 }
@@ -74,12 +73,12 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
   const glasses = vfx.sunglasses();
   scene.add(glasses);
 
-  // Low res target with bloom, nearest filtered so the blit keeps the chunky pixels.
+  // Full resolution target with bloom and MSAA (the blit is a fullscreen quad, so the canvas's own
+  // antialias would do nothing: the edges are resolved here), linear filtered for a clean look.
   const floatOk = halfFloatOk(renderer);
   const rt = new THREE.WebGLRenderTarget(640, 360, {
     type: floatOk ? THREE.HalfFloatType : THREE.UnsignedByteType,
-    minFilter: THREE.NearestFilter,
-    magFilter: THREE.NearestFilter,
+    samples: coarse ? 2 : 4,
   });
   const composer = new EffectComposer(renderer, rt);
   composer.renderToScreen = false;
@@ -93,7 +92,11 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
   quad.frustumCulled = false;
   blitScene.add(quad);
   const blitCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+  /** Size of the scene target in pixels (the drawing buffer times the adaptive quality). */
   const lowRes = new THREE.Vector2(640, 360);
+  const drawSize = new THREE.Vector2();
+  // Clean look at full resolution: scanlines at pixel pitch only add a moire.
+  vfx.screen.scanline = 0;
 
   const host = canvas.parentElement ?? document.body;
   const lbTop = bar(host, true);
@@ -132,6 +135,11 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
   let shotT = 0;
   let whipT = -1;
   let whipFrom: Pose | null = null;
+  /** A game event landed since the last cut: the next downbeat may cut (cuts follow the fight, not a metronome). */
+  let cutCue = false;
+  // Reused poses: the frame loop allocates none.
+  const camPose: Pose = { pos: [0, 0, 0], target: [0, 0, 0], fov: 48 };
+  const whipPose: Pose = { pos: [0, 0, 0], target: [0, 0, 0], fov: 48 };
   let punchT = 9;
   let hitStop = 0;
   let trauma = 0;
@@ -178,14 +186,10 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
     const h = Math.max(1, canvas.clientHeight || innerHeight);
     renderer.setSize(w, h, false);
     const aspect = w / h;
-    let lw: number, lh: number;
-    if (aspect >= 1) {
-      lh = Math.round(BASE_H * quality);
-      lw = Math.round(lh * aspect);
-    } else {
-      lw = Math.round(BASE_H * quality);
-      lh = Math.round(lw / aspect);
-    }
+    // Full resolution: the scene renders at the canvas's own drawing buffer size, scaled by the adaptive quality.
+    renderer.getDrawingBufferSize(drawSize);
+    const lw = Math.max(1, Math.round(drawSize.x * quality));
+    const lh = Math.max(1, Math.round(drawSize.y * quality));
     composer.setSize(lw, lh);
     lowRes.set(lw, lh);
     vfx.setPixelHeight(lh);
@@ -204,6 +208,12 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
     shot = next;
     shotT = 0;
     whipT = -1;
+    cutCue = false;
+  }
+
+  /** An event's own shot, skipped when that family is already on screen (never the same family twice). */
+  function cutTo(next: ShotKind): void {
+    if (!sameFamily(next, shot)) cut(next);
   }
 
   function computeAnchors(): void {
@@ -235,9 +245,16 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
       const a = Math.max(0, endT - 0.5) * 0.25 + 0.5;
       const [cx, , cz] = endWin ? LAYOUT.player : LAYOUT.enemy;
       const front = endWin ? -1 : 1;
-      pose = { pos: [cx + Math.sin(a) * 4.2, 1.5, cz + Math.cos(a) * 4.2 * front], target: [cx, 1.1, cz], fov: 42 };
+      pose = camPose;
+      pose.pos[0] = cx + Math.sin(a) * 4.2;
+      pose.pos[1] = 1.5;
+      pose.pos[2] = cz + Math.cos(a) * 4.2 * front;
+      pose.target[0] = cx;
+      pose.target[1] = 1.1;
+      pose.target[2] = cz;
+      pose.fov = 42;
     } else {
-      pose = shotPose(shot, shotT, barPos, aspect);
+      pose = shotPose(shot, shotT, barPos, aspect, camPose);
       if (whipT >= 0 && whipFrom) {
         const k = Math.min(1, whipT / WHIP);
         const e = k * k * (3 - 2 * k);
@@ -248,8 +265,8 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
         pose.fov = whipFrom.fov + (pose.fov - whipFrom.fov) * e;
       }
     }
-    vPos.set(...pose.pos);
-    vTgt.set(...pose.target);
+    vPos.set(pose.pos[0], pose.pos[1], pose.pos[2]);
+    vTgt.set(pose.target[0], pose.target[1], pose.target[2]);
     // Charge: push in on our hands (only from the shots that see them).
     if (charge > 0.001 && (isOts(shot) || shot === "heroLow") && !ending) {
       vHands.set(anchors.playerHands.x, anchors.playerHands.y, anchors.playerHands.z);
@@ -363,6 +380,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
 
     event(e: CoreEvent) {
       vfx.event(e, anchors);
+      if (e.kind === "judged" || e.kind === "release" || e.kind === "mashStart" || e.kind === "holdStart" || e.kind === "holdEnd") cutCue = true;
       switch (e.kind) {
         case "countIn":
           // n = 4..1: a quarter of the black lifts on each click, clear on the downbeat.
@@ -370,9 +388,11 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
           break;
         case "beat":
           if (e.downbeat && !ending) {
-            if (lastBarEnergy >= 0 && e.energy - lastBarEnergy > 0.3) flash(1, Math.random() < 0.4);
+            const jump = lastBarEnergy >= 0 && e.energy - lastBarEnergy > 0.3;
+            if (jump) flash(1, Math.random() < 0.4);
             lastBarEnergy = e.energy;
-            if (whipT < 0 || whipT > WHIP) cut(pickShot(shot, Math.random));
+            // Cut on the downbeat only after a game event in the bar or on an energy jump; otherwise the shot keeps moving.
+            if ((cutCue || jump) && (whipT < 0 || whipT > WHIP)) cut(pickShot(shot, Math.random));
           }
           break;
         case "judged": {
@@ -385,19 +405,21 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
             break;
           }
           const dir = e.dir ?? ((hitAlt = !hitAlt) ? "left" : "right");
-          playP(`hit_${dir}` as ClipEvent, 1.3);
+          // The canon moves at their documented pace (spec cringe 8: a move played fast reads as trying hard).
+          playP(`hit_${dir}` as ClipEvent);
           playE(e.big ? "enemy_big_hit" : "enemy_hit", 1.2);
           enemy?.knockback(e.big ? 1 : e.grade === "perfect" ? 0.55 : 0.3);
           crowd.jump(e.big ? 1 : e.grade === "perfect" ? 0.6 : 0.2);
           trauma = Math.min(1, trauma + (e.big ? 0.55 : e.grade === "perfect" ? 0.22 : 0.1));
           dutch *= 0.3;
           if (e.strong && e.grade === "perfect") hitStop = Math.max(hitStop, 0.08);
-          if (e.big && !ending) {
-            // Whip pan from where we are to the enemy close up, 6 frames.
-            whipFrom = shotPose(shot, shotT, 0.5, camera.aspect);
+          if (e.big && !ending && !sameFamily(shot, "enemyClose")) {
+            // Whip pan from where we are to the enemy close up, 6 frames (already on the enemy: no whip).
+            whipFrom = shotPose(shot, shotT, 0.5, camera.aspect, whipPose);
             shot = "enemyClose";
             shotT = 0;
             whipT = 0;
+            cutCue = false;
           }
           break;
         }
@@ -434,7 +456,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
           break;
         case "taunt":
           playE("enemy_taunt");
-          if (!ending) cut("dollyEnemy");
+          if (!ending) cutTo("dollyEnemy");
           break;
         case "dropSoon":
           rampArmed = true;
@@ -473,7 +495,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
         lastTier = 0;
       }
       // Combo 25: the sunglasses drop, seen from the hero low angle in front of us.
-      if (f.tier === 3 && lastTier < 3 && !ending && whipT < 0) cut("heroLow");
+      if (f.tier === 3 && lastTier < 3 && !ending && whipT < 0) cutTo("heroLow");
       lastTier = f.tier;
       battleFx = true;
       spb = f.spb;
