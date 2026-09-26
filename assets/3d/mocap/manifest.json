@@ -1,0 +1,35 @@
+{
+  "rig": "mixamo",
+  "clips": [
+    {
+      "file": "mocap/boat_arm_sweep.glb",
+      "event": "hit_right",
+      "name": "Boat dance arm sweep (own capture)",
+      "loop": false,
+      "fps": 15.0,
+      "canon": "boat",
+      "source": "video to mocap, our own capture of the movement (MediaPipe Pose landmarks on the original Pacu Jalur boat dancer clip, tiktok.com/@lensa.rams/video/7458433897114635525, seconds 14.5-19.5)",
+      "quality": "6 rotation-only tracks (Spine, Neck, LeftArm/RightArm, LeftForeArm/RightForeArm), legs and hands static on the character's own idle pose. Torso stays close to still as intended. Visible jitter on the forearms (MediaPipe elbow/wrist estimate is the noisiest signal, mean frame-to-frame jump about 9 to 25 degrees after smoothing, spikes to 35-77 degrees on fast reversals), smoothed with a running-average filter but not fully clean. No feet sliding (feet are not animated). No IK foot lock, no hand fingers."
+    },
+    {
+      "file": "mocap/over_shoulder_look.glb",
+      "event": "hit_up",
+      "name": "Over the shoulder look back (own capture)",
+      "loop": false,
+      "fps": 17.72,
+      "canon": "pose",
+      "source": "video to mocap, our own capture of the movement (MediaPipe Pose landmarks on a real aura-battle recreation clip, tiktok.com/@govindassandhu/video/7521125347308457238, seconds 0.3-2.3, the turn-to-camera beat of a real Pacu Jalur dance recreation)",
+      "quality": "Approximate stand-in for the canon move: the source clip is a real person turning their whole body to face the camera, not a pure head-only glance back over the shoulder while the torso keeps facing forward as section 3 describes, since no clip among the spec's linked sources isolates that exact gesture. Neck and Spine read cleanly (max frame jump 12-20 degrees after smoothing). Arms carry incidental motion from the same clip, not deliberately posed."
+    },
+    {
+      "file": "mocap/chinup_stare.glb",
+      "event": "hit_down",
+      "name": "Chin up stare, slow turn (own capture)",
+      "loop": false,
+      "fps": 15.34,
+      "canon": "pose",
+      "source": "video to mocap, our own capture of the movement (MediaPipe Pose landmarks on a real aura-recreation clip, tiktok.com/@connornishi/video/7521232745339702533, seconds 0-3, a clean unoccluded shot of a real person holding a raised-chin gaze)",
+      "quality": "Best of the three on jitter: Spine and Neck stay very stable (mean jump under 2 degrees), a clean read of the chin-up hold. The 'slow turn' element is weak, the source mostly holds the pose rather than turning through it. Arms carry the source clip's own incidental raised-arm gesture rather than a neutral standing taunt; not corrected."
+    }
+  ]
+}
