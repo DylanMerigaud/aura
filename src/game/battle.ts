@@ -404,6 +404,11 @@ export class Battle {
       g.fillRect(-200, -200, W + 400, H + 400);
       g.globalCompositeOperation = "source-over";
     }
+    // Boss phase 2: the set turns blood red.
+    if (this.phase2Shown) {
+      g.fillStyle = `rgba(160,0,40,${0.22 + pulse * 0.12})`;
+      g.fillRect(-200, -200, W + 400, H + 400);
+    }
     // Floor glow and vignette under the fighters.
     g.fillStyle = "rgba(5,2,12,0.55)";
     g.fillRect(-200, GROUND - 10, W + 400, 400);
@@ -424,7 +429,7 @@ export class Battle {
     g.drawImage(sp[1], OX - os / 2, GROUND - 200 - os / 2, os, os * 1.2);
     g.globalAlpha = 1;
     g.globalCompositeOperation = "source-over";
-    this.opp.draw(g, time, 1, pulse);
+    this.opp.draw(g, time, this.phase2Shown ? 1.18 : 1, pulse);
     this.player.draw(g, time, 1, pulse);
     this.parts.draw(g);
     this.mashOrb(g, now);

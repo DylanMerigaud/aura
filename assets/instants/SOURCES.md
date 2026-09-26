@@ -14,6 +14,7 @@ meme use at a hackathon, Dylan's call on any redistribution.
 - qte_miss_cringe_01_bruh-sound-effect.mp3: BRUH sound effect! - https://www.myinstants.com/en/instant/bruh-sound-effect-26614/
 - qte_miss_cringe_02_oh-no-cringe.mp3: oh no cringe - https://www.myinstants.com/en/instant/oh-no-cringe-90985/
 - qte_miss_cringe_03_emotional-damage-meme.mp3: Emotional Damage Meme - https://www.myinstants.com/en/instant/emotional-damage-meme-74555/
+- mash_charge_01_vine-boom-bass-boost-sound-eff.mp3: vine boom bass boost sound effect - https://www.myinstants.com/en/instant/vine-boom-bass-boost-sound-effect-68900/
 - aura_release_01_super-saiyan-aura.mp3: Super Saiyan Aura  - https://www.myinstants.com/en/instant/super-saiyan-aura/
 - aura_release_02_vine-boom-sound-effect-full.mp3: vine boom sound effect full - https://www.myinstants.com/en/instant/vine-boom-sound-effect-full-16880/
 - aura_release_03_aura-ego.mp3: aura + ego - https://www.myinstants.com/en/instant/aura-ego-8025/
@@ -21,11 +22,13 @@ meme use at a hackathon, Dylan's call on any redistribution.
 - big_hit_02_fatality-mortal-kombat-sound-e.mp3: Fatality - Mortal Kombat Sound Effect (HD) - https://www.myinstants.com/en/instant/fatality-mortal-kombat-sound-effect-hd-34541/
 - big_hit_03_mk-9-fatality-before-soundeffe.mp3: MK 9 - Fatality before-soundeffect - https://www.myinstants.com/en/instant/mk-9-fatality-before-soundeffect-9993/
 - crowd_cheer_01_crowd-cheer-applause.mp3: Crowd Cheer + Applause - https://www.myinstants.com/en/instant/crowd-cheer-applause-73083/
+- crowd_cheer_02_talkshow-crowd-cheering.mp3: Talkshow Crowd Cheering - https://www.myinstants.com/en/instant/talkshow-crowd-cheering-53753/
 - crowd_boo_01_crowd-boo.mp3: Crowd Boo - https://www.myinstants.com/en/instant/crowd-boo/
 - crowd_boo_02_boooooing-crowd.mp3: Boooooing crowd - https://www.myinstants.com/en/instant/boooooing-crowd-66305/
 - crowd_bed_01_crowd-screaming.mp3: Crowd screaming - https://www.myinstants.com/en/instant/crowd-screaming-25682/
 - crowd_bed_02_the-premiere-edition-crowd-scr.mp3: The Premiere Edition - Crowd Screaming - https://www.myinstants.com/en/instant/the-premiere-edition-crowd-screaming-76834/
 - taunt_sting_01_bing-chilling.mp3: bing chilling - https://www.myinstants.com/en/instant/bing-chilling-44511/
+- taunt_sting_02_erm-what-the-sigma.mp3: erm what the sigma - https://www.myinstants.com/en/instant/erm-what-the-sigma-51754/
 - victory_01_da-baby-lets-goooo.mp3: Da Baby Lets Goooo - https://www.myinstants.com/en/instant/da-baby-lets-goooo-56822/
 - victory_02_gta-sa-mission-passed.mp3: GTA SA Mission Passed - https://www.myinstants.com/en/instant/gta-sa-mission-passed/
 - victory_03_grand-theft-auto-san-andreas-m.mp3: Grand Theft Auto San Andreas Mission Passed! - https://www.myinstants.com/en/instant/grand-theft-auto-san-andreas-mission-passed-65006/

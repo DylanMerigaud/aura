@@ -110,6 +110,16 @@
     "sha256": "e1668d57edc60539f3e218fbc51c5c97fbe5cb56d63b7b2c85608afbdecbf4d8"
   },
   {
+    "slot": "mash_charge",
+    "file": "mash_charge_01_vine-boom-bass-boost-sound-eff.mp3",
+    "name": "vine boom bass boost sound effect",
+    "source_url": "https://www.myinstants.com/en/instant/vine-boom-bass-boost-sound-effect-68900/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/vine-boom-bass-boost-sound-effect.mp3",
+    "duration_s": 3.48,
+    "sample_rate": 48000,
+    "sha256": "b137936c4f6d8605ecb671bf7c8d58dd1fcdf643523dfe201980d24c90f266dc"
+  },
+  {
     "slot": "aura_release",
     "file": "aura_release_01_super-saiyan-aura.mp3",
     "name": "Super Saiyan Aura ",
@@ -180,6 +190,16 @@
     "sha256": "22533e6c87fa1251bd88a489b28a9a11567e6439ef4f4ab4c5be24304a3fa960"
   },
   {
+    "slot": "crowd_cheer",
+    "file": "crowd_cheer_02_talkshow-crowd-cheering.mp3",
+    "name": "Talkshow Crowd Cheering",
+    "source_url": "https://www.myinstants.com/en/instant/talkshow-crowd-cheering-53753/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/crowd-cheering-short_sDPLOAW.mp3",
+    "duration_s": 5.538,
+    "sample_rate": 44100,
+    "sha256": "560abb03c9bfd576e6012d1f47aea6a0c95f591a447185bf37afa936a1ec9004"
+  },
+  {
     "slot": "crowd_boo",
     "file": "crowd_boo_01_crowd-boo.mp3",
     "name": "Crowd Boo",
@@ -228,6 +248,16 @@
     "duration_s": 2.534,
     "sample_rate": 44100,
     "sha256": "04fe90aecfc0c42cf275e2569f4d978ceaeebad0d08cd516d941c5b7a400de55"
+  },
+  {
+    "slot": "taunt_sting",
+    "file": "taunt_sting_02_erm-what-the-sigma.mp3",
+    "name": "erm what the sigma",
+    "source_url": "https://www.myinstants.com/en/instant/erm-what-the-sigma-51754/",
+    "mp3_url": "https://www.myinstants.com/media/sounds/erm-what-the-sigma_su7GnzC.mp3",
+    "duration_s": 1.44,
+    "sample_rate": 48000,
+    "sha256": "0c76709e476aa451f9a96d14a906281d6b1db68e6af844e0b5fc1e1f4c20e43e"
   },
   {
     "slot": "victory",

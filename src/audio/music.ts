@@ -3,6 +3,8 @@ import { ctx, env, musicBus, noiseSource } from "./engine";
 
 const LOOKAHEAD = 0.12;
 const MINOR = [0, 3, 5, 7, 10, 12, 15, 17];
+/** i, VI, III, VII in natural minor: the pad's four bar loop. */
+const PROG = [0, 8, 3, 10];
 
 function rng(seed: number) {
   let s = seed * 9301 + 49297;
@@ -79,6 +81,7 @@ export class Music {
     const note = this.riff[(step + (bar % 2) * 3) % 16];
     if (note >= 0 && bar >= 2) this.lead(at, note + (bar % 4 === 3 ? 5 : 0));
     if (beat % 16 === 0 && sub === 0) this.crash(at);
+    if (beat % 4 === 0 && sub === 0 && bar >= 1) this.pad(at, PROG[bar % 4]);
   }
 
   private kick(t: number) {
@@ -142,6 +145,35 @@ export class Music {
     o.connect(f).connect(g).connect(musicBus);
     o.start(t);
     o.stop(t + this.spb * 0.5);
+  }
+
+  /** Detuned saw chord for one bar, ducked on every kick for a sidechain pump. */
+  private pad(t: number, semi: number) {
+    const bar = this.spb * 4;
+    const f = ctx.createBiquadFilter();
+    f.type = "lowpass";
+    f.frequency.value = 1100;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    for (let b = 0; b < 4; b++) {
+      const tb = t + b * this.spb;
+      g.gain.setValueAtTime(0.004, tb);
+      g.gain.linearRampToValueAtTime(0.045, tb + this.spb * 0.7);
+    }
+    g.gain.linearRampToValueAtTime(0.0001, t + bar);
+    f.connect(g).connect(musicBus);
+    const third = semi === 0 ? 3 : 4;
+    for (const iv of [0, third, 7]) {
+      for (const det of [-6, 6]) {
+        const o = ctx.createOscillator();
+        o.type = "sawtooth";
+        o.frequency.value = this.root * this.octave * Math.pow(2, (semi + iv) / 12);
+        o.detune.value = det;
+        o.connect(f);
+        o.start(t);
+        o.stop(t + bar + 0.05);
+      }
+    }
   }
 
   private lead(t: number, semi: number) {
