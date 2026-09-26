@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { loadProgress, nextProgress, saveProgress, type ProgressV2 } from "../src/v2/ui/progress";
 import { edgeDir, mashTap, onPointerDown, swipeDir } from "../src/v2/ui/touch";
 import { approach, clamp, pct, starGlyphs } from "../src/v2/ui/format";
-import { visiblePrompts } from "../src/v2/ui/hud/queue";
+import { newGate, visiblePrompts } from "../src/v2/ui/hud/queue";
 import type { EventState } from "../src/qte/runner";
 import type { QteEvent } from "../src/qte/types";
 
@@ -98,31 +98,57 @@ describe("touch zone routing", () => {
 describe("prompt queue", () => {
   const st = (ev: QteEvent, phase: EventState["phase"] = "pending"): EventState => ({ ev, phase, held: false, progress: 0, lastDir: null, result: null });
   const hit = (beat: number) => st({ type: "hit", beat, dir: "up" });
+  const SPB = 0.5;
 
-  it("never shows a HOLD ring over a HIT arrow: the hold waits until the hit resolves", () => {
-    const h = hit(8);
-    const hold = st({ type: "hold", beat: 10, length: 2 });
-    expect(visiblePrompts([h, hold])).toEqual([h]);
-    h.phase = "done";
-    expect(visiblePrompts([h, hold])).toEqual([hold]);
-  });
-
-  it("shows one panel at a time, and what is queued behind a panel waits", () => {
-    const combo = st({ type: "combo", beat: 12, dirs: ["up", "left", "down"] });
-    const mash = st({ type: "mash", beat: 14, length: 4 });
-    expect(visiblePrompts([combo, mash, hit(20)])).toEqual([combo]);
-  });
-
-  it("lets a run of HIT arrows share the lane, up to the next panel", () => {
+  it("draws only the current HIT arrow: the next one appears once it resolves", () => {
+    const gate = newGate();
     const a = hit(8);
     const b = hit(9);
+    expect(visiblePrompts([a, b], 3.5, SPB, gate)).toEqual([a]);
+    a.phase = "done";
+    expect(visiblePrompts([b], 4.01, SPB, gate)).toEqual([b]);
+  });
+
+  it("never shows a HOLD ring over a HIT arrow: the hold waits until the hit resolves", () => {
+    const gate = newGate();
+    const h = hit(8);
     const hold = st({ type: "hold", beat: 10, length: 2 });
-    expect(visiblePrompts([a, b, hold, hit(14)])).toEqual([a, b]);
+    expect(visiblePrompts([h, hold], 3.5, SPB, gate)).toEqual([h]);
+    h.phase = "done";
+    expect(visiblePrompts([hold], 4.1, SPB, gate)).toEqual([hold]);
+  });
+
+  it("shows nothing but the panel during a COMBO, MASH or HOLD", () => {
+    const gate = newGate();
+    const combo = st({ type: "combo", beat: 12, dirs: ["up", "left", "down"] });
+    const mash = st({ type: "mash", beat: 14, length: 4 });
+    expect(visiblePrompts([combo, mash, hit(20)], 4, SPB, gate)).toEqual([combo]);
+  });
+
+  it("keeps one beat of silence after a panel resolves", () => {
+    const gate = newGate();
+    const hold = st({ type: "hold", beat: 10, length: 2 });
+    const next = hit(13);
+    expect(visiblePrompts([hold, next], 5.5, SPB, gate)).toEqual([hold]);
+    hold.phase = "done";
+    expect(visiblePrompts([next], 6.0, SPB, gate)).toEqual([]);
+    expect(visiblePrompts([next], 6.4, SPB, gate)).toEqual([]);
+    expect(visiblePrompts([next], 6.5, SPB, gate)).toEqual([next]);
+  });
+
+  it("no silence after a plain HIT", () => {
+    const gate = newGate();
+    const a = hit(8);
+    const b = hit(9);
+    visiblePrompts([a, b], 3.9, SPB, gate);
+    a.phase = "done";
+    expect(visiblePrompts([b], 4.0, SPB, gate)).toEqual([b]);
   });
 
   it("reuses the output array (no allocation per frame)", () => {
+    const gate = newGate();
     const out: EventState[] = [];
-    expect(visiblePrompts([hit(8)], out)).toBe(out);
-    expect(visiblePrompts([], out)).toEqual([]);
+    expect(visiblePrompts([hit(8)], 0, SPB, gate, out)).toBe(out);
+    expect(visiblePrompts([], 0, SPB, gate, out)).toEqual([]);
   });
 });
