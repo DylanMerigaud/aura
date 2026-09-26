@@ -667,3 +667,7 @@ h1, h2, h3, .logo, .screen-title, .vs-level-name, .grade-popup, .burst-num, .bur
 .playzone.learned-mash .pz-mash,
 .playzone.learned-mash .pz-release,
 .playzone.learned-hold .pz-hold { display: none !important; }
+
+/* The prompt ring sits in the pad band in portrait (src/v2/ui/hud/arrows.ts PORTRAIT_RING_Y): the canvas
+   draws the 67, HOLD and SWIPE UP words around the ring, the pad keeps only its pulsing box. */
+.pz-pad .pz-big, .pz-pad .pz-small { display: none; }
