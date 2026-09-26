@@ -66,4 +66,18 @@ describe("runner", () => {
     r.input({ kind: "dir", dir: "right", t: 6.0 });
     expect(out[0].grade).toBe("perfect");
   });
+
+  it("a mash with no alternation is a miss, released or fizzled", () => {
+    const a = run([{ type: "mash", beat: 8, length: 4 }]);
+    a.r.input({ kind: "space", down: true, t: 6.0 });
+    const b = run([{ type: "mash", beat: 8, length: 4 }]);
+    b.r.update(7);
+    expect([a.out[0].grade, b.out[0].grade]).toEqual(["miss", "miss"]);
+  });
+
+  it("an early hold press is judged as a miss instead of dropped", () => {
+    const { r, out } = run([{ type: "hold", beat: 8, length: 2 }]);
+    r.input({ kind: "space", down: true, t: 3.7 });
+    expect(out[0].grade).toBe("miss");
+  });
 });

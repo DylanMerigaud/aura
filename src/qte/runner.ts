@@ -53,7 +53,8 @@ export class QteRunner {
     const T = ev.beat * this.spb;
     if (ev.type === "hit") return T - this.ok;
     if (ev.type === "mash") return T - MASH_LEAD;
-    if (ev.type === "hold") return T - this.ok;
+    // An early HOLD press is judged (as a miss) instead of silently dropped.
+    if (ev.type === "hold") return T - this.spb;
     return T - (ev.dirs.length + COMBO_SHOW_BEATS) * this.spb;
   }
 
@@ -99,6 +100,7 @@ export class QteRunner {
         }
       } else if (inp.down) {
         const g = judge(inp.t - R, this.windowScale);
+        if (s.progress === 0) return this.finish(s, { grade: "miss", cringe: false, mashCount: 0, mashMult: 0 });
         this.finish(s, { grade: g === "miss" ? "ok" : g, cringe: false, mashCount: s.progress, mashMult: releaseMultiplier(g) });
       }
     } else if (ev.type === "hold") {
@@ -128,7 +130,7 @@ export class QteRunner {
       if (ev.type === "mash") {
         // No release: the aura mass fizzles at half power.
         if (t < this.targetAt(ev) + 0.35) return;
-        this.finish(s, { grade: "ok", cringe: false, mashCount: s.progress, mashMult: 0.5 });
+        this.finish(s, { grade: s.progress === 0 ? "miss" : "ok", cringe: false, mashCount: s.progress, mashMult: 0.5 });
       } else {
         this.finish(s, { grade: "miss", cringe: false });
       }

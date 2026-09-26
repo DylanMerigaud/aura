@@ -1,6 +1,6 @@
 // Keyboard and touch input mapped onto the AudioContext clock, both feeding the same Input stream.
 import type { Dir } from "./types";
-import { ctx } from "../audio/engine";
+import { ctx, heardTime } from "../audio/engine";
 
 export type RawInput = { kind: "dir"; dir: Dir; at: number } | { kind: "space"; down: boolean; at: number } | { kind: "confirm" } | { kind: "back" };
 
@@ -12,10 +12,9 @@ const KEYS: Record<string, Dir> = {
   KeyW: "up", KeyS: "down", KeyA: "left", KeyD: "right",
 };
 
-/** Convert a DOM event timestamp into AudioContext time. */
+/** Convert a DOM event timestamp into the audio time the player was hearing. */
 function audioTime(ts: number) {
-  if (!ctx) return 0;
-  return ctx.currentTime - Math.max(0, performance.now() - ts) / 1000;
+  return ctx ? heardTime(ts) : 0;
 }
 
 export function bindInput(canvas: HTMLCanvasElement, onInput: (i: RawInput) => void, touchMode: () => TouchMode) {
@@ -41,8 +40,12 @@ export function bindInput(canvas: HTMLCanvasElement, onInput: (i: RawInput) => v
 
   // Touch: swipes fire as soon as they cross the threshold; taps are routed by the current QTE type.
   let sx = 0, sy = 0, fired = false, active = false;
+  const down = new Set<number>();
   canvas.addEventListener("pointerdown", (e) => {
     e.preventDefault();
+    window.focus();
+    down.add(e.pointerId);
+    if (down.size > 1 && touchMode() === "hold") return;
     canvas.setPointerCapture(e.pointerId);
     const at = audioTime(e.timeStamp);
     const r = canvas.getBoundingClientRect();
@@ -50,7 +53,8 @@ export function bindInput(canvas: HTMLCanvasElement, onInput: (i: RawInput) => v
     const fy = (e.clientY - r.top) / r.height;
     sx = e.clientX; sy = e.clientY; fired = false; active = true;
     const mode = touchMode();
-    if (mode === "menu") { onInput({ kind: "confirm" }); fired = true; return; }
+    // Menus confirm on pointerup: only the release counts as a user gesture for audio unlock.
+    if (mode === "menu") return;
     if (mode === "mash") {
       fired = true;
       if (fx > 0.38 && fx < 0.62) onInput({ kind: "space", down: true, at });
@@ -73,9 +77,13 @@ export function bindInput(canvas: HTMLCanvasElement, onInput: (i: RawInput) => v
     onInput({ kind: "dir", dir: Math.abs(dx) > Math.abs(dy) ? (dx < 0 ? "left" : "right") : dy < 0 ? "up" : "down", at: audioTime(e.timeStamp) });
   });
   const up = (e: PointerEvent) => {
-    if (!active) return;
+    down.delete(e.pointerId);
+    if (!active || down.size) return;
     active = false;
-    if (touchMode() === "hold") onInput({ kind: "space", down: false, at: audioTime(e.timeStamp) });
+    const mode = touchMode();
+    if (mode === "menu") {
+      if (!fired) onInput({ kind: "confirm" });
+    } else if (mode === "hold") onInput({ kind: "space", down: false, at: audioTime(e.timeStamp) });
   };
   canvas.addEventListener("pointerup", up);
   canvas.addEventListener("pointercancel", up);

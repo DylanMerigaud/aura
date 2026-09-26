@@ -1,8 +1,9 @@
 // Entry point: canvas setup, the screen state machine (title, story, battle, results, calibration) and the frame loop.
 import campaignData from "./campaign.json";
 import type { Campaign, Level } from "./qte/types";
-import { initAudio, ctx } from "./audio/engine";
-import { loadVoices } from "./audio/voice";
+import { initAudio, ctx, heardTime, wake } from "./audio/engine";
+import { loadVoices, preload } from "./audio/voice";
+import { lineId } from "./qte/types";
 import { sfx } from "./audio/sfx";
 import { bindInput, type RawInput, type TouchMode } from "./qte/input";
 import { Battle, type BattleStats } from "./game/battle";
@@ -12,6 +13,19 @@ import { setOffset, getOffset } from "./game/latency";
 import { loadProgress, saveProgress, rank } from "./ui/progress";
 import { text, cover, wrap } from "./ui/draw";
 import { Particles } from "./game/particles";
+
+// roundRect polyfill for iOS 15 and older Firefox/Chrome.
+if (!CanvasRenderingContext2D.prototype.roundRect) {
+  CanvasRenderingContext2D.prototype.roundRect = function (this: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r?: number | DOMPointInit | (number | DOMPointInit)[]) {
+    const k = Math.min(typeof r === "number" ? r : 0, w / 2, h / 2);
+    this.moveTo(x + k, y);
+    this.arcTo(x + w, y, x + w, y + h, k);
+    this.arcTo(x + w, y + h, x, y + h, k);
+    this.arcTo(x, y + h, x, y, k);
+    this.arcTo(x, y, x + w, y, k);
+    this.closePath();
+  };
+}
 
 const campaign = campaignData as unknown as Campaign;
 const levels = campaign.levels;
@@ -53,6 +67,9 @@ async function ensureAudio() {
 
 function startLevel(i: number) {
   levelIdx = i;
+  // Decode this level's voice lines while the story card is up.
+  const L = levels[i];
+  preload([lineId.intro(L.id), lineId.win(L.id), lineId.lose(L.id), ...L.taunts.map((_, k) => lineId.taunt(L.id, k))]);
   screen = "story";
   screenT = 0;
   sfx.whoosh();
@@ -86,10 +103,12 @@ function startCalibration() {
   screen = "calibrate";
   const spb = 0.5;
   calib = { t0: ctx.currentTime + 0.5, taps: [], spb };
+  // Taps are compared on the heard clock, so the residual is what the browser's latency report misses.
   for (let i = 0; i < 16; i++) sfx.tick(calib.t0 + i * spb, i % 4 === 0);
 }
 
 function onInput(i: RawInput) {
+  wake();
   if (screen === "battle" && battle) {
     if (i.kind === "dir") battle.input({ kind: "dir", dir: i.dir, t: i.at });
     else if (i.kind === "space") battle.input({ kind: "space", down: i.down, t: i.at });
@@ -124,7 +143,7 @@ function onInput(i: RawInput) {
     } else if (screen === "calibrate" && calib) {
       if (i.kind === "space" && i.down) {
         const k = Math.round((i.at - calib.t0) / calib.spb);
-        if (k >= 4) calib.taps.push(i.at - (calib.t0 + k * calib.spb));
+        if (k >= 4 && k < 16) calib.taps.push(i.at - (calib.t0 + k * calib.spb));
         if (calib.taps.length >= 8) {
           const s = [...calib.taps].sort((a, b) => a - b);
           setOffset((s[3] + s[4]) / 2);
@@ -143,6 +162,10 @@ function touchMode(): TouchMode {
 }
 
 bindInput(canvas, onInput, touchMode);
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) wake();
+});
+window.focus();
 // Touch taps on menus arrive as "confirm"; a calibration tap arrives as space down.
 
 // ---------------------------------------------------------------- drawing screens
@@ -270,7 +293,7 @@ function drawCalibrate() {
   text(g, "LATENCY CALIBRATION", W / 2, 150, "#fff", 50);
   text(g, "tap SPACE on each click after the first four", W / 2, 240, "#35e0ff", 26, "center", 800);
   if (calib) {
-    const beat = (ctx.currentTime - calib.t0) / calib.spb;
+    const beat = (heardTime() - calib.t0) / calib.spb;
     const pulse = beat > 0 ? Math.exp(-(beat % 1) * 6) : 0;
     g.fillStyle = `rgba(255,243,107,${0.2 + pulse * 0.8})`;
     g.beginPath();
@@ -286,6 +309,8 @@ function drawCalibrate() {
 let prev = performance.now();
 let fpsT = 0, fpsN = 0, fps = 0;
 function frame(nowMs: number) {
+  // Scheduled first so one bad frame can never stop the loop.
+  requestAnimationFrame(frame);
   const dt = Math.min(0.05, (nowMs - prev) / 1000);
   prev = nowMs;
   screenT += dt;
@@ -303,6 +328,5 @@ function frame(nowMs: number) {
   fpsT += dt;
   if (fpsT >= 0.5) { fps = fpsN / fpsT; fpsN = 0; fpsT = 0; }
   if (debug) text(g, `${fps.toFixed(0)} fps`, W - 20, 20, "#0f0", 16, "right", 700);
-  requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);

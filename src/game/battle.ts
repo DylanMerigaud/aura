@@ -5,9 +5,9 @@ import { QteRunner, type Input, type Result } from "../qte/runner";
 import { comboMultiplier } from "../qte/judge";
 import { Music } from "../audio/music";
 import { sfx } from "../audio/sfx";
-import { cheer, boo, setCrowd, startCrowd } from "../audio/crowd";
+import { cheer, boo, setCrowd, startCrowd, stopCrowd } from "../audio/crowd";
 import { play as playVoice, preload } from "../audio/voice";
-import { ctx } from "../audio/engine";
+import { ctx, heardTime } from "../audio/engine";
 import { Camera, W, H } from "./camera";
 import { Particles } from "./particles";
 import { Character, type Pose } from "./characters";
@@ -93,7 +93,7 @@ export class Battle {
 
   /** Song time as heard by the player, latency compensated. */
   songNow() {
-    return ctx.currentTime - this.music.t0 - this.offset;
+    return heardTime() - this.music.t0 - this.offset;
   }
 
   input(i: Input) {
@@ -353,6 +353,7 @@ export class Battle {
     this.stats = { win, score: this.score, maxCombo: this.maxCombo, counts: { ...this.counts }, meter: this.meter };
     this.endAt = ctx.currentTime + 3.2;
     this.music.stop();
+    stopCrowd();
     this.charge?.stop();
     this.charge = null;
     this.cam.tletterbox = 1;

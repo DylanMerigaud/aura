@@ -4,17 +4,23 @@ import { ctx, master } from "./engine";
 let index: Record<string, string> = {};
 const buffers = new Map<string, AudioBuffer>();
 
-export async function loadVoices() {
-  try {
-    const r = await fetch("voice/index.json");
-    if (r.ok) index = await r.json();
-  } catch {
-    index = {};
-  }
+let ready: Promise<void> = Promise.resolve();
+
+export function loadVoices() {
+  ready = (async () => {
+    try {
+      const r = await fetch("voice/index.json");
+      if (r.ok) index = await r.json();
+    } catch {
+      index = {};
+    }
+  })();
+  return ready;
 }
 
 /** Decode the lines of one level ahead of time so playback is instant. */
 export async function preload(ids: string[]) {
+  await ready;
   await Promise.all(
     ids.map(async (id) => {
       const file = index[id];

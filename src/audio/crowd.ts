@@ -3,6 +3,9 @@ import { ctx, env, master, noiseSource } from "./engine";
 
 let bed: GainNode | null = null;
 let bedFilter: BiquadFilterNode;
+let bedSrc: AudioBufferSourceNode | null = null;
+let blipTimer = 0;
+let bedLfo: OscillatorNode | null = null;
 
 export function startCrowd() {
   if (bed) return;
@@ -13,15 +16,17 @@ export function startCrowd() {
   bedFilter.frequency.value = 700;
   bedFilter.Q.value = 0.6;
   const n = noiseSource(ctx.currentTime, 36000);
+  bedSrc = n;
   const lfo = ctx.createOscillator();
   lfo.frequency.value = 0.3;
   const lg = ctx.createGain();
   lg.gain.value = 0.04;
   lfo.connect(lg).connect(bed.gain);
   lfo.start();
+  bedLfo = lfo;
   n.connect(bedFilter).connect(bed).connect(master);
   // Random voices in the crowd.
-  setInterval(() => {
+  blipTimer = window.setInterval(() => {
     if (!bed) return;
     const t = ctx.currentTime + Math.random() * 0.3;
     voiceBlip(t, 0.03 + intensity * 0.06, 0.5 + Math.random());
@@ -29,6 +34,18 @@ export function startCrowd() {
 }
 
 let intensity = 0.3;
+
+export function stopCrowd() {
+  if (!bed) return;
+  clearInterval(blipTimer);
+  bed.gain.cancelScheduledValues(ctx.currentTime);
+  bed.gain.setTargetAtTime(0, ctx.currentTime, 0.6);
+  bedSrc?.stop(ctx.currentTime + 3);
+  bedLfo?.stop(ctx.currentTime);
+  bedLfo = null;
+  bed = null;
+  bedSrc = null;
+}
 
 /** meter in [-1, 1], player side positive: the crowd gets louder and brighter as the fight swings. */
 export function setCrowd(meter: number, hype: number) {
