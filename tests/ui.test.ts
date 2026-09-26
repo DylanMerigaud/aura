@@ -2,7 +2,7 @@
 // No DOM here on purpose (see src/v2/ui/progress.ts): these run in plain Node.
 import { describe, expect, it } from "vitest";
 import { loadProgress, nextProgress, saveProgress, type ProgressV2 } from "../src/v2/ui/progress";
-import { edgeDir, mashTap, onPointerDown, swipeDir } from "../src/v2/ui/touch";
+import { inZone, mashTap, newKeyState, onPointerDown, routeKey, swipeDir, tracksSwipe, zoneMode, type KeyLike } from "../src/v2/ui/touch";
 import { approach, clamp, pct, starGlyphs } from "../src/v2/ui/format";
 import { visiblePrompts } from "../src/v2/ui/hud/queue";
 import type { EventState } from "../src/qte/runner";
@@ -66,32 +66,132 @@ describe("format", () => {
 });
 
 describe("touch zone routing", () => {
-  it("mash: left half is left, right half is right, center third is space down", () => {
+  it("the play zone is the bottom 55 percent: above it, taps do nothing", () => {
+    expect(inZone(0.3)).toBe(false);
+    expect(inZone(0.46)).toBe(true);
+    for (const m of ["mash", "release", "hold", "hit"] as const) expect(onPointerDown(m, 0.2, 0.3)).toBeNull();
+    expect(tracksSwipe("hit", 0.3)).toBe(false);
+    expect(tracksSwipe("hit", 0.8)).toBe(true);
+  });
+
+  it("mash: two pads, left half is left, right half is right", () => {
     expect(mashTap(0.1)).toEqual({ kind: "dir", dir: "left" });
     expect(mashTap(0.9)).toEqual({ kind: "dir", dir: "right" });
-    expect(mashTap(0.5)).toEqual({ kind: "space", down: true });
+    expect(onPointerDown("mash", 0.2, 0.8)).toEqual({ kind: "dir", dir: "left" });
+    expect(onPointerDown("mash", 0.7, 0.8)).toEqual({ kind: "dir", dir: "right" });
   });
 
-  it("hit: an edge tap fires a direction, the dead center fires nothing", () => {
-    expect(edgeDir(0.5, 0.5)).toBeNull();
-    expect(edgeDir(0.05, 0.5)).toBe("left");
-    expect(edgeDir(0.95, 0.5)).toBe("right");
-    expect(edgeDir(0.5, 0.05)).toBe("up");
-    expect(edgeDir(0.5, 0.95)).toBe("down");
+  it("release: the merged pad presses space anywhere in the zone", () => {
+    expect(onPointerDown("release", 0.1, 0.9)).toEqual({ kind: "space", down: true });
+    expect(onPointerDown("release", 0.9, 0.5)).toEqual({ kind: "space", down: true });
   });
 
-  it("hit: a swipe under the threshold is null, past it fires the dominant axis", () => {
+  it("hold: press anywhere in the zone is space down", () => {
+    expect(onPointerDown("hold", 0.5, 0.7)).toEqual({ kind: "space", down: true });
+  });
+
+  it("hit: a press fires nothing, a swipe past 30 px fires the dominant axis", () => {
+    expect(onPointerDown("hit", 0.5, 0.7)).toBeNull();
     expect(swipeDir(5, 5)).toBeNull();
     expect(swipeDir(-40, 5)).toBe("left");
     expect(swipeDir(5, 40)).toBe("down");
+    expect(swipeDir(0, -31)).toBe("up");
   });
 
-  it("onPointerDown routes by mode", () => {
-    expect(onPointerDown("hold", 0.5, 0.5)).toEqual({ kind: "space", down: true });
-    expect(onPointerDown("mash", 0.9, 0.5)).toEqual({ kind: "dir", dir: "right" });
-    expect(onPointerDown("hit", 0.5, 0.5)).toBeNull();
-    expect(onPointerDown("hit", 0.02, 0.5)).toEqual({ kind: "dir", dir: "left" });
-    expect(onPointerDown("none", 0.5, 0.5)).toBeNull();
+  it("opponent turn and no QTE ignore every tap", () => {
+    expect(onPointerDown("opponent", 0.5, 0.8)).toBeNull();
+    expect(onPointerDown("none", 0.5, 0.8)).toBeNull();
+    expect(tracksSwipe("opponent", 0.8)).toBe(false);
+  });
+
+  it("zoneMode: the opponent turn wins, mash turns into release on the release beat", () => {
+    expect(zoneMode("mash", "opponent", true)).toBe("opponent");
+    expect(zoneMode("hit", "opponent", false)).toBe("opponent");
+    expect(zoneMode("mash", "player", false)).toBe("mash");
+    expect(zoneMode("mash", "player", true)).toBe("release");
+    expect(zoneMode("hold", "player", true)).toBe("hold");
+  });
+});
+
+describe("battle keyboard routing", () => {
+  const k = (type: string, code: string, timeStamp = 0, repeat = false): KeyLike => ({ type, code, timeStamp, repeat });
+
+  it("Space press and release reach the game, with their own timestamps", () => {
+    const s = newKeyState();
+    expect(routeKey(s, k("keydown", "Space", 100))).toEqual({ prevent: true, input: { kind: "space", down: true, at: 100 } });
+    expect(routeKey(s, k("keyup", "Space", 350))).toEqual({ prevent: true, input: { kind: "space", down: false, at: 350 } });
+  });
+
+  it("Enter is the same space input", () => {
+    const s = newKeyState();
+    expect(routeKey(s, k("keydown", "Enter")).input).toMatchObject({ kind: "space", down: true });
+    expect(routeKey(s, k("keyup", "Enter")).input).toMatchObject({ kind: "space", down: false });
+  });
+
+  it("auto repeat is ignored but still prevented", () => {
+    const s = newKeyState();
+    routeKey(s, k("keydown", "Space"));
+    expect(routeKey(s, k("keydown", "Space", 50, true))).toEqual({ prevent: true, input: null });
+    expect(routeKey(s, k("keydown", "ArrowLeft", 50, true))).toEqual({ prevent: true, input: null });
+  });
+
+  it("never a release without a press in the same battle", () => {
+    const s = newKeyState();
+    expect(routeKey(s, k("keyup", "Space"))).toEqual({ prevent: true, input: null });
+    routeKey(s, k("keydown", "Space"));
+    const fresh = newKeyState();
+    expect(routeKey(fresh, k("keyup", "Space")).input).toBeNull();
+  });
+
+  it("Space and Enter held together are one press, released when both are up", () => {
+    const s = newKeyState();
+    expect(routeKey(s, k("keydown", "Space")).input).not.toBeNull();
+    expect(routeKey(s, k("keydown", "Enter")).input).toBeNull();
+    expect(routeKey(s, k("keyup", "Space")).input).toBeNull();
+    expect(routeKey(s, k("keyup", "Enter")).input).toMatchObject({ kind: "space", down: false });
+  });
+
+  it("arrows and WASD are directions on keydown, prevented on keyup too", () => {
+    const s = newKeyState();
+    expect(routeKey(s, k("keydown", "ArrowUp")).input).toMatchObject({ kind: "dir", dir: "up" });
+    expect(routeKey(s, k("keydown", "KeyA")).input).toMatchObject({ kind: "dir", dir: "left" });
+    expect(routeKey(s, k("keydown", "KeyD")).input).toMatchObject({ kind: "dir", dir: "right" });
+    expect(routeKey(s, k("keydown", "KeyS")).input).toMatchObject({ kind: "dir", dir: "down" });
+    expect(routeKey(s, k("keyup", "ArrowUp"))).toEqual({ prevent: true, input: null });
+  });
+
+  it("other keys are left alone", () => {
+    expect(routeKey(newKeyState(), k("keydown", "Escape"))).toEqual({ prevent: false, input: null });
+  });
+
+  it("maps the event timestamp through the clock", () => {
+    const r = routeKey(newKeyState(), k("keydown", "ArrowRight", 1000), (t) => t / 1000);
+    expect(r.input).toMatchObject({ at: 1 });
+  });
+
+  it("a fake window: capture listener feeds game.input and stops the event from reaching screens", () => {
+    const inputs: unknown[] = [];
+    const screenSaw: string[] = [];
+    const s = newKeyState();
+    // Minimal event target: capture listeners run first and may stop the bubble ones.
+    const fire = (type: string, code: string) => {
+      let stopped = false;
+      let prevented = false;
+      const ev = { ...k(type, code), preventDefault: () => (prevented = true), stopImmediatePropagation: () => (stopped = true) };
+      const r = routeKey(s, ev);
+      if (r.prevent) {
+        ev.preventDefault();
+        ev.stopImmediatePropagation();
+      }
+      if (r.input) inputs.push(r.input);
+      if (!stopped) screenSaw.push(code);
+      return prevented;
+    };
+    expect(fire("keydown", "Space")).toBe(true);
+    expect(fire("keyup", "Space")).toBe(true);
+    fire("keydown", "Escape");
+    expect(inputs).toHaveLength(2);
+    expect(screenSaw).toEqual(["Escape"]);
   });
 });
 

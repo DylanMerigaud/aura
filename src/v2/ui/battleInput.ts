@@ -1,69 +1,80 @@
-// Battle input: keyboard (arrows/WASD, space) and one thumb touch on the full window canvas,
-// routed by game.touchMode(). Pauses on visibilitychange and resumes with the game's own 3 beat
-// count in. Vibrates on a judged hit is handled by the HUD (it hears every CoreEvent already).
-import type { Dir } from "../../qte/types";
+// Battle input. Keyboard: keydown AND keyup on window in the capture phase while the battle runs,
+// independent of focus (the focused button is blurred at battle start) and stopped there so no
+// screen handler or focused button eats Space or Enter. Touch: the full window canvas, routed by
+// the pure zone logic in ./touch (bottom 55 percent play zone, swipe, mash pads, RELEASE pad, hold,
+// opponent turn ignored). Pauses on visibilitychange; the game resumes with its own count in.
 import type { GameApi } from "../contracts";
 import { heardTime } from "../../audio/engine";
-import { onPointerDown, swipeDir } from "./touch";
+import { newKeyState, onPointerDown, RELEASE_BEATS, routeKey, swipeDir, tracksSwipe, zoneMode, type ZoneMode } from "./touch";
 
-const KEYS: Record<string, Dir> = {
-  ArrowUp: "up", ArrowDown: "down", ArrowLeft: "left", ArrowRight: "right",
-  KeyW: "up", KeyS: "down", KeyA: "left", KeyD: "right",
-};
+/** Optional getters the v2 Game exposes beyond GameApi (turn, mash release beat). */
+type ZoneGame = GameApi & { turn?(): "player" | "opponent"; releasing?(beats: number): boolean };
+
+/** The play zone's current mode, read from the game. */
+export function currentZone(game: GameApi): ZoneMode {
+  const g = game as ZoneGame;
+  return zoneMode(game.touchMode(), g.turn?.() ?? "player", g.releasing?.(RELEASE_BEATS) ?? false);
+}
+
+function vibrate(ms: number) {
+  if (typeof navigator !== "undefined" && "vibrate" in navigator) navigator.vibrate(ms);
+}
 
 export function bindBattleInput(canvas: HTMLCanvasElement, game: GameApi) {
-  let sx = 0, sy = 0, fired = false, active = false;
-  const down = new Set<number>();
+  let keys = newKeyState();
+  /** Pointers tracked for a swipe (HIT): start point and whether the swipe already fired. */
+  const swipes = new Map<number, { x: number; y: number; fired: boolean }>();
+  /** The pointer holding the space input down (HOLD or RELEASE pad); its lift is the release. */
+  let spacePointer: number | null = null;
+  let bound = false;
 
-  function onKey(e: KeyboardEvent) {
-    if (e.repeat) return;
-    const dir = KEYS[e.code];
-    if (dir) {
-      e.preventDefault();
-      game.input({ kind: "dir", dir, at: heardTime(e.timeStamp) });
-    } else if (e.code === "Space") {
-      e.preventDefault();
-      game.input({ kind: "space", down: true, at: heardTime(e.timeStamp) });
-    }
+  function onKeyEvent(e: KeyboardEvent) {
+    const r = routeKey(keys, e, heardTime);
+    if (!r.prevent) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    if (r.input) game.input(r.input);
   }
-  function onKeyUp(e: KeyboardEvent) {
-    if (e.code === "Space") game.input({ kind: "space", down: false, at: heardTime(e.timeStamp) });
+
+  function frac(e: PointerEvent) {
+    const r = canvas.getBoundingClientRect();
+    return { fx: (e.clientX - r.left) / r.width, fy: (e.clientY - r.top) / r.height };
   }
 
   function onDown(e: PointerEvent) {
     e.preventDefault();
-    down.add(e.pointerId);
-    const mode = game.touchMode();
-    if (down.size > 1 && mode === "hold") return;
-    canvas.setPointerCapture(e.pointerId);
-    const at = heardTime(e.timeStamp);
-    const r = canvas.getBoundingClientRect();
-    const fx = (e.clientX - r.left) / r.width;
-    const fy = (e.clientY - r.top) / r.height;
-    sx = e.clientX;
-    sy = e.clientY;
-    fired = false;
-    active = true;
+    const mode = currentZone(game);
+    const { fx, fy } = frac(e);
+    try { canvas.setPointerCapture(e.pointerId); } catch { /* synthetic pointer */ }
+    if (tracksSwipe(mode, fy)) {
+      swipes.set(e.pointerId, { x: e.clientX, y: e.clientY, fired: false });
+      return;
+    }
     const d = onPointerDown(mode, fx, fy);
-    if (d) {
-      fired = true;
-      game.input(d.kind === "dir" ? { kind: "dir", dir: d.dir, at } : { kind: "space", down: d.down, at });
+    if (!d) return;
+    const at = heardTime(e.timeStamp);
+    if (d.kind === "dir") {
+      vibrate(8);
+      game.input({ kind: "dir", dir: d.dir, at });
+    } else if (spacePointer === null) {
+      spacePointer = e.pointerId;
+      game.input({ kind: "space", down: true, at });
     }
   }
   function onMove(e: PointerEvent) {
-    if (!active || fired || game.touchMode() !== "hit") return;
-    const dx = e.clientX - sx;
-    const dy = e.clientY - sy;
-    const dir = swipeDir(dx, dy);
+    const s = swipes.get(e.pointerId);
+    if (!s || s.fired) return;
+    const dir = swipeDir(e.clientX - s.x, e.clientY - s.y);
     if (!dir) return;
-    fired = true;
+    s.fired = true;
+    if (currentZone(game) === "opponent") return;
     game.input({ kind: "dir", dir, at: heardTime(e.timeStamp) });
   }
   function onUp(e: PointerEvent) {
-    down.delete(e.pointerId);
-    if (!active || down.size) return;
-    active = false;
-    if (game.touchMode() === "hold") game.input({ kind: "space", down: false, at: heardTime(e.timeStamp) });
+    swipes.delete(e.pointerId);
+    if (e.pointerId !== spacePointer) return;
+    spacePointer = null;
+    game.input({ kind: "space", down: false, at: heardTime(e.timeStamp) });
   }
   function onVisibility() {
     if (document.hidden) game.pause();
@@ -71,23 +82,36 @@ export function bindBattleInput(canvas: HTMLCanvasElement, game: GameApi) {
   }
 
   function show() {
+    if (bound) return;
+    bound = true;
+    keys = newKeyState();
+    swipes.clear();
+    spacePointer = null;
+    // A focused menu button would turn Space or Enter into a click: nothing keeps focus in battle.
+    const a = document.activeElement;
+    if (a instanceof HTMLElement) a.blur();
     canvas.addEventListener("pointerdown", onDown);
     canvas.addEventListener("pointermove", onMove);
     canvas.addEventListener("pointerup", onUp);
     canvas.addEventListener("pointercancel", onUp);
-    addEventListener("keyup", onKeyUp);
+    addEventListener("keydown", onKeyEvent, true);
+    addEventListener("keyup", onKeyEvent, true);
     document.addEventListener("visibilitychange", onVisibility);
   }
   function hide() {
+    if (!bound) return;
+    bound = false;
     canvas.removeEventListener("pointerdown", onDown);
     canvas.removeEventListener("pointermove", onMove);
     canvas.removeEventListener("pointerup", onUp);
     canvas.removeEventListener("pointercancel", onUp);
-    removeEventListener("keyup", onKeyUp);
+    removeEventListener("keydown", onKeyEvent, true);
+    removeEventListener("keyup", onKeyEvent, true);
     document.removeEventListener("visibilitychange", onVisibility);
-    active = false;
-    down.clear();
+    keys = newKeyState();
+    swipes.clear();
+    spacePointer = null;
   }
 
-  return { onKey, show, hide };
+  return { show, hide };
 }
