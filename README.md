@@ -1,148 +1,186 @@
 # AURA
 
-**A 3D cinematic aura battle rhythm game, TikTok phonk edit mood: you start with zero aura, and every beat you land steals some from your opponent while the crowd screams.**
+**You have zero aura. Five rhythm battles in a black arena, streamed as a TikTok LIVE: land the
+beat, farm the aura, the crowd decides.**
 
-Built at the {Tech: Europe} AI Gaming Hack, Paris, by team Itchy & Scratchy (Dylan Merigaud, Dorian Poupard). Co hosts Google DeepMind and Voodoo.
+**Play on your phone: https://dylanmerigaud.github.io/aura/** (portrait, sound on). Also on
+itch.io: https://dylanmerigaud.itch.io/aura
 
-Play:
-- 3D, the main game: https://dylanmerigaud.github.io/aura/v2/
-- 2D, the original build, the fallback: https://dylanmerigaud.github.io/aura/
+![AURA on a phone, the battle](docs/screenshots/aura-battle-small.png)
 
-The 3D version is the main game, the 2D version is the fallback.
+On a phone, in 3 lines:
 
-![A perfect aura release on the metro platform](docs/screenshots/l1-release.png)
+1. Open the link held upright, sound on, tap the title to play.
+2. A round note: tap when it hits the ring. An arrow: swipe its way when it lands. A hold: press, lift on the beat.
+3. On the 67, tap left and right as fast as you can, then swipe up on the drop.
 
-| | |
-|---|---|
-| ![Title](docs/screenshots/title.png) | ![Story card](docs/screenshots/story.png) |
-| ![Boss taunt](docs/screenshots/l5-taunt.png) | ![Victory freeze frame](docs/screenshots/l5-end.png) |
-
-These screenshots are from the 2D build, taken headlessly (see Architecture below). The 3D build renders live on a WebGL canvas, no capture pipeline for it yet.
+Built in one day at the {Tech: Europe} AI Gaming Hack, Paris, 2026-09-26, by team Itchy & Scratchy
+(Dylan Merigaud, Dorian Poupard). Track: Build a Game by Voodoo. Partner technologies: Google
+DeepMind (Gemini, Lyria, Gemini TTS), Gradium, Cognition (Devin).
 
 ## The game
 
-You have zero aura. Fix that. Five aura battles, cinematic camera cuts on every downbeat, a crowd that reacts to who is winning, and a soundtrack built from the beat grid up: every QTE you land is timed against the track's own onsets, not a generic click. Each fight is a tug of war: land the rhythm QTEs on the beat and the aura bar slides toward you, miss and it slides toward your opponent. First side to push the bar to the edge, or whoever is ahead when the song ends, wins.
+You are KEVIN (@kevin_npc), rank NPC, zero aura. The title screen is the arena itself: a black
+playground, one warm spotlight, a white ring, both fighters grooving. One tap and the count in
+starts. No map, no menu, no loading screen on the way in (`src/v2/ui/app.ts`).
+
+Five opponents, in order (`src/v2/cast.json`, `src/v2/levels.ts`): THE BOAT KID (@boat_kid_riau,
+rank Aura 9000, calm, the boat arm sweep), THE TURNSTILE NINJA (@turnstile_ninja, Sigma), PAPI
+RALEUR, LA PARISIENNE and SPORTY GRANNY. A win moves you to the next one, a loss replays the same
+one, and after the fifth the roster loops with tighter timing windows. The first battle is the hand
+charted hero level: 86 beats of a 130 BPM Lyria track, 39.7 seconds, the 67 released on the drop.
+The first 15 seconds cannot be lost.
+
+The crowd is the meter: a like and dislike bar, old YouTube style, at the top of the screen. A hit
+adds likes, a miss adds dislikes. A small LIVE badge and a viewer count that follows the bar sit in
+a corner (`src/live/battle.ts`). The opponent taunts in a speech bubble over his head, the
+announcer and the opponents speak recorded lines from the voice bake off (below).
+
+A win pops an Aura Pack right after the last beat: tap to tear, the cards fly (emotes in rarities,
+duplicates become shards for the Aura Pass, all local, no money, `src/packs`). Then the results
+card: AURA FARMED or HUMBLED, score, accuracy, best combo, stars, a one line roast written live by
+Gemini through our Cloudflare Worker (the announcer's line shows at once and is replaced when the
+roast lands, `src/v2/ui/results.ts`), RETRY or NEXT in one tap, and SHARE, a 1080 x 1920 story card
+(`src/v2/ui/sharecard.ts`).
+
+Your score turns into XP after every battle, won or lost, and fills a rank bar: NPC, Side
+character, Main character, Sigma, Aura 9000 (`src/v2/xp.ts`), with a RANK UP moment when you cross
+a line. In the LOADOUT you rename your handle, pick your fighter among 8 rigs with portraits
+rendered in engine, and pick the victory emote you won in packs (`src/loadout`, `src/v2/ui/loadout.ts`).
 
 ## How to play
 
-A tug of war aura bar sits at the top of the screen. Land QTEs on the beat to push it toward you, miss and it slides to your opponent. Bar at an edge, or song over: the side with more aura wins.
+Mobile only: gestures, no keys (`src/v2/ui/touch.ts`, `src/v2/ui/battleInput.ts`).
 
-| QTE | Keyboard | Touch |
+| Prompt | What you see | What you do |
 |---|---|---|
-| HIT | the arrow key (or WASD), on the beat | swipe that direction, or tap the outer edge |
-| COMBO | the arrow sequence in order, last press on the beat | swipes in order |
-| HOLD | hold SPACE, release on the target beat | hold anywhere, release on the target beat |
-| MASH | alternate LEFT and RIGHT as fast as you can, SPACE to release | tap the left or right half, tap the center third to release |
+| TAP | a round note flying into the ring | tap anywhere when it lands |
+| ARROW | the arrow glyph flying into the ring | swipe in its direction when it lands (24 px minimum, judged on the lift); a wrong direction breaks the combo |
+| 67 | the big 67 label, a pulsing pad and a mash meter | tap left and right halves alternately, as fast as you can |
+| RELEASE | the ring closing at the end of the 67 | swipe up on the drop |
+| HOLD | a ring that fills while your finger stays down | press, hold, lift on the beat |
 
-A MASH release is "the 69": the alternations you land (capped at 3 per beat of the window, no turbo key cheese) times a release timing multiplier (Perfect x2, Great x1.5, Ok x1, early or late x0.5) becomes a burst number punched onto the screen and a matching swing of the aura bar.
+The first bars are taps only, then the arrows come in one direction at a time, and a ghost finger
+shows each prompt until you land it once. On a desktop the mouse drives the same path (drag is a
+swipe, click is a tap), for testing.
 
-Timing windows: Perfect 45 ms, Great 90 ms, Ok 130 ms, anything wider is a miss. A window scale per level tightens all three as the campaign escalates. Pressing the wrong arrow on a HIT or a COMBO is graded "cringe", not just a miss: it costs more aura than a normal miss and gets its own reaction.
+Timing is the score (`src/qte/judge.ts`, `src/v2/core.ts`, `src/v2/tempo.ts`):
 
-Combo multiplier on score: x2 at a 10 combo, x3 at 25, x4 at 50. Any miss or cringe resets the combo to zero. The aura flame around you changes color and grows with the combo (blue at 5, purple at 15, sunglasses on at 25).
-
-**The tempo rule**: every judged press nudges the song's playback rate, Perfect and Great speed it up, a miss or a cringe slows it down, eased in over 250 ms and decaying back to 1.0x at 1 percent a second, clamped between 0.9x and 1.15x. Land clean and the song itself starts running hot under you.
-
-**Stars**: 3 stars on a win with 90 percent or better accuracy and zero cringe, 2 stars at 80 percent or better, 1 star on any other win, 0 on a loss. Best score, accuracy, burst and stars per level are saved to localStorage, per device.
-
-**Latency calibration**: Settings, LATENCY CALIBRATION. A 16 tick metronome plays, tap SPACE (or tap the screen) on each click after the first four, and the median of the residuals between your taps and the heard beat is saved and applied on top of the latency the browser reports. Redo it if your speakers or headphones change.
-
-## Campaign
-
-| Level | Place | Opponent | Track (measured BPM) | Window scale |
-|---|---|---|---|---|
-| 1 | The club, peak phonk hour | DJ Montagem | level4, about 129 BPM | 1.0 |
-| 2 | Metro platform, 2am | Kevin from Marketing | level1, about 99 BPM | 0.95 |
-| 3 | Kebab shop, 4am | Mehdi Aura | level2, about 103 BPM | 0.9 |
-| 4 | Parvis de Notre Dame, dawn | His Holiness | level3, about 110 BPM | 0.85 |
-| 5 | The Voodoo stage, final boss | The Algorithm | boss, about 136 BPM | 0.75 |
-
-Level 1 is the hero fight, hand charted on its own track's onsets so the first thing a judge plays is the most cinematic. Levels 2 to 5 are charted by a seeded, deterministic generator that reads each track's drops, breakdowns and onset strengths (`src/v2/levels.ts`) so the QTE script always lands on the music. The level 5 boss has a phase two at the track's midpoint: the music drops an octave, the camera goes handheld, and the QTE spacing tightens for the rest of the fight.
-
-MULTIPLAYER and LOADOUT already sit on the title menu, greyed out (see What is next below).
+- Windows: Perfect within 45 ms of the beat, Great 90 ms, Ok 130 ms, wider is a miss. The windows
+  tighten with your combo (the Ok window goes from 110 ms at combo 0 to 70 ms at combo 25) and the
+  ring shrinks with them.
+- Points: Perfect 300, Great 200, Ok 100; combo multiplier x2 at 10, x3 at 25, x4 at 50; 8 Perfects
+  in a row start FLOW, double score until the next non Perfect.
+- The song follows you: Perfect +0.6 percent speed, Great +0.3, a miss -1.5, clamped between 0.90x
+  and 1.15x, decaying back toward 1.0x at 1 percent a second.
+- Stars: 3 on a win at 90 percent accuracy with zero cringe, 2 at 80 percent, 1 on any other win.
+- Settings has a latency calibration and the volume (`src/v2/ui/settings.ts`).
 
 ## Partner technologies
 
-**Google DeepMind Gemini**
+| Partner | Model or product | What it does in AURA | Where it runs |
+|---|---|---|---|
+| Google DeepMind | `gemini-3.8-flash` | The live roast of your run on the results card | runtime, Cloudflare Worker `worker/src/roast.ts`, called from `src/v2/net/live.ts` |
+| Google DeepMind | `gemini-3.1-pro-preview` | Wrote the first cast (THE TURNSTILE NINJA, his taunts, the announcer calls); judges every voice line and every music candidate on the audio itself | build time, `scripts/gen-ninja.ts`, `scripts/gen-voices-bakeoff.ts`, `scripts/judge-music-v3.ts` |
+| Google DeepMind | `gemini-3.8-flash` (fallback `gemini-3.5-flash-lite`) | Cast generator and the judge of the text eval | build time, `scripts/gen-cast.ts`, `scripts/eval-text.ts` |
+| Google DeepMind | Lyria `lyria-3.5` | The hero track of the first battle (`level4`, 130 BPM), La Parisienne's track (`level3`) and Sporty Granny's (`boss`) | build time, `assets/music/manifest.json` |
+| Google DeepMind | Lyria `lyria-3-pro-preview` | The Brazilian funk title loop (126 BPM, 16 bars that loop on a downbeat), the Turnstile Ninja's track (`level1`, 110 BPM grid) and Papi Raleur's (`level2`, 104 BPM); five candidates each, judged twice by Gemini on the audio. A boss phase two and a victory stinger were made the same way and are not played by the current build | build time, `scripts/gen-music-v3.ts`, `samples/music/BOARD.md` |
+| Google DeepMind | `gemini-3.8-flash-tts` | Most shipped voice lines: the announcer (voice Fenrir), the Turnstile Ninja (Algenib), La Parisienne (Kore), part of the Boat Kid, Papi Raleur and Sporty Granny | build time, `scripts/gen-voices-bakeoff.ts`, `public/voice/v2/` |
+| Google DeepMind | `gemini-2.5-pro-preview-tts` | Won 9 lines of the bake off (3 of the Ninja, 2 of the Boat Kid, 2 of Sporty Granny, 1 of Papi Raleur, 1 announcer line) | build time, same script |
+| Gradium | Voice Design and TTS | Designed voices that won part of the announcer, the Boat Kid, Papi Raleur and Sporty Granny lines; the crowd chants in French, Brazilian Portuguese, SIX SEVEN and the Boat Kid chant (rendered in `public/voice/v2/crowd-*.mp3`, not yet in the battle mix) | build time, `scripts/gen-voices-bakeoff.ts`, `public/voice/v2/` |
+| Gradium | TTS, live | The Worker's live voice route (`worker/src/voice.ts`); the current build shows the roast as text and does not call it | runtime route, Cloudflare Worker |
+| Cognition | Devin | Wrote the Cloudflare Worker (pull request 1) and four modules: the TikTok LIVE overlay (PR 4), the world tour map (PR 5), the balance sim (PR 6), the input module (PR 7) | https://github.com/DylanMerigaud/aura/pulls?q=is%3Apr+author%3Aapp%2Fdevin-ai-integration |
 
-- `gemini-3.8-flash` (falling back to `gemini-3.5-flash-lite`), called with structured JSON output, writes the story, opponent persona and color, taunts and announcer lines for every level, and, for the original 2D campaign, the QTE event script itself. Scripts: `scripts/gen-campaign.ts` (the 2D campaign and its QTE script), `scripts/gen-cast.ts` (the fixed v2 cast: DJ Montagem, Kevin from Marketing, Mehdi Aura, His Holiness, The Algorithm), graded by `scripts/eval-text.ts`.
-- `gemini-3.1-flash-image` ("Nano Banana 2") painted the level backgrounds, opponent portraits and the title art. Script: `scripts/gen-art.ts`.
-- The live "roast your run" line on the results screen also calls `gemini-3.8-flash`, through the Cloudflare Worker below, so the shipped build never holds a Gemini key.
+The voice bake off (`samples/voice/BOARD.md`): every one of the 63 battle lines was rendered by
+Gradium Voice Design, `gemini-3.8-flash-tts` and `gemini-2.5-pro-preview-tts`, post processed
+(silence trim, 8 percent faster, a slap echo, compression, a sub thump under the big calls), and
+judged by `gemini-3.1-pro-preview` listening to the audio on energy, emotion, stereotype and Gen Z
+hype, 1 to 5, ship at 4 on every axis. The bake off picked a winner for each of the 63 lines: 40 from
+`gemini-3.8-flash-tts`, 14 from Gradium, 9 from `gemini-2.5-pro-preview-tts`; 50 of the 63 reach 4
+on every axis, and 59 ship voiced (4 with a wrong word or the wrong character stay subtitles only).
 
-**Lyria**
-
-- `lyria-3.5` generated the five level tracks and the victory stinger, `lyria-3-clip-preview` generated the title loop and the boss's phase two clip. Catalogued with model, requested and measured BPM, first beat and duration in `assets/music/manifest.json`.
-
-**Gradium**
-
-- TTS voices every taunt and announcer line, rendered offline to `public/voice` (the 2D campaign, `scripts/gen-voices.ts`) and `public/voice/v2` (the 3D cast, `scripts/gen-voices-v2.ts`), REST endpoint, opus transcoded to mp3 by ffmpeg.
-- The live "roast your run" voice line on the results screen also calls Gradium, through the Cloudflare Worker below.
-
-**Cloudflare Worker**
-
-- `worker/` is a small TypeScript Worker, deployed at https://aura-proxy.dylanmerigaud-pro.workers.dev, that fronts live Gemini roasts and live Gradium voice so the static build never ships an API key at runtime for these two live calls. Rate limited per IP in a KV namespace, CORS locked to the game's own origins. Called from `src/v2/net/live.ts` (`fetchRoast`, `speakLive`), with a bundled fallback line if the network call fails or times out. See `worker/README.md` for routes, deploy and local dev.
-
-All build time generation (campaign, cast, art, music, voices) runs offline, cached by content hash. The published game is static and keyless: no API key ever reaches the browser except through the Worker's own proxy calls.
+The shipped build holds no API key. The live call goes through `aura-proxy`, a Cloudflare Worker at
+https://aura-proxy.dylanmerigaud-pro.workers.dev (`worker/`): keys in its secret store, 30 requests
+a minute per IP counted in KV, CORS limited to the game's origins (GitHub Pages and the itch.io embed
+hosts, `worker/src/cors.ts`). Build time keys are read from the macOS keychain, never from a file.
+Every external API, library and tool is listed in [docs/apis.md](docs/apis.md).
 
 ## Architecture
 
-- `src/qte`: the engine agnostic QTE judge and runner, shared by both builds. `judge.ts` turns a timing offset into a grade and computes the combo and release multipliers, `runner.ts` is the pure beat grid state machine (no DOM, no audio), `types.ts` the shared campaign and QTE data types, `validate.ts` checks a generated level against the beat grid and content rules, `input.ts` maps keyboard and touch onto the audio clock (2D build).
-- `src/v2/core.ts`: the 3D battle core, BattleCore. Reads QteRunner results, drives the aura meter, score, combo, the tempo rule and the MASH burst, emits `CoreEvent`s and a per frame `Frame`. Pure: no DOM, no three.js, no audio.
-- `src/v2/clock.ts`: SongClock, maps AudioContext time to track seconds through piecewise constant playback rates, so the beat grid and the music stay locked while the tempo rule bends the song's speed.
-- `src/v2/tempo.ts`: Tempo, the pure state machine behind the tempo rule (nudge, ease, decay).
-- `src/render3d`: the 3D stage. `stage.ts` owns the ring set, the two fighters, the crowd and a PS2 style low res render target with bloom; `director.ts` is the pure camera shot picker (cut on downbeats, speed ramp before a drop, punch zoom); `fighters.ts` loads the Mixamo cast (falling back to three.js's RobotExpressive) and maps QTE events to animation clips; `set.ts` and `crowd.ts` build the ring and the instanced crowd; `vfx/` is the aura flames, sparks, shockwaves, the MASH orb and the fullscreen composite pass (chroma split, glitch, vignette, flashes).
-- `src/v2/ui`: the DOM HUD and every screen (title, map, VS card, battle HUD, results, settings, loadout), assembled in `app.ts`. `hud/` holds the meter and tachometer, the QTE prompt layer, and the transient popups (grade, burst number, taunts).
-- `src/audio/layers.ts`: the 3D build's synthesized layered mix, the Lyria track bus with a lowpass riser and sidechain duck, the crowd bed, and every judged, release and story one shot, scheduled on `ctx.currentTime`, built on the shared primitives in `src/audio/engine.ts`, `sfx.ts` and `crowd.ts`.
-- `src/game`, `src/ui`, `src/main.ts`: the 2D build kept as the fallback, unchanged: Canvas 2D rendering, the procedural character rig, particles and the screen state machine.
-
-The `AudioContext` clock is the single source of truth for timing in both builds: `heardTime()` in `src/audio/engine.ts` turns a DOM event's timestamp into the audio time the player was actually hearing at that instant (output latency included), so what you see, what you hear and what gets judged agree. `SongClock` extends that into variable speed playback so the tempo rule never desyncs the beat grid from the music. The QTE runner itself is pure beat grid math with no DOM or audio dependency, which is what makes it directly unit testable and reusable headlessly (the 2D build's `scripts/snap.ts`, `scripts/snap-screens.ts` and `scripts/sim.ts` import the real game code into Node against a fake `AudioContext` and DOM, rendering with `@napi-rs/canvas`).
-
-## Timing and latency
-
-Every input is timestamped on the heard audio clock, not the frame clock: a dropped frame never shifts a judgment. The song plays at a variable rate under the tempo rule, so the beat grid is expressed in track seconds and converted through `SongClock`, never assumed constant. Calibration (Settings, LATENCY CALIBRATION) measures your personal offset once and folds it into every later heard time; redo it after changing audio output.
+- `src/v2/main.ts`, `src/v2/game.ts`: the 3D build (three.js), the one at the root of the site.
+- `src/v2/core.ts`: the battle core. Like and dislike meter, score, combo, windows, FLOW, tempo
+  rule, the 67 burst; emits events and one `Frame` per frame. No DOM, no three.js, no audio, unit
+  tested.
+- `src/qte`: the QTE judge and the pure beat grid runner shared by both builds.
+- `src/v2/clock.ts`: the song clock. The `AudioContext` clock is the single source of truth; inputs
+  are timestamped on the heard audio time, so a dropped frame never shifts a judgment.
+- `src/v2/levels.ts`: the hand charted hero level on the track's own onsets, and a seeded chart
+  generator for the four other opponents.
+- `src/v2/voiceQueue.ts`, `src/v2/voicePlayer.ts`: one voice at a time, calls before lines before
+  taunts, a line never starts over another.
+- `src/render3d`: the black arena, the Mixamo fighters and crowd, the camera director that frames
+  the performer, VFX; the render follows the real canvas size in portrait and landscape.
+- `src/anim`: a pose DSL and keyed aura farming gestures on the Mixamo rig (`docs/anim-poses.md`).
+- `src/v2/ui`: the title, the battle HUD, results, loadout, settings; `touch.ts` and
+  `battleInput.ts` are the gesture input.
+- `src/v2/xp.ts`: XP and ranks. `src/loadout`: fighter, emote and handle. `src/packs`: Aura Packs
+  (`docs/packs.md`). `src/live`: the LIVE badge and viewer count (`docs/live-ui.md`).
+- `src/sfx`: 16 Gen Z SFX slots synthesized in Web Audio, no sample file (`docs/sfx.md`), wired into
+  the battle mix in `src/audio/layers.ts`.
+- `worker/`: the Cloudflare Worker for the live roast and voice (`worker/README.md`).
+- `src/main.ts`, `src/game`, `src/ui`: the first 2D build, served at `/v1/`.
 
 ## Evals
 
-Amendment 10's rule: nothing generated ships without passing its gate, a fail regenerates then falls back to the best scored candidate, never to silence. Every gate writes a row to `evals/ledger.jsonl`. Current counts (all rows ever written, including retries):
+Every generated asset passes a gate and every gate writes a row to `evals/ledger.jsonl`. `pnpm evals`
+runs the two mechanical gates and exits 1 on a fail (`docs/evals.md`). On the final tree: pacing
+(every chart) 67 checks, 67 pass, 0 fail; animation (every Mixamo clip and every chart's moves) 149
+checks, 116 pass, 33 fail (Mixamo clips the gate flags, and one level 5 pair of HITs a beat apart,
+`down@57 then up@58`). The ledger, all rows ever written, retries
+included:
 
-| kind | pass | fail | total |
+| Kind | Pass | Fail | Total |
 |---|---:|---:|---:|
-| music | 35 | 5 | 40 |
-| pacing | 20 | 0 | 20 |
+| animation | 343 | 99 | 442 |
+| music | 200 | 55 | 255 |
+| pacing | 425 | 136 | 561 |
 | text | 209 | 35 | 244 |
-| voice | 30 | 0 | 30 |
+| voice | 168 | 348 | 516 |
+| all | 1345 | 673 | 2018 |
 
-Every generated thing passes a gate before it ships, and every gate writes a row to `evals/ledger.jsonl`. `pnpm evals` runs the two mechanical gates, pacing (every chart: overlaps, dead spans, first QTE, level length, on screen text, the 69 release on a drop) and animation (every Mixamo clip: beat windows, root drift, loop seams, and the mechanical half of the ten instant cringe kills), prints a table, exits 1 on any fail and rewrites the line below. What each gate checks and why: [docs/evals.md](docs/evals.md).
-
-Evals: 413 checks, 356 pass, 57 fail, last run 2026-09-26T14:32:15.545Z
-
-Full gate definitions and what actually shipped: `docs/evals.md`. A full pass over the mood spec against the running code, item by item: `docs/mood-audit.md`.
-
-## Credits
-
-- Mixamo (characters and animation clips, `assets/3d/`): Adobe's own terms allow royalty free commercial and non commercial use, no attribution required. Full source list: `assets/3d/LICENSES.md`, `assets/3d/manifest.json`.
-- three.js RobotExpressive (`assets/3d/fallback/RobotExpressive.glb`): MIT, the fallback rig when a Mixamo file is missing.
-- Anton font (the 3D HUD's display type): SIL Open Font License, loaded from Google Fonts.
-- Everything else (art, music, voices, level scripts, the 2D game's characters, particles and SFX) is generated by the partner models above or synthesized at runtime in Web Audio and Canvas 2D. No sample from any commercial source anywhere in the game.
+Tests: 703 vitest tests (`pnpm test`). Balance: a headless bot simulation over the charts
+(`pnpm balance`, `docs/balance.md`).
 
 ## Build and deploy
 
 ```
 pnpm i
-pnpm dev      # esbuild dev server, watch: v1 at http://localhost:5173, v2 at /v2/
-pnpm build    # static production build in dist/ (both builds)
-pnpm zip      # build then aura-itch.zip, for itch.io
-pnpm test     # vitest: judge, runner, validate and render3d tests
-pnpm pages    # build then force-push dist/ to the gh-pages branch
+pnpm dev             # esbuild watch server: http://localhost:5173
+pnpm build           # dist/: the 3D build at the root, the 2D build at /v1/, /v2/ redirects
+pnpm test            # vitest
+pnpm evals           # pacing and animation gates, rows in evals/ledger.jsonl
+pnpm release:check   # README sections, apis.md coverage, no dash, no key in history, LICENSE
+pnpm release:itch    # aura-itch.zip at the repo root, index.html at the zip root
+pnpm release:pages   # publishes dist/ to the gh-pages branch
 ```
 
-Regenerating content (`pnpm gen:campaign`, `pnpm gen:art`, `pnpm gen:voices`, and the v2 equivalents run directly with `tsx`) needs API keys, but never from the repo: they are read from the macOS keychain (`gemini-api-key-hackathon`, falling back to `gemini-api-key`, and `gradium-api-key`) at generation time only. The shipped build never talks to these services directly.
+Live: https://dylanmerigaud.github.io/aura/ (3D), https://dylanmerigaud.github.io/aura/v1/ (2D).
+Details: [docs/release.md](docs/release.md). The Worker has its own package and deploy
+(`worker/README.md`).
 
-The Cloudflare Worker lives in its own package with its own install, secrets and deploy flow: see `worker/README.md`.
+## Credits
 
-## Performance
-
-FPS: laptop <to measure>, phone <to measure>.
+- Characters and animation clips: Adobe Mixamo, royalty free for games, no attribution required;
+  one line per file in [assets/3d/LICENSES.md](assets/3d/LICENSES.md).
+- Three motion capture clips (`assets/3d/mocap/`: boat arm sweep, chin up stare, over the shoulder
+  look): our own capture, reference footage run through MediaPipe Pose and retargeted onto the
+  Mixamo rig; the video files are not in the repo (`assets/3d/LICENSES.md`).
+- Music: Lyria (Google DeepMind), `lyria-3.5` and `lyria-3-pro-preview`. Voices: Gemini TTS
+  (`gemini-3.8-flash-tts`, `gemini-2.5-pro-preview-tts`) and Gradium Voice Design, picked line by
+  line. Text: Gemini. SFX: synthesized in Web Audio by our own code.
+- three.js (MIT). Code: MIT, see [LICENSE](LICENSE).
 
 ## What is next
 
-Multiplayer, same room, same beat, so two players trade the same aura bar live, and loadouts, a read only preview of the four move cards already unlocked by finishing the campaign, later a pick between them. Both already sit on the title menu, greyed out, waiting on their systems.
+More opponents in the same arena under another light, and named move combos (67 WAVE: the 67
+then a wave of swipes left, right, left).

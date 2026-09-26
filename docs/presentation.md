@@ -2,83 +2,81 @@
 
 Five finalists present 5 minutes live, and the demo is on mobile. Judged on Performance, Execution
 quality, Novelty, Stickiness; the organizers said: stickiness, easy onboarding, hard to master. The
-first 20 seconds decide, so the phone is already in the hand, the game already loaded, sound up.
-
-Markers for the 17:30 integration: `<PENDING 17:30: ...>` where the flow on main at 15:30 (title,
-PLAY, the world tour map, then the fight) differs from the flow decided at 16:15 (title, one tap,
-the fight), and `<VOICE WINNERS PENDING>` / `<MUSIC WINNERS PENDING>` for the model names.
+first 20 seconds decide, so the phone is already in the hand, the title already on screen, sound up.
 
 ## Setup (before walking on)
 
 - Phone: brightness max, Do Not Disturb, silent switch OFF (iOS mutes Web Audio on silent), volume
-  max, the page https://dylanmerigaud.github.io/aura/ open and loaded, held upright. Screen mirrored
-  to the projector (the organizers' cable or AirPlay), tested once.
-- Play one battle before going on stage so the assets are cached and you know the chart.
-- Fallback: a laptop on the same URL (keyboard: arrows or WASD, Space or Enter), and a screen
-  recording of one full battle on the phone in case the network dies.
+  max, the page https://dylanmerigaud.github.io/aura/ open on the title, held upright. Screen
+  mirrored to the projector (the organizers' cable or AirPlay), tested once.
+- Play one battle before going on stage so the assets are cached and you know the chart. The
+  progress is saved on the device: to open on THE BOAT KID, play in a fresh private tab or lose
+  the last battle before walking on (a loss replays the same rival).
+- Fallback: a laptop on the same URL (the mouse drives the same gestures: drag is a swipe, click is
+  a tap), and a screen recording of one full battle on the phone in case the network dies.
 
 ## 0:00 to 0:20, the hook (no slides)
 
-Phone up, game on the projector. Say, while tapping in:
+Phone up, the title on the projector: the black arena, one spotlight, both fighters grooving. Say:
 
-> "You have zero aura. This is THE TURNSTILE NINJA, the Parisian who never paid a metro ticket. He is
-> live on TikTok, and I have 40 seconds to steal his aura."
+> "You have zero aura. That is THE BOAT KID, rank Aura 9000. We are live on TikTok, and I have 40
+> seconds to take his crowd."
 
-Start the fight during the sentence. <PENDING 17:30: on main at 15:30 the path is PLAY, then tap
-CHATELET on the world tour map; if the one tap flow shipped, one tap on the title starts the count
-in.> The first thing the room must see is the fight and the LIVE chat moving, not a menu.
+Tap the title during the sentence: one tap is the whole way in, the count in starts at once. The
+first thing the room sees is the fight, not a menu.
 
 ## 0:20 to 1:30, play the battle, narrate in short lines
 
-Play the full level (about 40 seconds, 86 beats at 130 BPM). Speak only between moves:
+Play the full level (39.7 seconds, 86 beats at 130 BPM). Speak only between moves:
 
-- On the first notes: "One thumb. On the beat." <PENDING 17:30: "swipe" on main at 15:30, "tap" if
-  the tap only input shipped.>
-- When the LIVE chat shows a partner cameo: "That is Gemini in the chat. It wrote his taunts."
-- On a MASH: "Mash, then release on the drop." Let the release land, say nothing.
+- On the first round notes: "One thumb. Tap on the beat."
+- On the first arrow: "Now the arrows: swipe their way."
+- On the 67: "Six seven: both thumbs, then swipe up on the drop." Let the release land, say nothing.
 - On a clean run: "Listen: the song is speeding up. Play clean and the track runs faster."
+- On the like bar: "The crowd votes: likes on a hit, dislikes on a miss."
 
-## 1:30 to 2:15, the results and the live roast
+## 1:30 to 2:15, the pack and the live roast
 
-Let the results screen breathe. Read nothing aloud until the roast appears:
+If it was a win, the Aura Pack pops right after the last beat: tap to tear, let the cards fly.
+"Every win drops a pack. Emotes, rarities, all local, no money."
 
-> "That line was written just now by Gemini about my run, and Gradium is saying it live. No key in
-> the game: it goes through a Cloudflare Worker that Cognition's Devin wrote."
+Then the results card. Read nothing aloud until the roast appears:
 
-If the network is slow the announcer's bundled line plays instead; say "offline, it falls back to
-the announcer" and move on.
+> "That line was written just now by Gemini about my run. No key in the game: it goes through a
+> Cloudflare Worker that Cognition's Devin wrote."
 
-If it was a win, the Aura Pack opens: tap to tear, let the cards flip. "Every win drops a pack.
-Emotes, rarities, all local, no money."
+If the network is slow the announcer's line stays on the card; say "offline, it falls back to the
+announcer" and move on. Point at the XP bar filling: "Every fight fills your rank, NPC to Aura 9000."
 
 ## 2:15 to 3:15, why it sticks (the three words, one proof each)
 
-- Easy onboarding: "Three moves: hit, hold, mash. You saw me learn them in the fight, no tutorial
-  screen."
-- Hard to master: "A Perfect is 45 milliseconds either side of the beat. Combo x2 at 10, x4 at 50.
-  Three stars need 90 percent and zero cringe. And the tempo rule punishes a miss by slowing the
-  whole song."
-- Stickiness: "Lose and you are back in the fight at once. Win and you open a pack. And the chat
-  roasts you, so you want another run."
+- Easy onboarding: "One tap to play. The first notes are taps, a ghost finger shows each move once,
+  and the first 15 seconds cannot be lost. No tutorial screen."
+- Hard to master: "Then arrows, swipes in their direction, the 67 and the hold. A Perfect is 45
+  milliseconds either side of the beat, the windows get tighter as your combo grows, combo x4 at
+  50, and a miss slows the whole song."
+- Stickiness: "Win and the next rival steps in: the Turnstile Ninja, Papi Raleur, La Parisienne,
+  Sporty Granny. Lose and you are back in one tap. And the roast is new every run."
 
 Hand the phone to a judge for one retry if the room allows it.
 
 ## 3:15 to 4:15, how it is built (one breath each)
 
-- "3D in the browser, three.js, portrait first, touch and keyboard. The audio clock is the only
-  clock: every input is judged on what you heard, not on the frame."
-- "Google DeepMind: Gemini wrote the rival (gemini-3.1-pro-preview) and roasts live
-  (gemini-3.8-flash); Lyria made the music (<MUSIC WINNERS PENDING>). Voices: <VOICE WINNERS
-  PENDING>. Gradium speaks the live roast."
+- "3D in the browser, three.js, portrait first, gestures only. The audio clock is the only clock:
+  every touch is judged on what you heard, not on the frame."
+- "Google DeepMind: Lyria made the music, lyria-3.5 for this track and lyria-3-pro-preview for the
+  funk title loop and two levels. Gemini roasts live on gemini-3.8-flash. Every voice line was a
+  bake off between Gradium Voice Design, gemini-3.8-flash-tts and gemini-2.5-pro-preview-tts, and
+  gemini-3.1-pro-preview listened to each take and scored it. Gradium made the crowd chants."
 - "Cognition: Devin wrote the Worker and four modules, the LIVE overlay, the map, the balance sim,
   the input module, all merged as pull requests."
-- "Every generated asset passes an eval before it ships: 546 checks in the ledger. 622 tests."
+- "Every generated asset passes an eval before it ships: 2018 rows in the ledger. 703 tests."
 - "Sixteen Gen Z sound effects, all synthesized in code, no sample."
 
 ## 4:15 to 5:00, close
 
-> "Chatelet is stop one. Barbes, Shibuya, Rio and the Pacu Jalur boat race are next on the world
-> tour. AURA: you have zero aura. Fix that. It is on itch.io and on your phone right now."
+> "Five rivals, one arena, one thumb. AURA: you have zero aura. Fix that. It is on itch.io and on
+> your phone right now."
 
 Last frame on the projector: the URL: https://dylanmerigaud.github.io/aura/
 

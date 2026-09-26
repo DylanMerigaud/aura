@@ -54,10 +54,10 @@ Embed options, shown once the upload is marked as played in the browser:
 | Field | Value |
 |---|---|
 | Embed mode | Embed in page |
-| Viewport dimensions | 1280 x 720 px |
+| Viewport dimensions | 405 x 720 px (portrait) |
 | Automatically start on page load | unchecked (the page shows a Run game button first) |
 | Fullscreen button | checked |
-| Mobile friendly | checked, orientation Landscape |
+| Mobile friendly | checked, orientation Portrait |
 | Enable scrollbars | unchecked |
 | SharedArrayBuffer support | unchecked (the build needs none, `release:itch` checks it) |
 
