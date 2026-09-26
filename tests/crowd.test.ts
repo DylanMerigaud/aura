@@ -3,14 +3,21 @@
 // and the rig count per quality tier.
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { CROWD_MAX, buildRoster, crowdBudget, crowdFiles, crowdSlots, rosterOk } from "../src/render3d/crowdRoster";
+import { existsSync } from "node:fs";
+import { CROWD_MAX, buildRoster, crowdBudget, crowdCandidates, crowdFiles, crowdSlots, rosterOk } from "../src/render3d/crowdRoster";
 import { LAYOUT, MOVE_S, project, shotPose, type V3 } from "../src/render3d/director";
 
 const manifest = JSON.parse(readFileSync("assets/3d/manifest.json", "utf8")) as { characters: { file: string; role?: string }[] };
-const files = crowdFiles(manifest.characters);
+const files = crowdCandidates(manifest.characters);
 
 describe("crowdFiles", () => {
-  it("takes every crowd role file plus the elder, never the player nor the ninja", () => {
+  it("ships at least 5 distinct silhouette files, each on disk, never the player nor the ninja", () => {
+    const shipped = crowdFiles(manifest.characters);
+    expect(new Set(shipped).size).toBeGreaterThanOrEqual(5);
+    for (const f of shipped) expect(existsSync(`assets/3d/${f}`)).toBe(true);
+    expect(shipped.some((f) => /james|mannequin|ninja/.test(f))).toBe(false);
+  });
+  it("candidates: every crowd role file plus the elder, never the player nor the ninja", () => {
     for (const c of manifest.characters) if (c.role === "crowd") expect(files).toContain(c.file);
     expect(files).toContain("characters/abe_enemy_elder.glb");
     expect(files.some((f) => /james|mannequin|ninja/.test(f))).toBe(false);

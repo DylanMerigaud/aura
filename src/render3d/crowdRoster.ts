@@ -9,14 +9,28 @@ const NEVER = /james|mannequin|ninja/i;
 export const ROSTER_MIN_FILES = 5;
 export const ROSTER_MAX_SHARE = 0.4;
 
+/**
+ * The crowd ships as untextured copies (the crowd reads as dark rim lit silhouettes, addendum 16:00) of the five
+ * lightest candidates, in assets/3d/crowd/: 5.7 MB instead of 24 MB for the textured set.
+ */
+export const CROWD_LITE = ["kaya_crowd.glb", "sportygranny_crowd_older.glb", "michelle_crowd_darker.glb", "abe_enemy_elder.glb", "josh_crowd_jacket.glb"];
+
 /** The crowd candidates of a manifest: every "crowd" role file plus the extras, in manifest order. */
-export function crowdFiles(chars: { file: string; role?: string }[]): string[] {
+export function crowdCandidates(chars: { file: string; role?: string }[]): string[] {
   const out: string[] = [];
   for (const c of chars) {
     if (NEVER.test(c.file) || out.includes(c.file)) continue;
     if (c.role === "crowd" || CROWD_EXTRAS.includes(c.file)) out.push(c.file);
   }
   return out;
+}
+
+/** The files the game loads: the candidates that have a shipped silhouette copy, as crowd/<name>.glb. */
+export function crowdFiles(chars: { file: string; role?: string }[]): string[] {
+  return crowdCandidates(chars)
+    .map((f) => f.slice(f.lastIndexOf("/") + 1))
+    .filter((f) => CROWD_LITE.includes(f))
+    .map((f) => `crowd/${f}`);
 }
 
 function rng(seed: number): () => number {

@@ -120,9 +120,10 @@ export class Crowd {
     const members: Member[] = [];
     roster.forEach((file, i) => {
       const model = SkeletonUtils.clone(kit.models.get(file)!);
-      // A slight tint and lightness shift per member, from a spread of warm and cool hues.
-      const tint = new THREE.Color().setHSL((i * 0.137) % 1, 0.5, 0.45 + (i % 3) * 0.08);
-      toToon(model, tint, 0.12, false);
+      // Dark silhouettes (addendum 16:00, the untextured copies): a near black body with a faint per member hue,
+      // the cool rim light around the pool draws their outline.
+      const tint = new THREE.Color().setHSL((i * 0.137) % 1, 0.25, 0.08 + (i % 3) * 0.03);
+      toToon(model, tint, 0.9, false);
       normalizeHeight(model, HEIGHT * (0.9 + ((i * 0.37) % 1) * 0.16));
       let rig = perFile.get(file);
       if (!rig) perFile.set(file, (rig = { names: boneNames(model), hips: hipsRestY(model) }));
