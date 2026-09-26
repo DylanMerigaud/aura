@@ -2,7 +2,7 @@
 // word big (AURA FARMED or HUMBLED), three big numbers (score, accuracy, best combo), the stars, the one line
 // roast (the level's announcer line at once, replaced by the live Gemini roast when it lands), the XP bar
 // filling from before to after with a RANK UP moment, two big buttons (RETRY, or NEXT after a win, and SHARE),
-// then small: the NEXT OPPONENT locked preview, LOADOUT, PACK. Tap words only.
+// then small: the NEXT OPPONENT locked preview, LOADOUT (a won battle opened its pack before this card). Tap words only.
 import type { LevelV2, Stats } from "../contracts";
 import { starGlyphs } from "./format";
 import { el, replay } from "./dom";
@@ -16,8 +16,6 @@ export interface ResultsHandlers {
   /** Fight the next opponent (offered after a win). */
   next(): void;
   loadout(): void;
-  /** Opens the pack; resolves when its overlay closed. */
-  pack(stats: Stats, level: LevelV2): Promise<void>;
 }
 
 export interface ResultsExtra {
@@ -117,8 +115,6 @@ export function buildResults(on: ResultsHandlers) {
 
   let armed = false;
   let genAtShow = 0;
-  let packOpen = false;
-  let packDone = false;
   let won = false;
   let cur: { stats: Stats; level: LevelV2 } | null = null;
   const timers: ReturnType<typeof setTimeout>[] = [];
@@ -132,7 +128,7 @@ export function buildResults(on: ResultsHandlers) {
     b.addEventListener("pointerdown", (e) => e.stopPropagation());
     b.addEventListener("click", (e) => {
       e.stopPropagation();
-      if (!armed || packOpen) return;
+      if (!armed) return;
       act();
     });
     parent.appendChild(b);
@@ -171,21 +167,6 @@ export function buildResults(on: ResultsHandlers) {
   small.appendChild(preview);
 
   button(small, "rc-link loadout", "LOADOUT", () => on.loadout());
-  const packBtn = button(small, "rc-link pack", "PACK", () => {
-    if (!cur) return;
-    if (packDone) {
-      replay(packBtn, "shake");
-      say("pack opened: win again for the next one");
-      return;
-    }
-    packDone = true;
-    packOpen = true;
-    packBtn.classList.add("disabled");
-    on.pack(cur.stats, cur.level)
-      .catch(() => say("the pack got lost on the way"))
-      .finally(() => (packOpen = false));
-  });
-
   function paintXp(g: XpGain | null | undefined) {
     rankUp.classList.add("hidden");
     xpBox.classList.toggle("hidden", !g);
@@ -251,9 +232,6 @@ export function buildResults(on: ResultsHandlers) {
     }
     paintXp(extra.xp);
     cur = { stats, level };
-    packDone = false;
-    packOpen = false;
-    packBtn.classList.remove("disabled");
     toast.textContent = "";
     // A last frantic battle tap must not land on a button: a short guard, still well under the 1 s rule.
     setTimeout(() => (armed = true), 300);
@@ -273,9 +251,9 @@ export function buildResults(on: ResultsHandlers) {
       });
   }
 
-  // The primary button is the default: any key is the one input (the pack overlay owns keys while open).
+  // The primary button is the default: any key is the one input (the win pack opens before this card).
   function onKey(e: KeyboardEvent) {
-    if (!armed || packOpen || !isTapKey(e)) return;
+    if (!armed || !isTapKey(e)) return;
     e.preventDefault();
     replay(retryBtn, "pressed");
     primary();

@@ -1,24 +1,13 @@
-// Placeholder announcer voice: the browser's speechSynthesis says the short battle calls (YOUR MOVE /
-// HIS MOVE) until recorded lines exist. Guarded: silent where the API is missing or throws.
+// The announcer's one word calls: a recorded file per call in voice/v2/index.json ("six! seven!" is
+// "call-six-seven"), played through the single voice queue (src/v2/voiceQueue.ts) at call priority.
+// No recording, no sound: the robotic speechSynthesis placeholder is gone (addendum 17:05 point 5).
+import { playCall } from "../voicePlayer";
 
-/** The call for a turn, shared by the HUD popup and the voice. */
-export function turnCall(who: "player" | "opponent"): string {
-  return who === "player" ? "YOUR MOVE" : "HIS MOVE";
-}
-
-/** Speak a short call now, cutting whatever the announcer was still saying. */
+/** Queue a short call; silent when the call has no recording or audio is not running. */
 export function announce(text: string): void {
   try {
-    const synth = typeof window !== "undefined" ? window.speechSynthesis : undefined;
-    if (!synth || typeof SpeechSynthesisUtterance === "undefined") return;
-    synth.cancel();
-    const u = new SpeechSynthesisUtterance(text.toLowerCase());
-    u.rate = 1.1;
-    u.pitch = 0.8;
-    u.volume = 1;
-    u.lang = "en-US";
-    synth.speak(u);
+    playCall(text);
   } catch {
-    /* no voice on this browser: the popup carries the call */
+    /* no audio: the popup carries the call */
   }
 }

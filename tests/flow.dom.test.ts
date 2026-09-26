@@ -47,33 +47,24 @@ describe("results", () => {
   const stats = { win: false, score: 10, stars: 0, accuracy: 0.5, bestBurst: 3, maxCombo: 4, counts: { perfect: 1, great: 0, ok: 0, miss: 2, cringe: 0 } } as unknown as Stats;
   const level = { id: 1, title: "t", place: "CHATELET", announcer: { win: "w", lose: "l" } } as unknown as LevelV2;
 
-  it("any key retries once armed, and never while the pack is open", async () => {
+  it("any key retries once armed; no PACK link (the win pack opens before the card)", () => {
     vi.useFakeTimers();
     const retry = vi.fn();
-    let closePack: () => void = () => {};
-    const pack = vi.fn(() => new Promise<void>((r) => (closePack = r)));
-    const r = buildResults({ retry, next: vi.fn(), loadout: vi.fn(), pack });
+    const r = buildResults({ retry, next: vi.fn(), loadout: vi.fn() });
     document.body.appendChild(r.root);
     r.show(stats, level);
     r.onKey(key("a"));
     expect(retry).not.toHaveBeenCalled();
     vi.advanceTimersByTime(350);
-    (r.root.querySelector(".rc-link.pack") as HTMLButtonElement).click();
-    expect(pack).toHaveBeenCalledTimes(1);
-    r.onKey(key("a"));
-    expect(retry).not.toHaveBeenCalled();
-    closePack();
     vi.useRealTimers();
-    await new Promise((res) => setTimeout(res, 0));
     r.onKey(key("a", { repeat: true }));
     expect(retry).not.toHaveBeenCalled();
     r.onKey(key("a"));
     expect(retry).toHaveBeenCalledTimes(1);
     (r.root.querySelector(".results-btn.retry") as HTMLButtonElement).click();
     expect(retry).toHaveBeenCalledTimes(2);
-    (r.root.querySelector(".rc-link.pack") as HTMLButtonElement).click();
-    expect(pack).toHaveBeenCalledTimes(1);
-    expect(r.root.textContent).not.toMatch(/space|swipe|press/i);
+    expect(r.root.querySelector(".rc-link.pack")).toBeNull();
+    expect(r.root.textContent).not.toMatch(/space|swipe|press|pack/i);
   });
 
   const played: Stats = {
@@ -90,7 +81,7 @@ describe("results", () => {
   const lvl = { id: 1, title: "t", place: "ARENA", opponent: { name: "The Boat Kid", persona: "", color: "#fff" }, announcer: { win: "w", lose: "l" } } as unknown as LevelV2;
 
   it("the card shows the numbers of the Stats it was given, win word, NEXT and an unlocked preview", () => {
-    const r = buildResults({ retry: vi.fn(), next: vi.fn(), loadout: vi.fn(), pack: () => Promise.resolve() });
+    const r = buildResults({ retry: vi.fn(), next: vi.fn(), loadout: vi.fn() });
     r.show(played, lvl, { nextOpponent: { name: "The Turnstile Ninja", locked: false }, xp: { before: 3000, after: 5234, gained: 2234, rankUp: true, rank: "Side character" } });
     const q = (s: string) => (r.root.querySelector(s) as HTMLElement).textContent;
     expect(q(".results-heading")).toBe("AURA FARMED");
@@ -109,7 +100,7 @@ describe("results", () => {
   it("a second show with other Stats never keeps the first numbers; a loss says HUMBLED, RETRY, locked preview", () => {
     const retry = vi.fn();
     const next = vi.fn();
-    const r = buildResults({ retry, next, loadout: vi.fn(), pack: () => Promise.resolve() });
+    const r = buildResults({ retry, next, loadout: vi.fn() });
     r.show(played, lvl);
     r.show({ ...played, win: false, score: 200, maxCombo: 1, accuracy: 0.7, stars: 0, counts: { perfect: 0, great: 1, ok: 0, miss: 5, cringe: 0 } }, lvl, {
       nextOpponent: { name: "The Turnstile Ninja", locked: true },

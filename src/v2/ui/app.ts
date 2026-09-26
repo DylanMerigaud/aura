@@ -87,12 +87,18 @@ export function startApp(opts: StartOpts): { hud: Listener } {
     retry: () => void startBattle(slot),
     next: () => void startBattle(opponentSlot(progress.opp ?? 0, levels.length)),
     loadout: () => openLoadout(() => showScreen(results)),
-    pack: (stats, level) => {
+  });
+
+  /** The pack of a won battle (addendum 17:05 point 4): drops in, tap to tear, the cards fly. Never throws. */
+  function winPack(level: LevelV2): Promise<void> {
+    try {
       setPackHooks({ audio: ctx ?? null });
       const seed = ((Date.now() >>> 0) ^ (level.id * 7919)) >>> 0;
-      return openPacks(stats.win ? 3 : 1, seed).then(() => {});
-    },
-  });
+      return openPacks(3, seed).then(() => {}, () => {});
+    } catch {
+      return Promise.resolve();
+    }
+  }
 
   const screens: ScreenCtl[] = [loading, gate, settings, loadout, battle, results];
   for (const s of screens) {
@@ -182,10 +188,17 @@ export function startApp(opts: StartOpts): { hud: Listener } {
     const stats = await game.play(level, battleWindow(level, s));
     if (gen !== battleGen) return;
     battleInput.hide();
-    finish(stats, level, s);
+    const showResults = finish(stats, level, s);
+    // A win opens the pack first, the results card comes after it closed; a loss goes straight to results.
+    if (stats.win) {
+      await winPack(level);
+      if (gen !== battleGen) return;
+    }
+    showResults();
   }
 
-  function finish(stats: Stats, level: LevelV2, s: OpponentSlot) {
+  /** Saves the progress and XP of a finished battle now; the returned call shows the results card. */
+  function finish(stats: Stats, level: LevelV2, s: OpponentSlot): () => void {
     progress = nextProgress(
       progress,
       level.id,
@@ -201,12 +214,14 @@ export function startApp(opts: StartOpts): { hud: Listener } {
     saveXp(xpState);
     const after = opponentSlot(s.opp + 1, levels.length);
     const nextLevel = levels[after.index];
-    results.show(stats, level, {
-      xp,
-      nextOpponent: nextLevel ? { name: nextLevel.opponent?.name ?? nextLevel.title, locked: !stats.win, loop: after.loop } : null,
-    });
-    showScreen(results);
     if (stats.win) preloadLevel(nextLevel);
+    return () => {
+      results.show(stats, level, {
+        xp,
+        nextOpponent: nextLevel ? { name: nextLevel.opponent?.name ?? nextLevel.title, locked: !stats.win, loop: after.loop } : null,
+      });
+      showScreen(results);
+    };
   }
 
   const hud: Listener = {
