@@ -1,8 +1,18 @@
 // Entry point of lane D: every screen and the battle HUD, wired into one flow. main.ts creates
 // the canvas, the stage and the game, calls startApp, registers the returned hud with
 // game.listen, and drives the animation frame loop itself.
+//
+// The flow (addendum 15:20, one input to play): LOADING (automatic, level 1 fully preloaded) then
+// the TITLE SCENE over the idling stage, whose first tap unlocks audio and starts the level 1
+// battle (the 4 beat count in is game.play's), then RESULTS: RETRY (one input), PACK, MAP, SHARE.
+// The menu (MENU corner button of the title scene) and the map (from the results) are never on
+// the way in.
 import type { GameApi, LevelV2, Listener, Stage } from "../contracts";
+import { initAudio, ctx } from "../../audio/engine";
+import { openPacks, setPackHooks } from "../../packs";
 import { buildGate } from "./gate";
+import { buildLoading } from "./loading";
+import { trackSettled } from "./flow";
 import { buildTitle } from "./title";
 import { buildSettings } from "./settings";
 import { buildMap } from "./map";
@@ -18,6 +28,8 @@ import { buildBed } from "./bed";
 const WINDOW_SCALE = [1, 0.9, 0.8, 0.7, 0.6];
 /** The battle starts without its fighters rather than wait longer than this on the models. */
 const STAGE_WAIT_MS = 25000;
+/** The loading screen gives up on a slow asset after this and shows the title scene anyway. */
+const LOAD_WAIT_MS = 20000;
 
 export interface StartOpts {
   game: GameApi;
@@ -43,7 +55,6 @@ export function startApp(opts: StartOpts): { hud: Listener } {
 
   let progress = loadProgress();
   let levelIdx = 0;
-  let lastWin = false;
 
   const battleInput = bindBattleInput(canvas, game);
   const hudCtl = buildHud(base);
@@ -53,19 +64,35 @@ export function startApp(opts: StartOpts): { hud: Listener } {
   // Battle keys are read by battleInput on window (capture phase), not through the screen switcher.
   const battle: ScreenCtl = { root: hudCtl.root };
 
-  const gate = buildGate(() => goTitle());
+  const loading = buildLoading();
+  const gate = buildGate(
+    () => {
+      levelIdx = 0;
+      void startBattle();
+    },
+    () => goTitle(),
+  );
   const title = buildTitle(levels, () => progress, {
     play: () => goMap(),
     settings: () => goSettings(),
     loadout: () => showScreen(loadout),
+    back: () => goScene(),
   });
   const settings = buildSettings(() => goTitle());
   const map = buildMap(levels, base, () => progress, (i) => openVsCard(i));
   const vscard = buildVsCard(base, () => void startBattle());
   const loadout = buildLoadout(() => goTitle());
-  const results = buildResults(() => afterResults());
+  const results = buildResults({
+    retry: () => void startBattle(),
+    map: () => goMap(),
+    pack: (stats, level) => {
+      setPackHooks({ audio: ctx ?? null });
+      const seed = ((Date.now() >>> 0) ^ (level.id * 7919)) >>> 0;
+      return openPacks(stats.win ? 3 : 1, seed).then(() => {});
+    },
+  });
 
-  const screens: ScreenCtl[] = [gate, title, settings, map, vscard, loadout, battle, results];
+  const screens: ScreenCtl[] = [loading, gate, title, settings, map, vscard, loadout, battle, results];
   for (const s of screens) {
     s.root.classList.add("screen");
     uiRoot.appendChild(s.root);
@@ -82,12 +109,38 @@ export function startApp(opts: StartOpts): { hud: Listener } {
   }
 
   addEventListener("keydown", (e) => current?.onKey?.(e));
-  showScreen(gate);
+  showScreen(loading);
+  void preloadFirst();
+
+  /** Level 1 in full before the title scene: the set and fighters, the track and the voices. The
+   * AudioContext is created now (suspended until the first tap) so the music decodes during loading. */
+  async function preloadFirst() {
+    const first = levels[0];
+    try {
+      initAudio();
+    } catch {
+      /* no Web Audio: the track job fails fast and the battle runs on its visuals */
+    }
+    const jobs: Promise<unknown>[] = [stageLevel(first)];
+    const pre = (game as GameApi & { preload?(l: LevelV2): Promise<unknown> | void }).preload?.(first);
+    if (pre) jobs.push(pre);
+    // Fonts are part of the look: the logo in Anton, not in the fallback face.
+    const fonts = (document as Document & { fonts?: { ready: Promise<unknown> } }).fonts;
+    if (fonts?.ready) jobs.push(fonts.ready);
+    await trackSettled(jobs, (f) => loading.set(f), LOAD_WAIT_MS);
+    loading.set(1);
+    goScene();
+  }
+
+  /** The title scene: the loaded stage idles behind the overlay, the next tap plays level 1. */
+  function goScene() {
+    bed.stop(0.4);
+    gate.show();
+    showScreen(gate);
+  }
 
   function goTitle() {
     bed.start();
-    // The first battle is decided on the title: start the models downloading now, not on the VS card.
-    void stageLevel(levels[Math.min(levels.length - 1, Math.max(0, progress.unlocked - 1))] ?? levels[0]);
     title.show();
     showScreen(title);
   }
@@ -111,7 +164,7 @@ export function startApp(opts: StartOpts): { hud: Listener } {
   function openVsCard(i: number) {
     levelIdx = i;
     void stageLevel(levels[i]);
-    (game as GameApi & { preload?(l: LevelV2): void }).preload?.(levels[i]);
+    void (game as GameApi & { preload?(l: LevelV2): Promise<unknown> | void }).preload?.(levels[i]);
     vscard.show(levels[i]);
     showScreen(vscard);
   }
@@ -136,14 +189,8 @@ export function startApp(opts: StartOpts): { hud: Listener } {
       levels.length,
     );
     saveProgress(progress);
-    lastWin = stats.win;
     results.show(stats, level);
     showScreen(results);
-  }
-
-  function afterResults() {
-    if (lastWin) goMap();
-    else void startBattle();
   }
 
   const hud: Listener = {

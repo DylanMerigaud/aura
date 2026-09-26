@@ -1,6 +1,7 @@
-// Title menu (amendment 6 section 5): PLAY to the map, MULTIPLAYER and LOADOUT greyed out until
-// earned, SETTINGS for calibration, volume and controls. Arrow/WASD to move, enter or space to
-// confirm, touch taps the item directly.
+// Title menu (amendment 6 section 5, reached from the MENU corner button of the title scene, never
+// on the way in): PLAY to the map, MULTIPLAYER and LOADOUT greyed out until earned (a greyed item
+// plays the cancel blip and shakes), SETTINGS for calibration, volume and controls. Touch taps the
+// item directly; on desktop arrows move and enter confirms, escape or BACK returns to the scene.
 import type { LevelV2 } from "../contracts";
 import { sfx } from "../../audio/sfx";
 import { el, replay } from "./dom";
@@ -11,6 +12,8 @@ export interface TitleHandlers {
   settings(): void;
   /** Loadout is playable read only once the whole campaign has at least one star everywhere. */
   loadout(): void;
+  /** Back to the title scene. */
+  back(): void;
 }
 
 interface Item {
@@ -21,6 +24,13 @@ interface Item {
 
 export function buildTitle(levels: LevelV2[], progress: () => ProgressV2, on: TitleHandlers) {
   const root = el("section", "screen title");
+  const backBtn = el("button", "corner-btn title-back", "BACK");
+  backBtn.type = "button";
+  backBtn.addEventListener("click", () => {
+    sfx.tick();
+    on.back();
+  });
+  root.appendChild(backBtn);
   root.appendChild(el("h1", "logo", "AURA"));
 
   const subtitle = el("p", "subtitle");
@@ -58,7 +68,7 @@ export function buildTitle(levels: LevelV2[], progress: () => ProgressV2, on: Ti
     return item;
   }
 
-  const playItem = makeItem("PLAY", "start the campaign", true, on.play);
+  const playItem = makeItem("PLAY", "the world tour", true, on.play);
   const multiItem = makeItem("MULTIPLAYER", "coming soon: same room, same beat", false, () => {});
   const loadoutItem = makeItem("LOADOUT", "unlock: finish the campaign", false, on.loadout);
   const settingsItem = makeItem("SETTINGS", "calibration, volume, controls", true, on.settings);
@@ -89,6 +99,7 @@ export function buildTitle(levels: LevelV2[], progress: () => ProgressV2, on: Ti
     if (e.code === "ArrowDown" || e.code === "ArrowRight") move(1);
     else if (e.code === "ArrowUp" || e.code === "ArrowLeft") move(-1);
     else if (e.code === "Enter" || e.code === "Space") select(items[idx]);
+    else if (e.code === "Escape") on.back();
   }
 
   paint();
