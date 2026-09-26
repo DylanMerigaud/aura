@@ -28,4 +28,5 @@ Every external API, host, framework and tool used to build and ship AURA (both t
 | itch.io | Secondary distribution as a plain zipped static build. | `pnpm zip`, `aura-itch.zip` |
 | pnpm | Package manager and script runner for the game and, as its own workspace, the Worker. | `package.json`, `worker/package.json` |
 | wrangler | Cloudflare's CLI: local dev server with a local KV store, secret management, and deploy. | `worker/package.json` scripts, `worker/wrangler.toml` |
-| Claude Code | Used to write the game and the Worker during the hackathon. | built with |
+| Claude Code | Used to write the game during the hackathon. | built with |
+| Cognition Devin | Wrote the Cloudflare Worker (`worker/`), opened as pull request 1 by the `devin-ai-integration` app and merged 2026-09-26 13:26 CEST. | https://github.com/DylanMerigaud/aura/pull/1, `worker/` |
