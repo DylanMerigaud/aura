@@ -33,3 +33,4 @@ Every external API, host, framework and tool used to build and ship AURA (both t
 | @gltf-transform/core | Reads the Mixamo glb files headlessly (skeletons, animation channels, keyframe times) for the animation gate: beat windows, root drift, loop seams. | `scripts/eval-animation.ts`, `scripts/eval-lib.ts` |
 | node-web-audio-api | A Web Audio implementation for Node, so the exact SFX recipes the game plays in the browser render offline to WAV previews and are measured in tests. | `scripts/render-sfx.ts`, `tests/sfx/*` |
 | @types/node, @types/three | TypeScript type definitions for Node (the scripts) and three.js (the 3D renderer). Types only, nothing ships. | `tsconfig.json` |
+| jsdom | A browser DOM for Node, so the live overlay, map, input and packs modules are tested against real elements and events in vitest. Tests only, nothing ships. | `tests/live/*`, `tests/map/*`, `tests/input/*`, `tests/packs/*` |
