@@ -79,13 +79,16 @@ export function startApp(opts: StartOpts): { hud: Listener } {
   const title = buildTitle(levels, () => progress, {
     play: () => goMap(),
     settings: () => goSettings(),
-    loadout: () => showScreen(loadout),
+    loadout: () => {
+      loadout.show();
+      showScreen(loadout);
+    },
     back: () => goScene(),
   });
   const settings = buildSettings(() => goTitle());
   const map = buildMap(levels, base, () => progress, (i) => openVsCard(i));
   const vscard = buildVsCard(base, () => void startBattle());
-  const loadout = buildLoadout(() => goTitle());
+  const loadout = buildLoadout(() => goTitle(), base);
   const results = buildResults({
     retry: () => void startBattle(),
     map: () => goMap(),

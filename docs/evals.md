@@ -11,6 +11,15 @@ refresh it.
 - **music** (`scripts/eval-music.ts`, the music agent): per track, energy in the first 4 s over
   0.35 of the track max, a drop before 12 s, no silent gap outside a declared breakdown, measured
   BPM within 8 percent of the request, duration within 20 percent of the request.
+- **music mood judge** (`scripts/judge-music-v3.ts`, the music lane): per Lyria 3 Pro candidate,
+  `gemini-3.1-pro-preview` listens to the file (audio input, structured JSON) and scores 1 to 5 against
+  Dylan's rejection note for that track (funk and bass weight for level1, an audible sidechain pump
+  for level2, intensity for the boss's phase two, raw samba batucada for victory), beat clarity, and
+  loop quality (levels) or ending quality (victory); ship at 4 and up. Two independent passes per
+  candidate, one ledger row per axis and pass (id `<track>-c<N>`). `scripts/board-music-v3.py` ranks the
+  five candidates per track on `samples/music/BOARD.md` (mean of both passes, 0.5 off for intelligible
+  words, a lull in the game's own analysis, or a BPM off the request by over 8 percent) and
+  `scripts/ship-music-v3.py` ships the winners with their manifest entries.
 - **pacing** (`scripts/eval-pacing.ts`): per chart, overlaps, arrows inside an open window, rest
   after a release, first QTE, dead spans, level length, count in, on screen text, the 69 window and
   its release on a drop. Detail in "Mechanical gates" below.

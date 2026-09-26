@@ -1,0 +1,14 @@
+{
+  "track": "level1",
+  "candidate": "c3",
+  "model": "gemini-3.1-pro-preview",
+  "note": "more funk, more bass",
+  "note_score": 4,
+  "note_evidence": "The track features a clear Brazilian funk tamborzao rhythm and a distorted 808 bassline, though the bass pitch slides could be slightly more exaggerated for maximum chest-hitting weight.",
+  "beat_clarity": 5,
+  "beat_evidence": "A strong, syncopated funk carioca beat starts immediately at 0:00, providing a very clear and steady pulse for rhythm gameplay.",
+  "loop_or_ending": 5,
+  "loop_evidence": "The track drops right into the action with no dead intro and maintains a consistent, high-energy groove until the abrupt cut at 0:39, making it perfect for seamless looping.",
+  "intelligible_words": false,
+  "total": 4.67
+}

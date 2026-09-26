@@ -1,0 +1,14 @@
+{
+  "track": "level1",
+  "candidate": "c3",
+  "model": "gemini-3.1-pro-preview",
+  "note": "more funk, more bass",
+  "note_score": 3,
+  "note_evidence": "While the tamborzao rhythm is present from 00:00, the bass is a standard bouncy synth rather than a heavy, sliding 808, lacking the requested chest-hitting weight.",
+  "beat_clarity": 5,
+  "beat_evidence": "The percussion establishes a clear, steady pulse immediately at 00:00 and maintains it without interruption.",
+  "loop_or_ending": 5,
+  "loop_evidence": "The track begins with the beat already playing at 00:00 and cuts off cleanly at 00:40 to allow for a seamless loop without any fade or lull.",
+  "intelligible_words": false,
+  "total": 4.33
+}

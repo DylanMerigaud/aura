@@ -2,6 +2,7 @@
 // three.js RobotExpressive (MIT) as the fallback. Clips are addressed by event name (amendment 8 section 2),
 // a missing clip falls back to the idle groove with a squash and stretch, never a crash.
 import * as THREE from "three";
+import { getLoadout } from "../loadout/state";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import * as SkeletonUtils from "three/examples/jsm/utils/SkeletonUtils.js";
 import { buildClip, maskClip, rigFromObject } from "../anim/poses";
@@ -161,7 +162,9 @@ async function fromManifest(base: string): Promise<CastSource> {
     const all = m.characters.filter((c) => c.role && re.test(c.role));
     return all.find((c) => c.preferred) ?? all[0];
   };
-  const pc = byRole(/player|hero/i) ?? m.characters[0];
+  // The loadout pick (src/loadout) wins over the manifest's preferred player.
+  const chosen = getLoadout().character;
+  const pc = (chosen && m.characters.find((c) => c.file === chosen)) || byRole(/player|hero/i) || m.characters[0];
   const ec = byRole(/enemy|opponent|boss/i) ?? m.characters.find((c) => c !== pc) ?? pc;
   const clips: CastSource["clips"] = new Map();
   // Every clip starts downloading now, alongside the characters; only the idles are waited for.

@@ -1,0 +1,14 @@
+{
+  "track": "victory",
+  "candidate": "c2",
+  "model": "gemini-3.1-pro-preview",
+  "note": "too smooth, more samba",
+  "note_score": 5,
+  "note_evidence": "The track features authentic street bateria instrumentation, including a prominent apito whistle at 0:00, agogo bells, and heavy surdos, delivering a raw, festive carnival energy.",
+  "beat_clarity": 5,
+  "beat_evidence": "A fast, driving pulse is established immediately at 0:00 by the surdo and caixa, making it very easy to tap along to.",
+  "loop_or_ending": 5,
+  "loop_evidence": "The stinger concludes with a synchronized, punchy final brass and percussion hit at 0:10, providing a definitive victory resolution.",
+  "intelligible_words": false,
+  "total": 5
+}

@@ -14,12 +14,14 @@ function syncMedia() {
   if (existsSync("assets/3d")) {
     // Ship only the characters the stage picks (the preferred one per role, no crowd models): keeps the build light.
     const skip = new Set();
+    // The loadout's fighter pool ships too: the player may pick any of them (src/loadout/state.ts).
+    const pool = new Set([...readFileSync("src/loadout/state.ts", "utf8").matchAll(/file: "([^"]+)"/g)].map((m) => `assets/3d/${m[1]}`));
     try {
       const m = JSON.parse(readFileSync("assets/3d/manifest.json", "utf8"));
       for (const c of m.characters ?? []) {
         const rivals = m.characters.filter((o) => o.role === c.role);
         const picked = rivals.find((o) => o.preferred) ?? rivals[0];
-        if (c.role === "crowd" || c !== picked) skip.add(`assets/3d/${c.file}`);
+        if ((c.role === "crowd" || c !== picked) && !pool.has(`assets/3d/${c.file}`)) skip.add(`assets/3d/${c.file}`);
       }
     } catch { /* no manifest: copy everything */ }
     rmSync("public/models", { recursive: true, force: true });

@@ -1,0 +1,14 @@
+{
+  "track": "victory",
+  "candidate": "c5",
+  "model": "gemini-3.1-pro-preview",
+  "note": "too smooth, more samba",
+  "note_score": 2,
+  "note_evidence": "While it has a fast samba rhythm, the track is dominated by polished, synthesized brass and melodic leads rather than the raw, live, percussion-only street bateria requested.",
+  "beat_clarity": 5,
+  "beat_evidence": "A very fast, energetic, and distinct percussion pulse starts immediately at 0:00, making it extremely easy to tap along.",
+  "loop_or_ending": 5,
+  "loop_evidence": "The track finishes with a strong, deliberate ensemble hit at 0:10 that resolves the phrase perfectly for a victory screen.",
+  "intelligible_words": false,
+  "total": 4
+}
