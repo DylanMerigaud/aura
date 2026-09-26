@@ -59,11 +59,11 @@ RED: the black playground, the performer camera and the like/dislike bar (Dylan 
 PLAY: https://dylanmerigaud.github.io/aura/
 NEED FROM DYLAN: nothing yet
 
-15:50 CEST, INTEGRATION lane: Lyria winners shipped, LOADOUT built, LIVE overlay cut to a small badge
-GREEN: music in game: level1, level2, victory and a boss phase 2 track from lyria-3-pro-preview (5 candidates each, judged twice); LOADOUT screen (8 real rigs with in engine portraits, victory emote from the packs); tests 657
-RED: voice batch (5 variants per line, plus SIX! SEVEN! and the crowd chant) still running; funk title loop: candidate 1 of 5 on the board; the GAME lane must wire the LOADOUT button on its new title and results
+17:05 CEST, INTEGRATION lane: voices for the whole roster merged and live, docs branch merged, release run started
+GREEN: 63 voiced lines (announcer with SIX SEVEN, 5 opponents x 8 taunts, intro/win/lose), 47 at 4 or more on every judge axis; crowd chants FR, PT, SIX SEVEN, Boat Kid (Gradium); Gradium credits used 3,742 of 60,000; funk title loop, 4 Lyria tracks; loadout with handle rename; tests 703
+RED: 16 voice lines below threshold (a rescue round is rerunning them now); docs placeholders being filled; phone screenshots for README and itch being captured; itch page not created yet (18:15)
 PLAY: https://dylanmerigaud.github.io/aura/ ; REVIEW BOARD: https://claude.ai/artifact/71W8b3KRLnEyrcmHrDNbmb
-NEED FROM DYLAN: on the review board, PICK or REDO the voices and the funk title loop (the judge decides otherwise)
+NEED FROM DYLAN: nothing until the submission values at 18:30
 
 15:05 CEST, GAME lane: v1 arrows (one prompt at a time, vertical in portrait), Space and touch play zone, Turnstile Ninja at Chatelet with nameplates, portrait camera and toon look: all deployed at the ROOT
 GREEN: tests 276, typecheck clean; v2 is now the root build (v1 at /v1/)
