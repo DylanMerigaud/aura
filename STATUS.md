@@ -1,6 +1,6 @@
-13:30 CEST, v2 (3D) playable at /v2/, live roast Worker deployed
+14:05 CEST, v2 (3D) at /v2/ with the mood pass and mobile load fixes; live roast Worker up
 GREEN: v1 untouched at the root; v2: 3D ring, Mixamo fighters, camera director, VFX, HUD, map, menu, tempo rule, layered SFX, hero level on the Lyria club track, new cast (Gemini, evals) and 30 Gradium lines; review found and fixed 8 first-play bugs; Worker aura-proxy live (Gemini roast and Gradium voice tested with curl, 403 on foreign origins)
-RED: nobody has seen v2 render yet (no GPU in my sandbox): black screen, framing and fps are unknown until you play
+RED: nobody has seen v2 render yet (no GPU in my sandbox): render, framing, fps and timing feel are unknown until you play; build is 23 MB
 PLAY: https://dylanmerigaud.github.io/aura/v2/?debug=1 (v1 stays at https://dylanmerigaud.github.io/aura/)
 NEED FROM DYLAN: play /v2/ level 1 with sound on the laptop now: does it render, the fps top right, timing early/late/fine, the worst thing you see
 
