@@ -16,6 +16,30 @@ const REACTS = ["crowd_cheer", "crowd_jump", "crowd_excited"];
 const MAIN_W = 0.75;
 const HEIGHT = 1.72;
 
+/** The cool rim around the pool, shared by every crowd material (a view fresnel, no extra light). */
+export const crowdRim = { value: new THREE.Color(0x7fa6ff).multiplyScalar(0.9) };
+
+/** A cool fresnel rim on a model's materials: the silhouettes read against the black void. */
+export function addRim(root: THREE.Object3D): void {
+  root.traverse((o) => {
+    const mesh = o as THREE.Mesh;
+    if (!mesh.isMesh) return;
+    for (const m of Array.isArray(mesh.material) ? mesh.material : [mesh.material]) {
+      m.onBeforeCompile = (sh) => {
+        sh.uniforms.rimColor = crowdRim;
+        sh.fragmentShader = sh.fragmentShader
+          .replace("void main() {", "uniform vec3 rimColor;\nvoid main() {")
+          .replace(
+            "#include <opaque_fragment>",
+            "outgoingLight += rimColor * pow(1.0 - clamp(dot(normalize(vViewPosition), normal), 0.0, 1.0), 3.0);\n#include <opaque_fragment>",
+          );
+      };
+      m.customProgramCacheKey = () => "crowdRim";
+      m.needsUpdate = true;
+    }
+  });
+}
+
 /** One animated crowd member: its own mixer, never paused by a camera cut. */
 interface Member {
   root: THREE.Group;
@@ -31,6 +55,8 @@ interface Member {
   speed: number;
   beat: number;
   slot: CrowdSlot;
+  /** Between the root and the model: the "ooh" recoil leans the figure back in place. */
+  lean: THREE.Group;
 }
 
 function loopAction(mixer: THREE.AnimationMixer, clip: THREE.AnimationClip, weight: number, phase: number): THREE.AnimationAction {
@@ -61,6 +87,9 @@ export class Crowd {
   private p = new THREE.Vector3();
   private ghostMat: THREE.MeshBasicMaterial;
   ghost = 0;
+  /** The "ooh" on a miss: 1 at the recoil, back to 0 over half a second. */
+  private recoilK = 0;
+  private recoilT = 9;
   /** The rigs, once the kit has loaded and passed the roster door; empty means the capsules are on. */
   private members: Member[] = [];
   private budget = CROWD_MAX;
@@ -124,6 +153,7 @@ export class Crowd {
       // the cool rim light around the pool draws their outline.
       const tint = new THREE.Color().setHSL((i * 0.137) % 1, 0.25, 0.08 + (i % 3) * 0.03);
       toToon(model, tint, 0.9, false);
+      addRim(model);
       normalizeHeight(model, HEIGHT * (0.9 + ((i * 0.37) % 1) * 0.16));
       let rig = perFile.get(file);
       if (!rig) perFile.set(file, (rig = { names: boneNames(model), hips: hipsRestY(model) }));
@@ -132,7 +162,9 @@ export class Crowd {
         return retarget(src.clip, rig!.names, rig!.hips && src.hipsY ? rig!.hips / src.hipsY : 1);
       };
       const root = new THREE.Group();
-      root.add(model);
+      const lean = new THREE.Group();
+      lean.add(model);
+      root.add(lean);
       const mixer = new THREE.AnimationMixer(model);
       const phase = (i * 0.618) % 1;
       const mainEv = loops[i % loops.length];
@@ -159,6 +191,7 @@ export class Crowd {
         speed: 0.9 + ((i * 0.29) % 1) * 0.2,
         beat: (i % 3) / 3,
         slot: { angle: 0, x: 0, z: 0, row: 0 },
+        lean,
       });
     });
     this.members = members;
@@ -199,7 +232,23 @@ export class Crowd {
     for (let i = 0; i < N; i++) if (Math.random() < 0.5 + 0.5 * strength) this.pending[i] = this.delay[i] * (0.8 + Math.random() * 0.4);
   }
 
+  /** The crowd goes "ooh" on a miss: every figure leans back and ducks a little, in place, then settles. */
+  recoil(strength = 1): void {
+    this.recoilK = Math.min(1, Math.max(this.recoilK * this.recoilCurve(), strength));
+    this.recoilT = 0;
+  }
+
+  /** 0 to 1 over 120 ms, then eases back over 480 ms. */
+  private recoilCurve(): number {
+    const t = this.recoilT;
+    if (t >= 0.6) return 0;
+    if (t < 0.12) return t / 0.12;
+    const k = 1 - (t - 0.12) / 0.48;
+    return k * k * (3 - 2 * k);
+  }
+
   update(dt: number, beatPos: number, energy: number, strength: number): void {
+    this.recoilT += dt;
     if (this.members.length) this.updateRigs(dt, beatPos, energy, strength);
     else this.updateCapsules(dt, beatPos, energy, strength);
   }
@@ -224,6 +273,10 @@ export class Crowd {
       mb.mixer.update(dt);
       const ph = beatPos + mb.beat;
       mb.root.position.y = Math.abs(Math.sin(Math.PI * ph)) * (0.02 + 0.05 * energy) * strength;
+      // The recoil: lean back (away from the ring) and duck, staggered a little per member.
+      const rc = this.recoilK * this.recoilCurve() * (0.7 + 0.3 * mb.speed);
+      mb.lean.rotation.x = -0.22 * rc;
+      mb.lean.position.y = -0.05 * rc;
       if (ghost) {
         this.p.set(mb.slot.x + 0.35 * this.ghost, mb.root.position.y, mb.slot.z);
         this.q.setFromAxisAngle(THREE.Object3D.DEFAULT_UP, mb.slot.angle + Math.PI);
@@ -279,7 +332,7 @@ export class Crowd {
       const ph = beatPos + this.phase[i] / 3;
       const bounce = Math.abs(Math.sin(Math.PI * ph)) * (0.06 + 0.16 * energy) * strength;
       const a = this.angle[i];
-      const r = R + (i % 2) * 0.9;
+      const r = R + (i % 2) * 0.9 + 0.25 * this.recoilK * this.recoilCurve();
       this.p.set(Math.sin(a) * r, bounce + this.jumpY[i], Math.cos(a) * r);
       this.q.setFromAxisAngle(THREE.Object3D.DEFAULT_UP, a + Math.PI + Math.sin(ph * Math.PI) * 0.15);
       const sq = 1 - bounce * 0.4;

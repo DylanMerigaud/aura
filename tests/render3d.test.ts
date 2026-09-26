@@ -1,9 +1,10 @@
-// Pure parts of the 3D director: the shot picker never repeats a shot family, every shot moves on its own
-// clock without a jump, the drop ramp and punch zoom curves.
+// Pure parts of the 3D director: the shot picker never repeats a shot family and frames the performer of
+// the turn, every shot moves on its own clock without a jump, the portrait framing bands, the drop ramp and
+// punch zoom curves.
 import { describe, expect, it } from "vitest";
-import { FAMILY, LAYOUT, MOVE_S, PORTRAIT, isOts, pickShot, portraitFov, project, punchZoom, rampScale, shotPose, turnShot, type ShotKind, type V3 } from "../src/render3d/director";
+import { FAMILY, LAYOUT, SUBJECT, MOVE_S, PORTRAIT, isOts, pickShot, portraitFov, project, punchZoom, rampScale, shotPose, turnShot, type ShotKind, type V3 } from "../src/render3d/director";
 
-const KINDS: ShotKind[] = ["ots", "otsWide", "enemyClose", "heroLow", "topDown", "dollyEnemy", "hands"];
+const KINDS: ShotKind[] = ["heroFront", "heroSide", "heroLow", "hands", "enemyClose", "dollyEnemy", "twoShot", "topDown", "ots", "otsWide"];
 
 function lcg(seed: number) {
   let s = seed;
@@ -11,38 +12,39 @@ function lcg(seed: number) {
 }
 
 describe("pickShot", () => {
-  it("never picks two shots of the same family in a row, drops and taunts included", () => {
+  it("never picks two shots of the same family in a row, drops, taunts and both turns included", () => {
     const rnd = lcg(7);
-    let prev: ShotKind = "ots";
+    let prev: ShotKind = "twoShot";
     for (let i = 0; i < 5000; i++) {
       const r = rnd();
-      const next = pickShot(prev, rnd, { drop: r < 0.05, taunt: r > 0.95 });
+      const next = pickShot(prev, rnd, { drop: r < 0.05, taunt: r > 0.95, who: i % 400 < 200 ? "player" : "opponent" });
       expect(FAMILY[next]).not.toBe(FAMILY[prev]);
       prev = next;
     }
   });
 
-  it("never follows an over the shoulder shot with the other one (two behind shots read as one)", () => {
-    for (const prev of ["ots", "otsWide"] as ShotKind[]) for (let i = 0; i < 200; i++) expect(isOts(pickShot(prev, Math.random))).toBe(false);
-  });
-
-  it("keeps the over the shoulder family the base shot, just under half the cuts", () => {
-    const rnd = lcg(3);
-    let prev: ShotKind = "ots";
-    let ots = 0;
-    const n = 10000;
-    for (let i = 0; i < n; i++) {
-      prev = pickShot(prev, rnd);
-      if (isOts(prev)) ots++;
+  it("frames the performer of the turn by default, the behind the shoulder shot stays rare", () => {
+    for (const who of ["player", "opponent"] as const) {
+      const rnd = lcg(3);
+      let prev: ShotKind = "twoShot";
+      let performer = 0;
+      let behind = 0;
+      const n = 10000;
+      for (let i = 0; i < n; i++) {
+        prev = pickShot(prev, rnd, { who });
+        if (SUBJECT[prev] === (who === "player" ? "player" : "enemy") && !isOts(prev)) performer++;
+        if (isOts(prev)) behind++;
+      }
+      expect(performer / n).toBeGreaterThan(0.75);
+      expect(behind / n).toBeLessThan(who === "player" ? 0.1 : 1e-9);
     }
-    expect(ots / n).toBeGreaterThan(0.4);
-    expect(ots / n).toBeLessThanOrEqual(0.5);
   });
 
-  it("goes top down on a drop and dollies on a taunt", () => {
-    expect(pickShot("ots", Math.random, { drop: true })).toBe("topDown");
-    expect(pickShot("topDown", Math.random, { drop: true })).not.toBe("topDown");
-    expect(pickShot("ots", Math.random, { taunt: true })).toBe("dollyEnemy");
+  it("goes to the two shot on a drop (the top shot when it is already on) and to the enemy on a taunt", () => {
+    expect(pickShot("heroFront", Math.random, { drop: true })).toBe("twoShot");
+    expect(pickShot("twoShot", Math.random, { drop: true })).toBe("topDown");
+    expect(SUBJECT[pickShot("heroFront", Math.random, { taunt: true })]).toBe("enemy");
+    expect(pickShot("enemyClose", Math.random, { taunt: true })).toBe("dollyEnemy");
   });
 });
 
@@ -104,8 +106,8 @@ describe("shotPose", () => {
 
   it("writes into the pose it is given (no allocation in the frame loop)", () => {
     const out = { pos: [0, 0, 0] as [number, number, number], target: [0, 0, 0] as [number, number, number], fov: 0 };
-    expect(shotPose("ots", 1, 0.5, 16 / 9, out)).toBe(out);
-    expect(out.fov).toBe(48);
+    expect(shotPose("heroFront", 1, 0.5, 16 / 9, out)).toBe(out);
+    expect(out.fov).toBe(46);
   });
 });
 
@@ -115,7 +117,7 @@ describe("portrait framing (9:16)", () => {
   const enemyHead: V3 = [ex, 1.65, ez];
   const enemyFeet: V3 = [ex, 0, ez];
   const playerHead: V3 = [px, 1.65, pz];
-  const playerShoulder: V3 = [px + 0.2, 1.45, pz];
+  const playerFeet: V3 = [px, 0, pz];
   const playerHands: V3 = [px, 1.0, pz];
   const PHONES = [0.46, 9 / 16, 0.75];
   const each = (k: ShotKind, fn: (at: (pt: V3) => [number, number, number]) => void) => {
@@ -132,49 +134,84 @@ describe("portrait framing (9:16)", () => {
     expect(y).toBeGreaterThan(PORTRAIT.hudBand);
     expect(y).toBeLessThan(PORTRAIT.faceMax);
   };
+  /** The whole body readable: the face between the HUD and the middle, the feet on screen above the tap pad, a big figure. */
+  const wholeBody = (head: [number, number, number], feet: [number, number, number]) => {
+    faceBand(head);
+    expect(feet[2]).toBeGreaterThan(0);
+    expect(feet[0]).toBeGreaterThan(0.1);
+    expect(feet[0]).toBeLessThan(0.9);
+    expect(feet[1]).toBeLessThan(PORTRAIT.padTop);
+    expect(feet[1] - head[1]).toBeGreaterThan(0.28);
+  };
 
-  it("behind shots: the enemy high (face out of the HUD band), standing on the ring near 60 percent, our shoulder bottom left", () => {
+  it("the player's turn shots show the whole player, feet and face, from the front half", () => {
+    for (const k of ["heroFront", "heroSide", "heroLow"] as ShotKind[]) {
+      expect(SUBJECT[k]).toBe("player");
+      each(k, (at) => wholeBody(at(playerHead), at(playerFeet)));
+      // The lens sits in front of him or on his side (he faces -z): never behind his back.
+      for (let t = 0; t <= MOVE_S; t += 1) expect(shotPose(k, t, 0, 9 / 16).pos[2]).toBeLessThan(pz + 0.5);
+    }
+  });
+
+  it("the opponent's turn shots show the whole opponent, feet and face, from his front half", () => {
+    for (const k of ["enemyClose", "dollyEnemy"] as ShotKind[]) {
+      expect(SUBJECT[k]).toBe("enemy");
+      each(k, (at) => wholeBody(at(enemyHead), at(enemyFeet)));
+      for (let t = 0; t <= MOVE_S; t += 1) expect(shotPose(k, t, 0, 9 / 16).pos[2]).toBeGreaterThan(ez - 0.5);
+    }
+  });
+
+  it("the two shot has both fighters on screen, side by side across the pool, faces out of the HUD", () => {
+    each("twoShot", (at) => {
+      const [phx, phy] = at(playerHead);
+      const [ehx, ehy] = at(enemyHead);
+      for (const [x, y] of [[phx, phy], [ehx, ehy]]) {
+        expect(x).toBeGreaterThan(0.08);
+        expect(x).toBeLessThan(0.92);
+        expect(y).toBeGreaterThan(PORTRAIT.hudBand);
+        expect(y).toBeLessThan(PORTRAIT.faceMax);
+      }
+      // Seen from the side: one on the left, one on the right, clearly apart.
+      expect(Math.abs(phx - ehx)).toBeGreaterThan(0.35);
+      expect(at(playerFeet)[1]).toBeLessThan(PORTRAIT.padTop);
+      expect(at(enemyFeet)[1]).toBeLessThan(PORTRAIT.padTop);
+    });
+  });
+
+  it("the hands shot keeps our face out of the HUD band and the hands above the tap pad", () => {
+    each("hands", (at) => {
+      faceBand(at(playerHead));
+      const [, y] = at(playerHands);
+      expect(y).toBeGreaterThan(0.3);
+      expect(y).toBeLessThan(PORTRAIT.padTop);
+    });
+  });
+
+  it("the rare behind shots: the enemy high (face out of the HUD band) and a readable size", () => {
     for (const k of ["ots", "otsWide"] as ShotKind[])
       each(k, (at) => {
         faceBand(at(enemyHead));
         const feet = at(enemyFeet)[1];
-        expect(feet).toBeGreaterThan(0.5);
-        expect(feet).toBeLessThan(0.66);
-        const [sx, sy] = at(playerShoulder);
-        expect(sx).toBeGreaterThan(0.1);
-        expect(sx).toBeLessThan(0.5);
-        expect(sy).toBeGreaterThan(0.55);
-        // The enemy stays a readable size: at least 15 percent of the screen height.
+        expect(feet).toBeLessThan(PORTRAIT.padTop);
         expect(feet - at(enemyHead)[1]).toBeGreaterThan(0.15);
       });
-  });
-
-  it("enemy shots keep the enemy face between the HUD band and the touch zone", () => {
-    for (const k of ["enemyClose", "dollyEnemy"] as ShotKind[]) each(k, (at) => faceBand(at(enemyHead)));
-  });
-
-  it("the hero low and the hands shots keep our face out of the HUD band and above the touch zone", () => {
-    each("heroLow", (at) => faceBand(at(playerHead)));
-    each("hands", (at) => {
-      faceBand(at(playerHead));
-      const [, y] = at(playerHands);
-      expect(y).toBeGreaterThan(0.35);
-      expect(y).toBeLessThan(PORTRAIT.touchTop);
-    });
   });
 
   it("the top shot keeps both fighters on screen, the enemy out of the HUD band", () => {
     each("topDown", (at) => {
       expect(at(enemyHead)[1]).toBeGreaterThan(PORTRAIT.hudBand);
-      expect(at(enemyFeet)[1]).toBeLessThan(PORTRAIT.touchTop);
+      expect(at(enemyFeet)[1]).toBeLessThan(PORTRAIT.padTop);
       expect(at([px, 0, pz])[1]).toBeLessThan(0.8);
     });
   });
 
-  it("landscape framing is untouched by the portrait pass", () => {
-    const p = shotPose("ots", 0, 0, 16 / 9);
-    expect(p.fov).toBe(48);
-    expect(p.pos[2]).toBeCloseTo(pz + 1.9);
+  it("landscape keeps the 9:16 vertical field (same framing height, a wider view)", () => {
+    for (const k of KINDS) {
+      const land = shotPose(k, 1, 0, 16 / 9);
+      const port = shotPose(k, 1, 0, 9 / 16);
+      expect(land.fov).toBeCloseTo(port.fov);
+      expect(land.pos).toEqual(port.pos);
+    }
   });
 });
 
@@ -193,12 +230,17 @@ describe("portraitFov", () => {
 });
 
 describe("turnShot", () => {
-  it("cuts to the enemy on his turn and back behind the hero on yours, staying when already there", () => {
-    expect(turnShot("opponent", "ots")).toBe("dollyEnemy");
-    expect(turnShot("opponent", "enemyClose")).toBe("enemyClose");
-    expect(FAMILY[turnShot("opponent", "topDown")]).toBe("enemy");
-    expect(turnShot("player", "dollyEnemy")).toBe("ots");
-    expect(turnShot("player", "otsWide")).toBe("otsWide");
-    expect(isOts(turnShot("player", "heroLow"))).toBe(true);
+  it("cuts to the performer of the new turn from the front half, never the same family twice", () => {
+    expect(turnShot("opponent", "heroFront")).toBe("enemyClose");
+    expect(turnShot("opponent", "enemyClose")).toBe("dollyEnemy");
+    expect(turnShot("player", "enemyClose")).toBe("heroFront");
+    expect(turnShot("player", "twoShot")).toBe("heroFront");
+    expect(turnShot("player", "heroFront")).toBe("heroSide");
+    for (const prev of KINDS) {
+      expect(SUBJECT[turnShot("player", prev)]).toBe("player");
+      expect(SUBJECT[turnShot("opponent", prev)]).toBe("enemy");
+      expect(FAMILY[turnShot("player", prev)]).not.toBe(FAMILY[prev]);
+      expect(FAMILY[turnShot("opponent", prev)]).not.toBe(FAMILY[prev]);
+    }
   });
 });

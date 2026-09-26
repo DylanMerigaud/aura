@@ -85,6 +85,16 @@ describe("crowdSlots", () => {
     }
   });
 
+  it("never stands within 2 m of the lens of any shot (the performer shots and the two shot included)", () => {
+    const kinds = ["heroFront", "heroSide", "heroLow", "hands", "enemyClose", "dollyEnemy", "twoShot", "topDown", "ots", "otsWide"] as const;
+    for (const n of [8, 12, 16])
+      for (const kind of kinds)
+        for (let t = 0; t <= MOVE_S; t += 0.5) {
+          const pose = shotPose(kind, t, 0, 9 / 16);
+          for (const s of crowdSlots(n)) expect(Math.hypot(pose.pos[0] - s.x, pose.pos[2] - s.z)).toBeGreaterThan(2);
+        }
+  });
+
   it("keeps every slot outside the ring and off the camera side", () => {
     for (const s of crowdSlots(16)) {
       expect(Math.hypot(s.x, s.z)).toBeGreaterThan(6.5);
