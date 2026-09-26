@@ -186,6 +186,11 @@ function run(pair: (typeof pairs)[number]): void {
     e.update(DT, 0, 0.5);
     const pp = new Probe(p.root, "player");
     const pe = new Probe(e.root, "enemy");
+    // The body group carries the knockback: it eases in, never a one frame jump (freeze item 3).
+    let bodyStep = 0;
+    let bodyTilt = 0;
+    let prevZ = e.body.position.z;
+    let prevX = e.body.rotation.x;
     battle(p, e, (s, phase, scale = 1) => {
       for (let n = Math.round(s / DT); n > 0; n--) {
         t += DT;
@@ -193,6 +198,10 @@ function run(pair: (typeof pairs)[number]): void {
         e.update(DT * scale, (t / SPB) % 1, 0.5);
         pp.sample(phase, t);
         pe.sample(phase, t);
+        bodyStep = Math.max(bodyStep, Math.abs(e.body.position.z - prevZ));
+        bodyTilt = Math.max(bodyTilt, THREE.MathUtils.radToDeg(Math.abs(e.body.rotation.x - prevX)));
+        prevZ = e.body.position.z;
+        prevX = e.body.rotation.x;
       }
     });
     const worst = pp.max >= pe.max ? pp : pe;
@@ -200,5 +209,7 @@ function run(pair: (typeof pairs)[number]): void {
     expect(clips.size).toBeGreaterThan(10);
     expect(pp.max, pp.where).toBeLessThanOrEqual(MAX_DEG);
     expect(pe.max, pe.where).toBeLessThanOrEqual(MAX_DEG);
+    expect(bodyStep, "knockback push per frame (m)").toBeLessThanOrEqual(0.1);
+    expect(bodyTilt, "knockback tilt per frame (deg)").toBeLessThanOrEqual(3);
   }
 }

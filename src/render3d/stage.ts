@@ -358,8 +358,8 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
       vPos.lerp(vHands, 0.28 * charge);
       vTgt.lerp(vHands, 0.35 * charge);
     }
-    // Cringe: the camera drops.
-    const cr = cringeT < 0.6 ? 1 - cringeT / 0.6 : 0;
+    // Cringe: the camera sinks and comes back up (a smooth arc over 0.6 s, never a one frame drop).
+    const cr = cringeT < 0.6 ? Math.sin((Math.PI * cringeT) / 0.6) : 0;
     vPos.y -= 0.18 * cr;
     // Shake: trauma squared, handheld noise in phase 2.
     const hand = f?.phase2 ? 0.25 : 0;
@@ -583,6 +583,11 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
           player?.bump();
           break;
         case "release":
+          // A failed drop is a failed note: the failure reaction, no burst.
+          if (e.grade === "miss") {
+            fail();
+            break;
+          }
           playP("release");
           playE("enemy_big_hit");
           enemy?.knockback(1.3);

@@ -356,6 +356,8 @@ const tmp2 = new THREE.Vector3();
  */
 export const FADE_IN_S = 0.18;
 export const FADE_BACK_S = 0.3;
+/** A knockback reaches its full push over this long (cross fades only, freeze item 3). */
+export const KNOCK_IN_S = 0.15;
 /** Head and spine only gestures play additive over the idle (docs/anim-poses.md, "Play as"). */
 const ADDITIVE_GESTURES = new Set(["sigmaStare", "chinUpTaunt", "lookBack", "cookedCollapse"]);
 /** Most of the pose the layers above the idle may take: the weights divide by what is left to the idle. */
@@ -411,6 +413,8 @@ export class Fighter {
   private feet: THREE.Object3D[] = [];
   private squash = 0;
   private knock = 0;
+  /** Knockback still to come in: it eases in over KNOCK_IN_S, never a one frame jump. */
+  private knockGoal = 0;
   private frozen = false;
   private height = 1.8;
   private gest: Layer | null = null;
@@ -649,7 +653,7 @@ export class Fighter {
   }
 
   knockback(amount: number): void {
-    this.knock = Math.max(this.knock, amount);
+    this.knockGoal = Math.max(this.knockGoal, this.knock, amount);
     this.squash = Math.max(this.squash, 0.6);
   }
 
@@ -663,7 +667,10 @@ export class Fighter {
     this.startIdle();
     this.animate(dt);
     this.squash = Math.max(0, this.squash - dt * 4);
-    this.knock = Math.max(0, this.knock - dt * 3);
+    if (this.knockGoal > this.knock) {
+      this.knock = Math.min(this.knockGoal, this.knock + (dt * this.knockGoal) / KNOCK_IN_S);
+      if (this.knock >= this.knockGoal) this.knockGoal = 0;
+    } else this.knock = Math.max(0, this.knock - dt * 3);
     // No squash and no beat bob (Dylan, 16:00): the bodies never change size, the beat lives in the light,
     // the crowd and the ring. `beatPhase` and `energy` stay in the signature for the callers.
     void beatPhase;

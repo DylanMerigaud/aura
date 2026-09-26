@@ -1,3 +1,9 @@
+16:51 CEST, GAME lane, freeze item 3: ANIMATION, nothing snaps
+GREEN: the knockback eases in over 150 ms (it was a one frame push of up to 0.8 m and 19 degrees), the cringe camera dip is a smooth arc, a missed 67 drop plays the failure reaction instead of the release; already true: no beat squash, clip fades 180 ms in and 300 ms back, the idle always under; the 40 degree door (tests/fluidity.test.ts) now also bounds the body push per frame; tests green
+RED: nothing seen on a phone for this push yet
+PLAY: https://dylanmerigaud.github.io/aura/
+NEED FROM DYLAN: land a few hits and miss one: his knockback slides, your miss shows the cringe
+
 16:49 CEST, GAME lane, freeze item 2: THE FLOOR
 GREEN: item 1 checked against the deployed code (no loading screen, v1 cyan arrows for swipes only, round tap note, 67 pad and meter with no arrows, hold ring with a press icon, one prompt at a time, judgments 20 px above the ring); floor now near black (#0e0d0c, was the beige #3a3632), the warm pool fades to black exactly at the ring, the spot cone ends on the ring; no lane line is drawn at all; tests green
 RED: nothing seen on a phone for this push yet
