@@ -6,7 +6,6 @@ import { describe, expect, it, vi } from "vitest";
 vi.mock("../src/v2/net/live", () => ({ fetchRoast: () => Promise.resolve(null), speakLive: () => Promise.resolve(false) }));
 
 import { buildGate } from "../src/v2/ui/gate";
-import { buildLoading } from "../src/v2/ui/loading";
 import { buildResults } from "../src/v2/ui/results";
 import type { LevelV2, Stats } from "../src/v2/contracts";
 
@@ -34,12 +33,29 @@ describe("title scene", () => {
   });
 });
 
-describe("loading", () => {
-  it("paints the fraction", () => {
-    const l = buildLoading();
-    l.set(0.5);
-    expect(l.root.textContent).toContain("50%");
-    expect((l.root.querySelector(".loading-fill") as HTMLElement).style.transform).toBe("scaleX(0.5)");
+describe("title layout", () => {
+  it("logo, the fighters' band, TAP TO PLAY, then LOADOUT and SETTINGS side by side; SETTINGS never starts", () => {
+    const start = vi.fn();
+    const settings = vi.fn();
+    const g = buildGate(start, { loadout: vi.fn(), settings });
+    document.body.appendChild(g.root);
+    const order = Array.from(g.root.children).map((c) => c.className);
+    expect(order.indexOf("logo gate-logo")).toBeLessThan(order.indexOf("gate-space"));
+    expect(order.indexOf("gate-space")).toBeLessThan(order.indexOf("gate-prompt"));
+    expect(order.indexOf("gate-prompt")).toBeLessThan(order.indexOf("gate-row"));
+    const row = g.root.querySelector(".gate-row")!;
+    expect(Array.from(row.children).map((b) => b.textContent)).toEqual(["LOADOUT", "SETTINGS"]);
+    expect(g.root.querySelector(".corner-btn")).toBeNull();
+    const btn = row.querySelector(".gate-settings") as HTMLButtonElement;
+    btn.dispatchEvent(new Event("pointerdown", { bubbles: true }));
+    btn.dispatchEvent(new Event("pointerup", { bubbles: true }));
+    btn.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    expect(settings).toHaveBeenCalledTimes(1);
+    expect(start).not.toHaveBeenCalled();
+    g.waiting(true);
+    expect(g.root.querySelector(".gate-prompt")!.textContent).toBe("GETTING READY");
+    g.show();
+    expect(g.root.querySelector(".gate-prompt")!.textContent).toBe("TAP TO PLAY");
   });
 });
 

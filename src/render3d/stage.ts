@@ -446,6 +446,15 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
   }
 
   let castTry: Promise<CastSource> | null = null;
+  /** 0..1 grow in of freshly placed fighters (no loading screen: they pop into the idling arena). */
+  let popT = 1;
+  function popIn(dt: number) {
+    if (popT >= 1) return;
+    popT = Math.min(1, popT + dt / 0.35);
+    const k = 1 - (1 - popT) ** 3;
+    player?.root.scale.setScalar(Math.max(0.01, k));
+    enemy?.root.scale.setScalar(Math.max(0.01, k));
+  }
 
   const stage: Stage = {
     async load(lv: LevelV2) {
@@ -488,6 +497,8 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
       player.root.rotation.y = Math.PI;
       enemy.root.position.set(...LAYOUT.enemy);
       scene.add(player.root, enemy.root);
+      popT = 0;
+      popIn(0);
       plates.enemyHandle = lv.opponent.handle ?? "@" + lv.opponent.name.toLowerCase().replace(/\W+/g, "_");
       plates.enemyRank = lv.opponent.rank ?? "Sigma";
       plates.playerHandle = getLoadout().handle ?? DEFAULT_HANDLE;
@@ -681,6 +692,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
       }
       if (!f.holding && holdFreezeIn < 0) player?.freeze(false);
 
+      popIn(realDt);
       player?.update(vdt, f.beatPhase, f.energy);
       enemy?.update(vdt, f.beatPhase, f.energy);
       crowd.update(vdt, f.beatPos, f.energy, ending ? 0.6 : 1);
@@ -719,6 +731,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
       measure(dt, false);
       idleAngle += dt * 0.12;
       const beatPos = time * 2;
+      popIn(dt);
       player?.update(dt, beatPos % 1, 0.5);
       enemy?.update(dt, beatPos % 1, 0.5);
       crowd.update(dt, beatPos, 0.4, 0.6);

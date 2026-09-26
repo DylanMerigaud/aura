@@ -1,11 +1,14 @@
 // TITLE SCENE (addendum 15:20): the loaded 3D stage idles behind a see through overlay, the big AURA
 // logo and a pulsing TAP line (addendum 16:15: white condensed letters, dark outline, one accent). The
 // scene itself is the tap to start: the first tap anywhere (pointer down, click or any key) unlocks audio
-// AND starts the current opponent's battle, one input from the title to playing. The small LOADOUT
-// (and SETTINGS) corner buttons own their hit areas: nothing they receive reaches the start tap.
+// AND starts the current opponent's battle, one input from the title to playing.
+// Layout (addendum 17:35), top to bottom: the AURA logo, a clear band where the fighters stand in the
+// scene, the big TAP TO PLAY, then LOADOUT and SETTINGS as two small buttons side by side in the thumb
+// zone. Each button owns its hit area: nothing it receives reaches the start tap.
+// No loading screen (addendum 17:40): this is the first screen; waiting(true) turns the prompt into a
+// short GETTING READY pulse while app.ts gives the rigs at most a second after the tap.
 //
-// Audio unlock: the AudioContext already exists (created suspended during loading so the music
-// decodes ahead). resume() runs on the tap's pointerdown and again on its pointerup, since iOS only
+// Audio unlock: initAudio creates the context on the tap if nothing did before. resume() runs on the tap's pointerdown and again on its pointerup, since iOS only
 // counts the release as the gesture that may start audio (the v1 lesson; main.ts also wakes the
 // context on every pointerup). The battle schedules on the audio clock, so a context that resumes a
 // few ms later still counts in cleanly.
@@ -36,9 +39,19 @@ export interface GateCorners {
 export function buildGate(onStart: () => void, corners: GateCorners) {
   const root = el("section", "screen gate");
   root.appendChild(el("h1", "logo gate-logo", "AURA"));
-  root.appendChild(el("p", "gate-prompt", "TAP TO PLAY"));
-  const touch = typeof matchMedia === "function" && matchMedia("(pointer: coarse)").matches;
+  // The fighters stand in the 3D scene behind this band: nothing is drawn over them.
+  root.appendChild(el("div", "gate-space"));
+  const prompt = el("p", "gate-prompt", "TAP TO PLAY");
+  root.appendChild(prompt);
+  let touch = false;
+  try {
+    touch = typeof matchMedia === "function" && matchMedia("(pointer: coarse)").matches;
+  } catch {
+    /* no media queries: the desktop hint */
+  }
   root.appendChild(el("p", "gate-hint", touch ? "you have zero aura. fix that." : "click or any key"));
+  const row = el("div", "gate-row");
+  root.appendChild(row);
 
   let fire = once(() => {});
   let armedAt = 0;
@@ -50,9 +63,9 @@ export function buildGate(onStart: () => void, corners: GateCorners) {
     });
   }
 
-  // A corner button owns its hit area: nothing it receives reaches the start tap.
+  // A title button owns its hit area: nothing it receives reaches the start tap.
   function corner(cls: string, label: string, act: () => void) {
-    const b = el("button", "corner-btn " + cls, label);
+    const b = el("button", "gate-btn " + cls, label);
     b.type = "button";
     const stop = (e: Event) => e.stopPropagation();
     b.addEventListener("pointerdown", stop);
@@ -65,7 +78,7 @@ export function buildGate(onStart: () => void, corners: GateCorners) {
       unlockAudio();
       act();
     });
-    root.appendChild(b);
+    row.appendChild(b);
     return b;
   }
   corner("gate-loadout", "LOADOUT", () => corners.loadout());
@@ -89,6 +102,12 @@ export function buildGate(onStart: () => void, corners: GateCorners) {
     fire();
   }
 
+  /** The GETTING READY pulse on the prompt while the tap waits (a second at most) for the fighters. */
+  function waiting(on: boolean) {
+    prompt.textContent = on ? "GETTING READY" : "TAP TO PLAY";
+    prompt.classList.toggle("waiting", on);
+  }
+
   arm();
   return {
     root,
@@ -96,6 +115,8 @@ export function buildGate(onStart: () => void, corners: GateCorners) {
     /** Re-arm the one tap each time the title scene is shown again. */
     show() {
       arm();
+      waiting(false);
     },
+    waiting,
   };
 }

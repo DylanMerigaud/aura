@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
-// The app flow in a DOM with a fake game: the title tap starts ONE battle even when the same tap arrives
-// twice, the results card shows the Stats that game.play resolved with, a win moves the opponent on and
+// The app flow in a DOM with a fake game: the title is the first screen (no loading screen), a tap before
+// the rigs are in pulses GETTING READY for a second at most, the title tap starts ONE battle even when the
+// same tap arrives twice, the results card shows the Stats that game.play resolved with, a win moves the opponent on and
 // adds XP, a loss keeps the same opponent for RETRY.
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -36,14 +37,14 @@ const stats = (win: boolean, score: number): Stats => ({
 });
 const flush = () => new Promise((r) => setTimeout(r, 0));
 
-function setup() {
+function setup(load: () => Promise<void> = () => Promise.resolve()) {
   document.body.innerHTML = '<div id="ui"></div>';
   const resolvers: ((s: Stats) => void)[] = [];
   const play = vi.fn((_l: LevelV2, _w: number) => new Promise<Stats>((r) => resolvers.push(r)));
   const game = { play, quit: vi.fn(), input: vi.fn(), pause: vi.fn(), resume: vi.fn(), tick: vi.fn(), touchMode: () => "none", running: () => false } as unknown as GameApi;
-  const stage = { load: () => Promise.resolve() } as unknown as Stage;
+  const stage = { load: vi.fn(load) } as unknown as Stage;
   startApp({ game, stage, levels: LEVELS, base: "", debug: false, canvas: document.createElement("canvas") });
-  return { play, resolvers };
+  return { play, resolvers, stage };
 }
 const q = (s: string) => document.querySelector(s) as HTMLElement;
 
@@ -54,7 +55,28 @@ describe("app flow", () => {
     packs.close.length = 0;
   });
 
-  it("loading, title, one battle per tap, the card shows the resolved stats, a win moves on", async () => {
+  it("the title shows at once, the rigs start loading, a tap before they land waits a second at most", async () => {
+    vi.useFakeTimers();
+    try {
+      const { play, stage } = setup(() => new Promise<void>(() => {}));
+      expect(q(".gate").classList.contains("active")).toBe(true);
+      expect(document.querySelector(".loading")).toBeNull();
+      expect(stage.load).toHaveBeenCalledTimes(1);
+      q(".gate").dispatchEvent(new Event("pointerdown", { bubbles: true }));
+      q(".gate").dispatchEvent(new MouseEvent("click", { bubbles: true }));
+      await vi.advanceTimersByTimeAsync(10);
+      expect(q(".gate-prompt").textContent).toBe("GETTING READY");
+      expect(play).not.toHaveBeenCalled();
+      await vi.advanceTimersByTimeAsync(1000);
+      expect(play).toHaveBeenCalledTimes(1);
+      expect(q(".gate").classList.contains("active")).toBe(false);
+      expect(q(".gate-prompt").textContent).toBe("TAP TO PLAY");
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("title, one battle per tap, the card shows the resolved stats, a win moves on", async () => {
     const { play, resolvers } = setup();
     for (let i = 0; i < 5; i++) await flush();
     expect(q(".gate").classList.contains("active")).toBe(true);
