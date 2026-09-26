@@ -91,6 +91,14 @@ describe("hero level", () => {
     expect(hero.events.findIndex((e) => e.type === "combo")).toBeGreaterThan(4);
   });
 
+  it("says every taunt on his turns, for the 3 line cast and the 8 line cast", () => {
+    const his = (b: number) => hero.turns!.some((t) => t.who === "opponent" && b >= t.beat && b < t.beat + t.lengthBeats);
+    for (const t of hero.taunts) expect(his(t.beat)).toBe(true);
+    const eight = [17, 21, 41, 45, 57, 61, 81, 84];
+    for (const b of eight) expect(his(b)).toBe(true);
+    expect(pacingIssues({ ...hero, taunts: eight.map((beat) => ({ beat, text: "x" })) })).toEqual([]);
+  });
+
   it("gets denser toward the end (difficulty ramp)", () => {
     const inputs = (a: number, b: number) =>
       hero.events.filter((e) => e.beat >= a && e.beat < b).reduce((n, e) => n + (e.type === "combo" ? e.dirs.length : 1), 0);

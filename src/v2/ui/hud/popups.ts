@@ -5,6 +5,12 @@
 import type { CoreEvent, LevelV2 } from "../../contracts";
 import { el, replay } from "../dom";
 import { CRINGE_COLOR, GRADE_COLOR } from "./shared";
+import { announce, turnCall } from "../announce";
+
+/** The in battle level title card stays exactly this long. */
+export const TITLE_CARD_MS = 2000;
+/** The YOUR MOVE / HIS MOVE call stays this long. */
+export const TURN_CALL_MS = 700;
 
 const GRADE_POOL = 6;
 
@@ -49,6 +55,38 @@ export function buildPopups(base: string) {
 
   const titlePunch = el("div", "level-title-punch hidden");
   root.appendChild(titlePunch);
+  let titleTimer: ReturnType<typeof setTimeout> | null = null;
+
+  // The turn call, center top. Styled inline (no stylesheet rule shared with the prompt lane).
+  const turnCallNode = el("div", "turn-call hidden");
+  Object.assign(turnCallNode.style, {
+    position: "absolute", left: "50%", top: "13%", transform: "translate(-50%, -50%)", whiteSpace: "nowrap",
+    fontSize: "clamp(40px, 13vw, 88px)", fontWeight: "900", letterSpacing: "0.02em", pointerEvents: "none",
+    webkitTextStroke: "3px #000", paintOrder: "stroke fill", textShadow: "3px 3px 0 #000",
+  } as Partial<CSSStyleDeclaration>);
+  root.appendChild(turnCallNode);
+  let turnTimer: ReturnType<typeof setTimeout> | null = null;
+
+  function showTurnCall(who: "player" | "opponent", level: LevelV2) {
+    const text = turnCall(who);
+    turnCallNode.textContent = text;
+    turnCallNode.style.color = who === "player" ? "#ffe600" : level.opponent.color || "#ff3df2";
+    turnCallNode.classList.remove("hidden");
+    if (typeof turnCallNode.animate === "function") {
+      turnCallNode.animate(
+        [
+          { transform: "translate(-50%, -50%) scale(1.8)", opacity: 0 },
+          { transform: "translate(-50%, -50%) scale(1)", opacity: 1, offset: 0.2 },
+          { transform: "translate(-50%, -50%) scale(1)", opacity: 1, offset: 0.8 },
+          { transform: "translate(-50%, -50%) scale(0.9)", opacity: 0 },
+        ],
+        { duration: TURN_CALL_MS, easing: "ease-out" },
+      );
+    }
+    if (turnTimer) clearTimeout(turnTimer);
+    turnTimer = setTimeout(() => turnCallNode.classList.add("hidden"), TURN_CALL_MS);
+    announce(text);
+  }
 
   function spawnGrade(text: string, color: string, big: boolean) {
     const n = gradePool[gradeIdx];
@@ -94,15 +132,22 @@ export function buildPopups(base: string) {
       countNum.textContent = e.n === 1 ? "FIGHT!" : String(e.n - 1);
       replay(countNum, "pop");
       if (e.n === 2) {
-        titlePunch.textContent = `${level.place.toUpperCase()}  VS  ${level.opponent.name.toUpperCase()}`;
+        titlePunch.textContent = `${level.title.toUpperCase()}  |  ${level.place.toUpperCase()}`;
         titlePunch.classList.remove("hidden");
         replay(titlePunch, "punch");
+        if (titleTimer) clearTimeout(titleTimer);
+        titleTimer = setTimeout(() => titlePunch.classList.add("hidden"), TITLE_CARD_MS);
       }
       if (e.n === 1) setTimeout(() => countIn.classList.add("hidden"), 700);
       return;
     }
+    if (e.kind === "turn") {
+      showTurnCall(e.who, level);
+      return;
+    }
     if (e.kind === "end") {
       titlePunch.classList.add("hidden");
+      turnCallNode.classList.add("hidden");
       tauntBar.classList.add("hidden");
       if (tauntTimer) clearTimeout(tauntTimer);
     }
@@ -111,6 +156,9 @@ export function buildPopups(base: string) {
   function reset() {
     countIn.classList.add("hidden");
     titlePunch.classList.add("hidden");
+    turnCallNode.classList.add("hidden");
+    if (titleTimer) clearTimeout(titleTimer);
+    if (turnTimer) clearTimeout(turnTimer);
     tauntBar.classList.add("hidden");
     if (tauntTimer) clearTimeout(tauntTimer);
   }

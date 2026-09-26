@@ -123,8 +123,8 @@ function hero(): LevelV2 {
   return {
     ...level,
     events: HERO_EVENTS,
-    // Taunts on his turns: he talks while he performs.
-    taunts: taunts(HERO_EVENTS, c.taunts, [18, 42, 82]),
+    // Taunts on his turns only, never over a player prompt: one per turn for a short cast, two per turn for 8 lines.
+    taunts: taunts(HERO_EVENTS, c.taunts, c.taunts.length <= 4 ? [17, 41, 57, 81] : [17, 21, 41, 45, 57, 61, 81, 84]),
     dropBeats: [4, 68],
     breakdownBeats: [[37, 44], [45, 52], [53, 60], [61, 68]],
     turns: HERO_TURNS,
