@@ -2,13 +2,13 @@
 
 How to use this file: copy everything between the two rules below into `README.md`, delete every `[TO VERIFY ...]` marker after checking it, and delete this header. A marker means the fact was not on disk, or was still moving, at 14:12 on 2026-09-26. Facts without a marker were read from the repo at that time. The checklist at the bottom repeats each marker with its check command. The current `README.md` (rewritten by the main session at 14:12, commit 055d7ba) describes the committed build: five levels, the neon look, the 2D game as the fallback at the root. This draft replaces it wholesale at 17:30, it does not patch it. Two things worth keeping from it are already folded in below: the Performance section and the Anton font credit.
 
-The decisions this draft follows: one playable battle at Chatelet (Paris) against His Holiness, an AURA WORLD TOUR map whose other stops are locked, a Fortnite-like look framed as a TikTok LIVE, an announcer with calls of 1 to 4 words, Brazilian funk montagem phonk from Lyria 3 Pro, voices chosen by a bake off, and a Cloudflare Worker written by Cognition's Devin. Since 14:35 (organizers to Dylan): the demo is on a phone, so the README is mobile first (portrait, touch, one hand) and leads with the three things the judges look for, easy onboarding, hard to master and stickiness, each with its proof. Most of those proofs were not on `origin/main` at 14:35: they carry a marker and a numbered row in the list at the bottom.
+The decisions this draft follows: one playable battle at Chatelet (Paris) against Mehdi Aura, an AURA WORLD TOUR map whose other stops are locked, a Fortnite-like look framed as a TikTok LIVE, an announcer with calls of 1 to 4 words, Brazilian funk montagem phonk from Lyria 3 Pro, voices chosen by a bake off, and a Cloudflare Worker written by Cognition's Devin. Since 14:35 (organizers to Dylan): the demo is on a phone, so the README is mobile first (portrait, touch, one hand) and leads with the three things the judges look for, easy onboarding, hard to master and stickiness, each with its proof. Most of those proofs were not on `origin/main` at 14:35: they carry a marker and a numbered row in the list at the bottom.
 
 ---
 
 # AURA
 
-A 3D aura battle in the browser, made for a phone (portrait, touch, one hand) and framed as a TikTok LIVE: you start with zero aura, every beat you land steals some from His Holiness, and the live crowd watches.
+A 3D aura battle in the browser, made for a phone (portrait, touch, one hand) and framed as a TikTok LIVE: you start with zero aura, every beat you land steals some from Mehdi Aura, and the live crowd watches.
 
 Built in one day at the {Tech: Europe} AI Gaming Hack, Paris, 2026-09-26, by team Itchy & Scratchy (Dylan Merigaud, Dorian Poupard). Partners: Google DeepMind, Gradium, Cognition and Voodoo.
 
@@ -57,7 +57,7 @@ The touch zones are in `src/v2/ui/touch.ts` and were read from it at 14:35.
 
 ## The game
 
-You are a nobody with zero aura, at Chatelet in Paris, at night, and across the ring stands His Holiness. The Pope is in Paris, that is the joke, and he is warm about it. A camera sits over your shoulder and a live comment feed scrolls past. Arrow prompts, a hold and a left and right mash arrive on the beat of a Brazilian funk track, and an announcer calls what you did in one to four words. Land them and the aura bar slides toward you, miss and it slides toward him. First side to push the bar to the edge wins, or whoever is ahead when the song ends. The fight lasts about 40 seconds. At the end Gemini writes a roast of how you played and Gradium speaks it. [TO VERIFY: the LIVE frame (badge, viewer count, comments, hearts), the over the shoulder camera and the short announcer calls are in the shipped build. At 14:12 the committed build still had the neon look and 8 to 12 word announcer lines]
+You are a nobody with zero aura, at Chatelet in Paris, at night, and across the ring stands Mehdi Aura, the local legend, with Paris street swagger and a touch of French in his taunts (wesh, frerot, c'est carre), warm and never mocking. A camera sits over your shoulder and a live comment feed scrolls past. Arrow prompts, a hold and a left and right mash arrive on the beat of a Brazilian funk track, and an announcer calls what you did in one to four words. Land them and the aura bar slides toward you, miss and it slides toward him. First side to push the bar to the edge wins, or whoever is ahead when the song ends. The fight lasts about 40 seconds. At the end Gemini writes a roast of how you played and Gradium speaks it. [TO VERIFY: the LIVE frame (badge, viewer count, comments, hearts), the over the shoulder camera and the short announcer calls are in the shipped build. At 14:12 the committed build still had the neon look and 8 to 12 word announcer lines]
 
 ## The world tour
 
@@ -65,11 +65,11 @@ One perfect battle, and a map that sells the rest. AURA WORLD TOUR is one screen
 
 | Stop | Place | Opponent | State |
 |---|---|---|---|
-| Chatelet (Paris) | Metro tiles, a curved tunnel and a platform, at night | His Holiness | playable |
+| Chatelet (Paris) | Metro tiles, a curved tunnel and a platform, at night | Mehdi Aura | playable |
+| Barbes (Paris) | A Paris neighbourhood, the second stop in the home city | not announced | locked |
 | Shibuya (Tokyo) | The crossing and its screens | not announced | locked |
 | Rooftop (Rio) | A hillside rooftop at night, the funk home | not announced | locked |
 | Pacu Jalur (Riau) | A racing boat on a river in Sumatra, the boss | not announced | locked |
-| Barbes (Paris) | [TO VERIFY: only if the map ships with it] | | locked |
 
 Tap a locked stop and you get the cancel blip, a SOON stamp and the silhouette shrugging. The stops are the roadmap: each one needs its own Lyria track, its own opponent, its own chart and its own place. The boss stop is where aura farming started: at the Pacu Jalur boat race in Riau, a child called the togak luan stands at the bow and keeps the rowers in time (sources in `docs/aura-farming-spec.md`, section 1). [TO VERIFY: the map lists these stops by these names, and the opponent column matches the build]
 
@@ -207,7 +207,7 @@ FPS: [F] on a laptop, [P] on a phone, measured with `?debug=1` (the counter show
 
 ## What is next
 
-The world tour is the roadmap. Each locked stop is a level waiting for its track, its opponent and its chart: Shibuya (Tokyo), the Rio rooftop, and Pacu Jalur (Riau) as the boss, with Barbes (Paris) as a maybe. After that:
+The world tour is the roadmap. Each locked stop is a level waiting for its track, its opponent and its chart: Barbes (Paris), Shibuya (Tokyo), the Rio rooftop, and Pacu Jalur (Riau) as the boss. After that:
 
 - Multiplayer, same room and same beat.
 - Loadouts: moves you unlock that change how you fight. [TO VERIFY: only say this if the LOADOUT screen ships, it was a read only preview of four cards at 14:12]

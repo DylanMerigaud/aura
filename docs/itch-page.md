@@ -81,18 +81,18 @@ Paste it into the rich text editor, in this order. The pitch is under 150 words 
 other blocks are reference material for whoever scrolls down. Headings use the "format" dropdown of
 the editor.
 
-Pitch (148 words, leads with the three things the judges look for):
+Pitch (146 words, leads with the three things the judges look for):
 
 ```
 Easy to learn. Hard to master. Made to replay. Built for your phone: portrait, touch, one hand.
 
-You have zero aura, and a TikTok LIVE crowd is watching you fix that. AURA is a 3D rhythm battle at Chatelet in Paris, against His Holiness, who is very calm about it.
+You have zero aura, and a TikTok LIVE crowd is watching you fix that. AURA is a 3D rhythm battle at Chatelet in Paris, against Mehdi Aura, the local legend.
 
 Easy to learn: no tutorial text, the first 20 seconds teach by doing.
 Hard to master: your Perfect window tightens as your combo climbs, and the better you play, the faster the song gets.
 Made to replay: one tap retries on the beat, and a share card sends your score to TikTok or WhatsApp.
 
-At the end Gemini writes a roast of how you played and Gradium reads it out. Shibuya, Rio and Pacu Jalur are locked.
+At the end Gemini writes a roast of how you played and Gradium reads it out. Barbes, Shibuya, Rio and Pacu Jalur are locked.
 
 Built in one day at the {Tech: Europe} AI Gaming Hack in Paris by Itchy & Scratchy. Play with sound on.
 ```
@@ -137,7 +137,7 @@ Source: https://github.com/DylanMerigaud/aura
 
 - **Cover image** (upload): 630 x 500 PNG, under 3 MB (the form asks for at least 315 x 250 and
   recommends 630 x 500). Content: an engine render of the fight, the player from behind on the left
-  and His Holiness across the ring at Chatelet, the Fortnite-like look (bright, saturated, clean),
+  and Mehdi Aura across the ring at Chatelet, the Fortnite-like look (bright, saturated, clean),
   the word AURA in the top third at 96 px or larger, nothing else. No tagline on the image, no
   dash characters, no partner logos, no browser chrome. Contrast check: AURA is readable on a
   100 px wide thumbnail. The subject stays centered so a square or a wide crop still reads.
@@ -146,8 +146,8 @@ Source: https://github.com/DylanMerigaud/aura
 - **Screenshots** ("Add screenshots", 3 to 5 uploaded in this order, from a phone in portrait, 1080 x 1920 or a 630 x 500 crop, the form asks for 3 to 5). The itch form has no caption field, so the captions below are the file
   names' meaning, the alt text in the README and the line to say if someone asks what a shot is.
   Each is a real frame from the shipped build, captured in engine, no mockups, no debug counter.
-  1. "Chatelet at night, His Holiness across the ring, the LIVE frame with viewers, comments and hearts." Capture: the fight at combo 25 or more, arrows on screen, the ring shrunk, the aura bar leaning to the player, the announcer's call on screen. Take it on a phone held upright, the game's real portrait frame.
-  2. "The drop. Slow motion ends, the 69 hits." Capture: the 69 release on the drop, flash and punch zoom in frame, the burst on its way to His Holiness.
+  1. "Chatelet at night, Mehdi Aura across the ring, the LIVE frame with viewers, comments and hearts." Capture: the fight at combo 25 or more, arrows on screen, the ring shrunk, the aura bar leaning to the player, the announcer's call on screen. Take it on a phone held upright, the game's real portrait frame.
+  2. "The drop. Slow motion ends, the 69 hits." Capture: the 69 release on the drop, flash and punch zoom in frame, the burst on its way to Mehdi Aura.
   3. "AURA WORLD TOUR: one stop open, the rest locked." Capture: the map with the figure on Chatelet, the padlocked stops under their label plates, no BPM anywhere.
   4. "The share card." Capture: the 1080 x 1920 card with the score, tier, combo, roast, the stop and the handle. Only if the share card shipped (TO VERIFY 16).
   5. "A pack opens." Capture: a rare or better card mid flip with its light rays. Only if Aura Packs shipped (TO VERIFY 16).
@@ -167,15 +167,15 @@ Source: https://github.com/DylanMerigaud/aura
 Each row is a sentence on this page that depends on something not on disk at 14:12, the check, and
 the replacement if the check fails. Delete a row when it is done.
 
-1. The look, the LIVE frame and one fight at Chatelet against His Holiness. At 14:12 the committed
+1. The look, the LIVE frame and one fight at Chatelet against Mehdi Aura. At 14:12 the committed
    build was still the neon look with five levels, a Notre-Dame stage and five opponents
    (`src/v2/cast.json`). Check: play the built page. If the LIVE frame is missing, replace "and a
    TikTok LIVE crowd is watching you fix that" with "and a crowd is watching you fix that", and drop
-   "the LIVE frame with viewers, comments and hearts" from screenshot 1. If Chatelet or His Holiness is
+   "the LIVE frame with viewers, comments and hearts" from screenshot 1. If Chatelet or Mehdi Aura is
    not the fight, rewrite the second paragraph of the pitch to what the build shows.
 2. The world tour map. Check: the map screen shows the open stop and the padlocked ones by name. The
-   pitch names Shibuya, Rio and Pacu Jalur. If Barbes (Paris) ships as a stop, add it, if a
-   named stop is absent, delete its name. If there is no map, delete the sentence "Shibuya, Rio and Pacu Jalur are locked." and
+   pitch names Barbes, Shibuya, Rio and Pacu Jalur. If a
+   named stop is absent, delete its name. If there is no map, delete the sentence "Barbes, Shibuya, Rio and Pacu Jalur are locked." and
    screenshot 3.
 3. The announcer. The pitch no longer says "an announcer calls every hit", but screenshot 1 shows the announcer's call on screen. Check by ear: short calls of one to four words on the hits, and the move names in the first 20 seconds.
 4. "The better you play, the faster the song gets". On disk in `src/v2/tempo.ts` (Perfect +0.6 percent, Great +0.3, miss -1.5, range 0.90 to 1.15, decay 1 percent a second) and applied to the music rate in `src/v2/game.ts`. The decay out-pays one Perfect a second, so the song only speeds up above about 1.7 Perfects a second. Check by ear on a run of Perfects in the shipped build. If it is inaudible, replace the clause with "miss and the song slows down".
@@ -198,7 +198,7 @@ the replacement if the check fails. Delete a row when it is done.
    Credits and Made with AI.
 8. Characters James and Abe. The build ships the picked characters only (`scripts/build.mjs` skips the
    crowd models), so Sophie is not credited. Check: `ls dist/models/characters`, and add or remove
-   names to match. Also `ls dist/models/fallback` for RobotExpressive, delete the line if it is absent.
+   names to match (Abe is an elder model made for the opponent who was cut, so Mehdi Aura may use another Mixamo character). Also `ls dist/models/fallback` for RobotExpressive, delete the line if it is absent.
    Mixamo redistribution: Adobe's FAQ says the raw files cannot be redistributed as standalone assets
    (https://helpx.adobe.com/creative-cloud/faq/mixamo-faq.html, read through a search summary because
    the page answered 403). No `.fbx` file may be in the public repo or in the zip.

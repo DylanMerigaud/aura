@@ -41,8 +41,10 @@ higher fail count there reflects retries working as designed, not a worse cast.
 Every opponent and announcer clears PUNCH, REFERENCES, CLEAN and FRENCH FLAVOR at 4 or 5 out of 5
 after regeneration. DISTINCT VOICE (names hidden, judged once across all five together): level 2
 Kevin from Marketing and level 3 Mehdi Aura and level 5 The Algorithm clear 4/5; level 1 DJ
-Montagem and level 4 His Holiness stay at 2/5 and 3/5 after two regeneration rounds each, they ship
-per the "never silence" rule and are flagged here rather than hidden. The variety gate passes:
+Montagem stays at 2/5 after two regeneration rounds, it ships per the "never silence" rule and is
+flagged here rather than hidden. The level 4 opponent (3/5) was cut from the build on 2026-09-26
+and no longer counts. Mehdi Aura is now the level 1 opponent at Chatelet, the only playable fight;
+his 4/5 was judged as level 3. The variety gate passes:
 level 4 originally reused "NPC" already used by level 2, fixed by hand after the automated
 regeneration rounds did not converge (see the `manual_patch` row on `l2-announcer` and the final
 `variety` row on `cast` in the ledger).
