@@ -1,0 +1,351 @@
+{
+  "rig": "mixamo",
+  "characters": [
+    {
+      "file": "characters/mannequin_player.glb",
+      "name": "Mannequin",
+      "role": "player",
+      "height_m": 1.77,
+      "source": "Mixamo (mannequin, with skin, FBX Binary, 512px textures)"
+    },
+    {
+      "file": "characters/ninja_enemy.glb",
+      "name": "Ninja",
+      "role": "enemy",
+      "height_m": 1.75,
+      "source": "Mixamo (ninja, with skin, FBX Binary, 512px textures)",
+      "preferred": true
+    },
+    {
+      "file": "characters/kaya_crowd.glb",
+      "name": "Kaya",
+      "role": "crowd",
+      "height_m": 2.01,
+      "source": "Mixamo (kaya, with skin, FBX Binary, 512px textures)"
+    },
+    {
+      "file": "characters/james_player_streetwear.glb",
+      "name": "James (streetwear)",
+      "role": "player",
+      "height_m": 1.83,
+      "source": "Mixamo (james, with skin, FBX Binary, 512px textures)",
+      "preferred": true
+    },
+    {
+      "file": "characters/abe_enemy_elder.glb",
+      "name": "Abe (elder, His Holiness)",
+      "role": "enemy",
+      "height_m": 1.78,
+      "source": "Mixamo (abe, with skin, FBX Binary, 512px textures)",
+      "preferred": false
+    },
+    {
+      "file": "characters/sophie_crowd_casual.glb",
+      "name": "Sophie (casual)",
+      "role": "crowd",
+      "height_m": 1.76,
+      "source": "Mixamo (sophie, with skin, FBX Binary, 512px textures)"
+    },
+    {
+      "file": "characters/sportygranny_crowd_older.glb",
+      "name": "Sporty Granny (older, visor, tracksuit)",
+      "role": "crowd",
+      "height_m": 1.95,
+      "source": "Mixamo (sportygranny, with skin, FBX Binary, 512px webp textures)"
+    },
+    {
+      "file": "characters/michelle_crowd_darker.glb",
+      "name": "Michelle (darker skin, afro puffs, streetwear)",
+      "role": "crowd",
+      "height_m": 1.66,
+      "source": "Mixamo (michelle, with skin, FBX Binary, 512px textures)"
+    },
+    {
+      "file": "characters/elizabeth_crowd_darker.glb",
+      "name": "Elizabeth (darker skin, striped sweater)",
+      "role": "crowd",
+      "height_m": 1.78,
+      "source": "Mixamo (elizabeth, with skin, FBX Binary, 512px textures)"
+    },
+    {
+      "file": "characters/adam_crowd_sporty.glb",
+      "name": "Adam (sporty tracksuit)",
+      "role": "crowd",
+      "height_m": 1.78,
+      "source": "Mixamo (adam, with skin, FBX Binary, 512px webp textures)"
+    },
+    {
+      "file": "characters/josh_crowd_jacket.glb",
+      "name": "Josh (casual jacket)",
+      "role": "crowd",
+      "height_m": 1.79,
+      "source": "Mixamo (josh, with skin, FBX Binary, 512px textures)"
+    }
+  ],
+  "clips": [
+    {
+      "file": "anims/pose_looking_around.glb",
+      "event": "hit_up",
+      "name": "Looking Around (Idle Stand)",
+      "loop": false,
+      "canon": "pose",
+      "source": "Mixamo: Looking Around (Idle Stand Looking Around), aura farming spec QTE1 (over-the-shoulder look back)"
+    },
+    {
+      "file": "anims/hit_up_hiphop_kickstep.glb",
+      "event": "hit_up",
+      "name": "Hip Hop Dancing (Kick Step)",
+      "loop": false,
+      "canon": "generic",
+      "source": "Mixamo: Hip Hop Dancing (Kick Step Range), alternate"
+    },
+    {
+      "file": "anims/boat_wave_hiphop.glb",
+      "event": "hit_right",
+      "name": "Wave Hip Hop Dance",
+      "loop": false,
+      "canon": "boat",
+      "source": "Mixamo: Wave Hip Hop Dance Variation One, aura farming spec QTE2 (slow symmetrical arm sweep)"
+    },
+    {
+      "file": "anims/hit_right_runningman.glb",
+      "event": "hit_right",
+      "name": "Dancing Running Man",
+      "loop": false,
+      "canon": "generic",
+      "source": "Mixamo: Dancing Running Man, alternate"
+    },
+    {
+      "file": "anims/boat_snake_hiphop.glb",
+      "event": "hit_left",
+      "name": "Snake Hip Hop Dance",
+      "loop": false,
+      "canon": "boat",
+      "source": "Mixamo: Snake Hip Hop Dance, aura farming spec QTE3 (wrist roll / snake arms)"
+    },
+    {
+      "file": "anims/hit_left_housedance.glb",
+      "event": "hit_left",
+      "name": "House Dancing",
+      "loop": false,
+      "canon": "generic",
+      "source": "Mixamo: House Dancing (Variation Two), alternate"
+    },
+    {
+      "file": "anims/pose_taunt_chinup.glb",
+      "event": "hit_down",
+      "name": "Taunt (Boxing Taunt)",
+      "loop": false,
+      "canon": "pose",
+      "source": "Mixamo: Taunt (Boxing Taunt), aura farming spec QTE4 (chin-up stare / standing taunt)"
+    },
+    {
+      "file": "anims/hit_down_hiphop.glb",
+      "event": "hit_down",
+      "name": "Hip Hop Dancing (Energy/Stance)",
+      "loop": false,
+      "canon": "generic",
+      "source": "Mixamo: Hip Hop Dancing, alternate"
+    },
+    {
+      "file": "anims/mash_charge_twerk.glb",
+      "event": "mash_charge",
+      "name": "Dancing Twerk",
+      "loop": true,
+      "canon": "qte",
+      "source": "Mixamo: Dancing Twerk, aura farming spec mash phase"
+    },
+    {
+      "file": "anims/boat_arms_hiphop.glb",
+      "event": "mash_charge",
+      "name": "Arms Hip Hop Dance",
+      "loop": true,
+      "canon": "boat",
+      "source": "Mixamo: Arms Hip Hop Dance (Hip Hop Dancing With Arms), alternate mash-phase clip"
+    },
+    {
+      "file": "anims/boat_locking_hiphop.glb",
+      "event": "mash_charge",
+      "name": "Locking Hip Hop Dance",
+      "loop": true,
+      "canon": "boat",
+      "source": "Mixamo: Locking Hip Hop Dance Variation Two, alternate mash-phase clip"
+    },
+    {
+      "file": "anims/release_backflip.glb",
+      "event": "release",
+      "name": "Standing Backflip",
+      "loop": false,
+      "canon": "qte",
+      "source": "Mixamo: Backflip (Standing Backflip)"
+    },
+    {
+      "file": "anims/hold_freeze_breakdance.glb",
+      "event": "hold_freeze",
+      "name": "Breakdance Freeze Var 1",
+      "loop": false,
+      "canon": "qte",
+      "source": "Mixamo: Breakdance Freeze Var 1 (Breakdance Single Handstand Freeze)"
+    },
+    {
+      "file": "anims/miss_cringe_stumble.glb",
+      "event": "miss_cringe",
+      "name": "Stumble Backwards",
+      "loop": false,
+      "canon": "qte",
+      "source": "Mixamo: Stumble Backwards (Slip And Fall Backwards), aura farming spec anti-move 18"
+    },
+    {
+      "file": "anims/defeat.glb",
+      "event": "defeat",
+      "name": "Defeated",
+      "loop": false,
+      "canon": "qte",
+      "source": "Mixamo: Defeated (Showing Frustration After A Loss)"
+    },
+    {
+      "file": "anims/victory.glb",
+      "event": "victory",
+      "name": "Victory",
+      "loop": false,
+      "canon": "celebration",
+      "source": "Mixamo: Victory (Victory From A Boxing Win)"
+    },
+    {
+      "file": "anims/celebration_siuuu_jump.glb",
+      "event": "victory",
+      "name": "Joyful Jump (Siuuu-style)",
+      "loop": false,
+      "canon": "celebration",
+      "source": "Mixamo: Joyful Jump (Ecstatic Jumping With Both Legs And Arms), aura farming spec combo finisher lead-in (Jumping Dance not found standalone, substituted)"
+    },
+    {
+      "file": "anims/boat_rumba_sway.glb",
+      "event": "idle_groove",
+      "name": "Rumba Dancing (sway)",
+      "loop": true,
+      "canon": "boat",
+      "source": "Mixamo: Rumba Dancing (Female Rumba Dancing, Loop), aura farming spec still-torso-sway idle"
+    },
+    {
+      "file": "anims/idle_groove_hiphop.glb",
+      "event": "idle_groove",
+      "name": "Hip Hop Dancing (Just Listening)",
+      "loop": true,
+      "canon": "generic",
+      "source": "Mixamo: Hip Hop Dancing (Just Listening Dancing Variation), alternate"
+    },
+    {
+      "file": "anims/enemy_idle.glb",
+      "event": "enemy_idle",
+      "name": "Standing Idle",
+      "loop": true,
+      "canon": "generic",
+      "source": "Mixamo: Standing Idle"
+    },
+    {
+      "file": "anims/enemy_taunt.glb",
+      "event": "enemy_taunt",
+      "name": "Taunt (Flexing Muscles)",
+      "loop": false,
+      "canon": "generic",
+      "source": "Mixamo: Taunt (Flexing Muscles)"
+    },
+    {
+      "file": "anims/pose_taunt_chinup.glb",
+      "event": "enemy_taunt",
+      "name": "Taunt (Boxing Taunt)",
+      "loop": false,
+      "canon": "pose",
+      "source": "Mixamo: Taunt (Boxing Taunt), reused chin-up stare canon"
+    },
+    {
+      "file": "anims/enemy_hit.glb",
+      "event": "enemy_hit",
+      "name": "Hit Reaction",
+      "loop": false,
+      "canon": "qte",
+      "source": "Mixamo: Hit Reaction"
+    },
+    {
+      "file": "anims/enemy_big_hit.glb",
+      "event": "enemy_big_hit",
+      "name": "Knocked Out (Falling To Back)",
+      "loop": false,
+      "canon": "qte",
+      "source": "Mixamo: Knocked Out"
+    },
+    {
+      "file": "anims/enemy_cringe.glb",
+      "event": "enemy_cringe",
+      "name": "Shoved Reaction With Spin",
+      "loop": false,
+      "canon": "qte",
+      "source": "Mixamo: Shoved Reaction With Spin"
+    },
+    {
+      "file": "anims/enemy_victory.glb",
+      "event": "enemy_victory",
+      "name": "Victory Idle (Big Vegas)",
+      "loop": true,
+      "canon": "celebration",
+      "source": "Mixamo: Victory Idle (Big Vegas Victory Idle)"
+    },
+    {
+      "file": "anims/crowd_cheer.glb",
+      "event": "crowd_cheer",
+      "name": "Cheering",
+      "loop": true,
+      "canon": "crowd",
+      "source": "Mixamo: Cheering (Male Cheering With Two Fists Pump)"
+    },
+    {
+      "file": "anims/crowd_clap.glb",
+      "event": "crowd_clap",
+      "name": "Clapping (Clap While Standing)",
+      "loop": true,
+      "canon": "crowd",
+      "source": "Mixamo: Clapping"
+    },
+    {
+      "file": "anims/crowd_jump_excited.glb",
+      "event": "crowd_jump",
+      "name": "Excited",
+      "loop": true,
+      "canon": "crowd",
+      "source": "Mixamo: Excited (Super Excited), substituted for Jumping"
+    },
+    {
+      "file": "anims/crowd_idle.glb",
+      "event": "crowd_idle",
+      "name": "Happy Idle",
+      "loop": true,
+      "canon": "crowd",
+      "source": "Mixamo: Happy Idle (Variation 1)"
+    },
+    {
+      "file": "anims/walk_catwalk_strut.glb",
+      "event": "entrance_walk",
+      "name": "Catwalk Walk Forward HighKnees (In Place)",
+      "loop": true,
+      "canon": "walk",
+      "source": "Mixamo: Catwalk Walk Forward HighKnees, In Place, aura farming spec bonus entrance/exit strut. Bonus event, not in the required list."
+    },
+    {
+      "file": "anims/crowd_jump_excited.glb",
+      "event": "crowd_excited",
+      "name": "Excited",
+      "loop": true,
+      "canon": "crowd",
+      "source": "Mixamo: Excited (Super Excited), same file already used for crowd_jump, additional event alias requested for crowd diversity"
+    },
+    {
+      "file": "anims/crowd_bounce_bboy.glb",
+      "event": "crowd_bounce",
+      "name": "Bboy Hip Hop Move (Variation One)",
+      "loop": true,
+      "canon": "crowd",
+      "source": "Mixamo: Bboy Hip Hop Move, crowd bounce style"
+    }
+  ]
+}
