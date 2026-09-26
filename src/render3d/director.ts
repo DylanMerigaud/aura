@@ -134,6 +134,24 @@ export const LAYOUT = {
   height: 1.8,
 };
 
+/** The camera never comes closer than this (horizontal metres) to a fighter: no shot, whip or push in goes through a body. */
+export const CAM_CLEARANCE = 1.3;
+
+/** Push `pos` out horizontally to CAM_CLEARANCE from a fighter standing at `feet`, below his head height only. Mutates `pos`. */
+export function keepOut(pos: { x: number; y: number; z: number }, feet: { x: number; y: number; z: number }): void {
+  if (pos.y > feet.y + LAYOUT.height + 0.3) return;
+  const dx = pos.x - feet.x;
+  const dz = pos.z - feet.z;
+  const d = Math.hypot(dx, dz);
+  if (d >= CAM_CLEARANCE) return;
+  if (d < 1e-4) {
+    pos.z = feet.z + CAM_CLEARANCE;
+    return;
+  }
+  pos.x = feet.x + (dx * CAM_CLEARANCE) / d;
+  pos.z = feet.z + (dz * CAM_CLEARANCE) / d;
+}
+
 /** A shot keeps moving for this long, then holds its last framing (a shot never drifts off the ring). */
 export const MOVE_S = 8;
 

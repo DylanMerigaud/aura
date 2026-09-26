@@ -12,7 +12,7 @@ import { Crowd } from "./crowd";
 import { crowdBudget } from "./crowdRoster";
 import { Fighter, loadCast, loadRig, type CastSource, type ClipEvent } from "./fighters";
 import { cosmeticsFor, dress, opponentLook } from "./dress";
-import { LAYOUT, MOVE_S, SUBJECT, pickShot, punchZoom, rampScale, sameFamily, shotPose, turnShot, type Pose, type ShotKind } from "./director";
+import { LAYOUT, MOVE_S, keepOut, SUBJECT, pickShot, punchZoom, rampScale, sameFamily, shotPose, turnShot, type Pose, type ShotKind } from "./director";
 import { Vfx } from "./vfx";
 import { createComposite } from "./vfx/composite";
 import { sizeChanged, stagePixelRatio, stageSize, type StageSize } from "./viewport";
@@ -370,6 +370,9 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
       vPos.y += (Math.sin(t * 1.7 + 2) + Math.sin(t * 3.1) * 0.5) * 0.1 * sh;
       vTgt.x += Math.sin(t * 0.9 + 1) * 0.08 * sh;
     }
+    // Never inside a fighter: whatever the shot, whip, push in or shake did, the camera keeps its distance.
+    keepOut(vPos, anchors.playerFeet);
+    keepOut(vPos, anchors.enemyFeet);
     camera.position.copy(vPos);
     camera.lookAt(vTgt);
     const roll = THREE.MathUtils.degToRad(3 * cr + dutch + (hand ? Math.sin(time * 1.1) * 1.2 : 0));

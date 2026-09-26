@@ -244,3 +244,31 @@ describe("turnShot", () => {
     }
   });
 });
+
+describe("keepOut", () => {
+  it("pushes a camera inside a fighter back to the clearance, leaves a far or high one alone", async () => {
+    const { keepOut, CAM_CLEARANCE } = await import("../src/render3d/director");
+    const feet = { x: 0, y: 0, z: 3 };
+    const inside = { x: 0.2, y: 1.2, z: 3.1 };
+    keepOut(inside, feet);
+    expect(Math.hypot(inside.x - feet.x, inside.z - feet.z)).toBeCloseTo(CAM_CLEARANCE, 5);
+    expect(inside.y).toBe(1.2);
+    const far = { x: 3, y: 1.2, z: 3 };
+    keepOut(far, feet);
+    expect(far).toEqual({ x: 3, y: 1.2, z: 3 });
+    const high = { x: 0, y: 9, z: 3 };
+    keepOut(high, feet);
+    expect(high).toEqual({ x: 0, y: 9, z: 3 });
+  });
+  it("every shot of the director already respects the clearance (the guard only catches whips and push ins)", async () => {
+    const { keepOut } = await import("../src/render3d/director");
+    for (const k of KINDS) for (const t of [0, 4, 8]) {
+      const p = shotPose(k, t, 0.5, 9 / 19.5);
+      for (const f of [LAYOUT.player, LAYOUT.enemy]) {
+        const pos = { x: p.pos[0], y: p.pos[1], z: p.pos[2] };
+        keepOut(pos, { x: f[0], y: f[1], z: f[2] });
+        expect([pos.x, pos.z], `${k} at ${t}`).toEqual([p.pos[0], p.pos[2]]);
+      }
+    }
+  });
+});

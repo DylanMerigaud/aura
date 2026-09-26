@@ -1,3 +1,9 @@
+17:25 CEST, GAME lane, fix from the phone capture of bb78444: the camera never enters a body
+GREEN: a phone frame showed the camera inside the player (a floating sneaker, the body gone); the camera now keeps 1.3 m from each fighter whatever the shot, the whip pan or the 67 push in did (no planned shot comes that close, a test checks all of them); HIS MOVE panel confirmed gone, PERFECT and GREAT land on the phone; tests green
+RED: the capture script cannot see arrows (canvas drawn), a human play is the only swipe check
+PLAY: https://dylanmerigaud.github.io/aura/
+NEED FROM DYLAN: the first 40 seconds on the phone, sound on
+
 17:18 CEST, GAME lane, fix from the phone capture: prompts off the performer
 GREEN: in portrait the ring moved from 60 to 83 percent of the height, on the empty floor under the feet, and the arrows fly in from the right edge on v1's horizontal lane (they used to fall through the body and land on his feet); the pads keep their box, the words (67, HOLD, SWIPE UP) are drawn once around the ring; a layout test pins the ring under the feet band on four phone sizes; tests green
 RED: nothing seen on a phone for this push yet
