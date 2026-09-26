@@ -12,7 +12,7 @@ refresh it.
   0.35 of the track max, a drop before 12 s, no silent gap outside a declared breakdown, measured
   BPM within 8 percent of the request, duration within 20 percent of the request.
 - **pacing** (`scripts/eval-pacing.ts`): per chart, overlaps, arrows inside an open window, rest
-  after a release, first QTE, dead spans, level length, count in, on screen text, the 69 window and
+  after a release, first QTE, dead spans, level length, count in, on screen text, the 67 window and
   its release on a drop. Detail in "Mechanical gates" below.
 - **animation** (`scripts/eval-animation.ts`): per Mixamo clip and per game event, one animation per
   file, root drift, loop seams, beat windows, canon clip played, and the mechanical half of the ten
@@ -117,7 +117,7 @@ one of them while the live roast loads), the announcer call is `announcer.intro`
 | `text_roast` | each roast line 12 words or fewer |
 | `text_announcer` | each announcer call 1 to 4 words |
 | `text_total` | story + taunts + the longest roast + announcer calls, under 40 words |
-| `mash_length` | each 69 charge lasts 2 to 8 beats |
+| `mash_length` | each 67 charge lasts 2 to 8 beats |
 | `release_on_drop` | each MASH release lands within 120 ms of a `drops_s` time of its track (`assets/music/manifest.json` or the refined `src/v2/analysis.json`), when the track is in the manifest |
 
 A word is a whitespace separated token holding a letter or a digit.
@@ -162,7 +162,7 @@ to its window, not the whole Mixamo take. The gate judges the raw clip, even tho
 ### First run, 2026-09-26 11:10 UTC
 
 Pacing, 68 checks, 48 pass, 20 fail. The five v2 charts pass every timing gate (no overlap, first
-QTE on beat 8, longest dead span 5 beats, 39 to 45 s, every 69 release within 0 ms of a refined
+QTE on beat 8, longest dead span 5 beats, 39 to 45 s, every 67 release within 0 ms of a refined
 drop). All 20 fails are text: story cards of 15 to 25 words (max 8), taunts of 6 to 8 words (max 5),
 announcer intros of 7 or 8 words (max 4), 52 to 64 words per level (under 40). The roast lines pass.
 

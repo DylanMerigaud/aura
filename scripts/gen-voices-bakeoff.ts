@@ -104,6 +104,8 @@ const CALLS: [string, string, string][] = [
   ["aura-farming", "AURA FARMING!", "screaming with joy, huge energy, the biggest call of the night"],
   ["flow", "FLOW!", "smooth then loud, impressed, drawn out and cool"],
   ["cringe", "CRINGE!", "mocking and disgusted, laughing at the player, playful roast"],
+  // The mash move is 67 (decision 15:50): the release call, the biggest meme of the night.
+  ["six-seven", "SIX! SEVEN!", "the release of the mash, two huge separate shouts, SIX then a beat then SEVEN even louder, meme energy, the crowd screams with you"],
 ];
 
 function lines(): Line[] {
@@ -245,13 +247,19 @@ async function designVoice(key: string, state: State): Promise<string> {
   const after = await balance();
   logCredits({ call: "voice-generator/generate", key, credits: Math.max(0, before - after), balance: after, note: "credits = balance delta" });
   state.voices[key] = { embedding_id: id, ...d };
-  saveState(state);
+  // Merge into the state on disk, a batch may be writing its results concurrently.
+  const cur = loadState();
+  cur.voices[key] = state.voices[key];
+  saveState(cur);
   return id;
 }
 
 async function gradiumTts(voiceId: string, text: string, label: string, out: string): Promise<void> {
   guard(text.length);
-  const r = await fetch(`${GRADIUM}/post/speech/tts`, {
+  // Gradium caps an account at 2 concurrent sessions (400 "Concurrency limit exceeded"): back off and retry.
+  let r: Response | undefined;
+  for (let i = 0; i < 8; i++) {
+    r = await fetch(`${GRADIUM}/post/speech/tts`, {
     method: "POST",
     headers: { "x-api-key": gradium(), "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -261,7 +269,14 @@ async function gradiumTts(voiceId: string, text: string, label: string, out: str
       only_audio: true,
       json_config: JSON.stringify({ temp: 1.2, padding_bonus: -2.0 }),
     }),
-  });
+    signal: AbortSignal.timeout(60_000),
+    }).catch(() => undefined);
+    if (r?.ok) break;
+    const t = r ? await r.clone().text() : "network";
+    if (r && !/concurren|limit|busy/i.test(t) && r.status !== 429 && r.status < 500) break;
+    await new Promise((res) => setTimeout(res, 1500 * (i + 1)));
+  }
+  if (!r) throw new Error(`gradium tts ${label}: network`);
   if (!r.ok) throw new Error(`gradium tts ${label}: ${r.status} ${(await r.text()).slice(0, 300)}`);
   writeFileSync(out, Buffer.from(await r.arrayBuffer()));
   logCredits({ call: "post/speech/tts", key: label, credits: text.length, note: "1 credit per character (docs/credits)" });
@@ -278,6 +293,7 @@ async function geminiPost(model: string, body: unknown, tries = 5): Promise<any>
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
+        signal: AbortSignal.timeout(120_000),
       });
     } catch (e) {
       if (i >= tries - 1) throw e;
@@ -555,7 +571,9 @@ async function batch() {
   const jobs: [Line, number][] = [];
   for (const l of lines()) {
     if (filter && !filter.has(l.slug)) continue;
-    for (let v = 1; v <= 5; v++) jobs.push([l, v]);
+    const done = new Set((state.batch[`${l.role}/${l.slug}`] ?? []).map((r) => path.basename(r.file)));
+    // Resumable: a variant already rendered and judged is kept unless --force.
+    for (let v = 1; v <= 5; v++) if (process.argv.includes("--force") || !done.has(`v${v}.mp3`)) jobs.push([l, v]);
   }
   console.log(`batch: ${jobs.length} renders, announcer ${best.announcer}, ninja ${best.ninja}`);
   await pool(jobs, 4, async ([l, v]) => {
@@ -666,7 +684,7 @@ async function crowd() {
     { name: "crowd-br", langs: ["pt"] },
     { name: "crowd-mix", langs: ["fr", "pt"] },
   ];
-  state.crowd = [];
+  const crowdOut: State["crowd"] = [];
   for (const bed of beds) {
     const parts = renders.filter((r) => bed.langs.includes(r.lang)).sort((a, b) => a.file.localeCompare(b.file));
     const pick = bed.name === "crowd-mix" ? parts.filter((_, i) => i % 2 === 0) : parts;
@@ -688,10 +706,71 @@ async function crowd() {
     const out = path.join(VOICE_DIR, `${bed.name}.mp3`);
     args.push("-filter_complex", f.join(";"), "-map", "[o]", "-t", "2.8", "-ac", "2", "-ar", "44100", "-c:a", "libmp3lame", "-b:a", "96k", out);
     execFileSync("ffmpeg", args);
-    state.crowd.push({ file: out, shouts: [...new Set(pick.map((p) => p.text))] });
+    crowdOut.push({ file: out, shouts: [...new Set(pick.map((p) => p.text))] });
     console.log(`crowd bed ${out}`);
   }
-  saveState(state);
+  const cur = loadState();
+  cur.crowd = [...cur.crowd.filter((c) => c.file.includes("six-seven")), ...crowdOut];
+  saveState(cur);
+  board();
+}
+
+// The 67 crowd chant for the mash charge: every designed crowd voice plus the announcer voices
+// chanting "six seven" in English, layered and panned, each repetition louder than the last.
+async function chant() {
+  const state = loadState();
+  mkdirSync(TMP, { recursive: true });
+  const dir = path.join(OUT, "crowd");
+  mkdirSync(dir, { recursive: true });
+  const keys = ["crowd-fr-1", "crowd-fr-2", "crowd-fr-3", "crowd-pt-1", "crowd-pt-2", "crowd-pt-3", "announcer-2", "announcer-3"];
+  for (const k of keys) await designVoice(k, loadState());
+  const fresh = loadState();
+  const texts = ["Six seven!", "Six! Seven!"];
+  const parts: string[] = [];
+  const jobs = keys.flatMap((k, i) => [{ k, t: texts[i % 2], i }]);
+  await pool(jobs, 2, async (j) => {
+    const raw = path.join(TMP, `chant-${j.k}.wav`);
+    const out = path.join(dir, `six-seven-${j.k}.wav`);
+    if (!existsSync(out)) {
+      await gradiumTts(fresh.voices[j.k].embedding_id, j.t, `chant/${j.k}`, raw);
+      execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-i", raw, "-af",
+        "silenceremove=start_periods=1:start_threshold=-45dB,areverse,silenceremove=start_periods=1:start_threshold=-45dB,areverse,atempo=1.08", "-ar", "44100", "-ac", "1", out]);
+    }
+    parts.push(out);
+  });
+  parts.sort();
+  // Two one shots: -1 one chant hit (all voices together), -2 a rising chant (three repetitions, louder each time).
+  const beds: { name: string; reps: number }[] = [
+    { name: "crowd-six-seven-1", reps: 1 },
+    { name: "crowd-six-seven-2", reps: 3 },
+  ];
+  const made: State["crowd"] = [];
+  for (const bed of beds) {
+    const args = ["-y", "-loglevel", "error"];
+    const f: string[] = [];
+    let n = 0;
+    for (let rep = 0; rep < bed.reps; rep++) {
+      parts.forEach((p, i) => {
+        args.push("-i", p);
+        const delay = Math.round(rep * 900 + ((i * 53) % 160));
+        const pan = [-0.8, 0.6, -0.3, 0.9, 0.1, -0.6, 0.4, -0.1][i % 8];
+        const vol = (0.35 + 0.25 * rep) * (0.8 + ((i * 29) % 20) / 100);
+        f.push(`[${n}:a]adelay=${delay},volume=${vol.toFixed(2)},pan=stereo|c0=${((1 - pan) / 2).toFixed(2)}*c0|c1=${((1 + pan) / 2).toFixed(2)}*c0[a${n}]`);
+        n++;
+      });
+    }
+    f.push(
+      `${Array.from({ length: n }, (_, i) => `[a${i}]`).join("")}amix=inputs=${n}:duration=longest:normalize=0,aecho=0.8:0.6:40|70:0.3|0.2,acompressor=threshold=-18dB:ratio=3:makeup=3,alimiter=limit=0.92[o]`,
+    );
+    const out = path.join(VOICE_DIR, `${bed.name}.mp3`);
+    args.push("-filter_complex", f.join(";"), "-map", "[o]", "-ac", "2", "-ar", "44100", "-c:a", "libmp3lame", "-b:a", "96k", out);
+    execFileSync("ffmpeg", args);
+    made.push({ file: out, shouts: bed.reps === 1 ? ["six seven (8 voices, one hit)"] : ["six seven x3, rising (8 voices)"] });
+    console.log(`chant ${out}`);
+  }
+  const cur = loadState();
+  cur.crowd = [...cur.crowd.filter((c) => !c.file.includes("six-seven")), ...made];
+  saveState(cur);
   board();
 }
 
@@ -701,6 +780,7 @@ async function main() {
   if (step === "sample") await sample();
   else if (step === "batch") await batch();
   else if (step === "crowd") await crowd();
+  else if (step === "chant") await chant();
   else if (step === "board") {
     writeSample(loadState());
     board();
