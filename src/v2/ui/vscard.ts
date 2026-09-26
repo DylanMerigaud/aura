@@ -44,6 +44,8 @@ export function buildVsCard(base: string, onFight: () => void) {
     name.textContent = level.opponent.name.toUpperCase();
     place.textContent = level.place;
     bpm.textContent = `${Math.round(level.bpm)} BPM`;
+    const touch = typeof matchMedia === "function" && matchMedia("(pointer: coarse)").matches;
+    prompt.textContent = touch ? "TAP TO FIGHT" : "PRESS SPACE OR TAP TO FIGHT";
     armed = false;
     setTimeout(() => (armed = true), 350);
   }

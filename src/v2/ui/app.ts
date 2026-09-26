@@ -12,8 +12,11 @@ import { buildResults } from "./results";
 import { buildHud } from "./hud/index";
 import { bindBattleInput } from "./battleInput";
 import { loadProgress, nextProgress, saveProgress } from "./progress";
+import { buildBed } from "./bed";
 
 const WINDOW_SCALE = [1, 0.9, 0.8, 0.7, 0.6];
+/** The battle starts without its fighters rather than wait longer than this on the models. */
+const STAGE_WAIT_MS = 25000;
 
 export interface StartOpts {
   game: GameApi;
@@ -43,6 +46,7 @@ export function startApp(opts: StartOpts): { hud: Listener } {
 
   const battleInput = bindBattleInput(canvas, game);
   const hudCtl = buildHud(base);
+  const bed = buildBed(base);
   const battle: ScreenCtl = { root: hudCtl.root, onKey: battleInput.onKey };
 
   const gate = buildGate(() => goTitle());
@@ -77,6 +81,9 @@ export function startApp(opts: StartOpts): { hud: Listener } {
   showScreen(gate);
 
   function goTitle() {
+    bed.start();
+    // The first battle is decided on the title: start the models downloading now, not on the VS card.
+    void stageLevel(levels[Math.min(levels.length - 1, Math.max(0, progress.unlocked - 1))] ?? levels[0]);
     title.show();
     showScreen(title);
   }
@@ -85,6 +92,7 @@ export function startApp(opts: StartOpts): { hud: Listener } {
     showScreen(settings);
   }
   function goMap() {
+    bed.start();
     map.show();
     showScreen(map);
   }
@@ -109,7 +117,9 @@ export function startApp(opts: StartOpts): { hud: Listener } {
     hudCtl.prepare(level);
     showScreen(battle);
     battleInput.show();
-    await stageLevel(level);
+    // The menu loop fades out across the count in bar: the kick and the level track take over.
+    bed.stop((60 / level.bpm) * 4);
+    await Promise.race([stageLevel(level), new Promise((r) => setTimeout(r, STAGE_WAIT_MS))]);
     staged = null;
     const scale = WINDOW_SCALE[levelIdx] ?? 1;
     const stats = await game.play(level, scale);

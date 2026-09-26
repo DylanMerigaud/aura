@@ -11,7 +11,7 @@ export type ClipEvent =
   | "enemy_cringe" | "enemy_victory";
 
 interface Manifest {
-  characters: { file: string; name: string; role?: string }[];
+  characters: { file: string; name: string; role?: string; preferred?: boolean }[];
   clips: { file: string; event: string; name?: string; loop?: boolean; fps?: number }[];
 }
 
@@ -83,31 +83,83 @@ function retarget(clip: THREE.AnimationClip, names: Map<string, string>, hipsK: 
   return out;
 }
 
-async function loadGltf(url: string) {
-  return loader.loadAsync(url);
+/** A promise that rejects after `ms`: a slow phone never waits forever on a model. */
+export function withTimeout<T>(p: Promise<T>, ms: number, what = "load"): Promise<T> {
+  return new Promise((res, rej) => {
+    const t = setTimeout(() => rej(new Error(`${what} timed out after ${ms} ms`)), ms);
+    p.then((v) => (clearTimeout(t), res(v)), (e) => (clearTimeout(t), rej(e)));
+  });
+}
+
+type Gltf = Awaited<ReturnType<GLTFLoader["loadAsync"]>>;
+const gltfCache = new Map<string, Promise<Gltf>>();
+/** One download per file, shared by every event that points at it; a failed load is retried next time. */
+function loadGltf(url: string): Promise<Gltf> {
+  let p = gltfCache.get(url);
+  if (!p) {
+    p = loader.loadAsync(url);
+    p.catch(() => gltfCache.delete(url));
+    gltfCache.set(url, p);
+  }
+  return p;
+}
+
+const CLIP_EVENTS = new Set<string>(Object.keys(ROBOT));
+/** Clips the battle cannot start without (the fighters would stand in T pose). The rest stream in. */
+const ESSENTIAL = new Set<string>(["idle_groove", "enemy_idle"]);
+const CHARACTER_MS = 20000;
+const ESSENTIAL_MS = 6000;
+const CLIP_MS = 30000;
+
+/**
+ * The clips the stage plays: one per event (the first manifest entry wins, so the aura farming canon
+ * listed first is picked every time), crowd and entrance clips skipped since nothing plays them.
+ */
+export function pickClips<T extends { event: string }>(clips: T[]): T[] {
+  const seen = new Set<string>();
+  const out: T[] = [];
+  for (const c of clips) {
+    if (!CLIP_EVENTS.has(c.event) || seen.has(c.event)) continue;
+    seen.add(c.event);
+    out.push(c);
+  }
+  return out;
 }
 
 async function fromManifest(base: string): Promise<CastSource> {
-  const res = await fetch(`${base}models/manifest.json`, { cache: "no-cache" });
+  const res = await withTimeout(fetch(`${base}models/manifest.json`, { cache: "no-cache" }), 8000, "manifest");
   if (!res.ok) throw new Error(`manifest ${res.status}`);
   const m = (await res.json()) as Manifest;
   if (!m.characters?.length) throw new Error("manifest has no character");
-  const byRole = (re: RegExp) => m.characters.find((c) => c.role && re.test(c.role));
+  // The asset lane flags its pick per role with `preferred`; otherwise the first of the role.
+  const byRole = (re: RegExp) => {
+    const all = m.characters.filter((c) => c.role && re.test(c.role));
+    return all.find((c) => c.preferred) ?? all[0];
+  };
   const pc = byRole(/player|hero/i) ?? m.characters[0];
   const ec = byRole(/enemy|opponent|boss/i) ?? m.characters.find((c) => c !== pc) ?? pc;
-  const [pg, eg] = await Promise.all([loadGltf(`${base}models/${pc.file}`), ec === pc ? null : loadGltf(`${base}models/${ec.file}`)]);
   const clips: CastSource["clips"] = new Map();
-  await Promise.all(
-    m.clips.map(async (c) => {
-      try {
-        const g = await loadGltf(`${base}models/${c.file}`);
+  // Every clip starts downloading now, alongside the characters; only the idles are waited for.
+  const loads = pickClips(m.clips).map((c) => {
+    const p = withTimeout(loadGltf(`${base}models/${c.file}`), CLIP_MS, c.file)
+      .then((g) => {
         const clip = (c.name && g.animations.find((a) => a.name === c.name)) || g.animations[0];
         if (clip) clips.set(c.event, { clip, loop: c.loop ?? LOOPING.has(c.event), hipsY: hipsRestY(g.scene) });
-      } catch {
-        // A broken clip file is a missing clip: the idle fallback covers it.
-      }
-    }),
+      })
+      .catch(() => {
+        // A broken or slow clip file is a missing clip: the idle fallback covers it.
+      });
+    return { event: c.event, p };
+  });
+  const [pg, eg] = await withTimeout(
+    Promise.all([loadGltf(`${base}models/${pc.file}`), ec === pc ? null : loadGltf(`${base}models/${ec.file}`)]),
+    CHARACTER_MS,
+    "characters",
   );
+  await Promise.race([
+    Promise.all(loads.filter((l) => ESSENTIAL.has(l.event)).map((l) => l.p)),
+    new Promise((r) => setTimeout(r, ESSENTIAL_MS)),
+  ]);
   // Clips baked into the character file count too, by event name.
   for (const a of pg.animations) if (!clips.has(a.name)) clips.set(a.name, { clip: a, loop: LOOPING.has(a.name) });
   const player = pg.scene;
@@ -116,7 +168,7 @@ async function fromManifest(base: string): Promise<CastSource> {
 }
 
 async function fromRobot(base: string): Promise<CastSource> {
-  const g = await loadGltf(`${base}models/fallback/RobotExpressive.glb`);
+  const g = await withTimeout(loadGltf(`${base}models/fallback/RobotExpressive.glb`), 12000, "robot");
   const clips = new Map<string, { clip: THREE.AnimationClip; loop: boolean }>();
   for (const [ev, name] of Object.entries(ROBOT)) {
     const clip = g.animations.find((a) => a.name === name);
@@ -192,7 +244,8 @@ export class Fighter {
   private mixer: THREE.AnimationMixer;
   private actions = new Map<string, THREE.AnimationAction>();
   private current: THREE.AnimationAction | null = null;
-  private idleName: ClipEvent;
+  private names: Map<string, string>;
+  private modelHips: number | undefined;
   private head: THREE.Object3D | null = null;
   private hands: THREE.Object3D[] = [];
   private feet: THREE.Object3D[] = [];
@@ -201,7 +254,7 @@ export class Fighter {
   private frozen = false;
   private height = 1.8;
 
-  constructor(model: THREE.Object3D, clips: CastSource["clips"], private role: "player" | "enemy", tint?: THREE.Color) {
+  constructor(model: THREE.Object3D, private clips: CastSource["clips"], private role: "player" | "enemy", tint?: THREE.Color) {
     toLambert(model, tint);
     model.updateMatrixWorld(true);
     // Skinned bounds read the bone matrices, which are only filled by a skeleton update.
@@ -239,28 +292,40 @@ export class Fighter {
     model.traverse((o) => {
       if (o.name && !names.has(boneKey(o.name))) names.set(boneKey(o.name), o.name);
     });
-    const modelHips = hipsRestY(model);
-    for (const [ev, { clip, loop, hipsY }] of clips) {
-      const k = modelHips && hipsY ? modelHips / hipsY : 1;
-      const a = this.mixer.clipAction(retarget(clip, names, k));
-      if (!loop) {
-        a.setLoop(THREE.LoopOnce, 1);
-        a.clampWhenFinished = true;
-      }
-      this.actions.set(ev, a);
-    }
-    this.idleName = role === "player" ? "idle_groove" : this.actions.has("enemy_idle") ? "enemy_idle" : "idle_groove";
+    this.names = names;
+    this.modelHips = hipsRestY(model);
     this.mixer.addEventListener("finished", (e) => {
       if (e.action === this.current) this.play(this.idleName);
     });
     this.play(this.idleName);
   }
 
+  /** The action of an event, built on first use: clips keep streaming into the shared map after the battle starts. */
+  private action(ev: string): THREE.AnimationAction | undefined {
+    let a = this.actions.get(ev);
+    if (a) return a;
+    const src = this.clips.get(ev);
+    if (!src) return undefined;
+    const k = this.modelHips && src.hipsY ? this.modelHips / src.hipsY : 1;
+    a = this.mixer.clipAction(retarget(src.clip, this.names, k));
+    if (!src.loop) {
+      a.setLoop(THREE.LoopOnce, 1);
+      a.clampWhenFinished = true;
+    }
+    this.actions.set(ev, a);
+    return a;
+  }
+
+  private get idleName(): string {
+    return this.role === "enemy" && this.clips.has("enemy_idle") ? "enemy_idle" : "idle_groove";
+  }
+
   /** Cross fade to the clip of an event (0.12 s); a missing clip is idle plus a squash. */
   play(ev: ClipEvent | string, speed = 1): void {
     this.frozen = false;
-    const next = this.actions.get(ev) ?? this.actions.get(this.idleName) ?? null;
-    if (!this.actions.has(ev)) this.squash = 1;
+    const want = this.action(ev);
+    const next = want ?? this.action(this.idleName) ?? null;
+    if (!want) this.squash = 1;
     if (!next) return;
     next.enabled = true;
     next.paused = false;
@@ -292,6 +357,8 @@ export class Fighter {
 
   /** dt is visual (time scaled); beatPhase drives the groove bob. */
   update(dt: number, beatPhase: number, energy: number): void {
+    // The idle clip arrived after the fighter was built: leave the bind pose.
+    if (!this.current && this.clips.has(this.idleName)) this.play(this.idleName);
     this.mixer.update(dt);
     this.squash = Math.max(0, this.squash - dt * 4);
     this.knock = Math.max(0, this.knock - dt * 3);
