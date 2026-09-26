@@ -1,3 +1,9 @@
+16:00 CEST, GAME lane: mastery, reactive taunts, the like / dislike bar at the ROOT
+GREEN: tests 666, typecheck clean; windows tighten with the combo (110 to 70 ms, the ring shrinks), FLOW x2 at 8 Perfects, ghost finger teaches tap, 67 and hold until first success, the ninja reacts on 8 triggers; like / dislike bar, flat white and black UI with one accent (#ffd400), hints retire; pnpm balance: average bot wins 74 percent on Chatelet (was 93)
+RED: the black playground and the performer camera (Dylan 16:00) in progress, next push; nothing seen on a phone since 15:35
+PLAY: https://dylanmerigaud.github.io/aura/
+NEED FROM DYLAN: nothing yet
+
 15:35 CEST, GAME lane: TAP ONLY and the one input flow at the ROOT
 GREEN: tests 655, typecheck clean; notes fly to the ring and any tap hits, the 67 is rapid taps then one tap on the drop, hold is press and lift; loading screen, title scene tap starts Chatelet, results RETRY PACK MAP SHARE; YOUR MOVE / HIS MOVE turns with his canon move; animated silhouette crowd (5 rigs files, 12 on phones)
 RED: the black playground, the performer camera and the like/dislike bar (Dylan 16:00) not done yet; nothing seen on a phone since this push

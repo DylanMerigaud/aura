@@ -138,6 +138,8 @@ function hero(): LevelV2 {
     dropBeats: [4, 68],
     breakdownBeats: [[37, 44], [45, 52], [53, 60], [61, 68]],
     turns: HERO_TURNS,
+    // Tuned with pnpm balance: the average bot wins about 75 percent (flags at 35 and 85).
+    opponentAura: 0.08,
   };
 }
 

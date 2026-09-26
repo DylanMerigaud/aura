@@ -16,7 +16,7 @@ const STRONG_ONSET = 0.6;
 const STRONG_WINDOW = 0.05;
 const BASE: Record<Grade, number> = { perfect: 300, great: 200, ok: 100, miss: 0 };
 /** Scripted aura the opponent farms at the start of each of his turns. */
-export const OPPONENT_TURN_AURA = 0.08;
+export const OPPONENT_TURN_AURA = 0.04;
 /** The onboarding: the meter cannot fall under ONBOARD_FLOOR before ONBOARD_S song seconds, so it cannot be lost. */
 export const ONBOARD_S = 15;
 const ONBOARD_FLOOR = -0.5;
@@ -235,7 +235,7 @@ export class BattleCore {
       this.emit({ kind: "turn", who: x.who, beat: x.beat, lengthBeats: x.lengthBeats });
       if (x.who === "opponent") {
         if (x.move) this.emit({ kind: "opponentMove", move: x.move, beat: x.beat, lengthBeats: x.lengthBeats });
-        this.push(-OPPONENT_TURN_AURA);
+        this.push(-(L.opponentAura ?? OPPONENT_TURN_AURA));
       }
     }
     if (beatPos > 0 && beatPos < L.lengthBeats) this.push(-(realDt / this.spb) * PRESSURE[Math.min(4, L.id - 1)]);

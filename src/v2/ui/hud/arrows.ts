@@ -200,7 +200,7 @@ export function buildArrows(host: HTMLElement) {
     } else if (ev.type === "hold") {
       if (!s.held) {
         timerRing(0, 0, (T - now) / (2 * spb), YELLOW);
-        label("HOLD", 0, 10, YELLOW, 28);
+        if (!taught.has("hold")) label("HOLD", 0, 10, YELLOW, 28);
       } else {
         const p = f.holdProgress;
         g.strokeStyle = YELLOW;
@@ -226,10 +226,10 @@ export function buildArrows(host: HTMLElement) {
           g.beginPath();
           g.arc(0, 0, 50 + c * 90, 0, Math.PI * 2);
           g.stroke();
-          label("TAP ON THE DROP!", 0, 130, YELLOW, (portrait ? 26 : 34) + wob * 3);
+          if (!taught.has("mash")) label("TAP ON THE DROP!", 0, 130, YELLOW, (portrait ? 26 : 34) + wob * 3);
         } else {
           timerRing(0, 0, (R - now) / (R - T), CYAN);
-          label("TAP TAP TAP", 0, 130, CYAN, portrait ? 26 : 32);
+          if (!taught.has("mash")) label("TAP TAP TAP", 0, 130, CYAN, portrait ? 26 : 32);
         }
       } else {
         label("67 INCOMING", 0, 0, YELLOW, 30);

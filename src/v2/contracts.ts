@@ -45,6 +45,8 @@ export interface LevelV2 extends Level {
    * turn (validateTurns). Missing: the whole level is one player turn.
    */
   turns?: TurnSpec[];
+  /** Scripted aura the opponent farms at the start of each of his turns (default OPPONENT_TURN_AURA). */
+  opponentAura?: number;
 }
 
 /** One turn of the battle. `move` (opponent turns) is a gesture key of src/anim/gestures.ts GESTURES. */
