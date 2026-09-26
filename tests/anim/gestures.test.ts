@@ -9,6 +9,7 @@ import {
   buildClip,
   clipBeats,
   gestureProblems,
+  maskClip,
   mirrorTrackName,
   poseQuat,
   quatAngle,
@@ -178,6 +179,55 @@ describe.each(all.map((g) => [g.name, g] as [string, Gesture]))("%s", (_, g) => 
           expect(inside, `${side}${joint} at t=${((clip.duration * i) / steps).toFixed(2)} local ${p.toArray().map((x) => x.toFixed(2))}`).toBe(false);
         }
     }
+  });
+});
+
+describe("playing them over an idle, the two ways docs/anim-poses.md describes", () => {
+  // A stand in idle: head turned 10 degrees left, arms hanging, hips 5 cm down.
+  const idleG: Gesture = {
+    name: "idle",
+    source: "test",
+    beats: 4,
+    loop: true,
+    mirror: false,
+    layer: "full",
+    keys: [{ at: 0, pose: { Head: [0, 10, 0], LeftArm: [-6, 0, -82], RightArm: [-6, 0, 82], hipsOffset: [0, -0.05, 0] } }],
+  };
+  const setup = () => {
+    const root = loadGlbRig();
+    const r = rigFromObject(root);
+    const mixer = new THREE.AnimationMixer(root);
+    const idle = mixer.clipAction(buildClip(idleG, 100, r));
+    return { root, r, mixer, idle, bones: bonesByKey(root) };
+  };
+  const yaw = (o: THREE.Object3D) => {
+    const f = new THREE.Vector3(0, 0, 1).applyQuaternion(o.getWorldQuaternion(new THREE.Quaternion()));
+    return (Math.atan2(f.x, f.z) * 180) / Math.PI;
+  };
+
+  it("additive: the stare adds its 20 degrees to the idle's 10, the idle keeps the rest", () => {
+    const { root, r, mixer, idle, bones } = setup();
+    idle.play();
+    const a = mixer.clipAction(buildClip(GESTURES.sigmaStare, 100, r, { additive: true }));
+    a.setLoop(THREE.LoopOnce, 1);
+    a.clampWhenFinished = true;
+    a.play();
+    mixer.setTime(2 * 0.6);
+    root.updateMatrixWorld(true);
+    expect(yaw(bones.get("Head")!)).toBeGreaterThan(28);
+    expect(yaw(bones.get("Head")!)).toBeLessThan(33);
+    expect(bones.get("Hips")!.position.y).toBeCloseTo(rigFromObject(root).hips!.rest.y - 0.05 * r.unit, 3);
+  });
+
+  it("mask: the lower idle keeps the hips, the gesture owns the arms exactly", () => {
+    const { root, r, mixer, idle, bones } = setup();
+    const lower = mixer.clipAction(maskClip(idle.getClip(), "lower"));
+    lower.syncWith(idle).play();
+    mixer.clipAction(buildClip(GESTURES.palmPush, 100, r)).play();
+    mixer.setTime(0.6);
+    root.updateMatrixWorld(true);
+    expect(bones.get("Hips")!.position.y).toBeCloseTo(r.hips!.rest.y - 0.05 * r.unit, 3);
+    expect(bones.get("LeftHand")!.getWorldPosition(new THREE.Vector3()).z).toBeGreaterThan(0.35);
   });
 });
 
