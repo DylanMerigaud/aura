@@ -548,6 +548,7 @@ export class Battle {
       if (ev.type === "hit") {
         const x = TARGET_X + ((T - now) / spb) * LANE_PX_PER_BEAT;
         this.arrow(g, x, TARGET_Y, ev.dir, 38, "#35e0ff");
+        if (s === cur) this.hint(g, "press the arrow when it hits the ring");
       } else if (ev.type === "combo") {
         const n = ev.dirs.length;
         const x0 = TARGET_X - ((n - 1) * 84) / 2;
@@ -557,11 +558,13 @@ export class Battle {
         }
         this.timerRing(g, TARGET_X, TARGET_Y, (T - now) / ((n + 2) * spb), "#ff3df2");
         this.label(g, "COMBO", TARGET_X, TARGET_Y + 8, "#ff3df2", 26);
+        if (s === cur) this.hint(g, "type the arrows in order, the last one on the beat");
       } else if (ev.type === "hold") {
         const R = T + ev.length * spb;
         if (!s.held) {
           this.timerRing(g, TARGET_X, TARGET_Y, (T - now) / (2 * spb), "#fff36b");
           this.label(g, "HOLD SPACE", TARGET_X, TARGET_Y + 10, "#fff36b", 24);
+          if (s === cur) this.hint(g, "press SPACE when the ring closes, release when the circle is full");
         } else {
           const k = Math.min(1, (now - T) / (R - T));
           g.strokeStyle = "#fff36b";
@@ -584,9 +587,16 @@ export class Battle {
           if (R - now < 1.5 * spb) this.label(g, "SPACE TO RELEASE!", mx, my + 130, "#fff36b", 34 + Math.sin(this.visT * 30) * 3);
         } else {
           this.label(g, "MASH INCOMING", TARGET_X, TARGET_Y, "#35e0ff", 30);
+          this.hint(g, "alternate LEFT RIGHT LEFT RIGHT fast, then SPACE on the drop");
         }
       }
     }
+  }
+
+  /** First two levels teach each QTE type with a one-line hint under the lane. */
+  private hint(g: CanvasRenderingContext2D, msg: string) {
+    if (this.level.id > 2) return;
+    this.label(g, msg, TARGET_X, TARGET_Y + 200, "#ffffff", 22);
   }
 
   private speedLines(g: CanvasRenderingContext2D) {
