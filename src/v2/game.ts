@@ -10,8 +10,10 @@ import type { CoreEvent, GameApi, LevelV2, Listener, PlayInput, Stats, TrackInfo
 
 const COUNT_IN = 4;
 const RESUME_COUNT_IN = 3;
-/** Seconds between the decided battle and the results (the finish animation). */
+/** Seconds between a lost battle and the results (the finish animation under the slowing tape). */
 const FINISH = 3.2;
+/** A win hands over sooner: the pack pops as the first thing after the last beat (freeze item 4). */
+export const FINISH_WIN = 1.2;
 /** The cast text version the taunt recordings must carry in voice/v2/index.json ("cast": CAST_TAG). */
 export const CAST_TAG = "roster-1625";
 /** The voice the battle lines must be recorded in (voice/v2/index.json "voice": VOICE_TAG). The flat,
@@ -278,7 +280,7 @@ export class Game implements GameApi {
       if ((this.voices as Record<string, string> | null)?.cast === CAST_TAG) this.voice(`v2-l${L.id}-taunt-${e.index}`, "taunt");
     }
     else if (e.kind === "end") {
-      this.endAt = ctx.currentTime + FINISH;
+      this.endAt = ctx.currentTime + (e.win ? FINISH_WIN : FINISH);
       const bar = (60 / L.bpm) * 4;
       // Lose: the tape slows to half speed under the one bar tail.
       if (!e.win && this.src) this.src.playbackRate.setTargetAtTime(this.setRate * 0.5, ctx.currentTime, bar / 3);

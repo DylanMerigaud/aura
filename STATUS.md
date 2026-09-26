@@ -1,3 +1,9 @@
+16:52 CEST, GAME lane, freeze item 4: THE WIN
+GREEN: a win hands over 1.2 s after the last beat (was 3.2 s): the pack pops first, then the results card; a loss keeps its 3.2 s slowing tape then the card with the XP bar and RETRY; the primary button (RETRY, NEXT after a win) takes one tap 300 ms after the card shows; tests green
+RED: nothing seen on a phone for this push yet
+PLAY: https://dylanmerigaud.github.io/aura/
+NEED FROM DYLAN: win once and lose once: pack right after the last beat, then the card; RETRY in one tap
+
 16:51 CEST, GAME lane, freeze item 3: ANIMATION, nothing snaps
 GREEN: the knockback eases in over 150 ms (it was a one frame push of up to 0.8 m and 19 degrees), the cringe camera dip is a smooth arc, a missed 67 drop plays the failure reaction instead of the release; already true: no beat squash, clip fades 180 ms in and 300 ms back, the idle always under; the 40 degree door (tests/fluidity.test.ts) now also bounds the body push per frame; tests green
 RED: nothing seen on a phone for this push yet
