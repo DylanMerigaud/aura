@@ -29,29 +29,29 @@ Field 5: Cognition's Devin opened five pull requests that are merged on `main`: 
 `gh api 'repos/DylanMerigaud/aura/pulls?state=all'` at 15:30).
 
 Field 7: the GitHub Pages root serves the same build as the itch zip (`scripts/build.mjs`: the 3D
-build at the root, the 2D build at `/v1/`). The itch page https://dylanmerigaud.itch.io/aura
-answered 404 at 15:35 <ITCH PAGE PENDING>; once it is Public, it can go in this field instead if a
-mentor asks for itch.io.
+build at the root, the 2D build at `/v1/`). The itch page is https://dylanmerigaud.itch.io/aura
+(the same zip); it can go in this field instead if a mentor asks for itch.io.
 
 ### Field 2, What are you building?
 
 ```
-You have zero aura, a TikTok LIVE crowd is watching, and THE TURNSTILE NINJA, the Parisian who never paid a metro ticket, is taunting you at Chatelet at 2am. AURA is a 3D rhythm battle built for a phone held upright: land every note on the beat to steal his aura. Easy to start: three moves, hit, hold and mash, all on one thumb. Hard to master: a Perfect is within 45 ms of the beat, the combo multiplies up to x4, and the cleaner you play the faster the song runs. Made to replay: a loss retries at once, a win opens an Aura Pack. Gemini wrote the rival and roasts your run live, Gradium speaks it, Lyria made the music, and Cognition's Devin wrote the Cloudflare Worker.
+You have zero aura, and a TikTok LIVE crowd is watching. AURA is a 3D rhythm battle for a phone held upright: five rivals in a black arena, starting with THE BOAT KID, rank Aura 9000. Easy to start: one tap and you play, the first notes are taps. Hard to master: swipe the arrows, mash the 67 and swipe up on the drop; a Perfect is within 45 ms, the combo goes up to x4, and the cleaner you play the faster the song runs. Made to replay: a win opens an Aura Pack and brings the next rival, every battle fills your rank from NPC to Aura 9000. Gemini roasts your run live, Lyria made the music, Gemini TTS and Gradium voice the cast, Devin wrote the Worker.
 ```
 
-129 words. Every sentence is on `main` at 15:30: the rival and his handle (`src/v2/cast.json`), the
-LIVE overlay (`src/live`), the 45 ms Perfect window (`src/qte/judge.ts`), the x4 combo cap
-(`src/qte/judge.ts`), the tempo rule (`src/v2/tempo.ts`), the instant retry after a loss and the
-pack after a win (`src/v2/ui/app.ts`), the live roast and voice (`src/v2/net/live.ts`, `worker/`),
-Lyria in `assets/music/manifest.json`. <PENDING 17:30: if the tap only input shipped, "three moves,
-hit, hold and mash, all on one thumb" becomes "tap, tap fast, hold: that is the whole game".>
+130 words. Every sentence is on `main` at 17:10: the roster and the Boat Kid's rank
+(`src/v2/cast.json`), the LIVE badge (`src/live/battle.ts`), the one tap start and the taps first
+(`src/v2/ui/app.ts`, `src/v2/levels.ts`), the swipes, the 67 and its swipe up
+(`src/v2/ui/touch.ts`), the 45 ms Perfect window and the x4 combo cap (`src/qte/judge.ts`), the
+tempo rule (`src/v2/tempo.ts`), the pack after a win and the next opponent (`src/v2/ui/app.ts`),
+the ranks (`src/v2/xp.ts`), the live roast (`worker/src/roast.ts`, `src/v2/ui/results.ts`), Lyria in
+`assets/music/manifest.json`, the voices in `public/voice/v2/` (`samples/voice/BOARD.md`).
 
 ## Checks before you press Submit
 
 1. Repo is public: `gh repo view DylanMerigaud/aura --json visibility -q .visibility` prints `PUBLIC`.
 2. The hosted link answers: `curl -sI https://dylanmerigaud.github.io/aura/ | head -1` prints 200
-   (it did at 15:35), and it opens the 3D battle on a phone held upright.
+   , and it opens the 3D battle on a phone held upright.
 3. The itch page is Public and plays in a private window on a phone.
 4. `README.md` and `docs/apis.md` are on `main`, and `pnpm release:check` prints ALL PASS.
-5. Word count: `pbpaste | wc -w` after copying the block prints 130 or less.
+5. Word count: `pbpaste | wc -w` after copying the block prints 130 (130 or less).
 6. No dash characters pasted: `pbpaste | rg -P "\x{2014}|\x{2013}"` prints nothing.
