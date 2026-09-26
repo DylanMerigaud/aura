@@ -1,4 +1,4 @@
-// Lyria 3 Pro candidates for the rejected tracks (level1, level2, boss3, victory), raw MP3 into samples/music/<track>/raw/c<N>.mp3.
+// Lyria 3 Pro candidates for the rejected tracks (level1, level2, boss3, victory) and the funk title loop (title), raw MP3 into samples/music/<track>/raw/c<N>.mp3.
 // Usage: tsx scripts/gen-music-v3.ts <track> <n1> [n2 ...]. Key from the macOS keychain, read in process, never printed.
 import { execFileSync } from "node:child_process";
 import { mkdirSync, writeFileSync, existsSync } from "node:fs";
@@ -20,6 +20,11 @@ export const PROMPTS: Record<string, { bpm: number; seconds: number; prompt: str
     bpm: 138,
     seconds: 40,
     prompt: `Instrumental Brazilian funk montagem phonk final boss battle, phase two, the boss is enraged. Tempo exactly 138 BPM. Heavier, faster and more aggressive than phase one: relentless double time tamborzao drums, a massive distorted 808 bass with fast slides in a dark minor key, piercing cowbell rolls, alarm like synth stabs, heavily distorted low growling vocal chop textures with no intelligible words, maximum intensity from the very first second, no intro, no fade in, no breakdown, chaotic and menacing, forty seconds long. ${TAIL}`,
+  },
+  title: {
+    bpm: 123,
+    seconds: 30,
+    prompt: `Instrumental Brazilian funk title screen loop for a rhythm dance battle video game played in a black arena under one single spotlight. Tempo exactly 123 BPM, in D minor. Confident, cool and swaggering, the calm before the battle: a clean, loud tamborzao drum pattern (the syncopated funk carioca kick and clap rhythm) and a deep bass boosted 808 with pitch slides, cowbell and agogo accents, a short dark synth hook that repeats every four bars, chopped vocal textures with no intelligible words. Steady full groove from the very first second to the last, no intro, no fade in, no build up, no breakdown, no ending, it must loop seamlessly, thirty seconds long. ${TAIL}`,
   },
   victory: {
     bpm: 130,
