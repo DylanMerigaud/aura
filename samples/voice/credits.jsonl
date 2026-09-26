@@ -1,0 +1,15 @@
+{"ts":"2026-09-26T13:11:42.911Z","call":"voice-generator/generate","key":"announcer","credits":0,"balance":140557,"note":"credits = balance delta"}
+{"ts":"2026-09-26T13:11:47.391Z","call":"post/speech/tts","key":"announcer/aura-farming/v0","credits":13,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T13:11:56.297Z","call":"voice-generator/generate","key":"ninja","credits":0,"balance":140544,"note":"credits = balance delta"}
+{"ts":"2026-09-26T13:12:00.539Z","call":"post/speech/tts","key":"ninja/taunt-5/v0","credits":26,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T13:16:15.107Z","call":"post/speech/tts","key":"announcer/aura-farming/v0","credits":13,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T13:18:46.581Z","call":"post/speech/tts","key":"announcer/aura-farming/v0","credits":13,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T13:18:50.465Z","call":"voice-generator/generate","key":"announcer-2","credits":13,"balance":140492,"note":"credits = balance delta"}
+{"ts":"2026-09-26T13:18:52.109Z","call":"post/speech/tts","key":"announcer/aura-farming/v0","credits":13,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T13:18:52.599Z","call":"voice-generator/generate","key":"announcer-3","credits":26,"balance":140479,"note":"credits = balance delta"}
+{"ts":"2026-09-26T13:18:54.563Z","call":"post/speech/tts","key":"announcer/aura-farming/v0","credits":13,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T13:19:28.102Z","call":"post/speech/tts","key":"ninja/taunt-5/v0","credits":26,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T13:19:35.576Z","call":"voice-generator/generate","key":"ninja-2","credits":0,"balance":140440,"note":"credits = balance delta"}
+{"ts":"2026-09-26T13:19:37.136Z","call":"post/speech/tts","key":"ninja/taunt-5/v0","credits":26,"note":"1 credit per character (docs/credits)"}
+{"ts":"2026-09-26T13:19:42.742Z","call":"voice-generator/generate","key":"ninja-3","credits":0,"balance":140414,"note":"credits = balance delta"}
+{"ts":"2026-09-26T13:19:44.474Z","call":"post/speech/tts","key":"ninja/taunt-5/v0","credits":26,"note":"1 credit per character (docs/credits)"}
