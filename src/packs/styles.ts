@@ -9,7 +9,7 @@ export const PACK_CSS = `
 .ap-root.ap-in{opacity:1}
 .ap-root.ap-out{opacity:0;transition:opacity .22s ease-in}
 .ap-root *{box-sizing:border-box}
-.ap-bgrays{position:absolute;left:50%;top:50%;width:220vmax;height:220vmax;margin:-110vmax 0 0 -110vmax;pointer-events:none;opacity:.22;
+.ap-bgrays{position:absolute;left:50%;top:50%;width:160vmax;height:160vmax;margin:-80vmax 0 0 -80vmax;pointer-events:none;opacity:.22;
   background:repeating-conic-gradient(from 0deg,rgba(186,120,255,.55) 0deg 6deg,transparent 6deg 18deg);
   -webkit-mask:radial-gradient(circle,#000 0%,transparent 55%);mask:radial-gradient(circle,#000 0%,transparent 55%);
   animation:ap-spin 40s linear infinite}
@@ -90,8 +90,8 @@ export const PACK_CSS = `
 .ap-rar{align-self:stretch;display:flex;justify-content:space-between;align-items:center;font-size:calc(var(--cw)*.085);letter-spacing:.14em;
   text-shadow:0 2px 0 rgba(0,0,0,.35)}
 .ap-kind{font-size:.8em;padding:.2em .5em;border-radius:99px;background:rgba(0,0,0,.35);letter-spacing:.12em}
-.ap-icon{width:62%;flex:1 1 auto;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 6px 0 rgba(0,0,0,.3))}
-.ap-icon svg{width:100%;height:auto;max-height:100%}
+.ap-icon{width:62%;flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 6px 0 rgba(0,0,0,.3))}
+.ap-icon svg{width:100%;height:100%}
 .ap-name{font-size:calc(var(--cw)*.15);line-height:.95;text-align:center;letter-spacing:.01em;text-transform:uppercase;
   text-shadow:0 3px 0 rgba(0,0,0,.45);max-width:100%;overflow-wrap:anywhere}
 .ap-flavor{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-stretch:normal;font-weight:600;font-size:calc(var(--cw)*.058);
@@ -131,6 +131,12 @@ export const PACK_CSS = `
 .ap-btn:focus-visible{outline:3px solid #ffd84a;outline-offset:3px}
 .ap-tip{font-family:system-ui,-apple-system,sans-serif;font-stretch:normal;font-size:clamp(11px,1.7vh,14px);opacity:.65;margin-top:.5em;letter-spacing:.02em}
 .ap-summary-mode .ap-title{opacity:0}
+.ap-callout{position:absolute;left:0;right:0;top:50%;margin-top:-.6em;text-align:center;font-size:clamp(40px,13vh,120px);line-height:1.2;
+  letter-spacing:.04em;color:var(--ap-c);pointer-events:none;z-index:7;opacity:0;
+  text-shadow:0 0 30px var(--ap-g),0 6px 0 rgba(0,0,0,.5)}
+.ap-callout.ap-go{animation:ap-slam 1.1s cubic-bezier(.2,1,.3,1) forwards}
+@keyframes ap-slam{0%{opacity:0;transform:scale(2.4) rotate(-4deg)}14%{opacity:1;transform:scale(.95) rotate(-4deg)}
+  22%{transform:scale(1.04) rotate(-4deg)}70%{opacity:1;transform:scale(1) rotate(-4deg)}100%{opacity:0;transform:scale(1.15) rotate(-4deg)}}
 .ap-stage{transition:transform .45s cubic-bezier(.2,1,.3,1)}
 .ap-summary-mode .ap-stage{transform:translate3d(0,-9vh,0) scale(.9)}
 @media (max-height:430px){.ap-tip{display:none}.ap-tierup{height:1.1em;margin-top:.25em}.ap-btn{margin-top:.35em}}

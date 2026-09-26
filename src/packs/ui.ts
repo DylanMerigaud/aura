@@ -106,6 +106,7 @@ export function showOverlay(input: OverlayInput): Promise<void> {
   const title = el("div", "ap-title", `AURA PACK<small>${n === 1 ? "1 CARD" : `${n} CARDS`}</small>`);
   const hint = el("div", "ap-hint", "TAP TO TEAR");
   const flash = el("div", "ap-flash");
+  const callout = el("div", "ap-callout");
   const live = el("div", "");
   live.setAttribute("aria-live", "polite");
   live.style.cssText = "position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)";
@@ -146,7 +147,7 @@ ${hasEmote ? `<div class="ap-tip">Tap an emote to equip it for your flex.</div>`
 
   tilt.append(pack, ...slots);
   stage.append(tilt);
-  root.append(bgrays, stage, title, hint, sum, flash, live);
+  root.append(bgrays, stage, title, hint, sum, flash, callout, live);
   (input.parent ?? document.body).append(root);
   void root.offsetWidth;
   root.classList.add("ap-in");
@@ -205,6 +206,15 @@ ${hasEmote ? `<div class="ap-tip">Tap an emote to equip it for your flex.</div>`
     live.textContent = `${RARITY_STYLE[c.rarity].label}: ${c.name}${c.isNew ? ", new" : `, duplicate, ${c.shards} shards`}`;
     if (!quiet || rank(c.rarity) >= rank("legendary")) sound.flip(c.rarity, i);
     confetti(s, c.rarity, quiet ? Math.ceil(CONFETTI[c.rarity] / 2) : undefined);
+    if (!quiet && rank(c.rarity) >= rank("epic")) {
+      const st = RARITY_STYLE[c.rarity];
+      callout.textContent = `${st.label}!`;
+      callout.style.setProperty("--ap-c", st.color);
+      callout.style.setProperty("--ap-g", st.glow);
+      callout.classList.remove("ap-go");
+      void callout.offsetWidth;
+      callout.classList.add("ap-go");
+    }
     if (c.rarity === "unfathomable" && !unfathomableFired) {
       unfathomableFired = true;
       bigFlash();
