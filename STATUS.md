@@ -1,3 +1,9 @@
+16:30 CEST, GAME lane: the handoff's steps 1 to 4 are live at the ROOT, plus the roster and smoother animation
+GREEN: tests 690, typecheck clean; TAP ONLY notes and ring, the 67 mash and the hold; YOUR MOVE / HIS MOVE turns; loading, then the title scene tap, count in, battle, results card with XP and RANK UP, SHARE card; onboarding by doing (ghost finger, wide windows, first 15 s unlosable), windows tighten with the combo, FLOW; black playground, performer camera, like / dislike bar; level 1 is THE BOAT KID, then the Ninja and 3 more; Kevin in rank cosmetics; head speech bubbles; animation smoothness test (max 32.8 degrees per frame); pnpm balance: average bot 74 percent on level 1
+RED: taunt voices muted until INTEGRATION re-records them from the new cast (index.json "cast": "roster-1625"); the Boat Kid idles on the generic idle (the boat sweep plays on his turns); nothing seen on a phone since 15:35
+PLAY: https://dylanmerigaud.github.io/aura/
+NEED FROM DYLAN: play the root once on the phone, sound on: the first 20 seconds (title tap, count in, the first notes with the ghost finger) and the 67 on the drop
+
 16:25 CEST, GAME lane: the results card, the XP bar and the one tap flow at the ROOT
 GREEN: tests 680, typecheck clean; LOADING, then the TITLE over the arena (chrome AURA, TAP TO PLAY, small LOADOUT and SETTINGS buttons), then tap, count in, battle, results; no map, VS card, menu or multiplayer on the way; results card AURA FARMED / HUMBLED with score, accuracy, best combo, stars, roast, RETRY (NEXT after a win) and SHARE (a 1080x1920 PNG card); XP bar with RANK UP; a win moves to the next opponent; a double start that could show SCORE 0 is now refused
 RED: the Boat Kid as level 1, Kevin as the player, fixed opponent ranks and the head speech bubble (roster lane), the animation smoothness test; nothing seen on a phone since 15:35

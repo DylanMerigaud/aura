@@ -11,6 +11,8 @@ const COUNT_IN = 4;
 const RESUME_COUNT_IN = 3;
 /** Seconds between the decided battle and the results (the finish animation). */
 const FINISH = 3.2;
+/** The cast text version the taunt recordings must carry in voice/v2/index.json ("cast": CAST_TAG). */
+export const CAST_TAG = "roster-1625";
 /** A track still not decoded after this plays the battle on the clock alone (count in, SFX), never a black wait. */
 const TRACK_WAIT_MS = 12000;
 
@@ -239,7 +241,11 @@ export class Game implements GameApi {
   private react(e: CoreEvent) {
     const L = this.core?.level;
     if (!L) return;
-    if (e.kind === "taunt") this.voice(`v2-l${L.id}-taunt-${e.index}`);
+    // Taunt voices only once they were recorded from the current cast text (voice/v2/index.json "cast"),
+    // so an old recording never speaks over a new subtitle.
+    if (e.kind === "taunt") {
+      if ((this.voices as Record<string, string> | null)?.cast === CAST_TAG) this.voice(`v2-l${L.id}-taunt-${e.index}`);
+    }
     else if (e.kind === "end") {
       this.endAt = ctx.currentTime + FINISH;
       const bar = (60 / L.bpm) * 4;
