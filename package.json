@@ -15,6 +15,7 @@
     "gen:voices": "tsx scripts/gen-voices.ts",
     "pages": "bash scripts/deploy-pages.sh",
     "sim": "tsx scripts/sim.ts",
+    "balance": "tsx scripts/balance-sim.ts",
     "snap": "tsx scripts/snap.ts",
     "evals:pacing": "tsx scripts/eval-pacing.ts"
   },
