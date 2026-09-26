@@ -112,7 +112,7 @@ export function runDemo(stage: Stage): () => void {
       mashCount,
       holding,
       holdProgress: holding ? (beatPos - 26) / 4 : 0,
-      phase2: false,
+      phase2: false, turn: "player",
       ending: ended,
       win: ended ? meter >= 0 : null,
       prompts: [],

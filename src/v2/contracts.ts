@@ -48,6 +48,9 @@ export function tierOf(combo: number): Tier {
   return combo >= 25 ? 3 : combo >= 15 ? 2 : combo >= 5 ? 1 : 0;
 }
 
+/** Whose turn it is in the dance battle. */
+export type Turn = "player" | "opponent";
+
 export type CoreEvent =
   /** Count-in click n = 4,3,2,1 scheduled at AudioContext time `at`. */
   | { kind: "countIn"; n: number; at: number }
@@ -67,6 +70,10 @@ export type CoreEvent =
   | { kind: "dropSoon"; beat: number }
   | { kind: "drop"; beat: number }
   | { kind: "phase2" }
+  /** Dance battle turns: the announcer calls YOUR MOVE / HIS MOVE; player prompts only exist in a player turn. */
+  | { kind: "turn"; who: Turn; beat: number; lengthBeats: number }
+  /** The opponent performs a canon move (a gesture key from src/anim, e.g. "boat_sweep") on his turn. */
+  | { kind: "opponentMove"; move: string; beat: number; lengthBeats: number }
   | { kind: "end"; win: boolean; ko: boolean };
 
 export interface Frame {
@@ -94,6 +101,8 @@ export interface Frame {
   /** 0..1 of the current HOLD. */
   holdProgress: number;
   phase2: boolean;
+  /** Whose turn it is now (the play zone dims and ignores taps on "opponent"). */
+  turn: Turn;
   /** Set once the battle is decided (freeze frame, letterbox). */
   ending: boolean;
   win: boolean | null;

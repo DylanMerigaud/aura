@@ -211,7 +211,7 @@ export class BattleCore {
       meter: this.meter, combo: this.combo, tier: tierOf(this.combo), score: this.score, rate: this.tempo.rate,
       energy: this.energyAt(Math.floor(beatPos)), beatsToDrop: nextDrop === undefined ? Infinity : nextDrop - beatPos,
       mashing, mashCount: mashing && cur ? Math.min(cur.progress, this.mashCap((cur.ev as { length: number }).length)) : 0,
-      holding, holdProgress, phase2: this.phase2Fired, ending: this.ended, win: this.win, prompts,
+      holding, holdProgress, phase2: this.phase2Fired, turn: "player", ending: this.ended, win: this.win, prompts,
       showsAt: this.showsAt, targetAt: this.targetAt, level: this.level,
     };
   }
