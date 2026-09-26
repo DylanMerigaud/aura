@@ -30,9 +30,9 @@ Both `release:itch` and `release:pages` stage a copy of `dist/` in `.cache/relea
 - The zip has `index.html` as a root entry (not inside a folder) and one entry per staged file.
 - INFO line: every host named in the build (for example `fonts.googleapis.com` for the v2 font), which the page reaches from inside the itch.io iframe.
 
-Current numbers (2026-09-26, main at d92e75a): 124 files, 19.8 MB extracted, 16.2 MB zipped, largest file 1.7 MB.
+Current numbers (2026-09-26 15:10): 128 files, 22.2 MB extracted, 18.2 MB zipped, largest file 4.4 MB.
 
-`index.html` at the zip root is the game itch.io plays: today that is v1, the 2D game. v2 ships in the same zip at `v2/index.html`, which itch.io does not link to. If v2 becomes the submitted game, the build has to put it at `dist/index.html` before the upload.
+`index.html` at the zip root is the game itch.io plays: the latest build, v2 (3D). The 2D build ships at `v1/index.html`, and `v2/index.html` redirects to the root for old links. `scripts/build.mjs` owns that layout, so Pages and itch.io get the same one.
 
 ## itch.io upload, exact field values
 

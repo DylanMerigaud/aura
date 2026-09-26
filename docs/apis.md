@@ -24,8 +24,12 @@ Every external API, host, framework and tool used to build and ship AURA (both t
 | tsx | Runs the TypeScript generation and tooling scripts directly (campaign, cast, art, voices, music analysis wiring, snapshots, balance sim, evals) with no separate compile step. | `package.json` scripts, `scripts/*` |
 | @napi-rs/canvas | Native Canvas 2D implementation that lets the real 2D build's rendering code run headlessly in Node, standing in for the browser canvas in the snapshot and balance tools. | `scripts/snap.ts`, `scripts/snap-screens.ts`, `scripts/fake-env.ts`, `scripts/sim.ts` |
 | ffmpeg | Transcodes Gradium's Ogg Opus output to mono 64 kbps mp3 for both voice pipelines, since Safari does not decode Opus reliably everywhere mp3 does. | `scripts/gen-voices.ts`, `scripts/gen-voices-v2.ts` |
-| GitHub Pages | Hosts the public build, 2D at the root, 3D at `/v2/`, served from the `gh-pages` branch, no GitHub Actions involved. | `scripts/deploy-pages.sh`, https://dylanmerigaud.github.io/aura/, https://dylanmerigaud.github.io/aura/v2/ |
-| itch.io | Secondary distribution as a plain zipped static build. | `pnpm zip`, `aura-itch.zip` |
+| GitHub Pages | Hosts the public build, the latest (3D) at the root, the 2D build at `/v1/`, served from the `gh-pages` branch, no GitHub Actions involved. | `scripts/release/deploy-pages.sh`, https://dylanmerigaud.github.io/aura/, https://dylanmerigaud.github.io/aura/v1/ |
+| itch.io | The submission build: the same staged bytes as Pages, zipped with `index.html` at the root. | `pnpm release:itch`, `scripts/release/build-itch.ts`, `aura-itch.zip` |
 | pnpm | Package manager and script runner for the game and, as its own workspace, the Worker. | `package.json`, `worker/package.json` |
 | wrangler | Cloudflare's CLI: local dev server with a local KV store, secret management, and deploy. | `worker/package.json` scripts, `worker/wrangler.toml` |
 | Claude Code | Used to write the game and the Worker during the hackathon. | built with |
+| @google/genai | Google's official Gemini SDK for Node, used by the build time generators and judges that call Gemini (text, audio judge, Lyria music, TTS). Keys read from the macOS keychain in process, never written to a file. | `scripts/render-music.ts` |
+| @gltf-transform/core | Reads the Mixamo glb files headlessly (skeletons, animation channels, keyframe times) for the animation gate: beat windows, root drift, loop seams. | `scripts/eval-animation.ts`, `scripts/eval-lib.ts` |
+| node-web-audio-api | A Web Audio implementation for Node, so the exact SFX recipes the game plays in the browser render offline to WAV previews and are measured in tests. | `scripts/render-sfx.ts`, `tests/sfx/*` |
+| @types/node, @types/three | TypeScript type definitions for Node (the scripts) and three.js (the 3D renderer). Types only, nothing ships. | `tsconfig.json` |
