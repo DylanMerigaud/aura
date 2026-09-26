@@ -201,6 +201,7 @@ export function startApp(opts: StartOpts): { hud: Listener } {
     event: (e) => {
       hudCtl.listener.event(e);
       live.event(e);
+      zone.event(e);
     },
     frame: (f, dt) => {
       hudCtl.listener.frame?.(f, dt);
