@@ -30,6 +30,9 @@ function glowSprite(color: string, size = 64): HTMLCanvasElement {
   return c;
 }
 
+/** Prompt kinds the player has landed once this session: their ghost finger never shows again. */
+const taught = new Set<string>();
+
 /** `host` receives --ring-x, --ring-y, --ring-r (px) so the DOM judgments sit above the ring. */
 export function buildArrows(host: HTMLElement) {
   const canvas = el("canvas", "hud-arrows");
@@ -49,6 +52,8 @@ export function buildArrows(host: HTMLElement) {
   let dirty = false;
 
   const gate = newGate();
+  /** Onboarding by doing: the ghost finger shows each kind until its first success (session long). */
+  const watched = new Map<string, EventState>();
   const shown: EventState[] = [];
 
   function resize() {
@@ -143,6 +148,36 @@ export function buildArrows(host: HTMLElement) {
     return portrait ? [0, -beatsAway * laneUnits] : [beatsAway * laneUnits, 0];
   }
 
+  /** The ghost finger over the ring: `press` 0 hovering, 1 down on the ring. */
+  function ghost(press: number, alpha = 0.9) {
+    g.save();
+    g.globalAlpha = alpha;
+    g.font = "64px sans-serif";
+    g.textAlign = "center";
+    g.textBaseline = "bottom";
+    g.fillText("\u{1F447}", 0, -40 + press * 26);
+    if (press > 0.8) {
+      g.strokeStyle = "rgba(255,255,255,0.8)";
+      g.lineWidth = 4;
+      g.beginPath();
+      g.arc(0, 0, 60 + (1 - press) * 120, 0, Math.PI * 2);
+      g.stroke();
+    }
+    g.restore();
+  }
+
+  /** Draw the ghost finger for a prompt kind the player has not landed yet. */
+  function teach(s: EventState, f: Frame) {
+    const kind = s.ev.type;
+    if (taught.has(kind)) return;
+    watched.set(kind, s);
+    const now = f.songTime;
+    const T = s.ev.beat * f.spb;
+    if (kind === "hit") ghost(Math.exp(-Math.abs(T - now) * 9));
+    else if (kind === "mash" && f.mashing && s.progress < 4) ghost(Math.abs(Math.sin(now * Math.PI * 7)));
+    else if (kind === "hold" && !s.held) ghost(now >= T - 0.05 ? 1 : Math.exp(-(T - now) * 9));
+  }
+
   function prompt(s: EventState, f: Frame) {
     const now = f.songTime;
     const spb = f.spb;
@@ -225,11 +260,21 @@ export function buildArrows(host: HTMLElement) {
     g.strokeStyle = opponent ? "rgba(255,255,255,0.12)" : `rgba(255,255,255,${0.35 + pulse * 0.5})`;
     g.lineWidth = 4;
     g.beginPath();
-    g.arc(0, 0, 46 + pulse * 6, 0, Math.PI * 2);
+    // The ring shrinks as the windows tighten with the combo (wider in the onboarding).
+    const ringK = Math.min(1.3, Math.max(0.75, (f.windowK ?? 0.846) / 0.846));
+    g.arc(0, 0, 46 * ringK + pulse * 6, 0, Math.PI * 2);
     g.stroke();
     if (opponent) return;
 
-    for (const p of visiblePrompts(f.prompts, f.songTime, f.spb, gate, shown)) prompt(p, f);
+    for (const [kind, st] of watched) {
+      if (st.phase !== "done") continue;
+      watched.delete(kind);
+      if (st.result && st.result.grade !== "miss" && !st.result.cringe) taught.add(kind);
+    }
+    for (const p of visiblePrompts(f.prompts, f.songTime, f.spb, gate, shown)) {
+      prompt(p, f);
+      teach(p, f);
+    }
   }
 
   /** New battle: forget the previous level's queue state and wipe the layer. */

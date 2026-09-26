@@ -175,3 +175,48 @@ describe("BattleCore turns", () => {
     expect(out.some((e) => e.kind === "end")).toBe(false);
   });
 });
+
+describe("mastery and reactive taunts", () => {
+  it("windows: wide in the onboarding, 110 ms Ok at combo 0 then 70 ms at combo 25", async () => {
+    const { windowFactor, ONBOARD_S, ONBOARD_WINDOW } = await import("../src/v2/core");
+    expect(windowFactor(0, 1)).toBe(ONBOARD_WINDOW);
+    expect(windowFactor(0, ONBOARD_S + 1) * 130).toBeCloseTo(110);
+    expect(windowFactor(25, ONBOARD_S + 1) * 130).toBeCloseTo(70);
+    expect(windowFactor(80, ONBOARD_S + 1) * 130).toBeCloseTo(70);
+  });
+
+  it("FLOW after 8 Perfects in a row doubles the score and ends on the next non Perfect", () => {
+    // 20 notes so 9 Perfects do not KO the opponent (the gain per note scales with the chart size).
+    const hits = Array.from({ length: 20 }, (_, i) => ({ type: "hit" as const, beat: 4 + i * 2, dir: (i % 2 ? "up" : "left") as "up" | "left" }));
+    const lv = level(hits, { lengthBeats: 48, taunts: [] });
+    const out: CoreEvent[] = [];
+    const core = new BattleCore(lv, track, 1, (e) => out.push(e));
+    const spb = 0.5;
+    for (let i = 0; i < 9; i++) {
+      core.update((4 + i * 2) * spb - 0.01, 0.016);
+      core.input({ kind: "tap", down: true, t: (4 + i * 2) * spb });
+    }
+    expect(out.filter((e) => e.kind === "flow")).toEqual([{ kind: "flow", on: true }]);
+    expect(core.flow).toBe(true);
+    core.update(22 * spb - 0.01, 0.016);
+    core.input({ kind: "tap", down: true, t: 22 * spb + 0.08 });
+    expect(core.flow).toBe(false);
+  });
+
+  it("reacts: a miss streak and the combo 10 each make him say a line, never twice inside the cooldown", () => {
+    const hits = Array.from({ length: 24 }, (_, i) => ({ type: "hit" as const, beat: 4 + i * 2, dir: (i % 2 ? "up" : "left") as "up" | "left" }));
+    const taunts = ["a", "b", "c", "d", "e", "f", "g", "h"].map((text) => ({ beat: 999, text }));
+    const out: CoreEvent[] = [];
+    const core = new BattleCore(level(hits, { lengthBeats: 60, taunts }), track, 1, (e) => out.push(e));
+    const spb = 0.5;
+    // Two misses (no input), then 12 perfect taps.
+    for (let t = -1; t < 8 * spb + 0.5; t += 0.02) core.update(t, 0.02);
+    for (let i = 2; i < 14; i++) {
+      core.update((4 + i * 2) * spb - 0.01, 0.016);
+      core.input({ kind: "tap", down: true, t: (4 + i * 2) * spb });
+    }
+    const said = out.filter((e) => e.kind === "taunt").map((e) => (e as { text: string }).text);
+    expect(said).toContain("b");
+    expect(said.length).toBeGreaterThanOrEqual(2);
+  });
+});

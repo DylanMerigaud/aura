@@ -97,8 +97,8 @@ export function buildPopups(base: string) {
     replay(n, "pop");
   }
 
-  function spawnCombo(combo: number) {
-    comboPop.textContent = `${combo} COMBO`;
+  function spawnCombo(combo: number, text = `${combo} COMBO`) {
+    comboPop.textContent = text;
     replay(comboPop, "pop");
   }
 
@@ -107,6 +107,13 @@ export function buildPopups(base: string) {
       if (e.cringe) spawnGrade("CRINGE", CRINGE_COLOR, true);
       else spawnGrade(e.grade.toUpperCase(), GRADE_COLOR[e.grade], e.big);
       if (!e.cringe && e.grade !== "miss" && e.combo > 0 && e.combo % 10 === 0) spawnCombo(e.combo);
+      return;
+    }
+    if (e.kind === "flow") {
+      if (e.on) {
+        spawnCombo(0, "FLOW x2");
+        announce("flow!");
+      }
       return;
     }
     if (e.kind === "release") {

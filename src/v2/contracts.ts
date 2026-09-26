@@ -87,6 +87,8 @@ export type CoreEvent =
   | { kind: "turn"; who: Turn; beat: number; lengthBeats: number }
   /** The opponent performs a canon move (a gesture key from src/anim, e.g. "boat_sweep") on his turn. */
   | { kind: "opponentMove"; move: string; beat: number; lengthBeats: number }
+  /** FLOW: 8 Perfects in a row (score x2, sunglasses) until the next non Perfect. */
+  | { kind: "flow"; on: boolean }
   | { kind: "end"; win: boolean; ko: boolean };
 
 export interface Frame {
@@ -114,6 +116,10 @@ export interface Frame {
   /** 0..1 of the current HOLD. */
   holdProgress: number;
   phase2: boolean;
+  /** In FLOW (8 Perfects in a row). */
+  flow?: boolean;
+  /** Current timing window as a factor of the base windows (wide in the onboarding, tighter with the combo). */
+  windowK?: number;
   /** Whose turn it is now (the play zone dims and ignores taps on "opponent"). */
   turn: Turn;
   /** Set once the battle is decided (freeze frame, letterbox). */
