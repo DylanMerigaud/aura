@@ -1,0 +1,8 @@
+node_modules
+dist
+.cache
+*.log
+aura-itch.zip
+.DS_Store
+public/game.js
+public/game.js.map

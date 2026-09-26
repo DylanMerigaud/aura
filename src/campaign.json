@@ -1,0 +1,153 @@
+{
+ "levels": [
+  {
+   "id": 1,
+   "title": "NPC",
+   "place": "Metro platform, 2am",
+   "artKey": "metro",
+   "story": [
+    "Line 13, last train gone.",
+    "A guy in sunglasses says you have zero aura. Prove him wrong."
+   ],
+   "opponent": {
+    "name": "Kevin Shades",
+    "persona": "Wears sunglasses underground. Has never been wrong.",
+    "color": "#35e0ff"
+   },
+   "taunts": [
+    {
+     "beat": 2,
+     "text": "Zero aura detected."
+    },
+    {
+     "beat": 30,
+     "text": "Is that your final form?"
+    },
+    {
+     "beat": 48,
+     "text": "My sunglasses have more aura than you."
+    }
+   ],
+   "announcer": {
+    "intro": "Round one. Metro. Fight!",
+    "win": "Aura secured!",
+    "lose": "You have been humbled."
+   },
+   "bpm": 100,
+   "windowScale": 1.0,
+   "lengthBeats": 64,
+   "seed": 1,
+   "events": [
+    {
+     "type": "hit",
+     "beat": 8,
+     "dir": "left"
+    },
+    {
+     "type": "hit",
+     "beat": 10,
+     "dir": "right"
+    },
+    {
+     "type": "hit",
+     "beat": 12,
+     "dir": "up"
+    },
+    {
+     "type": "hit",
+     "beat": 14,
+     "dir": "down"
+    },
+    {
+     "type": "hit",
+     "beat": 16,
+     "dir": "left"
+    },
+    {
+     "type": "hit",
+     "beat": 18,
+     "dir": "right"
+    },
+    {
+     "type": "hit",
+     "beat": 20,
+     "dir": "up"
+    },
+    {
+     "type": "hit",
+     "beat": 22,
+     "dir": "down"
+    },
+    {
+     "type": "mash",
+     "beat": 24,
+     "length": 4
+    },
+    {
+     "type": "hit",
+     "beat": 30,
+     "dir": "right"
+    },
+    {
+     "type": "hit",
+     "beat": 32,
+     "dir": "up"
+    },
+    {
+     "type": "hit",
+     "beat": 34,
+     "dir": "down"
+    },
+    {
+     "type": "hit",
+     "beat": 36,
+     "dir": "left"
+    },
+    {
+     "type": "hit",
+     "beat": 38,
+     "dir": "right"
+    },
+    {
+     "type": "hold",
+     "beat": 40,
+     "length": 2
+    },
+    {
+     "type": "hit",
+     "beat": 44,
+     "dir": "up"
+    },
+    {
+     "type": "hit",
+     "beat": 45,
+     "dir": "down"
+    },
+    {
+     "type": "hit",
+     "beat": 46,
+     "dir": "left"
+    },
+    {
+     "type": "hit",
+     "beat": 48,
+     "dir": "right"
+    },
+    {
+     "type": "combo",
+     "beat": 52,
+     "dirs": [
+      "left",
+      "up",
+      "right"
+     ]
+    },
+    {
+     "type": "mash",
+     "beat": 56,
+     "length": 4
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,24 @@
+{
+  "name": "aura",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AURA: a cinematic aura-battle rhythm QTE game for the browser.",
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/build.mjs --dev",
+    "build": "node scripts/build.mjs",
+    "zip": "node scripts/build.mjs && cd dist && rm -f ../aura-itch.zip && zip -qr ../aura-itch.zip .",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "gen:campaign": "tsx scripts/gen-campaign.ts",
+    "gen:art": "tsx scripts/gen-art.ts",
+    "gen:voices": "tsx scripts/gen-voices.ts",
+    "deploy": "bash scripts/deploy-pages.sh"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "vitest": "^3.0.0"
+  }
+}
