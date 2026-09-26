@@ -14,7 +14,7 @@ One announcer call (AURA FARMING), one Ninja taunt (Navigo? Never heard of it.) 
 | sample/ninja-taunt-5-gemini-pro.mp3 | ninja | gemini-2.5-pro-preview-tts | Algenib, per line direction | E3 Em4 S4 G3 (mean 3.5) |
 | sample/ninja-taunt-5-gradium.mp3 | ninja | gradium-default (voice design) | designed ninja-3 vox_emb_fDfTMIAGrwZmE0jG | E3 Em4 S4 G3 (mean 3.5) |
 
-Best candidate per role (mean over the sample): announcer gradium + gemini-flash, ninja gemini-flash, boatkid gemini-flash + gemini-pro
+Best candidate per role (mean over the sample): announcer gradium + gemini-flash, ninja gemini-flash, boatkid gemini-flash + gemini-pro + gradium
 
 ## Auditions (every voice option tried, the best per candidate is the row above)
 

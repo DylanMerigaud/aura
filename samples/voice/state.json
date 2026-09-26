@@ -85,6 +85,21 @@
    "embedding_id": "vox_emb_ek9gorWnNSVjG1yx",
    "prompt": "Young teenage boy, 13, relaxed and serene, hushed intimate voice, breathy, deadpan confidence, slow pacing, zen and unimpressed.",
    "language": "en"
+  },
+  "opp-papi-raleur": {
+   "embedding_id": "vox_emb_nQWxGMwmtwpBqwaJ",
+   "prompt": "Grumpy old Parisian man, 75, gravelly and raspy voice, sighing and scoffing, complains about everything, strong French accent, slow and grumbling, funny.",
+   "language": "en"
+  },
+  "opp-la-parisienne": {
+   "embedding_id": "vox_emb_mLaretcwqNgneZw1",
+   "prompt": "Chic Parisian woman, late 20s, cold and unimpressed, dry and disdainful, low elegant voice, French accent, slow bored pacing, effortless.",
+   "language": "en"
+  },
+  "opp-sporty-granny": {
+   "embedding_id": "vox_emb_s8E2imDiahks9xis",
+   "prompt": "Energetic old lady, 80, sporty and bossy like a fitness coach, bright strong voice, slight French accent, brisk pacing, merciless and funny.",
+   "language": "en"
   }
  },
  "sample": [
@@ -3708,6 +3723,2535 @@
      "stereotype": 2,
      "genz": 1,
      "note": "The soft delivery had potential, but the deafening crash at the end completely destroys the serene vibe and renders the take unusable."
+    }
+   }
+  ],
+  "announcer/l1-win-0eb3b2": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l1-win-0eb3b2/v1.mp3",
+    "role": "announcer",
+    "line": "l1-win",
+    "text": "Aura farmed.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 1,
+     "emotion": 1,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "Way too low energy and ominous; this sounds like a horror movie trailer, not a hyped underground MC."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l1-win-0eb3b2/v3.mp3",
+    "role": "announcer",
+    "line": "l1-win",
+    "text": "Aura farmed.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 1,
+     "emotion": 1,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "Way too flat and bored for a hype MC, it sounds like you are reading a grocery list."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l1-win-0eb3b2/v2.mp3",
+    "role": "announcer",
+    "line": "l1-win",
+    "text": "Aura farmed.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: victorious, ecstatic, celebrating the player, crowd going wild. Even more attitude, exaggerate the character.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nAura farmed.",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 3,
+     "genz": 3,
+     "note": "The delivery is a bit too flat and needs way more explosive esports caster energy to truly sell the hype."
+    }
+   }
+  ],
+  "announcer/l1-lose-4fe240": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l1-lose-4fe240/v2.mp3",
+    "role": "announcer",
+    "line": "l1-lose",
+    "text": "Humbled.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: roasting the player, mocking, laughing, ruthless but playful. Even more attitude, exaggerate the character.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nHumbled.",
+    "scores": {
+     "energy": 4,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 1,
+     "note": "The delivery is a generic yell that completely misses the playful mocking direction, and the loud crash at the end makes it unusable."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l1-lose-4fe240/v1.mp3",
+    "role": "announcer",
+    "line": "l1-lose",
+    "text": "Humbled.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The actor said Humble instead of Humbled, resulting in an automatic score cap for incorrect dialogue."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l1-lose-4fe240/v3.mp3",
+    "role": "announcer",
+    "line": "l1-lose",
+    "text": "Humbled.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "This read is way too flat and polite instead of delivering the ruthless mocking energy required to roast the player."
+    }
+   }
+  ],
+  "announcer/l2-win-204b31": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l2-win-204b31/v2.mp3",
+    "role": "announcer",
+    "line": "l2-win",
+    "text": "Sigma mogged.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: victorious, ecstatic, celebrating the player, crowd going wild. Even more attitude, exaggerate the character.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nSigma mogged.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The delivery is way too flat and needs that explosive esports caster hype to avoid sounding like corporate cringe."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l2-win-204b31/v1.mp3",
+    "role": "announcer",
+    "line": "l2-win",
+    "text": "Sigma mogged.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 3,
+     "genz": 3,
+     "note": "The slang is there but the delivery feels too restrained for a true underground hype MC."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l2-win-204b31/v3.mp3",
+    "role": "announcer",
+    "line": "l2-win",
+    "text": "Sigma mogged.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 1,
+     "emotion": 1,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "The delivery is completely deadpan and lacks any of the required hype or energy for an MC."
+    }
+   }
+  ],
+  "announcer/l3-intro-dc586e": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l3-intro-dc586e/v1.mp3",
+    "role": "announcer",
+    "line": "l3-intro",
+    "text": "Respect elders.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 1,
+     "note": "It is just a quick bark that completely misses the tension-building hype required for an MC."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l3-intro-dc586e/v2.mp3",
+    "role": "announcer",
+    "line": "l3-intro",
+    "text": "Respect elders.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: opening the battle, dead serious hype, building tension, then punching the last word. Even more attitude, exaggerate the character.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nRespect elders.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "You added an extra word so I have to cap all your scores at two."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l3-intro-dc586e/v3.mp3",
+    "role": "announcer",
+    "line": "l3-intro",
+    "text": "Respect elders.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 1,
+     "emotion": 1,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "Way too flat and rushed, completely missing the hype and tension needed for a battle MC."
+    }
+   }
+  ],
+  "announcer/l2-lose-4c5628": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l2-lose-4c5628/v1.mp3",
+    "role": "announcer",
+    "line": "l2-lose",
+    "text": "Fare dodged you.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The delivery is completely flat and lacks the ruthless mocking laughter needed for a hype MC."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l2-lose-4c5628/v2.mp3",
+    "role": "announcer",
+    "line": "l2-lose",
+    "text": "Fare dodged you.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: roasting the player, mocking, laughing, ruthless but playful. Even more attitude, exaggerate the character.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nFare dodged you.",
+    "scores": {
+     "energy": 2,
+     "emotion": 3,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "This is way too casual and quiet for a hype MC and needs significantly more projection and exaggerated swagger."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l2-lose-4c5628/v3.mp3",
+    "role": "announcer",
+    "line": "l2-lose",
+    "text": "Fare dodged you.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 3,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The delivery is far too dry and generic, completely missing the loud and mocking esports caster energy needed for this character."
+    }
+   }
+  ],
+  "announcer/l3-win-27d836": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l3-win-27d836/v1.mp3",
+    "role": "announcer",
+    "line": "l3-win",
+    "text": "Papi retired.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 1,
+     "emotion": 1,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "Way too flat and casual for a hype MC, completely missing the ecstatic energy required."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l3-win-27d836/v2.mp3",
+    "role": "announcer",
+    "line": "l3-win",
+    "text": "Papi retired.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: victorious, ecstatic, celebrating the player, crowd going wild. Even more attitude, exaggerate the character.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nPapi retired.",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "The explosive delivery and chaotic energy make this absolute peak meme material."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l3-win-27d836/v3.mp3",
+    "role": "announcer",
+    "line": "l3-win",
+    "text": "Papi retired.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "The blown-out high-octane delivery perfectly captures the unhinged hype of a modern esports caster."
+    }
+   }
+  ],
+  "announcer/l3-lose-8e0072": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l3-lose-8e0072/v3.mp3",
+    "role": "announcer",
+    "line": "l3-lose",
+    "text": "Boomer wins.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 3,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "Way too casual and quiet for a hype MC, we need explosive esports energy."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l3-lose-8e0072/v2.mp3",
+    "role": "announcer",
+    "line": "l3-lose",
+    "text": "Boomer wins.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: roasting the player, mocking, laughing, ruthless but playful. Even more attitude, exaggerate the character.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nBoomer wins.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "Way too flat and casual for a hyped underground MC."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l3-lose-8e0072/v1.mp3",
+    "role": "announcer",
+    "line": "l3-lose",
+    "text": "Boomer wins.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 1,
+     "note": "The delivery is completely flat and lacks the loud, ruthless mocking energy required for a hype MC."
+    }
+   }
+  ],
+  "announcer/l4-intro-f83cb4": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l4-intro-f83cb4/v2.mp3",
+    "role": "announcer",
+    "line": "l4-intro",
+    "text": "Oh la la.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: opening the battle, dead serious hype, building tension, then punching the last word. Even more attitude, exaggerate the character.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nOh la la.",
+    "scores": {
+     "energy": 3,
+     "emotion": 2,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "The delivery sounds like a goofy cartoon character instead of a serious hype MC, completely missing the requested tension."
+    }
+   }
+  ],
+  "announcer/l4-lose-56415b": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l4-lose-56415b/v2.mp3",
+    "role": "announcer",
+    "line": "l4-lose",
+    "text": "Pas terrible.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: roasting the player, mocking, laughing, ruthless but playful. Even more attitude, exaggerate the character.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nPas terrible.",
+    "scores": {
+     "energy": 4,
+     "emotion": 3,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The delivery is loud but sounds more like a snobby cartoon villain than a modern Gen Z hype MC."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l4-lose-56415b/v1.mp3",
+    "role": "announcer",
+    "line": "l4-lose",
+    "text": "Pas terrible.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 1,
+     "emotion": 1,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "This delivery is completely flat and lifeless instead of the loud and mocking hype beast energy we need."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l4-lose-56415b/v3.mp3",
+    "role": "announcer",
+    "line": "l4-lose",
+    "text": "Pas terrible.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "This sounds like a bored substitute teacher instead of a hyped underground MC roasting a player."
+    }
+   }
+  ],
+  "announcer/l4-win-3f8a67": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l4-win-3f8a67/v3.mp3",
+    "role": "announcer",
+    "line": "l4-win",
+    "text": "Tres chic.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 1,
+     "note": "The delivery is completely flat and lacks the explosive hype required for a Gen Z dance battle announcer."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l4-win-3f8a67/v1.mp3",
+    "role": "announcer",
+    "line": "l4-win",
+    "text": "Tres chic.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 1,
+     "note": "The delivery is completely flat and sounds more like a bored fashion critic than a hyped underground dance battle MC."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l4-win-3f8a67/v2.mp3",
+    "role": "announcer",
+    "line": "l4-win",
+    "text": "Tres chic.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: victorious, ecstatic, celebrating the player, crowd going wild. Even more attitude, exaggerate the character.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nTres chic.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The delivery is aggressive rather than ecstatic and the loud desk slam at the end makes this completely unusable."
+    }
+   }
+  ],
+  "announcer/l5-intro-d5e475": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l5-intro-d5e475/v3.mp3",
+    "role": "announcer",
+    "line": "l5-intro",
+    "text": "Final boss.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "Way too flat and casual for a hype MC; we need explosive, arena-shaking energy."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l5-intro-d5e475/v2.mp3",
+    "role": "announcer",
+    "line": "l5-intro",
+    "text": "Final boss.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: opening the battle, dead serious hype, building tension, then punching the last word. Even more attitude, exaggerate the character.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nFinal boss.",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "The delivery is perfectly over-the-top and hits the exact esports announcer vibe needed for maximum hype."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l5-intro-d5e475/v1.mp3",
+    "role": "announcer",
+    "line": "l5-intro",
+    "text": "Final boss.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 3,
+     "genz": 2,
+     "note": "The delivery is too flat and lacks the explosive tension needed for a true hype MC."
+    }
+   }
+  ],
+  "announcer/l5-win-96797a": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l5-win-96797a/v1.mp3",
+    "role": "announcer",
+    "line": "l5-win",
+    "text": "Granny benched.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "The delivery is incredibly loud and punchy, perfectly capturing the chaotic hype of an esports caster."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l5-win-96797a/v3.mp3",
+    "role": "announcer",
+    "line": "l5-win",
+    "text": "Granny benched.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 3,
+     "genz": 2,
+     "note": "It hits the words but lacks the explosive hype needed for a true underground MC."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l5-win-96797a/v2.mp3",
+    "role": "announcer",
+    "line": "l5-win",
+    "text": "Granny benched.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: victorious, ecstatic, celebrating the player, crowd going wild. Even more attitude, exaggerate the character.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nGranny benched.",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 3,
+     "genz": 2,
+     "note": "It has decent volume but sounds like a generic cartoon announcer rather than a genuine Gen Z hype MC."
+    }
+   }
+  ],
+  "announcer/l5-lose-7e7337": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l5-lose-7e7337/v1.mp3",
+    "role": "announcer",
+    "line": "l5-lose",
+    "text": "Out cardioed.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 3,
+     "genz": 2,
+     "note": "The delivery is way too flat and lacks the ruthless laughing energy needed for a true hype MC."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l5-lose-7e7337/v2.mp3",
+    "role": "announcer",
+    "line": "l5-lose",
+    "text": "Out cardioed.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Fenrir",
+    "direction": "# AUDIO PROFILE: THE ANNOUNCER\na Gen Z hype MC at an underground dance battle in a Paris metro station at 2am, young American male, esports caster meets battle rap host, SHOUTING at full volume into a mic over a roaring crowd, voice cracking with hype, wrestling ring announcer energy.\n### DIRECTOR'S NOTES\nStyle: roasting the player, mocking, laughing, ruthless but playful. Even more attitude, exaggerate the character.\nAccent: American, young, Gen Z slang cadence.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nOut cardioed.",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "The loud, mocking delivery perfectly captures the ruthless, over-the-top energy of a hype MC."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/announcer/l5-lose-7e7337/v3.mp3",
+    "role": "announcer",
+    "line": "l5-lose",
+    "text": "Out cardioed.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed announcer-2 vox_emb_IcBdtT87hIHTiUX9",
+    "direction": "voice design: American male streamer, 22, screaming into the mic at full volume, voice cracking with hype, Twitch clip energy, wrestling ring announcer, extremely loud, fast, ecstatic, raspy shout, huge chest resonance. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 3,
+     "genz": 2,
+     "note": "The delivery hits the right words but lacks the unhinged mocking energy needed for a true Gen Z hype MC."
+    }
+   }
+  ],
+  "boatkid/l1-taunt-3": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/boatkid/l1-taunt-3/v2.mp3",
+    "role": "boatkid",
+    "line": "l1-taunt-3",
+    "text": "Breathe.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Achernar",
+    "direction": "# AUDIO PROFILE: THE BOAT KID\nTHE BOAT KID, a calm young kid, the boss of aura maxing, standing at the front of a racing boat, eyes half closed, serene, never impressed, speaks calm and quiet, almost a whisper, supremely confident.\n### DIRECTOR'S NOTES\nStyle: almost silent, final.\nAccent: neutral, soft, young.\nPacing: slow, calm, unhurried, a breath of silence feels natural.\n#### TRANSCRIPT\nBreathe.",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "The whispered delivery is perfectly serene and radiates immense aura making it an instant lock for the character."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/boatkid/l1-taunt-3/v1.mp3",
+    "role": "boatkid",
+    "line": "l1-taunt-3",
+    "text": "Breathe.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Achernar",
+    "direction": "# AUDIO PROFILE: THE BOAT KID\nTHE BOAT KID, a calm young kid, the boss of aura maxing, standing at the front of a racing boat, eyes half closed, serene, never impressed, speaks calm and quiet, almost a whisper, supremely confident.\n### DIRECTOR'S NOTES\nStyle: almost silent, final.\nAccent: neutral, soft, young.\nPacing: slow, calm, unhurried, a breath of silence feels natural.\n#### TRANSCRIPT\nBreathe.",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "The whispered delivery perfectly captures that supreme aura-maxing confidence and will hit incredibly hard right before a beat drop."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/boatkid/l1-taunt-3/v3.mp3",
+    "role": "boatkid",
+    "line": "l1-taunt-3",
+    "text": "Breathe.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed boatkid-2 vox_emb_dzfDWNCFz7TtcGvo",
+    "direction": "voice design: Calm kid, 11 to 13, soft low voice, speaks barely above a whisper, perfectly composed, unbothered, mysterious and confident, slow and gentle pacing. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "The delivery is perfectly serene and aura-maxed, exactly what we need for this character."
+    }
+   }
+  ],
+  "boatkid/l1-taunt-5": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/boatkid/l1-taunt-5/v1.mp3",
+    "role": "boatkid",
+    "line": "l1-taunt-5",
+    "text": "Row slower.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Achernar",
+    "direction": "# AUDIO PROFILE: THE BOAT KID\nTHE BOAT KID, a calm young kid, the boss of aura maxing, standing at the front of a racing boat, eyes half closed, serene, never impressed, speaks calm and quiet, almost a whisper, supremely confident.\n### DIRECTOR'S NOTES\nStyle: a whisper, certain.\nAccent: neutral, soft, young.\nPacing: slow, calm, unhurried, a breath of silence feels natural.\n#### TRANSCRIPT\nRow slower.",
+    "scores": {
+     "energy": 4,
+     "emotion": 5,
+     "stereotype": 4,
+     "genz": 4,
+     "note": "The whispered delivery is perfectly serene and captures that effortless aura-maxing vibe."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/boatkid/l1-taunt-5/v3.mp3",
+    "role": "boatkid",
+    "line": "l1-taunt-5",
+    "text": "Row slower.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed boatkid-2 vox_emb_dzfDWNCFz7TtcGvo",
+    "direction": "voice design: Calm kid, 11 to 13, soft low voice, speaks barely above a whisper, perfectly composed, unbothered, mysterious and confident, slow and gentle pacing. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "This sounds like a generic adult reading a script rather than a young kid aura-maxing with a confident whisper."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/boatkid/l1-taunt-5/v2.mp3",
+    "role": "boatkid",
+    "line": "l1-taunt-5",
+    "text": "Row slower.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Achernar",
+    "direction": "# AUDIO PROFILE: THE BOAT KID\nTHE BOAT KID, a calm young kid, the boss of aura maxing, standing at the front of a racing boat, eyes half closed, serene, never impressed, speaks calm and quiet, almost a whisper, supremely confident.\n### DIRECTOR'S NOTES\nStyle: a whisper, certain.\nAccent: neutral, soft, young.\nPacing: slow, calm, unhurried, a breath of silence feels natural.\n#### TRANSCRIPT\nRow slower.",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "The whispered delivery perfectly captures that supreme aura-maxing confidence without trying too hard."
+    }
+   }
+  ],
+  "boatkid/l1-taunt-6": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/boatkid/l1-taunt-6/v1.mp3",
+    "role": "boatkid",
+    "line": "l1-taunt-6",
+    "text": "Calm wins.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Achernar",
+    "direction": "# AUDIO PROFILE: THE BOAT KID\nTHE BOAT KID, a calm young kid, the boss of aura maxing, standing at the front of a racing boat, eyes half closed, serene, never impressed, speaks calm and quiet, almost a whisper, supremely confident.\n### DIRECTOR'S NOTES\nStyle: serene, amused, slow.\nAccent: neutral, soft, young.\nPacing: slow, calm, unhurried, a breath of silence feels natural.\n#### TRANSCRIPT\nCalm wins.",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The delivery is too generic and sounds like an adult woman rather than a young, aura-maxing kid."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/boatkid/l1-taunt-6/v3.mp3",
+    "role": "boatkid",
+    "line": "l1-taunt-6",
+    "text": "Calm wins.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed boatkid-2 vox_emb_dzfDWNCFz7TtcGvo",
+    "direction": "voice design: Calm kid, 11 to 13, soft low voice, speaks barely above a whisper, perfectly composed, unbothered, mysterious and confident, slow and gentle pacing. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 4,
+     "genz": 3,
+     "note": "It hits the quiet requirement but feels a bit too flat to radiate true boss aura."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/boatkid/l1-taunt-6/v2.mp3",
+    "role": "boatkid",
+    "line": "l1-taunt-6",
+    "text": "Calm wins.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Achernar",
+    "direction": "# AUDIO PROFILE: THE BOAT KID\nTHE BOAT KID, a calm young kid, the boss of aura maxing, standing at the front of a racing boat, eyes half closed, serene, never impressed, speaks calm and quiet, almost a whisper, supremely confident.\n### DIRECTOR'S NOTES\nStyle: serene, amused, slow.\nAccent: neutral, soft, young.\nPacing: slow, calm, unhurried, a breath of silence feels natural.\n#### TRANSCRIPT\nCalm wins.",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The delivery is serene but sounds like an adult meditation app rather than an aura-maxing kid."
+    }
+   }
+  ],
+  "boatkid/l1-taunt-7": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/boatkid/l1-taunt-7/v1.mp3",
+    "role": "boatkid",
+    "line": "l1-taunt-7",
+    "text": "Watch me.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Achernar",
+    "direction": "# AUDIO PROFILE: THE BOAT KID\nTHE BOAT KID, a calm young kid, the boss of aura maxing, standing at the front of a racing boat, eyes half closed, serene, never impressed, speaks calm and quiet, almost a whisper, supremely confident.\n### DIRECTOR'S NOTES\nStyle: almost silent, final.\nAccent: neutral, soft, young.\nPacing: slow, calm, unhurried, a breath of silence feels natural.\n#### TRANSCRIPT\nWatch me.",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "The whispered, confident delivery perfectly captures that final, aura-maxing energy."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/boatkid/l1-taunt-7/v2.mp3",
+    "role": "boatkid",
+    "line": "l1-taunt-7",
+    "text": "Watch me.",
+    "candidate": "gemini-pro",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Achernar",
+    "direction": "# AUDIO PROFILE: THE BOAT KID\nTHE BOAT KID, a calm young kid, the boss of aura maxing, standing at the front of a racing boat, eyes half closed, serene, never impressed, speaks calm and quiet, almost a whisper, supremely confident.\n### DIRECTOR'S NOTES\nStyle: almost silent, final.\nAccent: neutral, soft, young.\nPacing: slow, calm, unhurried, a breath of silence feels natural.\n#### TRANSCRIPT\nWatch me.",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The delivery is quiet but sounds like a generic adult whisper rather than a supremely confident aura-maxing kid."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/boatkid/l1-taunt-7/v3.mp3",
+    "role": "boatkid",
+    "line": "l1-taunt-7",
+    "text": "Watch me.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed boatkid-2 vox_emb_dzfDWNCFz7TtcGvo",
+    "direction": "voice design: Calm kid, 11 to 13, soft low voice, speaks barely above a whisper, perfectly composed, unbothered, mysterious and confident, slow and gentle pacing. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 4,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "The delivery has immaculate aura and controlled calm making it a perfect fit for the character."
+    }
+   }
+  ],
+  "ninja/taunt-0-77cc5a": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-0-77cc5a/v3.mp3",
+    "role": "ninja",
+    "line": "taunt-0",
+    "text": "Ticket? Never.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: fake concerned, mocking the player, a smug smirk in the voice. Take a breath before it and hit it hard.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nTicket? Never.",
+    "scores": {
+     "energy": 4,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "The arrogant scoff perfectly sells the smug Parisian attitude and makes it highly memeable."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-0-77cc5a/v1.mp3",
+    "role": "ninja",
+    "line": "taunt-0",
+    "text": "Ticket? Never.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: fake concerned, mocking the player, a smug smirk in the voice. Push it further, more caricatural.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nTicket? Never.",
+    "scores": {
+     "energy": 3,
+     "emotion": 4,
+     "stereotype": 5,
+     "genz": 4,
+     "note": "The thick French accent and disrespectful scoff perfectly capture the arrogant fare dodger vibe."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-0-77cc5a/v2.mp3",
+    "role": "ninja",
+    "line": "taunt-0",
+    "text": "Ticket? Never.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: fake concerned, mocking the player, a smug smirk in the voice. Even more attitude, exaggerate the character.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nTicket? Never.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "You added an extra word at the beginning, so it is an automatic fail."
+    }
+   }
+  ],
+  "ninja/taunt-1-22bce4": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-1-22bce4/v1.mp3",
+    "role": "ninja",
+    "line": "taunt-1",
+    "text": "T'es cuit.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: slow and cold, delivering a verdict, satisfied. Push it further, more caricatural.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nT'es cuit.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The delivery is too fast and casual instead of the slow and cold verdict requested."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-1-22bce4/v2.mp3",
+    "role": "ninja",
+    "line": "taunt-1",
+    "text": "T'es cuit.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: slow and cold, delivering a verdict, satisfied. Even more attitude, exaggerate the character.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nT'es cuit.",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 3,
+     "genz": 3,
+     "note": "The delivery is appropriately cold but lacks the smug, punchy street attitude needed to make it truly hype."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-1-22bce4/v3.mp3",
+    "role": "ninja",
+    "line": "taunt-1",
+    "text": "T'es cuit.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: slow and cold, delivering a verdict, satisfied. Take a breath before it and hit it hard.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nT'es cuit.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The delivery is way too dry and robotic, completely missing the smug Parisian street attitude required to make this line hit."
+    }
+   }
+  ],
+  "ninja/taunt-2-d682af": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-2-d682af/v1.mp3",
+    "role": "ninja",
+    "line": "taunt-2",
+    "text": "Tickets are for NPCs.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: bragging, relaxed, almost bored, proud. Push it further, more caricatural.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nTickets are for NPCs.",
+    "scores": {
+     "energy": 4,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "The thick French accent combined with the unbothered delivery makes this absolute meme gold."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-2-d682af/v3.mp3",
+    "role": "ninja",
+    "line": "taunt-2",
+    "text": "Tickets are for NPCs.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: bragging, relaxed, almost bored, proud. Take a breath before it and hit it hard.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nTickets are for NPCs.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The awkward pause and stiff delivery completely kill the smug Parisian swagger."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-2-d682af/v2.mp3",
+    "role": "ninja",
+    "line": "taunt-2",
+    "text": "Tickets are for NPCs.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: bragging, relaxed, almost bored, proud. Even more attitude, exaggerate the character.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nTickets are for NPCs.",
+    "scores": {
+     "energy": 2,
+     "emotion": 3,
+     "stereotype": 1,
+     "genz": 2,
+     "note": "The actor completely missed the clear French accent requirement, sounding like a standard American teen instead of a Parisian metro dodger. While it hits the bored and unbothered direction, it is too flat and lacks the necessary swagger to be meme-worthy or hype."
+    }
+   }
+  ],
+  "ninja/taunt-3-527d2b": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-3-527d2b/v1.mp3",
+    "role": "ninja",
+    "line": "taunt-3",
+    "text": "I mog you.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: condescending, dismissive, a little laugh on frerot. Push it further, more caricatural.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nI mog you.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 1,
+     "genz": 2,
+     "note": "Where is the French accent? This sounds like a generic teenager mumbling into a cheap mic. The delivery is completely flat, muffled, and lacks the smug Parisian street attitude requested. Zero hype. Recast."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-3-527d2b/v2.mp3",
+    "role": "ninja",
+    "line": "taunt-3",
+    "text": "I mog you.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: condescending, dismissive, a little laugh on frerot. Even more attitude, exaggerate the character.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nI mog you.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "The delivery is completely flat and lacks the requested French accent or smug attitude."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-3-527d2b/v3.mp3",
+    "role": "ninja",
+    "line": "taunt-3",
+    "text": "I mog you.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: condescending, dismissive, a little laugh on frerot. Take a breath before it and hit it hard.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nI mog you.",
+    "scores": {
+     "energy": 2,
+     "emotion": 1,
+     "stereotype": 1,
+     "genz": 2,
+     "note": "You got the words right, but completely missed the vibe. There is zero French accent, no smugness, and you completely ignored the direction to add a laugh on frerot. It sounds like a robot reading a dictionary, not a cocky Parisian metro dodger. We need that unbothered street attitude to make this meme-worthy for the players. Do it again and actually act this time."
+    }
+   }
+  ],
+  "ninja/taunt-4-a62bbe": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-4-a62bbe/v1.mp3",
+    "role": "ninja",
+    "line": "taunt-4",
+    "text": "Navigo? Who?",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: calm and final, flexing, like closing a deal. Push it further, more caricatural.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nNavigo? Who?",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 4,
+     "genz": 3,
+     "note": "The accent is decent but the delivery feels a bit rushed instead of smoothly arrogant."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-4-a62bbe/v3.mp3",
+    "role": "ninja",
+    "line": "taunt-4",
+    "text": "Navigo? Who?",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: calm and final, flexing, like closing a deal. Take a breath before it and hit it hard.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nNavigo? Who?",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The delivery lacks the required French accent and sounds way too timid for a cocky street ninja."
+    }
+   }
+  ],
+  "ninja/taunt-5-dfb503": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-5-dfb503/v1.mp3",
+    "role": "ninja",
+    "line": "taunt-5",
+    "text": "Pure sigma.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: playing dumb, fake confused, then smug. Push it further, more caricatural.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nPure sigma.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 1,
+     "note": "The delivery is completely flat and misses the smug direction, making the slang sound incredibly forced and cringe."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-5-dfb503/v2.mp3",
+    "role": "ninja",
+    "line": "taunt-5",
+    "text": "Pure sigma.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: playing dumb, fake confused, then smug. Even more attitude, exaggerate the character.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nPure sigma.",
+    "scores": {
+     "energy": 1,
+     "emotion": 1,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "The actor added an extra sound at the beginning and completely missed the required French accent."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-5-dfb503/v3.mp3",
+    "role": "ninja",
+    "line": "taunt-5",
+    "text": "Pure sigma.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: playing dumb, fake confused, then smug. Take a breath before it and hit it hard.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nPure sigma.",
+    "scores": {
+     "energy": 1,
+     "emotion": 1,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "wrong words (heard \"The Turnstile Ninja. A young Parisian fare dodger from the banlieue. Speaking En\"), capped at 2. The actor read the entire character description out loud instead of just the line, making it completely unusable."
+    }
+   }
+  ],
+  "ninja/taunt-6-80da34": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-6-80da34/v1.mp3",
+    "role": "ninja",
+    "line": "taunt-6",
+    "text": "Jump the gate.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: cool and low, swagger, chin up. Push it further, more caricatural.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nJump the gate.",
+    "scores": {
+     "energy": 1,
+     "emotion": 1,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "wrong words (heard \"Audio profile, the Turnstile Ninja. A young Parisian fare dodger from the banlie\"), capped at 2. The actor read the entire casting direction and slate out loud instead of just performing the line. Instant rejection. Scores capped at 2 due to extra words."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-6-80da34/v3.mp3",
+    "role": "ninja",
+    "line": "taunt-6",
+    "text": "Jump the gate.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: cool and low, swagger, chin up. Take a breath before it and hit it hard.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nJump the gate.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The actor said 'jumps' instead of 'jump', so all scores are capped at 2."
+    }
+   }
+  ],
+  "ninja/taunt-7-f6bbc7": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-7-f6bbc7/v1.mp3",
+    "role": "ninja",
+    "line": "taunt-7",
+    "text": "Too slow, frerot.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: proud, theatrical, like a movie trailer hero, cocky. Push it further, more caricatural.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nToo slow, frerot.",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 4,
+     "genz": 3,
+     "note": "It hits the French street vibe but lacks the theatrical, cocky movie-trailer energy needed to be truly meme-worthy."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-7-f6bbc7/v2.mp3",
+    "role": "ninja",
+    "line": "taunt-7",
+    "text": "Too slow, frerot.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: proud, theatrical, like a movie trailer hero, cocky. Even more attitude, exaggerate the character.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nToo slow, frerot.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 3,
+     "genz": 2,
+     "note": "The French accent is decent but the delivery is way too sleepy and flat instead of theatrical and cocky."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/ninja/taunt-7-f6bbc7/v3.mp3",
+    "role": "ninja",
+    "line": "taunt-7",
+    "text": "Too slow, frerot.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Algenib",
+    "direction": "# AUDIO PROFILE: THE TURNSTILE NINJA\nTHE TURNSTILE NINJA, a young Parisian fare dodger from the banlieue, speaking English with a strong French accent, silent type, cocky, chin up, hands in pockets, smug half smile, unbothered, low relaxed voice with a slight rasp.\n### DIRECTOR'S NOTES\nStyle: proud, theatrical, like a movie trailer hero, cocky. Take a breath before it and hit it hard.\nAccent: strong French accent, Parisian street.\nPacing: fast, punchy, no pause before the line.\n#### TRANSCRIPT\nToo slow, frerot.",
+    "scores": {
+     "energy": 1,
+     "emotion": 1,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "wrong words (heard \"The turnstile ninja. A young Parisian fare dodger from the banlieue speaking Eng\"), capped at 2. The actor read the entire character description and stage direction out loud before delivering the line. This makes the take completely unusable. All scores capped at 2 as per instructions."
+    }
+   }
+  ],
+  "opp-papi-raleur/l3-taunt-0": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-papi-raleur/l3-taunt-0/v1.mp3",
+    "role": "opp-papi-raleur",
+    "line": "l3-taunt-0",
+    "text": "C'etait mieux avant.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Charon",
+    "direction": "# AUDIO PROFILE: PAPI RALEUR\nPAPI RALEUR, a grumpy old Parisian grandpa in his 70s who complains about everything, then dances better than you, gravelly voice, sighing, scoffing, a strong French accent in English.\n### DIRECTOR'S NOTES\nStyle: in character (A grumpy grandpa who complains about everything, then dances better than you.), a taunt at the player, committed and caricatural. Push it further, more caricatural.\nAccent: old Parisian, strong French accent, grumbling.\nPacing: grumbling, clipped, with a scoff or a sigh.\n#### TRANSCRIPT\nC'etait mieux avant.",
+    "scores": {
+     "energy": 1,
+     "emotion": 1,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "wrong words (heard \"Papi Raleur. A grumpy old Parisian grandpa in his 70s who complains about everyt\"), capped at 2. The actor read the entire character description and stage directions out loud before delivering the line. Because of the extra words, all scores are capped at 1. Completely unusable."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-papi-raleur/l3-taunt-0/v2.mp3",
+    "role": "opp-papi-raleur",
+    "line": "l3-taunt-0",
+    "text": "C'etait mieux avant.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed opp-papi-raleur vox_emb_nQWxGMwmtwpBqwaJ",
+    "direction": "voice design: Grumpy old Parisian man, 75, gravelly and raspy voice, sighing and scoffing, complains about everything, strong French accent, slow and grumbling, funny. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 4,
+     "emotion": 4,
+     "stereotype": 5,
+     "genz": 4,
+     "note": "Great raspy delivery that perfectly nails the grumpy boomer trope for a funny contrast."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-papi-raleur/l3-taunt-0/v3.mp3",
+    "role": "opp-papi-raleur",
+    "line": "l3-taunt-0",
+    "text": "C'etait mieux avant.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Charon",
+    "direction": "# AUDIO PROFILE: PAPI RALEUR\nPAPI RALEUR, a grumpy old Parisian grandpa in his 70s who complains about everything, then dances better than you, gravelly voice, sighing, scoffing, a strong French accent in English.\n### DIRECTOR'S NOTES\nStyle: in character (A grumpy grandpa who complains about everything, then dances better than you.), a taunt at the player, committed and caricatural. Take a breath before it and hit it hard.\nAccent: old Parisian, strong French accent, grumbling.\nPacing: grumbling, clipped, with a scoff or a sigh.\n#### TRANSCRIPT\nC'etait mieux avant.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The extra sound at the start violates the strict script requirements so I must cap the scores."
+    }
+   }
+  ],
+  "opp-papi-raleur/l3-taunt-1": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-papi-raleur/l3-taunt-1/v1.mp3",
+    "role": "opp-papi-raleur",
+    "line": "l3-taunt-1",
+    "text": "Turn it down.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Charon",
+    "direction": "# AUDIO PROFILE: PAPI RALEUR\nPAPI RALEUR, a grumpy old Parisian grandpa in his 70s who complains about everything, then dances better than you, gravelly voice, sighing, scoffing, a strong French accent in English.\n### DIRECTOR'S NOTES\nStyle: in character (A grumpy grandpa who complains about everything, then dances better than you.), a taunt at the player, committed and caricatural. Push it further, more caricatural.\nAccent: old Parisian, strong French accent, grumbling.\nPacing: grumbling, clipped, with a scoff or a sigh.\n#### TRANSCRIPT\nTurn it down.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "The actor completely missed the Parisian grandpa direction. There is zero French accent, making it sound like a generic angry American neighbor instead of a caricatural Papi Raleur. Additionally, there is a massive, jarring crash sound effect at the end of the file that renders the audio unusable. We need a thick, funny French accent and clean audio."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-papi-raleur/l3-taunt-1/v2.mp3",
+    "role": "opp-papi-raleur",
+    "line": "l3-taunt-1",
+    "text": "Turn it down.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed opp-papi-raleur vox_emb_nQWxGMwmtwpBqwaJ",
+    "direction": "voice design: Grumpy old Parisian man, 75, gravelly and raspy voice, sighing and scoffing, complains about everything, strong French accent, slow and grumbling, funny. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "It completely lacks the thick Parisian accent and grumpy grandpa wheeze needed to make this meme-worthy."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-papi-raleur/l3-taunt-1/v3.mp3",
+    "role": "opp-papi-raleur",
+    "line": "l3-taunt-1",
+    "text": "Turn it down.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Charon",
+    "direction": "# AUDIO PROFILE: PAPI RALEUR\nPAPI RALEUR, a grumpy old Parisian grandpa in his 70s who complains about everything, then dances better than you, gravelly voice, sighing, scoffing, a strong French accent in English.\n### DIRECTOR'S NOTES\nStyle: in character (A grumpy grandpa who complains about everything, then dances better than you.), a taunt at the player, committed and caricatural. Take a breath before it and hit it hard.\nAccent: old Parisian, strong French accent, grumbling.\nPacing: grumbling, clipped, with a scoff or a sigh.\n#### TRANSCRIPT\nTurn it down.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "There is absolutely no French accent or old man persona here, just a generic angry shout."
+    }
+   }
+  ],
+  "opp-papi-raleur/l3-taunt-2": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-papi-raleur/l3-taunt-2/v1.mp3",
+    "role": "opp-papi-raleur",
+    "line": "l3-taunt-2",
+    "text": "In my day...",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Charon",
+    "direction": "# AUDIO PROFILE: PAPI RALEUR\nPAPI RALEUR, a grumpy old Parisian grandpa in his 70s who complains about everything, then dances better than you, gravelly voice, sighing, scoffing, a strong French accent in English.\n### DIRECTOR'S NOTES\nStyle: in character (A grumpy grandpa who complains about everything, then dances better than you.), a taunt at the player, committed and caricatural. Push it further, more caricatural.\nAccent: old Parisian, strong French accent, grumbling.\nPacing: grumbling, clipped, with a scoff or a sigh.\n#### TRANSCRIPT\nIn my day...",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 1,
+     "note": "The delivery is too flat and the loud crash at the end completely ruins the take."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-papi-raleur/l3-taunt-2/v2.mp3",
+    "role": "opp-papi-raleur",
+    "line": "l3-taunt-2",
+    "text": "In my day...",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed opp-papi-raleur vox_emb_nQWxGMwmtwpBqwaJ",
+    "direction": "voice design: Grumpy old Parisian man, 75, gravelly and raspy voice, sighing and scoffing, complains about everything, strong French accent, slow and grumbling, funny. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "It lacks the exaggerated French accent and heavy scoffing required to make this character truly meme-worthy."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-papi-raleur/l3-taunt-2/v3.mp3",
+    "role": "opp-papi-raleur",
+    "line": "l3-taunt-2",
+    "text": "In my day...",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Charon",
+    "direction": "# AUDIO PROFILE: PAPI RALEUR\nPAPI RALEUR, a grumpy old Parisian grandpa in his 70s who complains about everything, then dances better than you, gravelly voice, sighing, scoffing, a strong French accent in English.\n### DIRECTOR'S NOTES\nStyle: in character (A grumpy grandpa who complains about everything, then dances better than you.), a taunt at the player, committed and caricatural. Take a breath before it and hit it hard.\nAccent: old Parisian, strong French accent, grumbling.\nPacing: grumbling, clipped, with a scoff or a sigh.\n#### TRANSCRIPT\nIn my day...",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "Missing the requested French accent entirely, and the recording is ruined by a loud crash at the end."
+    }
+   }
+  ],
+  "opp-papi-raleur/l3-taunt-3": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-papi-raleur/l3-taunt-3/v1.mp3",
+    "role": "opp-papi-raleur",
+    "line": "l3-taunt-3",
+    "text": "Pfff.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Charon",
+    "direction": "# AUDIO PROFILE: PAPI RALEUR\nPAPI RALEUR, a grumpy old Parisian grandpa in his 70s who complains about everything, then dances better than you, gravelly voice, sighing, scoffing, a strong French accent in English.\n### DIRECTOR'S NOTES\nStyle: in character (A grumpy grandpa who complains about everything, then dances better than you.), a taunt at the player, committed and caricatural. Push it further, more caricatural.\nAccent: old Parisian, strong French accent, grumbling.\nPacing: grumbling, clipped, with a scoff or a sigh.\n#### TRANSCRIPT\nPfff.",
+    "scores": {
+     "energy": 4,
+     "emotion": 4,
+     "stereotype": 4,
+     "genz": 4,
+     "note": "This heavy and dismissive scoff perfectly captures the grumpy Parisian grandpa energy."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-papi-raleur/l3-taunt-3/v2.mp3",
+    "role": "opp-papi-raleur",
+    "line": "l3-taunt-3",
+    "text": "Pfff.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed opp-papi-raleur vox_emb_nQWxGMwmtwpBqwaJ",
+    "direction": "voice design: Grumpy old Parisian man, 75, gravelly and raspy voice, sighing and scoffing, complains about everything, strong French accent, slow and grumbling, funny. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "A perfectly executed and highly memeable Parisian scoff that drips with grumpy grandpa disdain."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-papi-raleur/l3-taunt-3/v3.mp3",
+    "role": "opp-papi-raleur",
+    "line": "l3-taunt-3",
+    "text": "Pfff.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Charon",
+    "direction": "# AUDIO PROFILE: PAPI RALEUR\nPAPI RALEUR, a grumpy old Parisian grandpa in his 70s who complains about everything, then dances better than you, gravelly voice, sighing, scoffing, a strong French accent in English.\n### DIRECTOR'S NOTES\nStyle: in character (A grumpy grandpa who complains about everything, then dances better than you.), a taunt at the player, committed and caricatural. Take a breath before it and hit it hard.\nAccent: old Parisian, strong French accent, grumbling.\nPacing: grumbling, clipped, with a scoff or a sigh.\n#### TRANSCRIPT\nPfff.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 1,
+     "note": "The scoff is decent, but the loud background crash at the end makes this take completely unusable."
+    }
+   }
+  ],
+  "opp-papi-raleur/l3-taunt-4": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-papi-raleur/l3-taunt-4/v1.mp3",
+    "role": "opp-papi-raleur",
+    "line": "l3-taunt-4",
+    "text": "Get a job.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Charon",
+    "direction": "# AUDIO PROFILE: PAPI RALEUR\nPAPI RALEUR, a grumpy old Parisian grandpa in his 70s who complains about everything, then dances better than you, gravelly voice, sighing, scoffing, a strong French accent in English.\n### DIRECTOR'S NOTES\nStyle: in character (A grumpy grandpa who complains about everything, then dances better than you.), a taunt at the player, committed and caricatural. Push it further, more caricatural.\nAccent: old Parisian, strong French accent, grumbling.\nPacing: grumbling, clipped, with a scoff or a sigh.\n#### TRANSCRIPT\nGet a job.",
+    "scores": {
+     "energy": 1,
+     "emotion": 1,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "Completely robotic and lacks the required French accent and grumpy grandpa persona."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-papi-raleur/l3-taunt-4/v2.mp3",
+    "role": "opp-papi-raleur",
+    "line": "l3-taunt-4",
+    "text": "Get a job.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed opp-papi-raleur vox_emb_nQWxGMwmtwpBqwaJ",
+    "direction": "voice design: Grumpy old Parisian man, 75, gravelly and raspy voice, sighing and scoffing, complains about everything, strong French accent, slow and grumbling, funny. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "Zero French accent and completely lacks the caricatural Parisian grandpa charm."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-papi-raleur/l3-taunt-4/v3.mp3",
+    "role": "opp-papi-raleur",
+    "line": "l3-taunt-4",
+    "text": "Get a job.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Charon",
+    "direction": "# AUDIO PROFILE: PAPI RALEUR\nPAPI RALEUR, a grumpy old Parisian grandpa in his 70s who complains about everything, then dances better than you, gravelly voice, sighing, scoffing, a strong French accent in English.\n### DIRECTOR'S NOTES\nStyle: in character (A grumpy grandpa who complains about everything, then dances better than you.), a taunt at the player, committed and caricatural. Take a breath before it and hit it hard.\nAccent: old Parisian, strong French accent, grumbling.\nPacing: grumbling, clipped, with a scoff or a sigh.\n#### TRANSCRIPT\nGet a job.",
+    "scores": {
+     "energy": 3,
+     "emotion": 2,
+     "stereotype": 1,
+     "genz": 2,
+     "note": "Sounds more like a giant brute than a frail Parisian grandpa, completely missing the requested character archetype."
+    }
+   }
+  ],
+  "opp-papi-raleur/l3-taunt-5": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-papi-raleur/l3-taunt-5/v1.mp3",
+    "role": "opp-papi-raleur",
+    "line": "l3-taunt-5",
+    "text": "Too loud.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Charon",
+    "direction": "# AUDIO PROFILE: PAPI RALEUR\nPAPI RALEUR, a grumpy old Parisian grandpa in his 70s who complains about everything, then dances better than you, gravelly voice, sighing, scoffing, a strong French accent in English.\n### DIRECTOR'S NOTES\nStyle: in character (A grumpy grandpa who complains about everything, then dances better than you.), a taunt at the player, committed and caricatural. Push it further, more caricatural.\nAccent: old Parisian, strong French accent, grumbling.\nPacing: grumbling, clipped, with a scoff or a sigh.\n#### TRANSCRIPT\nToo loud.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 1,
+     "note": "The delivery lacks the requested Parisian caricature and the take is completely ruined by a massive audio crash at the end."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-papi-raleur/l3-taunt-5/v2.mp3",
+    "role": "opp-papi-raleur",
+    "line": "l3-taunt-5",
+    "text": "Too loud.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed opp-papi-raleur vox_emb_nQWxGMwmtwpBqwaJ",
+    "direction": "voice design: Grumpy old Parisian man, 75, gravelly and raspy voice, sighing and scoffing, complains about everything, strong French accent, slow and grumbling, funny. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 4,
+     "emotion": 4,
+     "stereotype": 4,
+     "genz": 3,
+     "note": "The raspy grumble is spot on for an annoyed grandpa but needs a thicker French accent to be truly memeable."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-papi-raleur/l3-taunt-5/v3.mp3",
+    "role": "opp-papi-raleur",
+    "line": "l3-taunt-5",
+    "text": "Too loud.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Charon",
+    "direction": "# AUDIO PROFILE: PAPI RALEUR\nPAPI RALEUR, a grumpy old Parisian grandpa in his 70s who complains about everything, then dances better than you, gravelly voice, sighing, scoffing, a strong French accent in English.\n### DIRECTOR'S NOTES\nStyle: in character (A grumpy grandpa who complains about everything, then dances better than you.), a taunt at the player, committed and caricatural. Take a breath before it and hit it hard.\nAccent: old Parisian, strong French accent, grumbling.\nPacing: grumbling, clipped, with a scoff or a sigh.\n#### TRANSCRIPT\nToo loud.",
+    "scores": {
+     "energy": 4,
+     "emotion": 4,
+     "stereotype": 4,
+     "genz": 4,
+     "note": "The initial sigh perfectly captures the grumpy grandpa persona and sets up the taunt well."
+    }
+   }
+  ],
+  "opp-papi-raleur/l3-taunt-6": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-papi-raleur/l3-taunt-6/v3.mp3",
+    "role": "opp-papi-raleur",
+    "line": "l3-taunt-6",
+    "text": "Watch, gamin.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Charon",
+    "direction": "# AUDIO PROFILE: PAPI RALEUR\nPAPI RALEUR, a grumpy old Parisian grandpa in his 70s who complains about everything, then dances better than you, gravelly voice, sighing, scoffing, a strong French accent in English.\n### DIRECTOR'S NOTES\nStyle: in character (A grumpy grandpa who complains about everything, then dances better than you.), a taunt at the player, committed and caricatural. Take a breath before it and hit it hard.\nAccent: old Parisian, strong French accent, grumbling.\nPacing: grumbling, clipped, with a scoff or a sigh.\n#### TRANSCRIPT\nWatch, gamin.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The delivery is too flat and sounds like a generic tough guy rather than a caricatural, grumpy Parisian grandpa."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-papi-raleur/l3-taunt-6/v2.mp3",
+    "role": "opp-papi-raleur",
+    "line": "l3-taunt-6",
+    "text": "Watch, gamin.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed opp-papi-raleur vox_emb_nQWxGMwmtwpBqwaJ",
+    "direction": "voice design: Grumpy old Parisian man, 75, gravelly and raspy voice, sighing and scoffing, complains about everything, strong French accent, slow and grumbling, funny. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 4,
+     "emotion": 4,
+     "stereotype": 5,
+     "genz": 4,
+     "note": "Solid raspy delivery and authentic French pronunciation make this a perfect memeable taunt."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-papi-raleur/l3-taunt-6/v1.mp3",
+    "role": "opp-papi-raleur",
+    "line": "l3-taunt-6",
+    "text": "Watch, gamin.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Charon",
+    "direction": "# AUDIO PROFILE: PAPI RALEUR\nPAPI RALEUR, a grumpy old Parisian grandpa in his 70s who complains about everything, then dances better than you, gravelly voice, sighing, scoffing, a strong French accent in English.\n### DIRECTOR'S NOTES\nStyle: in character (A grumpy grandpa who complains about everything, then dances better than you.), a taunt at the player, committed and caricatural. Push it further, more caricatural.\nAccent: old Parisian, strong French accent, grumbling.\nPacing: grumbling, clipped, with a scoff or a sigh.\n#### TRANSCRIPT\nWatch, gamin.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The delivery is too young and flat, and the massive crash at the end makes this take completely unusable."
+    }
+   }
+  ],
+  "opp-papi-raleur/l3-taunt-7": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-papi-raleur/l3-taunt-7/v2.mp3",
+    "role": "opp-papi-raleur",
+    "line": "l3-taunt-7",
+    "text": "Back pain. Still better.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed opp-papi-raleur vox_emb_nQWxGMwmtwpBqwaJ",
+    "direction": "voice design: Grumpy old Parisian man, 75, gravelly and raspy voice, sighing and scoffing, complains about everything, strong French accent, slow and grumbling, funny. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "Completely missed the mark with zero French accent or grumpy grandpa characterization."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-papi-raleur/l3-taunt-7/v3.mp3",
+    "role": "opp-papi-raleur",
+    "line": "l3-taunt-7",
+    "text": "Back pain. Still better.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Charon",
+    "direction": "# AUDIO PROFILE: PAPI RALEUR\nPAPI RALEUR, a grumpy old Parisian grandpa in his 70s who complains about everything, then dances better than you, gravelly voice, sighing, scoffing, a strong French accent in English.\n### DIRECTOR'S NOTES\nStyle: in character (A grumpy grandpa who complains about everything, then dances better than you.), a taunt at the player, committed and caricatural. Take a breath before it and hit it hard.\nAccent: old Parisian, strong French accent, grumbling.\nPacing: grumbling, clipped, with a scoff or a sigh.\n#### TRANSCRIPT\nBack pain. Still better.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "Completely missed the mark with zero French accent and no old man rasp."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-papi-raleur/l3-taunt-7/v1.mp3",
+    "role": "opp-papi-raleur",
+    "line": "l3-taunt-7",
+    "text": "Back pain. Still better.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Charon",
+    "direction": "# AUDIO PROFILE: PAPI RALEUR\nPAPI RALEUR, a grumpy old Parisian grandpa in his 70s who complains about everything, then dances better than you, gravelly voice, sighing, scoffing, a strong French accent in English.\n### DIRECTOR'S NOTES\nStyle: in character (A grumpy grandpa who complains about everything, then dances better than you.), a taunt at the player, committed and caricatural. Push it further, more caricatural.\nAccent: old Parisian, strong French accent, grumbling.\nPacing: grumbling, clipped, with a scoff or a sigh.\n#### TRANSCRIPT\nBack pain. Still better.",
+    "scores": {
+     "energy": 4,
+     "emotion": 4,
+     "stereotype": 5,
+     "genz": 4,
+     "note": "The grumpy sigh adds great character and the thick French accent is spot on for a complaining grandpa."
+    }
+   }
+  ],
+  "opp-la-parisienne/l4-taunt-0": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-la-parisienne/l4-taunt-0/v1.mp3",
+    "role": "opp-la-parisienne",
+    "line": "l4-taunt-0",
+    "text": "Non.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Kore",
+    "direction": "# AUDIO PROFILE: LA PARISIENNE\nLA PARISIENNE, a chic cold Parisian woman in her late 20s, effortless, unimpressed, a coffee in hand, judges everyone in silence, dry and disdainful, a French accent in English.\n### DIRECTOR'S NOTES\nStyle: in character (Effortless, unimpressed, a coffee in hand, judges everyone in silence.), a taunt at the player, committed and caricatural. Push it further, more caricatural.\nAccent: chic Parisian, French accent.\nPacing: slow, dry, disdainful, bored.\n#### TRANSCRIPT\nNon.",
+    "scores": {
+     "energy": 4,
+     "emotion": 4,
+     "stereotype": 4,
+     "genz": 4,
+     "note": "Perfectly captures that effortless and cold Parisian disdain in a single syllable."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-la-parisienne/l4-taunt-0/v3.mp3",
+    "role": "opp-la-parisienne",
+    "line": "l4-taunt-0",
+    "text": "Non.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Kore",
+    "direction": "# AUDIO PROFILE: LA PARISIENNE\nLA PARISIENNE, a chic cold Parisian woman in her late 20s, effortless, unimpressed, a coffee in hand, judges everyone in silence, dry and disdainful, a French accent in English.\n### DIRECTOR'S NOTES\nStyle: in character (Effortless, unimpressed, a coffee in hand, judges everyone in silence.), a taunt at the player, committed and caricatural. Take a breath before it and hit it hard.\nAccent: chic Parisian, French accent.\nPacing: slow, dry, disdainful, bored.\n#### TRANSCRIPT\nNon.",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 3,
+     "genz": 2,
+     "note": "It is a perfectly fine French 'no', but it lacks the heavy, caricatural disdain and sass needed to be a memeable taunt."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-la-parisienne/l4-taunt-0/v2.mp3",
+    "role": "opp-la-parisienne",
+    "line": "l4-taunt-0",
+    "text": "Non.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed opp-la-parisienne vox_emb_mLaretcwqNgneZw1",
+    "direction": "voice design: Chic Parisian woman, late 20s, cold and unimpressed, dry and disdainful, low elegant voice, French accent, slow bored pacing, effortless. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 3,
+     "genz": 2,
+     "note": "The delivery is too quick and lacks the exaggerated disdainful sigh needed to make it a memorable meme."
+    }
+   }
+  ],
+  "opp-la-parisienne/l4-taunt-1": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-la-parisienne/l4-taunt-1/v1.mp3",
+    "role": "opp-la-parisienne",
+    "line": "l4-taunt-1",
+    "text": "Bof.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Kore",
+    "direction": "# AUDIO PROFILE: LA PARISIENNE\nLA PARISIENNE, a chic cold Parisian woman in her late 20s, effortless, unimpressed, a coffee in hand, judges everyone in silence, dry and disdainful, a French accent in English.\n### DIRECTOR'S NOTES\nStyle: in character (Effortless, unimpressed, a coffee in hand, judges everyone in silence.), a taunt at the player, committed and caricatural. Push it further, more caricatural.\nAccent: chic Parisian, French accent.\nPacing: slow, dry, disdainful, bored.\n#### TRANSCRIPT\nBof.",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "Perfectly captures the effortless, disdainful Parisian attitude with a single, highly memeable syllable."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-la-parisienne/l4-taunt-1/v2.mp3",
+    "role": "opp-la-parisienne",
+    "line": "l4-taunt-1",
+    "text": "Bof.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed opp-la-parisienne vox_emb_mLaretcwqNgneZw1",
+    "direction": "voice design: Chic Parisian woman, late 20s, cold and unimpressed, dry and disdainful, low elegant voice, French accent, slow bored pacing, effortless. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "Perfectly captures the effortless Parisian disdain with a single syllable."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-la-parisienne/l4-taunt-1/v3.mp3",
+    "role": "opp-la-parisienne",
+    "line": "l4-taunt-1",
+    "text": "Bof.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Kore",
+    "direction": "# AUDIO PROFILE: LA PARISIENNE\nLA PARISIENNE, a chic cold Parisian woman in her late 20s, effortless, unimpressed, a coffee in hand, judges everyone in silence, dry and disdainful, a French accent in English.\n### DIRECTOR'S NOTES\nStyle: in character (Effortless, unimpressed, a coffee in hand, judges everyone in silence.), a taunt at the player, committed and caricatural. Take a breath before it and hit it hard.\nAccent: chic Parisian, French accent.\nPacing: slow, dry, disdainful, bored.\n#### TRANSCRIPT\nBof.",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "Perfectly captures the effortless and disdainful Parisian vibe with a highly memeable delivery."
+    }
+   }
+  ],
+  "opp-la-parisienne/l4-taunt-2": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-la-parisienne/l4-taunt-2/v1.mp3",
+    "role": "opp-la-parisienne",
+    "line": "l4-taunt-2",
+    "text": "C'est tout?",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Kore",
+    "direction": "# AUDIO PROFILE: LA PARISIENNE\nLA PARISIENNE, a chic cold Parisian woman in her late 20s, effortless, unimpressed, a coffee in hand, judges everyone in silence, dry and disdainful, a French accent in English.\n### DIRECTOR'S NOTES\nStyle: in character (Effortless, unimpressed, a coffee in hand, judges everyone in silence.), a taunt at the player, committed and caricatural. Push it further, more caricatural.\nAccent: chic Parisian, French accent.\nPacing: slow, dry, disdainful, bored.\n#### TRANSCRIPT\nC'est tout?",
+    "scores": {
+     "energy": 4,
+     "emotion": 4,
+     "stereotype": 5,
+     "genz": 4,
+     "note": "Perfectly captures that effortless and soul-crushing Parisian disdain."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-la-parisienne/l4-taunt-2/v2.mp3",
+    "role": "opp-la-parisienne",
+    "line": "l4-taunt-2",
+    "text": "C'est tout?",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed opp-la-parisienne vox_emb_mLaretcwqNgneZw1",
+    "direction": "voice design: Chic Parisian woman, late 20s, cold and unimpressed, dry and disdainful, low elegant voice, French accent, slow bored pacing, effortless. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 3,
+     "genz": 2,
+     "note": "The delivery is too polite and genuinely inquisitive, lacking the exaggerated cold Parisian disdain needed to be meme-worthy."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-la-parisienne/l4-taunt-2/v3.mp3",
+    "role": "opp-la-parisienne",
+    "line": "l4-taunt-2",
+    "text": "C'est tout?",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Kore",
+    "direction": "# AUDIO PROFILE: LA PARISIENNE\nLA PARISIENNE, a chic cold Parisian woman in her late 20s, effortless, unimpressed, a coffee in hand, judges everyone in silence, dry and disdainful, a French accent in English.\n### DIRECTOR'S NOTES\nStyle: in character (Effortless, unimpressed, a coffee in hand, judges everyone in silence.), a taunt at the player, committed and caricatural. Take a breath before it and hit it hard.\nAccent: chic Parisian, French accent.\nPacing: slow, dry, disdainful, bored.\n#### TRANSCRIPT\nC'est tout?",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 1,
+     "note": "The delivery is too flat for a taunt and the loud clap at the end completely ruins the effortless Parisian vibe."
+    }
+   }
+  ],
+  "opp-la-parisienne/l4-taunt-3": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-la-parisienne/l4-taunt-3/v1.mp3",
+    "role": "opp-la-parisienne",
+    "line": "l4-taunt-3",
+    "text": "Mais non.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Kore",
+    "direction": "# AUDIO PROFILE: LA PARISIENNE\nLA PARISIENNE, a chic cold Parisian woman in her late 20s, effortless, unimpressed, a coffee in hand, judges everyone in silence, dry and disdainful, a French accent in English.\n### DIRECTOR'S NOTES\nStyle: in character (Effortless, unimpressed, a coffee in hand, judges everyone in silence.), a taunt at the player, committed and caricatural. Push it further, more caricatural.\nAccent: chic Parisian, French accent.\nPacing: slow, dry, disdainful, bored.\n#### TRANSCRIPT\nMais non.",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "The heavy sigh and effortless disdain make this incredibly memeable and perfect for the character."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-la-parisienne/l4-taunt-3/v2.mp3",
+    "role": "opp-la-parisienne",
+    "line": "l4-taunt-3",
+    "text": "Mais non.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed opp-la-parisienne vox_emb_mLaretcwqNgneZw1",
+    "direction": "voice design: Chic Parisian woman, late 20s, cold and unimpressed, dry and disdainful, low elegant voice, French accent, slow bored pacing, effortless. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 4,
+     "emotion": 4,
+     "stereotype": 5,
+     "genz": 4,
+     "note": "The delivery captures that effortless Parisian disdain perfectly."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-la-parisienne/l4-taunt-3/v3.mp3",
+    "role": "opp-la-parisienne",
+    "line": "l4-taunt-3",
+    "text": "Mais non.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Kore",
+    "direction": "# AUDIO PROFILE: LA PARISIENNE\nLA PARISIENNE, a chic cold Parisian woman in her late 20s, effortless, unimpressed, a coffee in hand, judges everyone in silence, dry and disdainful, a French accent in English.\n### DIRECTOR'S NOTES\nStyle: in character (Effortless, unimpressed, a coffee in hand, judges everyone in silence.), a taunt at the player, committed and caricatural. Take a breath before it and hit it hard.\nAccent: chic Parisian, French accent.\nPacing: slow, dry, disdainful, bored.\n#### TRANSCRIPT\nMais non.",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "The introductory scoff and breathy delivery perfectly capture the effortless and disdainful Parisian vibe."
+    }
+   }
+  ],
+  "opp-la-parisienne/l4-taunt-4": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-la-parisienne/l4-taunt-4/v2.mp3",
+    "role": "opp-la-parisienne",
+    "line": "l4-taunt-4",
+    "text": "So basic.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed opp-la-parisienne vox_emb_mLaretcwqNgneZw1",
+    "direction": "voice design: Chic Parisian woman, late 20s, cold and unimpressed, dry and disdainful, low elegant voice, French accent, slow bored pacing, effortless. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 4,
+     "emotion": 4,
+     "stereotype": 5,
+     "genz": 4,
+     "note": "The French accent and disdainful delivery perfectly capture the chic and unimpressed Parisian vibe."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-la-parisienne/l4-taunt-4/v1.mp3",
+    "role": "opp-la-parisienne",
+    "line": "l4-taunt-4",
+    "text": "So basic.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Kore",
+    "direction": "# AUDIO PROFILE: LA PARISIENNE\nLA PARISIENNE, a chic cold Parisian woman in her late 20s, effortless, unimpressed, a coffee in hand, judges everyone in silence, dry and disdainful, a French accent in English.\n### DIRECTOR'S NOTES\nStyle: in character (Effortless, unimpressed, a coffee in hand, judges everyone in silence.), a taunt at the player, committed and caricatural. Push it further, more caricatural.\nAccent: chic Parisian, French accent.\nPacing: slow, dry, disdainful, bored.\n#### TRANSCRIPT\nSo basic.",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "Where is the French accent, she sounds like a mall rat from Ohio instead of a chic Parisian."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-la-parisienne/l4-taunt-4/v3.mp3",
+    "role": "opp-la-parisienne",
+    "line": "l4-taunt-4",
+    "text": "So basic.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Kore",
+    "direction": "# AUDIO PROFILE: LA PARISIENNE\nLA PARISIENNE, a chic cold Parisian woman in her late 20s, effortless, unimpressed, a coffee in hand, judges everyone in silence, dry and disdainful, a French accent in English.\n### DIRECTOR'S NOTES\nStyle: in character (Effortless, unimpressed, a coffee in hand, judges everyone in silence.), a taunt at the player, committed and caricatural. Take a breath before it and hit it hard.\nAccent: chic Parisian, French accent.\nPacing: slow, dry, disdainful, bored.\n#### TRANSCRIPT\nSo basic.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 1,
+     "genz": 2,
+     "note": "Completely misses the French accent and sounds like a generic American mean girl instead of a chic Parisian."
+    }
+   }
+  ],
+  "opp-la-parisienne/l4-taunt-5": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-la-parisienne/l4-taunt-5/v1.mp3",
+    "role": "opp-la-parisienne",
+    "line": "l4-taunt-5",
+    "text": "Pas mal. Joking.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Kore",
+    "direction": "# AUDIO PROFILE: LA PARISIENNE\nLA PARISIENNE, a chic cold Parisian woman in her late 20s, effortless, unimpressed, a coffee in hand, judges everyone in silence, dry and disdainful, a French accent in English.\n### DIRECTOR'S NOTES\nStyle: in character (Effortless, unimpressed, a coffee in hand, judges everyone in silence.), a taunt at the player, committed and caricatural. Push it further, more caricatural.\nAccent: chic Parisian, French accent.\nPacing: slow, dry, disdainful, bored.\n#### TRANSCRIPT\nPas mal. Joking.",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "The effortless disdain and the little scoff make this a perfect, highly memeable taunt."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-la-parisienne/l4-taunt-5/v2.mp3",
+    "role": "opp-la-parisienne",
+    "line": "l4-taunt-5",
+    "text": "Pas mal. Joking.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed opp-la-parisienne vox_emb_mLaretcwqNgneZw1",
+    "direction": "voice design: Chic Parisian woman, late 20s, cold and unimpressed, dry and disdainful, low elegant voice, French accent, slow bored pacing, effortless. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "The deadpan delivery perfectly captures the effortless disdainful Parisian vibe that players will love to spam."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-la-parisienne/l4-taunt-5/v3.mp3",
+    "role": "opp-la-parisienne",
+    "line": "l4-taunt-5",
+    "text": "Pas mal. Joking.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Kore",
+    "direction": "# AUDIO PROFILE: LA PARISIENNE\nLA PARISIENNE, a chic cold Parisian woman in her late 20s, effortless, unimpressed, a coffee in hand, judges everyone in silence, dry and disdainful, a French accent in English.\n### DIRECTOR'S NOTES\nStyle: in character (Effortless, unimpressed, a coffee in hand, judges everyone in silence.), a taunt at the player, committed and caricatural. Take a breath before it and hit it hard.\nAccent: chic Parisian, French accent.\nPacing: slow, dry, disdainful, bored.\n#### TRANSCRIPT\nPas mal. Joking.",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "The deadpan delivery and thick French disdain make this an absolutely perfect and meme-worthy taunt."
+    }
+   }
+  ],
+  "opp-la-parisienne/l4-taunt-6": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-la-parisienne/l4-taunt-6/v1.mp3",
+    "role": "opp-la-parisienne",
+    "line": "l4-taunt-6",
+    "text": "Ciao.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Kore",
+    "direction": "# AUDIO PROFILE: LA PARISIENNE\nLA PARISIENNE, a chic cold Parisian woman in her late 20s, effortless, unimpressed, a coffee in hand, judges everyone in silence, dry and disdainful, a French accent in English.\n### DIRECTOR'S NOTES\nStyle: in character (Effortless, unimpressed, a coffee in hand, judges everyone in silence.), a taunt at the player, committed and caricatural. Push it further, more caricatural.\nAccent: chic Parisian, French accent.\nPacing: slow, dry, disdainful, bored.\n#### TRANSCRIPT\nCiao.",
+    "scores": {
+     "energy": 4,
+     "emotion": 4,
+     "stereotype": 5,
+     "genz": 4,
+     "note": "Perfectly captures the effortless, unimpressed Parisian attitude. Short, sharp, and highly memeable."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-la-parisienne/l4-taunt-6/v2.mp3",
+    "role": "opp-la-parisienne",
+    "line": "l4-taunt-6",
+    "text": "Ciao.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed opp-la-parisienne vox_emb_mLaretcwqNgneZw1",
+    "direction": "voice design: Chic Parisian woman, late 20s, cold and unimpressed, dry and disdainful, low elegant voice, French accent, slow bored pacing, effortless. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 4,
+     "genz": 3,
+     "note": "The delivery is way too basic and lacks the soul-crushing Parisian disdain required to make the players cry."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-la-parisienne/l4-taunt-6/v3.mp3",
+    "role": "opp-la-parisienne",
+    "line": "l4-taunt-6",
+    "text": "Ciao.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Kore",
+    "direction": "# AUDIO PROFILE: LA PARISIENNE\nLA PARISIENNE, a chic cold Parisian woman in her late 20s, effortless, unimpressed, a coffee in hand, judges everyone in silence, dry and disdainful, a French accent in English.\n### DIRECTOR'S NOTES\nStyle: in character (Effortless, unimpressed, a coffee in hand, judges everyone in silence.), a taunt at the player, committed and caricatural. Take a breath before it and hit it hard.\nAccent: chic Parisian, French accent.\nPacing: slow, dry, disdainful, bored.\n#### TRANSCRIPT\nCiao.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "You sound like a sleepy American instead of a chic, disdainful Parisian, giving absolutely zero mean-girl energy."
+    }
+   }
+  ],
+  "opp-la-parisienne/l4-taunt-7": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-la-parisienne/l4-taunt-7/v1.mp3",
+    "role": "opp-la-parisienne",
+    "line": "l4-taunt-7",
+    "text": "Try Milan.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Kore",
+    "direction": "# AUDIO PROFILE: LA PARISIENNE\nLA PARISIENNE, a chic cold Parisian woman in her late 20s, effortless, unimpressed, a coffee in hand, judges everyone in silence, dry and disdainful, a French accent in English.\n### DIRECTOR'S NOTES\nStyle: in character (Effortless, unimpressed, a coffee in hand, judges everyone in silence.), a taunt at the player, committed and caricatural. Push it further, more caricatural.\nAccent: chic Parisian, French accent.\nPacing: slow, dry, disdainful, bored.\n#### TRANSCRIPT\nTry Milan.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 3,
+     "genz": 2,
+     "note": "Way too sleepy and flat; I need sharp Parisian arrogance, not a literal yawn."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-la-parisienne/l4-taunt-7/v2.mp3",
+    "role": "opp-la-parisienne",
+    "line": "l4-taunt-7",
+    "text": "Try Milan.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed opp-la-parisienne vox_emb_mLaretcwqNgneZw1",
+    "direction": "voice design: Chic Parisian woman, late 20s, cold and unimpressed, dry and disdainful, low elegant voice, French accent, slow bored pacing, effortless. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 3,
+     "emotion": 4,
+     "stereotype": 4,
+     "genz": 3,
+     "note": "While the French accent and bored tone are accurate, the delivery is slightly too understated to cut through the mix as a memorable taunt."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-la-parisienne/l4-taunt-7/v3.mp3",
+    "role": "opp-la-parisienne",
+    "line": "l4-taunt-7",
+    "text": "Try Milan.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Kore",
+    "direction": "# AUDIO PROFILE: LA PARISIENNE\nLA PARISIENNE, a chic cold Parisian woman in her late 20s, effortless, unimpressed, a coffee in hand, judges everyone in silence, dry and disdainful, a French accent in English.\n### DIRECTOR'S NOTES\nStyle: in character (Effortless, unimpressed, a coffee in hand, judges everyone in silence.), a taunt at the player, committed and caricatural. Take a breath before it and hit it hard.\nAccent: chic Parisian, French accent.\nPacing: slow, dry, disdainful, bored.\n#### TRANSCRIPT\nTry Milan.",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "The thick accent and effortless disdain make this an iconic and highly memeable taunt."
+    }
+   }
+  ],
+  "opp-sporty-granny/l5-taunt-0": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-sporty-granny/l5-taunt-0/v1.mp3",
+    "role": "opp-sporty-granny",
+    "line": "l5-taunt-0",
+    "text": "Keep up, dear.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Kore",
+    "direction": "# AUDIO PROFILE: SPORTY GRANNY\nSPORTY GRANNY, an energetic 80 year old lady in a tracksuit and sweatband, 80 years of cardio, zero mercy, bright, bossy, a drill sergeant grandma, a slight French accent.\n### DIRECTOR'S NOTES\nStyle: in character (Tracksuit, sweatband, 80 years of cardio, zero mercy.), a taunt at the player, committed and caricatural. Push it further, more caricatural.\nAccent: old lady, slight French accent, bossy coach.\nPacing: brisk, bossy, like a fitness coach.\n#### TRANSCRIPT\nKeep up, dear.",
+    "scores": {
+     "energy": 4,
+     "emotion": 4,
+     "stereotype": 5,
+     "genz": 4,
+     "note": "The raspy bossy tone perfectly nails the merciless fitness granny stereotype and feels highly memeable."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-sporty-granny/l5-taunt-0/v3.mp3",
+    "role": "opp-sporty-granny",
+    "line": "l5-taunt-0",
+    "text": "Keep up, dear.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Kore",
+    "direction": "# AUDIO PROFILE: SPORTY GRANNY\nSPORTY GRANNY, an energetic 80 year old lady in a tracksuit and sweatband, 80 years of cardio, zero mercy, bright, bossy, a drill sergeant grandma, a slight French accent.\n### DIRECTOR'S NOTES\nStyle: in character (Tracksuit, sweatband, 80 years of cardio, zero mercy.), a taunt at the player, committed and caricatural. Take a breath before it and hit it hard.\nAccent: old lady, slight French accent, bossy coach.\nPacing: brisk, bossy, like a fitness coach.\n#### TRANSCRIPT\nKeep up, dear.",
+    "scores": {
+     "energy": 4,
+     "emotion": 4,
+     "stereotype": 4,
+     "genz": 4,
+     "note": "The sassy grandma tone is spot on and delivers a solid memeable taunt."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-sporty-granny/l5-taunt-0/v2.mp3",
+    "role": "opp-sporty-granny",
+    "line": "l5-taunt-0",
+    "text": "Keep up, dear.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed opp-sporty-granny vox_emb_s8E2imDiahks9xis",
+    "direction": "voice design: Energetic old lady, 80, sporty and bossy like a fitness coach, bright strong voice, slight French accent, brisk pacing, merciless and funny. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "The raspy high-energy delivery perfectly nails the merciless fitness granny vibe and is instantly memeable."
+    }
+   }
+  ],
+  "opp-sporty-granny/l5-taunt-1": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-sporty-granny/l5-taunt-1/v1.mp3",
+    "role": "opp-sporty-granny",
+    "line": "l5-taunt-1",
+    "text": "Warm up done.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Kore",
+    "direction": "# AUDIO PROFILE: SPORTY GRANNY\nSPORTY GRANNY, an energetic 80 year old lady in a tracksuit and sweatband, 80 years of cardio, zero mercy, bright, bossy, a drill sergeant grandma, a slight French accent.\n### DIRECTOR'S NOTES\nStyle: in character (Tracksuit, sweatband, 80 years of cardio, zero mercy.), a taunt at the player, committed and caricatural. Push it further, more caricatural.\nAccent: old lady, slight French accent, bossy coach.\nPacing: brisk, bossy, like a fitness coach.\n#### TRANSCRIPT\nWarm up done.",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "She sounds like a young woman doing a mild rasp rather than a merciless eighty year old fitness fanatic."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-sporty-granny/l5-taunt-1/v2.mp3",
+    "role": "opp-sporty-granny",
+    "line": "l5-taunt-1",
+    "text": "Warm up done.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed opp-sporty-granny vox_emb_s8E2imDiahks9xis",
+    "direction": "voice design: Energetic old lady, 80, sporty and bossy like a fitness coach, bright strong voice, slight French accent, brisk pacing, merciless and funny. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "You sound like a twenty-something at a casual yoga class instead of a merciless eighty-year-old fitness granny."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-sporty-granny/l5-taunt-1/v3.mp3",
+    "role": "opp-sporty-granny",
+    "line": "l5-taunt-1",
+    "text": "Warm up done.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Kore",
+    "direction": "# AUDIO PROFILE: SPORTY GRANNY\nSPORTY GRANNY, an energetic 80 year old lady in a tracksuit and sweatband, 80 years of cardio, zero mercy, bright, bossy, a drill sergeant grandma, a slight French accent.\n### DIRECTOR'S NOTES\nStyle: in character (Tracksuit, sweatband, 80 years of cardio, zero mercy.), a taunt at the player, committed and caricatural. Take a breath before it and hit it hard.\nAccent: old lady, slight French accent, bossy coach.\nPacing: brisk, bossy, like a fitness coach.\n#### TRANSCRIPT\nWarm up done.",
+    "scores": {
+     "energy": 5,
+     "emotion": 5,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "The raspy, aggressive delivery combined with that loud clap makes this an absolutely perfect, meme-worthy taunt."
+    }
+   }
+  ],
+  "opp-sporty-granny/l5-taunt-2": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-sporty-granny/l5-taunt-2/v1.mp3",
+    "role": "opp-sporty-granny",
+    "line": "l5-taunt-2",
+    "text": "Cardio, darling.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Kore",
+    "direction": "# AUDIO PROFILE: SPORTY GRANNY\nSPORTY GRANNY, an energetic 80 year old lady in a tracksuit and sweatband, 80 years of cardio, zero mercy, bright, bossy, a drill sergeant grandma, a slight French accent.\n### DIRECTOR'S NOTES\nStyle: in character (Tracksuit, sweatband, 80 years of cardio, zero mercy.), a taunt at the player, committed and caricatural. Push it further, more caricatural.\nAccent: old lady, slight French accent, bossy coach.\nPacing: brisk, bossy, like a fitness coach.\n#### TRANSCRIPT\nCardio, darling.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 3,
+     "genz": 2,
+     "note": "Way too polite and low energy for a merciless fitness granny."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-sporty-granny/l5-taunt-2/v3.mp3",
+    "role": "opp-sporty-granny",
+    "line": "l5-taunt-2",
+    "text": "Cardio, darling.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Kore",
+    "direction": "# AUDIO PROFILE: SPORTY GRANNY\nSPORTY GRANNY, an energetic 80 year old lady in a tracksuit and sweatband, 80 years of cardio, zero mercy, bright, bossy, a drill sergeant grandma, a slight French accent.\n### DIRECTOR'S NOTES\nStyle: in character (Tracksuit, sweatband, 80 years of cardio, zero mercy.), a taunt at the player, committed and caricatural. Take a breath before it and hit it hard.\nAccent: old lady, slight French accent, bossy coach.\nPacing: brisk, bossy, like a fitness coach.\n#### TRANSCRIPT\nCardio, darling.",
+    "scores": {
+     "energy": 4,
+     "emotion": 4,
+     "stereotype": 5,
+     "genz": 4,
+     "note": "This patronizing delivery perfectly nails the merciless fitness granny trope with solid meme potential."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-sporty-granny/l5-taunt-2/v2.mp3",
+    "role": "opp-sporty-granny",
+    "line": "l5-taunt-2",
+    "text": "Cardio, darling.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed opp-sporty-granny vox_emb_s8E2imDiahks9xis",
+    "direction": "voice design: Energetic old lady, 80, sporty and bossy like a fitness coach, bright strong voice, slight French accent, brisk pacing, merciless and funny. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The delivery is far too flat and lacks the aggressive, over-the-top fitness energy needed for a memeable taunt."
+    }
+   }
+  ],
+  "opp-sporty-granny/l5-taunt-3": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-sporty-granny/l5-taunt-3/v1.mp3",
+    "role": "opp-sporty-granny",
+    "line": "l5-taunt-3",
+    "text": "Hydrate.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Kore",
+    "direction": "# AUDIO PROFILE: SPORTY GRANNY\nSPORTY GRANNY, an energetic 80 year old lady in a tracksuit and sweatband, 80 years of cardio, zero mercy, bright, bossy, a drill sergeant grandma, a slight French accent.\n### DIRECTOR'S NOTES\nStyle: in character (Tracksuit, sweatband, 80 years of cardio, zero mercy.), a taunt at the player, committed and caricatural. Push it further, more caricatural.\nAccent: old lady, slight French accent, bossy coach.\nPacing: brisk, bossy, like a fitness coach.\n#### TRANSCRIPT\nHydrate.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "This sounds like a bored young guy instead of a merciless eighty-year-old fitness granny."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-sporty-granny/l5-taunt-3/v2.mp3",
+    "role": "opp-sporty-granny",
+    "line": "l5-taunt-3",
+    "text": "Hydrate.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed opp-sporty-granny vox_emb_s8E2imDiahks9xis",
+    "direction": "voice design: Energetic old lady, 80, sporty and bossy like a fitness coach, bright strong voice, slight French accent, brisk pacing, merciless and funny. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "The delivery is completely flat and sounds way too young to be an eighty-year-old fitness granny."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-sporty-granny/l5-taunt-3/v3.mp3",
+    "role": "opp-sporty-granny",
+    "line": "l5-taunt-3",
+    "text": "Hydrate.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Kore",
+    "direction": "# AUDIO PROFILE: SPORTY GRANNY\nSPORTY GRANNY, an energetic 80 year old lady in a tracksuit and sweatband, 80 years of cardio, zero mercy, bright, bossy, a drill sergeant grandma, a slight French accent.\n### DIRECTOR'S NOTES\nStyle: in character (Tracksuit, sweatband, 80 years of cardio, zero mercy.), a taunt at the player, committed and caricatural. Take a breath before it and hit it hard.\nAccent: old lady, slight French accent, bossy coach.\nPacing: brisk, bossy, like a fitness coach.\n#### TRANSCRIPT\nHydrate.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "This sounds like a young guy casually reading a script instead of a merciless eighty year old fitness granny."
+    }
+   }
+  ],
+  "opp-sporty-granny/l5-taunt-4": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-sporty-granny/l5-taunt-4/v1.mp3",
+    "role": "opp-sporty-granny",
+    "line": "l5-taunt-4",
+    "text": "Knees of steel.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Kore",
+    "direction": "# AUDIO PROFILE: SPORTY GRANNY\nSPORTY GRANNY, an energetic 80 year old lady in a tracksuit and sweatband, 80 years of cardio, zero mercy, bright, bossy, a drill sergeant grandma, a slight French accent.\n### DIRECTOR'S NOTES\nStyle: in character (Tracksuit, sweatband, 80 years of cardio, zero mercy.), a taunt at the player, committed and caricatural. Push it further, more caricatural.\nAccent: old lady, slight French accent, bossy coach.\nPacing: brisk, bossy, like a fitness coach.\n#### TRANSCRIPT\nKnees of steel.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "Way too slow and breathy; she sounds like a witch casting a spell rather than a hyperactive fitness instructor."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-sporty-granny/l5-taunt-4/v2.mp3",
+    "role": "opp-sporty-granny",
+    "line": "l5-taunt-4",
+    "text": "Knees of steel.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed opp-sporty-granny vox_emb_s8E2imDiahks9xis",
+    "direction": "voice design: Energetic old lady, 80, sporty and bossy like a fitness coach, bright strong voice, slight French accent, brisk pacing, merciless and funny. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 3,
+     "genz": 2,
+     "note": "The delivery is too generic and lacks the unhinged energy needed to make it a memeable Gen Z taunt."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-sporty-granny/l5-taunt-4/v3.mp3",
+    "role": "opp-sporty-granny",
+    "line": "l5-taunt-4",
+    "text": "Knees of steel.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Kore",
+    "direction": "# AUDIO PROFILE: SPORTY GRANNY\nSPORTY GRANNY, an energetic 80 year old lady in a tracksuit and sweatband, 80 years of cardio, zero mercy, bright, bossy, a drill sergeant grandma, a slight French accent.\n### DIRECTOR'S NOTES\nStyle: in character (Tracksuit, sweatband, 80 years of cardio, zero mercy.), a taunt at the player, committed and caricatural. Take a breath before it and hit it hard.\nAccent: old lady, slight French accent, bossy coach.\nPacing: brisk, bossy, like a fitness coach.\n#### TRANSCRIPT\nKnees of steel.",
+    "scores": {
+     "energy": 4,
+     "emotion": 4,
+     "stereotype": 4,
+     "genz": 4,
+     "note": "The raspy delivery is punchy and fits the merciless fitness granny persona perfectly."
+    }
+   }
+  ],
+  "opp-sporty-granny/l5-taunt-5": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-sporty-granny/l5-taunt-5/v1.mp3",
+    "role": "opp-sporty-granny",
+    "line": "l5-taunt-5",
+    "text": "Nap time? No.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Kore",
+    "direction": "# AUDIO PROFILE: SPORTY GRANNY\nSPORTY GRANNY, an energetic 80 year old lady in a tracksuit and sweatband, 80 years of cardio, zero mercy, bright, bossy, a drill sergeant grandma, a slight French accent.\n### DIRECTOR'S NOTES\nStyle: in character (Tracksuit, sweatband, 80 years of cardio, zero mercy.), a taunt at the player, committed and caricatural. Push it further, more caricatural.\nAccent: old lady, slight French accent, bossy coach.\nPacing: brisk, bossy, like a fitness coach.\n#### TRANSCRIPT\nNap time? No.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 3,
+     "genz": 2,
+     "note": "It sounds like a regular grandmother rather than a merciless, high-octane fitness caricature."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-sporty-granny/l5-taunt-5/v2.mp3",
+    "role": "opp-sporty-granny",
+    "line": "l5-taunt-5",
+    "text": "Nap time? No.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed opp-sporty-granny vox_emb_s8E2imDiahks9xis",
+    "direction": "voice design: Energetic old lady, 80, sporty and bossy like a fitness coach, bright strong voice, slight French accent, brisk pacing, merciless and funny. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The delivery is way too weak and lacks the aggressive fitness energy required for this caricature."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-sporty-granny/l5-taunt-5/v3.mp3",
+    "role": "opp-sporty-granny",
+    "line": "l5-taunt-5",
+    "text": "Nap time? No.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Kore",
+    "direction": "# AUDIO PROFILE: SPORTY GRANNY\nSPORTY GRANNY, an energetic 80 year old lady in a tracksuit and sweatband, 80 years of cardio, zero mercy, bright, bossy, a drill sergeant grandma, a slight French accent.\n### DIRECTOR'S NOTES\nStyle: in character (Tracksuit, sweatband, 80 years of cardio, zero mercy.), a taunt at the player, committed and caricatural. Take a breath before it and hit it hard.\nAccent: old lady, slight French accent, bossy coach.\nPacing: brisk, bossy, like a fitness coach.\n#### TRANSCRIPT\nNap time? No.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 1,
+     "genz": 2,
+     "note": "The voice sounds way too young and lacks the intense bossy energy needed for a merciless fitness granny."
+    }
+   }
+  ],
+  "opp-sporty-granny/l5-taunt-6": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-sporty-granny/l5-taunt-6/v1.mp3",
+    "role": "opp-sporty-granny",
+    "line": "l5-taunt-6",
+    "text": "Again, faster.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Kore",
+    "direction": "# AUDIO PROFILE: SPORTY GRANNY\nSPORTY GRANNY, an energetic 80 year old lady in a tracksuit and sweatband, 80 years of cardio, zero mercy, bright, bossy, a drill sergeant grandma, a slight French accent.\n### DIRECTOR'S NOTES\nStyle: in character (Tracksuit, sweatband, 80 years of cardio, zero mercy.), a taunt at the player, committed and caricatural. Push it further, more caricatural.\nAccent: old lady, slight French accent, bossy coach.\nPacing: brisk, bossy, like a fitness coach.\n#### TRANSCRIPT\nAgain, faster.",
+    "scores": {
+     "energy": 3,
+     "emotion": 3,
+     "stereotype": 1,
+     "genz": 2,
+     "note": "The actor sounds like a young woman with a French accent rather than an 80-year-old merciless fitness granny, completely missing the requested caricature."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-sporty-granny/l5-taunt-6/v2.mp3",
+    "role": "opp-sporty-granny",
+    "line": "l5-taunt-6",
+    "text": "Again, faster.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed opp-sporty-granny vox_emb_s8E2imDiahks9xis",
+    "direction": "voice design: Energetic old lady, 80, sporty and bossy like a fitness coach, bright strong voice, slight French accent, brisk pacing, merciless and funny. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 3,
+     "genz": 2,
+     "note": "The delivery sounds too frail and lacks the aggressive cardio energy needed for a merciless fitness granny."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-sporty-granny/l5-taunt-6/v3.mp3",
+    "role": "opp-sporty-granny",
+    "line": "l5-taunt-6",
+    "text": "Again, faster.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Kore",
+    "direction": "# AUDIO PROFILE: SPORTY GRANNY\nSPORTY GRANNY, an energetic 80 year old lady in a tracksuit and sweatband, 80 years of cardio, zero mercy, bright, bossy, a drill sergeant grandma, a slight French accent.\n### DIRECTOR'S NOTES\nStyle: in character (Tracksuit, sweatband, 80 years of cardio, zero mercy.), a taunt at the player, committed and caricatural. Take a breath before it and hit it hard.\nAccent: old lady, slight French accent, bossy coach.\nPacing: brisk, bossy, like a fitness coach.\n#### TRANSCRIPT\nAgain, faster.",
+    "scores": {
+     "energy": 1,
+     "emotion": 1,
+     "stereotype": 1,
+     "genz": 1,
+     "note": "This sounds like a flat robotic text-to-speech placeholder instead of a merciless raspy eighty-year-old fitness granny."
+    }
+   }
+  ],
+  "opp-sporty-granny/l5-taunt-7": [
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-sporty-granny/l5-taunt-7/v2.mp3",
+    "role": "opp-sporty-granny",
+    "line": "l5-taunt-7",
+    "text": "Granny mogs.",
+    "candidate": "gradium",
+    "model": "gradium-default (voice design)",
+    "voice": "designed opp-sporty-granny vox_emb_s8E2imDiahks9xis",
+    "direction": "voice design: Energetic old lady, 80, sporty and bossy like a fitness coach, bright strong voice, slight French accent, brisk pacing, merciless and funny. (temp 1.2, padding_bonus -2)",
+    "scores": {
+     "energy": 4,
+     "emotion": 4,
+     "stereotype": 5,
+     "genz": 5,
+     "note": "The raspy delivery perfectly nails the merciless boomer-using-slang vibe making it instantly memeable."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-sporty-granny/l5-taunt-7/v1.mp3",
+    "role": "opp-sporty-granny",
+    "line": "l5-taunt-7",
+    "text": "Granny mogs.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Kore",
+    "direction": "# AUDIO PROFILE: SPORTY GRANNY\nSPORTY GRANNY, an energetic 80 year old lady in a tracksuit and sweatband, 80 years of cardio, zero mercy, bright, bossy, a drill sergeant grandma, a slight French accent.\n### DIRECTOR'S NOTES\nStyle: in character (Tracksuit, sweatband, 80 years of cardio, zero mercy.), a taunt at the player, committed and caricatural. Push it further, more caricatural.\nAccent: old lady, slight French accent, bossy coach.\nPacing: brisk, bossy, like a fitness coach.\n#### TRANSCRIPT\nGranny mogs.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 2,
+     "genz": 2,
+     "note": "The delivery is way too slow and low-energy to sell the merciless fitness granny persona, making the slang sound forced."
+    }
+   },
+   {
+    "file": "/Users/dylanmerigaud/Code/aura-voice/samples/voice/opp-sporty-granny/l5-taunt-7/v3.mp3",
+    "role": "opp-sporty-granny",
+    "line": "l5-taunt-7",
+    "text": "Granny mogs.",
+    "candidate": "gemini-flash",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Kore",
+    "direction": "# AUDIO PROFILE: SPORTY GRANNY\nSPORTY GRANNY, an energetic 80 year old lady in a tracksuit and sweatband, 80 years of cardio, zero mercy, bright, bossy, a drill sergeant grandma, a slight French accent.\n### DIRECTOR'S NOTES\nStyle: in character (Tracksuit, sweatband, 80 years of cardio, zero mercy.), a taunt at the player, committed and caricatural. Take a breath before it and hit it hard.\nAccent: old lady, slight French accent, bossy coach.\nPacing: brisk, bossy, like a fitness coach.\n#### TRANSCRIPT\nGranny mogs.",
+    "scores": {
+     "energy": 2,
+     "emotion": 2,
+     "stereotype": 3,
+     "genz": 2,
+     "note": "The delivery is too flat and lacks the aggressive, high-energy punch needed for a merciless fitness granny."
     }
    }
   ]

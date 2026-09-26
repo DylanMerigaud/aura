@@ -121,6 +121,30 @@ const PROFILES: Record<string, Profile> = {
     who: "THE TURNSTILE NINJA: a cocky Parisian metro fare dodger, should sound smug, chin up, unbothered, with a clear French accent and street attitude",
     energy: LOUD,
   },
+  "opp-papi-raleur": {
+    title: "PAPI RALEUR",
+    base: "PAPI RALEUR, a grumpy old Parisian grandpa in his 70s who complains about everything, then dances better than you, gravelly voice, sighing, scoffing, a strong French accent in English",
+    accent: "old Parisian, strong French accent, grumbling",
+    pacing: "grumbling, clipped, with a scoff or a sigh",
+    who: "PAPI RALEUR: a grumpy old Parisian grandpa, should sound old, grumpy, scoffing, French, funny",
+    energy: "presence and attitude: grumpy conviction, scoffs and sighs count, not loudness",
+  },
+  "opp-la-parisienne": {
+    title: "LA PARISIENNE",
+    base: "LA PARISIENNE, a chic cold Parisian woman in her late 20s, effortless, unimpressed, a coffee in hand, judges everyone in silence, dry and disdainful, a French accent in English",
+    accent: "chic Parisian, French accent",
+    pacing: "slow, dry, disdainful, bored",
+    who: "LA PARISIENNE: a chic, cold, unimpressed Parisian woman, should sound bored, disdainful, elegant and French",
+    energy: "presence and attitude: cold disdain and elegance, not loudness",
+  },
+  "opp-sporty-granny": {
+    title: "SPORTY GRANNY",
+    base: "SPORTY GRANNY, an energetic 80 year old lady in a tracksuit and sweatband, 80 years of cardio, zero mercy, bright, bossy, a drill sergeant grandma, a slight French accent",
+    accent: "old lady, slight French accent, bossy coach",
+    pacing: "brisk, bossy, like a fitness coach",
+    who: "SPORTY GRANNY: an energetic, merciless 80 year old fitness granny, should sound old, female, bossy and full of energy",
+    energy: LOUD,
+  },
   boatkid: {
     title: "THE BOAT KID",
     base: "THE BOAT KID, a calm young kid, the boss of aura maxing, standing at the front of a racing boat, eyes half closed, serene, never impressed, speaks calm and quiet, almost a whisper, supremely confident",
@@ -174,7 +198,7 @@ function lines(): Line[] {
   const cast = JSON.parse(readFileSync(CAST_PATH, "utf8"));
   const out: Line[] = [];
   for (const [slug, text, dir] of CALLS) {
-    out.push({ role: "announcer", slug, text, indexId: `v2-call-${slug}`, big: true, direction: dir });
+    out.push({ role: "announcer", slug, text, indexId: `call-${slug}`, big: true, direction: dir });
   }
   const annDir: Record<string, string> = {
     intro: "opening the battle, dead serious hype, building tension, then punching the last word",
@@ -223,7 +247,13 @@ function lines(): Line[] {
         spoken: /^[.\s]+$/.test(t) ? "Hmm." : undefined,
         indexId: `v2-l${level.id}-taunt-${i}`,
         big: false,
-        direction: quiet ? (/^[.\s]+$/.test(t) ? BOAT_KID_DIR[0] : calmDir[i % calmDir.length]) : role === "ninja" ? tauntDir[i] ?? tauntDir[0] : "in character, a punchy taunt at the player",
+        direction: quiet
+          ? /^[.\s]+$/.test(t)
+            ? BOAT_KID_DIR[0]
+            : calmDir[i % calmDir.length]
+          : role === "ninja"
+            ? tauntDir[i] ?? tauntDir[0]
+            : `in character (${level.opponent?.persona ?? ""}), a taunt at the player, committed and caricatural`,
       });
     });
   }
@@ -285,6 +315,18 @@ const DESIGN: Record<string, { prompt: string; language: string }> = {
   },
   "boatkid-3": {
     prompt: "Young teenage boy, 13, relaxed and serene, hushed intimate voice, breathy, deadpan confidence, slow pacing, zen and unimpressed.",
+    language: "en",
+  },
+  "opp-papi-raleur": {
+    prompt: "Grumpy old Parisian man, 75, gravelly and raspy voice, sighing and scoffing, complains about everything, strong French accent, slow and grumbling, funny.",
+    language: "en",
+  },
+  "opp-la-parisienne": {
+    prompt: "Chic Parisian woman, late 20s, cold and unimpressed, dry and disdainful, low elegant voice, French accent, slow bored pacing, effortless.",
+    language: "en",
+  },
+  "opp-sporty-granny": {
+    prompt: "Energetic old lady, 80, sporty and bossy like a fitness coach, bright strong voice, slight French accent, brisk pacing, merciless and funny.",
     language: "en",
   },
   "ninja-2": {
@@ -680,21 +722,26 @@ function only(): Set<string> | null {
   return a ? new Set(a.slice(7).split(",")) : null;
 }
 
+// --variants=3 when the clock is short (decision 16:40 allows it), default five.
+const VARIANTS = Number(process.argv.find((x) => x.startsWith("--variants="))?.slice(11) ?? 5);
+const CONCURRENCY = Number(process.argv.find((x) => x.startsWith("--concurrency="))?.slice(14) ?? 4);
+
 async function batch() {
   const state = loadState();
   const best = Object.fromEntries(bestPerRole(state).map((b) => [b.role, b.cands])) as Record<Role, CandidateId[]>;
-  for (const l of lines()) best[l.role] ??= ["gemini-flash"]; // an unsampled character: the best overall model
+  // An unsampled character: the overall winner (gemini-3.8-flash-tts) and its designed Gradium voice share the variants.
+  for (const l of lines()) best[l.role] ??= DESIGN[l.role] ? ["gemini-flash", "gradium"] : ["gemini-flash"];
   const filter = only();
   const jobs: [Line, number][] = [];
   for (const l of lines()) {
     if (filter && !filter.has(l.slug)) continue;
     const done = new Set((state.batch[keyFor(state, l)] ?? []).map((r) => path.basename(r.file)));
     // Resumable: a variant already rendered and judged is kept unless --force.
-    for (let v = 1; v <= 5; v++) if (process.argv.includes("--force") || !done.has(`v${v}.mp3`)) jobs.push([l, v]);
+    for (let v = 1; v <= VARIANTS; v++) if (process.argv.includes("--force") || !done.has(`v${v}.mp3`)) jobs.push([l, v]);
   }
   console.log(`batch: ${jobs.length} renders, ${Object.entries(best).map(([r, c]) => `${r} ${c}`).join(", ")}`);
   const keys = new Map(jobs.map(([l]) => [l, keyFor(state, l)]));
-  await pool(jobs, 4, async ([l, v]) => {
+  await pool(jobs, CONCURRENCY, async ([l, v]) => {
     const cands = best[l.role] ?? ["gemini-flash"];
     const cand = cands[(v - 1) % cands.length];
     const key = keys.get(l)!;
@@ -792,7 +839,18 @@ function board() {
   }
   md.splice(4, 0, `Shipped winners at or above threshold: ${pass}; below: ${fail}.`, "", ...(below.length ? ["Below threshold:", ...below.map((b) => `- ${b}`), ""] : []));
   writeFileSync(path.join(OUT, "BOARD.md"), `${clean(md.join("\n"))}\n`);
-  writeFileSync(indexPath, `${JSON.stringify(index, null, 1)}\n`);
+  // game.ts plays the taunt voices only when the index names the cast it was voiced from.
+  const castTag = (JSON.parse(readFileSync(CAST_PATH, "utf8")) as { levels: { opponent?: { name?: string } }[] }).levels.some((l) => /BOAT KID/i.test(l.opponent?.name ?? ""))
+    ? "roster-1625"
+    : undefined;
+  // "voice": "bakeoff-winner" gates intro, win, lose and taunts in game.ts; calls play from call-<slug>, ungated.
+  const out: Record<string, string> = castTag ? { cast: castTag, voice: "bakeoff-winner" } : { voice: "bakeoff-winner" };
+  const tags = new Set(["cast", "voice"]);
+  for (const [k, v] of Object.entries(index)) {
+    if (tags.has(k) || k.startsWith("v2-call-") || (castTag && k.startsWith("v2-boatkid-"))) continue;
+    out[k] = v;
+  }
+  writeFileSync(indexPath, `${JSON.stringify(out, null, 1)}\n`);
   console.log(`board: pass ${pass}, below ${fail}`);
   for (const b of below) console.log(`  below: ${b}`);
 }
