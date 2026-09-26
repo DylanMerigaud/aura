@@ -1,4 +1,4 @@
-// Transient battle overlays: grade popups, the "69" style burst number on release, the taunt
+// Transient battle overlays: grade popups, the 67 burst number on release, the taunt
 // subtitle with the opponent portrait, and the count in with the level title punch. Each is a
 // small pool of reused nodes: CSS keyframes are restarted with replay() rather than creating and
 // destroying nodes every trigger.
@@ -110,7 +110,8 @@ export function buildPopups(base: string) {
       return;
     }
     if (e.kind === "release") {
-      const label = e.mult >= 2 ? "PERFECT RELEASE" : e.mult >= 1.5 ? "GREAT RELEASE" : e.mult >= 1 ? "RELEASE" : "WEAK RELEASE";
+      const label = e.mult >= 2 ? "PERFECT 67" : e.mult >= 1.5 ? "GREAT 67" : e.mult >= 1 ? "SIX SEVEN" : "WEAK 67";
+      announce("six! seven!");
       burstNum.textContent = String(e.burst);
       burstLabel.textContent = label;
       replay(burst, "pop-big");

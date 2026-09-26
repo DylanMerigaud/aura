@@ -520,9 +520,10 @@ export class Fighter {
     }
     this.squash = Math.max(0, this.squash - dt * 4);
     this.knock = Math.max(0, this.knock - dt * 3);
-    const bob = this.frozen ? 0 : Math.pow(1 - beatPhase, 3) * (0.03 + 0.04 * energy);
-    const s = this.squash * Math.sin(this.squash * 9) * 0.12;
-    this.body.scale.set(1 + s * 0.5 + bob * 0.5, 1 - s - bob, 1 + s * 0.5 + bob * 0.5);
+    // No squash and no beat bob (Dylan, 16:00): the bodies never change size, the beat lives in the light,
+    // the crowd and the ring. `beatPhase` and `energy` stay in the signature for the callers.
+    void beatPhase;
+    void energy;
     // Knockback pushes away from the other fighter along local -z.
     this.body.position.z = -this.knock * 0.6;
     this.body.rotation.x = -this.knock * 0.25;

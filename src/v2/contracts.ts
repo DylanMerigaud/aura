@@ -72,7 +72,7 @@ export type CoreEvent =
   /** Any judged QTE except a MASH release. `strong` = landed on a strong onset (director: hit stop). */
   | { kind: "judged"; grade: Grade; cringe: boolean; qte: QteEvent["type"]; dir?: Dir; combo: number; score: number; strong: boolean; big: boolean }
   | { kind: "mashStart"; lengthBeats: number }
-  /** One counted alternation of a MASH (after the anti turbo filter). */
+  /** One counted tap of a MASH (after the anti turbo filter); `side` alternates for the visuals. */
   | { kind: "mashStep"; count: number; side: "left" | "right" }
   /** MASH released: burst = min(count, cap) * timing multiplier (amendment 6). */
   | { kind: "release"; burst: number; count: number; mult: number; grade: Grade }
@@ -170,7 +170,11 @@ export interface Listener {
 }
 
 /** Raw input already mapped to the heard audio clock (see src/qte/input.ts heardTime). */
-export type PlayInput = { kind: "dir"; dir: Dir; at: number; key?: string } | { kind: "space"; down: boolean; at: number };
+export type PlayInput =
+  /** The game's only input (TAP ONLY): a press or a lift anywhere, any key, any click. */
+  | { kind: "tap"; down: boolean; at: number }
+  | { kind: "dir"; dir: Dir; at: number; key?: string }
+  | { kind: "space"; down: boolean; at: number };
 
 /** The battle driver in src/v2/game.ts, used by src/v2/main.ts. */
 export interface GameApi {

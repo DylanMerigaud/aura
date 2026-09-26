@@ -4,7 +4,12 @@ import { judge, releaseMultiplier, WINDOWS, type Grade } from "./judge";
 
 export type Input =
   | { kind: "dir"; dir: Dir; t: number }
-  | { kind: "space"; down: boolean; t: number };
+  | { kind: "space"; down: boolean; t: number }
+  /**
+   * TAP ONLY input (v2): a press or a lift anywhere. HIT = a press on the note, MASH = presses (every one
+   * counts, no alternation) then one press on the drop, HOLD = press on the beat, lift on its end.
+   */
+  | { kind: "tap"; down: boolean; t: number };
 
 export interface Result {
   ev: QteEvent;
@@ -81,6 +86,7 @@ export class QteRunner {
   }
 
   input(inp: Input) {
+    if (inp.kind === "tap") return this.tap(inp.down, inp.t);
     const s = this.current();
     if (!s || inp.t < this.opensAt(s.ev)) return;
     s.phase = "active";
@@ -117,6 +123,44 @@ export class QteRunner {
       s.progress++;
       if (s.progress === ev.dirs.length) this.finish(s, { grade: judge(inp.t - T, this.windowScale), cringe: false });
     }
+  }
+
+  /**
+   * The tap vocabulary. A MASH counts every press until one beat before its drop; that last beat the ring
+   * closes and presses are ignored, then the first press inside the release window is the release.
+   */
+  private tap(down: boolean, t: number) {
+    const s = this.current();
+    if (!s || t < this.opensAt(s.ev)) return;
+    const ev = s.ev;
+    const T = ev.beat * this.spb;
+    if (ev.type === "hold") {
+      if (down && !s.held) {
+        s.phase = "active";
+        if (judge(t - T, this.windowScale) === "miss") return this.finish(s, { grade: "miss", cringe: false });
+        s.held = true;
+      } else if (!down && s.held) {
+        this.finish(s, { grade: judge(t - this.targetAt(ev), this.windowScale), cringe: false });
+      }
+      return;
+    }
+    if (!down) return;
+    s.phase = "active";
+    if (ev.type === "hit") return this.finish(s, { grade: judge(t - T, this.windowScale), cringe: false });
+    if (ev.type === "mash") {
+      const R = this.targetAt(ev);
+      if (t < R - this.spb) {
+        s.progress++;
+        s.lastDir = s.lastDir === "left" ? "right" : "left";
+        return;
+      }
+      if (t < R - this.ok) return;
+      const g = judge(t - R, this.windowScale);
+      if (s.progress === 0) return this.finish(s, { grade: "miss", cringe: false, mashCount: 0, mashMult: 0 });
+      return this.finish(s, { grade: g === "miss" ? "ok" : g, cringe: false, mashCount: s.progress, mashMult: releaseMultiplier(g) });
+    }
+    s.progress++;
+    if (s.progress >= ev.dirs.length) this.finish(s, { grade: judge(t - T, this.windowScale), cringe: false });
   }
 
   /** Resolve events whose window has passed without the needed input. */

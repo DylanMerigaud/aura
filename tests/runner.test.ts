@@ -81,3 +81,38 @@ describe("runner", () => {
     expect(out[0].grade).toBe("miss");
   });
 });
+
+describe("runner, TAP ONLY", () => {
+  const spb = 0.5;
+  const run = (events: any[]) => {
+    const out: Result[] = [];
+    return { r: new QteRunner(events, spb, 1, (x) => out.push(x)), out };
+  };
+  const tap = (t: number, down = true) => ({ kind: "tap" as const, down, t });
+
+  it("a HIT is judged by the tap time alone, whatever the note's move", () => {
+    const { r, out } = run([{ type: "hit", beat: 8, dir: "left" }, { type: "hit", beat: 10, dir: "up" }]);
+    r.input(tap(4.01));
+    r.input(tap(4.02, false));
+    r.input(tap(5.07));
+    expect(out.map((x) => [x.grade, x.cringe])).toEqual([["perfect", false], ["great", false]]);
+  });
+
+  it("the 67: every tap counts until the ring closes, the closing beat ignores taps, then the drop tap releases", () => {
+    const { r, out } = run([{ type: "mash", beat: 8, length: 4 }]);
+    // Beat 8 = 4 s, target R = 12 * 0.5 = 6 s, the ring closes at 5.5 s.
+    for (let i = 0; i < 12; i++) r.input(tap(4 + i * 0.1));
+    r.input(tap(5.6));
+    expect(out).toHaveLength(0);
+    r.input(tap(6.01));
+    expect(out[0].grade).toBe("perfect");
+    expect(out[0].mashCount).toBe(12);
+  });
+
+  it("HOLD: press on the beat, lift on its end", () => {
+    const { r, out } = run([{ type: "hold", beat: 8, length: 2 }]);
+    r.input(tap(4.02));
+    r.input(tap(5.03, false));
+    expect(out[0].grade).toBe("perfect");
+  });
+});

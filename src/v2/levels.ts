@@ -77,34 +77,44 @@ function base(id: number, track: string, stage: StageKey, artKey: string, neon: 
  * 44, 52, 60); THE DROP on beat 68 (energy 0.38 on 64 to 67, then 0.95 for the rest, the largest rise of the
  * track); full section to the end.
  *
- * Dance battle turns (YOUR MOVE / HIS MOVE), difficulty ramping 0.2 to 0.8 over the 40 s:
+ * Dance battle turns (YOUR MOVE / HIS MOVE), TAP ONLY (tap, tap fast, hold), difficulty ramping 0.2 to 0.8 over
+ * the 40 s through density, windows (tighter with the combo, src/v2/core.ts) and the tempo rule. HIT pairs stay at
+ * least 2 beats apart and never repeat a move (scripts/eval-animation.ts k7, k10): `dir` is the dance move the hero
+ * plays on the hit, not an input.
  *   beats   turn       inputs                                              note
- *   0-16    player     HIT 8, HIT 12, HIT 15                                onboarding: single arrows, wide spacing
+ *   0-16    player     HIT 4, 6, 8, 10, 12, 14                             onboarding: the first on the groove slam
+ *                                                                          (4), wide windows, a ghost tap on the first
  *   16-24   opponent   chillGuyPockets                                      hands in pockets, the ninja's intro
- *   24-40   player     MASH 24-28, HOLD 32-36                               onboarding: the 69 on the 808 slam of
- *                                                                          28, the hold released on the slam of 36
+ *   24-40   player     THE 67 24-28, HIT 30, HOLD 32-36, HIT 38            the 67 released on the 808 slam of 28, the
+ *                                                                          hold lifted on the slam of 36
  *   40-48   opponent   boatSweep                                            the breakdown
- *   48-56   player     HOLD 48-52, COMBO 53-55                              hold through the breakdown onto the
- *                                                                          slam of 52, first combo
- *   56-64   opponent   sixSevenHands                                        the build before the drop
- *   64-80   player     MASH 64-68, HIT 71, HIT 73, COMBO 74-76, HIT 79      THE 69 released on THE DROP (68),
- *                                                                          syncopated, the combo on 76 (onset 1.00)
+ *   48-56   player     HOLD 48-52, HIT 53, HIT 55                           hold through the breakdown onto the slam
+ *   56-64   opponent   palmPush                                             the build before the drop
+ *   64-80   player     THE 67 64-68, HIT 70, 72, 74, 76, 78                 THE 67 released on THE DROP (68), then
+ *                                                                          a note every 2 beats at full energy
  *   80-86   opponent   chinUpTaunt                                          his last word before the verdict
  * The first 15 s (to beat 32) cannot be lost: the core floors the meter there.
  */
 const HERO_EVENTS: QteEvent[] = [
-  { type: "hit", beat: 8, dir: "right" },
-  { type: "hit", beat: 12, dir: "up" },
-  { type: "hit", beat: 15, dir: "left" },
+  { type: "hit", beat: 4, dir: "right" },
+  { type: "hit", beat: 6, dir: "left" },
+  { type: "hit", beat: 8, dir: "up" },
+  { type: "hit", beat: 10, dir: "right" },
+  { type: "hit", beat: 12, dir: "down" },
+  { type: "hit", beat: 14, dir: "left" },
   { type: "mash", beat: 24, length: 4 },
+  { type: "hit", beat: 30, dir: "up" },
   { type: "hold", beat: 32, length: 4 },
+  { type: "hit", beat: 38, dir: "right" },
   { type: "hold", beat: 48, length: 4 },
-  { type: "combo", beat: 55, dirs: ["up", "down", "right"] },
+  { type: "hit", beat: 53, dir: "left" },
+  { type: "hit", beat: 55, dir: "up" },
   { type: "mash", beat: 64, length: 4 },
-  { type: "hit", beat: 71, dir: "up" },
-  { type: "hit", beat: 73, dir: "left" },
-  { type: "combo", beat: 76, dirs: ["down", "left", "right"] },
-  { type: "hit", beat: 79, dir: "right" },
+  { type: "hit", beat: 70, dir: "right" },
+  { type: "hit", beat: 72, dir: "down" },
+  { type: "hit", beat: 74, dir: "left" },
+  { type: "hit", beat: 76, dir: "up" },
+  { type: "hit", beat: 78, dir: "right" },
 ];
 
 const HERO_TURNS: TurnSpec[] = [
@@ -113,7 +123,7 @@ const HERO_TURNS: TurnSpec[] = [
   { who: "player", beat: 24, lengthBeats: 16 },
   { who: "opponent", beat: 40, lengthBeats: 8, move: "boatSweep" },
   { who: "player", beat: 48, lengthBeats: 8 },
-  { who: "opponent", beat: 56, lengthBeats: 8, move: "sixSevenHands" },
+  { who: "opponent", beat: 56, lengthBeats: 8, move: "palmPush" },
   { who: "player", beat: 64, lengthBeats: 16 },
   { who: "opponent", beat: 80, lengthBeats: 6, move: "chinUpTaunt" },
 ];
@@ -144,7 +154,7 @@ const TURN_OFFSETS = Array.from({ length: 33 }, (_, i) => i + 8).sort((a, b) => 
 
 /**
  * Simple alternation for a generated chart: player turns of about 4 bars, opponent turns of 2 bars placed
- * where they cut no MASH (the 69 stays whole), always ending on a player turn. Any other event inside an
+ * where they cut no MASH (the 67 stays whole), always ending on a player turn. Any other event inside an
  * opponent turn is dropped.
  */
 export function alternate(events: QteEvent[], lengthBeats: number, seed: number): { events: QteEvent[]; turns: TurnSpec[] } {

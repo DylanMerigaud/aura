@@ -1,7 +1,7 @@
-// The visible, contextual play zone over the bottom 55 percent of the screen: the swipe hint for
-// arrows, the two mash pads, the merged RELEASE pad, the HOLD pad, dimmed with "HIS MOVE" on the
-// opponent turn. Purely visual (pointer-events none): the canvas under it takes the touches and
-// routes them with the same zone math (./touch), so what is drawn is what is accepted.
+// The visible, contextual play zone over the bottom of the screen, TAP ONLY: nothing on a HIT (the note
+// flying to the ring is the cue), one big pad for the 67 mash, the same pad asking for the drop tap as
+// the ring closes, the HOLD pad, dimmed with "HIS MOVE" on the opponent turn. Purely visual
+// (pointer-events none): the canvas under it takes every tap anywhere on the screen.
 import type { GameApi } from "../contracts";
 import { el } from "./dom";
 import { currentZone } from "./battleInput";
@@ -10,13 +10,17 @@ import type { ZoneMode } from "./touch";
 export function buildPlayZone(game: GameApi) {
   const root = el("div", "playzone zone-none");
   root.setAttribute("aria-hidden", "true");
-  const swipe = el("div", "pz-swipe", "SWIPE");
-  const left = el("div", "pz-pad pz-left", "L");
-  const right = el("div", "pz-pad pz-right", "R");
-  const release = el("div", "pz-pad pz-release", "RELEASE");
-  const hold = el("div", "pz-pad pz-hold", "HOLD");
+  const mash = el("div", "pz-pad pz-mash");
+  mash.appendChild(el("span", "pz-big", "67"));
+  mash.appendChild(el("span", "pz-small", "TAP TAP TAP"));
+  const release = el("div", "pz-pad pz-release");
+  release.appendChild(el("span", "pz-big", "TAP"));
+  release.appendChild(el("span", "pz-small", "ON THE DROP"));
+  const hold = el("div", "pz-pad pz-hold");
+  hold.appendChild(el("span", "pz-big", "HOLD"));
+  hold.appendChild(el("span", "pz-small", "LIFT ON THE BEAT"));
   const his = el("div", "pz-his", "HIS MOVE");
-  for (const n of [swipe, left, right, release, hold, his]) root.appendChild(n);
+  for (const n of [mash, release, hold, his]) root.appendChild(n);
 
   let shown: ZoneMode = "none";
   /** Call every frame: switches the class only when the mode changes. */

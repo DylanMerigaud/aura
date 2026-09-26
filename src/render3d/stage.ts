@@ -469,7 +469,8 @@ export function createStage(canvas: HTMLCanvasElement, opts: { base: string; deb
           break;
         }
         case "mashStart":
-          playP("mash_charge", 1.5);
+          // THE 67: the six seven hands (palms up, see saw) over the whole charge, the legs keep the groove.
+          if (!player?.gesture("sixSevenHands", 60 / spb, e.lengthBeats * spb)) playP("mash_charge", 1.5);
           // The hands family: the charge seen on our hands.
           if (!ending) cutTo("hands");
           break;

@@ -184,23 +184,23 @@ export class Game implements GameApi {
     if (!this.core || !this.clock || this.paused || this.endAt > 0) return;
     const t = this.songAt(i.at);
     if (i.kind === "dir") this.core.input({ kind: "dir", dir: i.dir, t });
-    else this.core.input({ kind: "space", down: i.down, t });
+    else this.core.input({ kind: i.kind, down: i.down, t });
   }
 
   touchMode(): "hit" | "mash" | "hold" | "none" {
     const c = this.core?.runner.current();
-    if (!c || !this.core) return "none";
+    if (!c || !this.core || this.core.ended) return "none";
     if (this.core.songTime < this.core.runner.opensAt(c.ev) - 0.3) return "hit";
     return c.ev.type === "mash" ? "mash" : c.ev.type === "hold" ? "hold" : "hit";
   }
 
   /** Whose turn it is, from the last frame (the play zone dims and ignores taps on "opponent"). */
   turn(): "player" | "opponent" {
-    return this.core ? this.lastTurn : "player";
+    return this.core && !this.core.ended ? this.lastTurn : "player";
   }
 
-  /** True over the last RELEASE_BEATS of the current MASH window: the two pads merge into RELEASE. */
-  releasing(beats = 1.5): boolean {
+  /** True over the last `beats` of the current MASH window: the ring closes, the pad asks for the drop tap. */
+  releasing(beats = 1): boolean {
     const c = this.core?.runner.current();
     if (!c || !this.core || c.ev.type !== "mash") return false;
     return this.core.songTime >= this.core.runner.targetAt(c.ev) - beats * this.core.runner.spb;

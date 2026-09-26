@@ -1,11 +1,11 @@
-// The QTE prompt layer: a port of v1's arrow presentation (git tag v1-2d, src/game/battle.ts
-// arrow(), lane(), timerRing(), label(), mashOrb()) onto a transparent 2D canvas over the 3D stage.
-// Same shapes, colors, glow sprites, beat pulse on the ring, timer rings and Arial Black labels.
+// The QTE prompt layer: v1's prompt presentation (git tag v1-2d, src/game/battle.ts lane(),
+// timerRing(), label(), mashOrb()) on a transparent 2D canvas over the 3D stage, TAP ONLY: a HIT is a
+// round NOTE (v1's travel, size, glow and timing, no direction glyph) flying into the ring, tap when it
+// lands. Same colors, glow sprites, beat pulse on the ring, timer rings and Arial Black labels.
 // Drawing happens in v1 units (the 1280x720 canvas) around the ring at (0, 0), scaled to the
 // viewport: landscape keeps v1's horizontal lane, portrait turns it vertical (arrows fall from the
 // top into a ring at 60 percent of the height, inside the safe width).
 import type { EventState } from "../../../qte/runner";
-import type { Dir } from "../../../qte/types";
 import type { Frame } from "../../contracts";
 import { el } from "../dom";
 import { newGate, visiblePrompts } from "./queue";
@@ -15,7 +15,6 @@ const CYAN_DIM = "#1b5b70";
 const MAGENTA = "#ff3df2";
 const YELLOW = "#fff36b";
 const LANE_PX_PER_BEAT = 260;
-const ROT: Record<Dir, number> = { right: 0, down: Math.PI / 2, left: Math.PI, up: -Math.PI / 2 };
 
 /** v1 particles.ts glowSprite: a radial white core fading through the color to transparent. */
 function glowSprite(color: string, size = 64): HTMLCanvasElement {
@@ -85,29 +84,26 @@ export function buildArrows(host: HTMLElement) {
   window.addEventListener("resize", resize);
   window.addEventListener("orientationchange", resize);
 
-  function arrow(x: number, y: number, dir: Dir, size: number, color: string, alpha = 1) {
+  /** A note: v1's arrow footprint (glow sprite, size, white outline) as a round gem, no direction. */
+  function note(x: number, y: number, size: number, color: string, alpha = 1) {
     g.save();
     g.translate(x, y);
-    g.rotate(ROT[dir]);
     g.globalAlpha = alpha;
     g.globalCompositeOperation = "lighter";
     g.drawImage(sprites[color === CYAN || color === CYAN_DIM ? 0 : color === YELLOW ? 2 : 1], -size * 1.8, -size * 1.8, size * 3.6, size * 3.6);
     g.globalCompositeOperation = "source-over";
     g.fillStyle = color;
     g.beginPath();
-    const s = size;
-    g.moveTo(s, 0);
-    g.lineTo(0, -s * 0.8);
-    g.lineTo(0, -s * 0.35);
-    g.lineTo(-s * 0.85, -s * 0.35);
-    g.lineTo(-s * 0.85, s * 0.35);
-    g.lineTo(0, s * 0.35);
-    g.lineTo(0, s * 0.8);
-    g.closePath();
+    g.arc(0, 0, size * 0.72, 0, Math.PI * 2);
     g.fill();
     g.strokeStyle = "#fff";
-    g.lineWidth = 3;
+    g.lineWidth = 4;
     g.stroke();
+    // A white core so the note reads as a button to hit, not a dot.
+    g.fillStyle = "rgba(255,255,255,0.85)";
+    g.beginPath();
+    g.arc(0, 0, size * 0.26, 0, Math.PI * 2);
+    g.fill();
     g.restore();
   }
 
@@ -155,21 +151,21 @@ export function buildArrows(host: HTMLElement) {
     const T = ev.beat * spb;
     if (ev.type === "hit") {
       const [x, y] = lanePos((T - now) / spb);
-      arrow(x, y, ev.dir, 38, CYAN);
+      note(x, y, 38, CYAN);
     } else if (ev.type === "combo") {
       const n = ev.dirs.length;
       const gap = portrait ? Math.min(84, 440 / Math.max(1, n)) : 84;
       const x0 = -((n - 1) * gap) / 2;
       for (let i = 0; i < n; i++) {
         const done = i < s.progress;
-        arrow(x0 + i * gap, -110, ev.dirs[i], done ? 30 : 34, done ? YELLOW : MAGENTA, done ? 0.5 : 1);
+        note(x0 + i * gap, -110, done ? 30 : 34, done ? YELLOW : MAGENTA, done ? 0.5 : 1);
       }
       timerRing(0, 0, (T - now) / ((n + 2) * spb), MAGENTA);
-      label("COMBO", 0, 8, MAGENTA, 26);
+      label("TAP x" + n, 0, 8, MAGENTA, 26);
     } else if (ev.type === "hold") {
       if (!s.held) {
         timerRing(0, 0, (T - now) / (2 * spb), YELLOW);
-        label("HOLD SPACE", 0, 10, YELLOW, 24);
+        label("HOLD", 0, 10, YELLOW, 28);
       } else {
         const p = f.holdProgress;
         g.strokeStyle = YELLOW;
@@ -177,22 +173,31 @@ export function buildArrows(host: HTMLElement) {
         g.beginPath();
         g.arc(0, 0, 58, -Math.PI / 2, -Math.PI / 2 + p * Math.PI * 2);
         g.stroke();
-        label(p >= 0.97 ? "RELEASE!" : "HOLD...", 0, 10, "#fff", 26);
+        label(p >= 0.97 ? "LIFT!" : "HOLD...", 0, 10, "#fff", 26);
       }
     } else if (ev.type === "mash") {
       const R = f.targetAt(ev);
       if (f.mashing) {
         const wob = Math.sin(performance.now() / 1000 * 30);
+        const closing = R - now < spb;
         mashOrb(f.mashCount, wob);
-        const left = s.lastDir !== "left";
-        arrow(-90, 0, "left", left ? 44 : 32, left ? CYAN : CYAN_DIM);
-        arrow(90, 0, "right", left ? 32 : 44, left ? CYAN_DIM : CYAN);
         label(`${f.mashCount}`, 0, 4, "#fff", 44 + Math.min(30, f.mashCount));
-        label("MASH", 0, -90, CYAN, 44);
-        timerRing(0, 0, (R - now) / (R - T), YELLOW);
-        if (R - now < 1.5 * spb) label("SPACE TO RELEASE!", 0, 130, YELLOW, (portrait ? 26 : 34) + wob * 3);
+        label("67", 0, -96, YELLOW, 56 + (closing ? 0 : wob * 4));
+        // The ring closes onto the note ring over the last beat: tap when they meet.
+        if (closing) {
+          const c = Math.max(0, (R - now) / spb);
+          g.strokeStyle = YELLOW;
+          g.lineWidth = 8;
+          g.beginPath();
+          g.arc(0, 0, 50 + c * 90, 0, Math.PI * 2);
+          g.stroke();
+          label("TAP ON THE DROP!", 0, 130, YELLOW, (portrait ? 26 : 34) + wob * 3);
+        } else {
+          timerRing(0, 0, (R - now) / (R - T), CYAN);
+          label("TAP TAP TAP", 0, 130, CYAN, portrait ? 26 : 32);
+        }
       } else {
-        label("MASH INCOMING", 0, 0, CYAN, 30);
+        label("67 INCOMING", 0, 0, YELLOW, 30);
       }
     }
   }
@@ -206,6 +211,8 @@ export function buildArrows(host: HTMLElement) {
 
   function frame(f: Frame) {
     if (window.innerWidth !== cssW || window.innerHeight !== cssH) resize();
+    // The battle is decided: the ring and every prompt leave the screen, the results come over a clean scene.
+    if (f.ending) return clear();
     g.setTransform(1, 0, 0, 1, 0, 0);
     g.clearRect(0, 0, canvas.width, canvas.height);
     dirty = true;
@@ -220,7 +227,7 @@ export function buildArrows(host: HTMLElement) {
     g.beginPath();
     g.arc(0, 0, 46 + pulse * 6, 0, Math.PI * 2);
     g.stroke();
-    if (opponent || f.ending) return;
+    if (opponent) return;
 
     for (const p of visiblePrompts(f.prompts, f.songTime, f.spb, gate, shown)) prompt(p, f);
   }

@@ -1,7 +1,6 @@
-// v2 battle core: QTE runner, aura tug of war, timing score, the 69 burst, the tempo rule, beats, drops,
+// v2 battle core: QTE runner, aura tug of war, timing score, the 67 burst, the tempo rule, beats, drops,
 // taunts and the end of the battle. Pure: song time in, CoreEvents and a Frame out, no DOM, no audio.
-import type { Dir } from "../qte/types";
-import { QteRunner, type Result } from "../qte/runner";
+import { QteRunner, type Input, type Result } from "../qte/runner";
 import { comboMultiplier, releaseMultiplier, type Grade } from "../qte/judge";
 import { Tempo } from "./tempo";
 import { tierOf, type CoreEvent, type Frame, type LevelV2, type Stats, type TrackInfo, type Turn, type TurnSpec } from "./contracts";
@@ -75,12 +74,12 @@ export class BattleCore {
   }
 
   /** A press at song time t (seconds from beat 0). */
-  input(i: { kind: "dir"; dir: Dir; t: number } | { kind: "space"; down: boolean; t: number }) {
+  input(i: Input) {
     if (this.ended) return;
     // His move: presses are ignored, never judged (a miss would punish watching him).
     const spec = this.turnSpecAt(i.t / this.spb);
     if (spec && spec.who === "opponent" && i.t < (spec.beat + spec.lengthBeats) * this.spb - TURN_GRACE) return;
-    const key = i.kind === "dir" ? i.dir : i.down ? "space" : "space-up";
+    const key = i.kind === "dir" ? i.dir : `${i.kind}${i.down ? "" : "-up"}`;
     const prev = this.lastKey[key];
     if (prev !== undefined && i.t - prev < MIN_GAP && i.t >= prev) return;
     this.lastKey[key] = i.t;
@@ -89,8 +88,8 @@ export class BattleCore {
     const wasHeld = cur ? cur.held : false;
     this.runner.input(i);
     if (!cur || cur.phase === "done") return;
-    if (cur.ev.type === "mash" && cur.progress > before && i.kind === "dir") {
-      this.emit({ kind: "mashStep", count: Math.min(cur.progress, this.mashCap(cur.ev.length)), side: i.dir === "left" ? "left" : "right" });
+    if (cur.ev.type === "mash" && cur.progress > before) {
+      this.emit({ kind: "mashStep", count: Math.min(cur.progress, this.mashCap(cur.ev.length)), side: cur.progress % 2 ? "left" : "right" });
     }
     if (cur.ev.type === "hold" && cur.held && !wasHeld) this.emit({ kind: "holdStart" });
   }

@@ -213,7 +213,7 @@ export class RingSet {
     bd.position.set(0, 3.2, 0);
     this.group.add(bd);
 
-    const signText = ["AURA", "FARM", "69"];
+    const signText = ["AURA", "FARM", "67"];
     signText.forEach((txt, i) => {
       const mat = new THREE.MeshBasicMaterial({ map: signTexture(txt), transparent: true, depthWrite: false, fog: false });
       const m = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 0.6), mat);

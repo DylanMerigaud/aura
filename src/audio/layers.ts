@@ -171,7 +171,7 @@ export class AudioFx implements Listener {
     this.cringeUntil = t + this.spb;
   }
 
-  /** Sub drop plus noise burst plus a crowd roar sized by the burst (amendment 6's 69 release). */
+  /** Sub drop plus noise burst plus a crowd roar sized by the burst (the 67 release). */
   private release(t: number, burst: number) {
     subDrop(t, Math.min(2, burst / 20));
     noiseBurst(t, 0.35);

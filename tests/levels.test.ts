@@ -1,4 +1,4 @@
-// The v2 campaign charts: validator, pacing gate, beats inside the track, the hero's 69 release on the biggest drop.
+// The v2 campaign charts: validator, pacing gate, beats inside the track, the hero's 67 release on the biggest drop.
 import { describe, expect, it } from "vitest";
 import { validateLevel } from "../src/qte/validate";
 import { LEVELS_V2, OPPONENT_MOVES, alternate, generateChart, pacingIssues, rise, span, turnIssues } from "../src/v2/levels";
@@ -20,7 +20,7 @@ describe("LEVELS_V2", () => {
   for (const l of LEVELS_V2) {
     describe(`level ${l.id} (${l.track})`, () => {
       it("passes the validator and the pacing gate", () => {
-        expect(validateLevel(l)).toEqual([]);
+        expect(validateLevel(l, 4)).toEqual([]);
         expect(pacingIssues(l)).toEqual([]);
         expect(turnIssues(l)).toEqual([]);
       });
@@ -84,11 +84,15 @@ describe("hero level", () => {
     expect(turn?.who).toBe("player");
   });
 
-  it("onboards in the first 15 s: single arrows, then a 69, then a hold", () => {
+  it("onboards in the first 15 s: sparse single notes within 2 bars, then the 67, then a hold; no combo (TAP ONLY)", () => {
     const early = hero.events.filter((e) => (e.beat * 60) / hero.bpm < 15);
-    expect(early.map((e) => e.type)).toEqual(["hit", "hit", "hit", "mash", "hold"]);
-    for (let i = 1; i < 3; i++) expect(early[i].beat - early[i - 1].beat).toBeGreaterThanOrEqual(3);
-    expect(hero.events.findIndex((e) => e.type === "combo")).toBeGreaterThan(4);
+    const firstMash = early.findIndex((e) => e.type === "mash");
+    expect(early[0].beat).toBeLessThanOrEqual(8);
+    expect(firstMash).toBeGreaterThanOrEqual(4);
+    for (let i = 0; i < firstMash; i++) expect(early[i].type).toBe("hit");
+    for (let i = 1; i < firstMash; i++) expect(early[i].beat - early[i - 1].beat).toBeGreaterThanOrEqual(2);
+    expect(early.findIndex((e) => e.type === "hold")).toBeGreaterThan(firstMash);
+    expect(hero.events.some((e) => e.type === "combo")).toBe(false);
   });
 
   it("says every taunt on his turns, for the 3 line cast and the 8 line cast", () => {
@@ -102,15 +106,14 @@ describe("hero level", () => {
   it("gets denser toward the end (difficulty ramp)", () => {
     const inputs = (a: number, b: number) =>
       hero.events.filter((e) => e.beat >= a && e.beat < b).reduce((n, e) => n + (e.type === "combo" ? e.dirs.length : 1), 0);
-    expect(inputs(64, 86)).toBeGreaterThan(inputs(0, 24));
+    expect(inputs(64, 86)).toBeGreaterThanOrEqual(inputs(0, 24));
+    // Notes per beat of player turn rise from the onboarding to the last turn.
+    expect(inputs(68, 80) / 12).toBeGreaterThan(inputs(0, 16) / 16);
   });
 
-  it("holds through a breakdown onto its end and has 2 or 3 combos", () => {
+  it("holds through a breakdown onto its end", () => {
     const holds = hero.events.filter((e) => e.type === "hold");
     expect(holds.some((h) => hero.breakdownBeats.some(([a, b]) => h.beat >= a && h.beat + h.length === b))).toBe(true);
-    const combos = hero.events.filter((e) => e.type === "combo").length;
-    expect(combos).toBeGreaterThanOrEqual(2);
-    expect(combos).toBeLessThanOrEqual(3);
   });
 });
 
