@@ -1,8 +1,8 @@
-12:35 CEST, v2 (3D) in progress
-GREEN: v1 live and untouched at the root URL; v2 core (song clock, tempo rule, scoring, 69 burst) written and tested; six lanes building the 3D stage, VFX, charts, cast, HUD and audio
-RED: v2 not playable yet (target 13:30 at /v2/)
-PLAY: https://dylanmerigaud.github.io/aura/ (v1). v2 preview will be https://dylanmerigaud.github.io/aura/v2/
-NEED FROM DYLAN: nothing yet; at 13:30 play /v2/ with sound and report timing, fps (?debug=1), anything broken
+12:55 CEST, v2 (3D) first build deployed at /v2/, integration review running
+GREEN: v1 untouched at the root; v2 has the 3D ring, Mixamo fighters, director, VFX, DOM HUD, map, menu, tempo rule, layered SFX, hero level on the Lyria club track, new cast with Gemini evals and 30 Gradium lines
+RED: v2 never run in a browser yet (no headless GL here): a reviewer is reading it for first-frame bugs, fixes land by about 13:15
+PLAY: https://dylanmerigaud.github.io/aura/v2/?debug=1 (v1 stays at https://dylanmerigaud.github.io/aura/)
+NEED FROM DYLAN: after 13:15, play /v2/ level 1 with sound on the laptop: black screen or not, fps top right, timing early/late/fine, what looks broken
 
 ## v1 status (12:08, the safety net)
 
