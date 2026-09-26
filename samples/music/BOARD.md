@@ -10,6 +10,30 @@ by over 8 percent (the grid would run at half or double time); ties go to the on
 is a `kind: "music"` row in `evals/ledger.jsonl` (id `<track>-c<N>`; the level and boss rows with no `cut` in
 their evidence judged an earlier cut that kept the raw clip's outro, superseded by the rows that carry it).
 
+## title: title screen loop (funk)
+
+Note: "THE TITLE MUSIC IS FUNK".
+
+| rank | file | BPM measured | music gate | note (p1, p2) | beat (p1, p2) | loop or ending (p1, p2) | words | weakest 2 bars, breakdown s | score |
+|---:|---|---:|---:|---|---|---|---|---|---:|
+| 1 | c5.mp3 **WINNER** | 126.0 | 5/5 | 5, 5 | 5, 5 | 5, 5 | no | 0.44, 0.0 | 5.0 |
+| 2 | c2.mp3 | 128.0 | 5/5 | 5, 5 | 5, 5 | 5, 5 | no | 0.38, 0.0 | 5.0 |
+| 3 | c1.mp3 | 125.99 | 5/5 | 5, 5 | 5, 5 | 5, 5 | no | 0.33, 0.0 (lull) | 4.5 |
+| 4 | c3.mp3 | 130.01 | 5/5 | 5, 5 | 5, 5 | 5, 5 | yes | 0.38, 0.0 | 4.5 |
+| 5 | c4.mp3 | 122.98 | 4/5 | 5, 5 | 5, 5 | 5, 4 | yes | 0.51, 0.0 | 4.33 |
+
+Winner evidence (pass 1): The track delivers pure Brazilian funk swagger, utilizing classic montagem-style vocal chops and a heavy, driving 808 bassline that kicks in at 0:07, perfectly fitting the confident vibe of a spotlighted dance battle arena. The transition at 30.48s is flawlessly executed, with the percussive vocal chops and beat wrapping back to the start with zero gap, click, or shift in momentum, allowing for an infinite, high-energy loop.
+
+Each title candidate is cut to 16 whole bars on a downbeat of its onset fold grid (the tamborzao's 3-3-2 pulls
+librosa to two thirds of the tempo, so the BPM is the sharpest fold within 7 percent of the 123 request), 5 ms
+edge fades, and judged played twice back to back so the judge hears the seam. Last tie break for the title: the
+smaller seam distance.
+Seam distance (log mel dB, last beat vs the beat before the start) and BPM per candidate: c1 0.46 dB at 125.99, c2 2.6 dB at 128.005, c3 0.36 dB at 130.01, c4 1.16 dB at 122.985, c5 0.75 dB at 126.005.
+
+Non generated alternative for comparison: `title/level4-intro.mp3`, level4's own opening, 8 bars (14.77 s) from
+0.104 s (the in point 1.95 s minus 1 bar: the in point sits under 8 bars into the file, so the window starts at
+its earliest downbeat), same 5 ms edge fades.
+
 ## level1: level 1, Chatelet metro at 2am
 
 Note: "more funk, more bass".
@@ -65,31 +89,3 @@ Note: "too smooth, more samba".
 | 5 | c5.mp3 | 143.55 | 4/5 | 2, 2 | 5, 5 | 5, 1 | no | n/a (BPM off) | 2.83 |
 
 Winner evidence (pass 1): The track features a loud, live-sounding street bateria with prominent whistle, agogo bells, and heavy surdos starting at 0:00, perfectly capturing a raw samba feel. The track concludes at 0:10 with a strong, synchronized final hit on the drums and a concluding whistle blast, providing a definitive victory stinger ending.
-
-## Shipped
-
-| track | winner | file | BPM measured (refined) | first beat s | judge note, beat, loop or ending (p1 / p2) | music gate |
-|---|---|---|---|---:|---|---:|
-| level1 | c1 | `assets/music/level1.mp3` | 107.67 (109.995) | 0.0 | 5, 5, 5 / 5, 5, 5 | 4/5 |
-| level2 | c2 | `assets/music/level2.mp3` | 103.36 (104.014) | 0.544 | 4, 5, 5 / 5, 5, 2 | 5/5 |
-| boss3 | c3 | `assets/music/boss3.mp3` | 136.0 (135.995) | 0.395 | 5, 5, 5 / 4, 5, 3 | 5/5 |
-| victory | c3 | `assets/music/victory.mp3` | 129.2 (130.014) | 0.0 | 5, 5, 5 / 5, 5, 5 | 5/5 |
-
-- Boss wiring: the code has one boss level (`src/v2/levels.ts`, level 5) on the `boss` track, its phase 2 fires at the
-  midpoint of that one track, and `LevelV2.track2` ("second track for the boss phase 2", `src/v2/contracts.ts`) exists
-  but nothing reads it. The new phase two ships as `assets/music/boss3.mp3` (F minor like boss2, 136 BPM against boss2's
-  128). Level data belongs to another session, so this lane did not touch it: the integration session sets level 5 to
-  `track: "boss2"`, `track2: "boss3"`, wires the switch on the `phase2` event, then deletes `boss.mp3` (Dylan
-  rejected it) and its manifest entry. Until then `boss.mp3` stays because `trackInfo("boss")` throws without it.
-- The rejected level1, level2 and victory files are overwritten, so only the winners are in the build.
-- In point: every manifest entry now carries `in_point_s` (the first downbeat whose 2 bar energy reaches 60 percent of
-  the loudest 2 bars). The four new files are cut there, so theirs is 0; the untouched tracks carry the measured value
-  and are not cut.
-- Grid: `first_beat_s` of the new files is the phase of the onset envelope folded at the refined BPM (the free tracker
-  sat a 16th off on level2 and boss3); the refined BPMs land on round values (110.0, 104.0, 136.0, 130.0).
-- Tests: `pnpm test` 29 files, 620 tests pass. `pnpm evals:pacing`: every chart check passes on the new grid (43 of 43,
-  same as before the swap); the command still exits 1 on the `text_*` checks (story, taunts, announcer word counts),
-  which fail the same way on main and are not music.
-- Below 4: level1 c1 fails the mechanical `drop before 12s` gate by 28 ms (first drop at 12.03 s) and the game analysis
-  sees its first 10 s as a softer section (weakest 2 bars 0.21); the judge scored it 5, 5, 5 twice. level2 c2 got a 2
-  for loop quality on the second pass (5 on the first). boss3 c3 got 4 and 3 on note and loop in the second pass.

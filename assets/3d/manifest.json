@@ -80,6 +80,16 @@
       "role": "crowd",
       "height_m": 1.79,
       "source": "Mixamo (josh, with skin, FBX Binary, 512px textures)"
+    },
+    {
+      "file": "characters/boatkid_enemy.glb",
+      "name": "Boat Kid (archetype, level 1 rival)",
+      "role": "enemy",
+      "height_m": 1.35,
+      "scale": 0.35668548663737615,
+      "preferred": false,
+      "notes": "black outfit, kid scale, add sunglasses mesh in engine",
+      "source": "Mixamo (remy, with skin, FBX Binary, 512px textures, clothing materials Shoesmat/Topmat/Bottommat tinted matte black via gltf-transform baseColorFactor, root node scaled to reach 1.35m; skin, hair and eyelash materials left untouched)"
     }
   ],
   "clips": [

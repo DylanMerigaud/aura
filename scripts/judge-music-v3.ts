@@ -3,6 +3,7 @@
 // Writes samples/music/<track>/c<N>.judge.json and one ledger row per axis (kind "music") to evals/ledger.jsonl.
 // Usage: tsx scripts/judge-music-v3.ts <track> <n1> [n2 ...] [--pass=2] (a second independent pass, averaged on the board). Key from the macOS keychain, read in process.
 import { execFileSync } from "node:child_process";
+import { tmpdir } from "node:os";
 import { appendFileSync, readFileSync, writeFileSync, existsSync } from "node:fs";
 
 const MODEL = "gemini-3.1-pro-preview";
@@ -21,6 +22,11 @@ const NOTES: Record<string, { note: string; criterion: string; context: string }
     note: "boss phase 2: heavier, faster, more intense than phase 1",
     criterion: "INTENSITY: does this feel like the enraged second phase of a final boss, relentless, heavy, fast and menacing, with no lull? 5 = maximum pressure all the way through, 1 = calm or generic.",
     context: "the final boss's phase two of a mobile rhythm battle game, Brazilian funk montagem phonk style; a looping battle track",
+  },
+  title: {
+    note: "the title music is funk: a Brazilian funk title loop",
+    criterion: "BRAZILIAN FUNK TITLE LOOP: is this unmistakably Brazilian funk (funk carioca, mandelao, montagem) with a clear tamborzao and a heavy 808, confident and cool enough to sit under the title screen of a dance battle game in a black arena under one spotlight? 5 = pure confident baile funk swagger, 1 = not funk, generic or timid.",
+    context: "the title screen of a mobile rhythm dance battle game, a black arena under one spotlight; a seamless loop that plays until the player taps start",
   },
   victory: {
     note: "too smooth, more samba",
@@ -48,13 +54,15 @@ async function judge(track: string, n: number, key: string) {
   const file = `samples/music/${track}/c${n}.mp3`;
   const out = `samples/music/${track}/c${n}.judge${PASS > 1 ? PASS : ""}.json`;
   if (existsSync(out)) return console.log(`${out} exists`);
-  const prompt = `You are a strict music supervisor for ${t.context}. The previous version was rejected by the game director with the note: "${t.note}". Listen to this candidate and score it honestly, 1 to 5 on each axis, a 5 must be earned.\n\n1. ${t.criterion}\n2. BEAT CLARITY: can a player tap along to a clear, steady pulse from the first second?\n3. ${track === "victory" ? "ENDING: does it end on a strong final hit instead of trailing off or being cut mid phrase?" : "LOOP: does the energy stay steady and full so it can loop, without a dead intro, a long lull or a fade?"}\n\nGive one short concrete evidence sentence per axis (what you hear, with timestamps).`;
+  const prompt = `You are a strict music supervisor for ${t.context}. The previous version was rejected by the game director with the note: "${t.note}". Listen to this candidate and score it honestly, 1 to 5 on each axis, a 5 must be earned.\n\n1. ${t.criterion}\n2. BEAT CLARITY: can a player tap along to a clear, steady pulse from the first second?\n3. ${track === "title" ? `LOOP SEAM: the clip is the loop played twice back to back, the seam is at ${seamAt(file)} s. Does the end join the start cleanly on the beat, with no gap, click, stumble or change of energy, and does the energy stay steady so it can loop forever?` : track === "victory" ? "ENDING: does it end on a strong final hit instead of trailing off or being cut mid phrase?" : "LOOP: does the energy stay steady and full so it can loop, without a dead intro, a long lull or a fade?"}\n\nGive one short concrete evidence sentence per axis (what you hear, with timestamps).`;
   for (let attempt = 1; attempt <= 4; attempt++) {
+    // The title loop is heard played twice back to back, so the judge hears the seam where the end joins the start.
+    const audio = track === "title" ? loopTwice(file) : readFileSync(file);
     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-goog-api-key": key },
       body: JSON.stringify({
-        contents: [{ role: "user", parts: [{ inlineData: { mimeType: "audio/mpeg", data: readFileSync(file).toString("base64") } }, { text: prompt }] }],
+        contents: [{ role: "user", parts: [{ inlineData: { mimeType: "audio/mpeg", data: audio.toString("base64") } }, { text: prompt }] }],
         generationConfig: { responseMimeType: "application/json", responseJsonSchema: SCHEMA, temperature: 0.2 },
       }),
     }).catch((e) => ({ ok: false, status: String(e?.cause?.code ?? e), json: async () => ({}) }) as any);
@@ -74,11 +82,21 @@ async function judge(track: string, n: number, key: string) {
       ["mood judge: " + t.note, j.note_score, j.note_evidence],
       ["mood judge: beat clarity", j.beat_clarity, j.beat_evidence],
       [track === "victory" ? "mood judge: ending quality" : "mood judge: loop quality", j.loop_or_ending, j.loop_evidence],
-    ].map(([gate, score, evidence]) => JSON.stringify({ ts, kind: "music", id: `${track}-c${n}`, gate, verdict: (score as number) >= 4 ? "pass" : "fail", score, evidence: { judge: MODEL, pass: PASS, file, cut: track === "victory" ? "in point, 12 s" : "best 40 s window from the in point, 0.25 s end fade", candidate_model: "lyria-3-pro-preview", threshold: 4, note: evidence, intelligible_words: j.intelligible_words } }));
+    ].map(([gate, score, evidence]) => JSON.stringify({ ts, kind: "music", id: `${track}-c${n}`, gate, verdict: (score as number) >= 4 ? "pass" : "fail", score, evidence: { judge: MODEL, pass: PASS, file, cut: track === "title" ? "16 bars on a downbeat, 5 ms edge fades, judged played twice" : track === "victory" ? "in point, 12 s" : "best 40 s window from the in point, 0.25 s end fade", candidate_model: "lyria-3-pro-preview", threshold: 4, note: evidence, intelligible_words: j.intelligible_words } }));
     appendFileSync("evals/ledger.jsonl", rows.join("\n") + "\n");
     console.log(`${track} c${n}: note ${j.note_score} beat ${j.beat_clarity} loop ${j.loop_or_ending} words ${j.intelligible_words} total ${total}`);
     return;
   }
+}
+
+function seamAt(file: string) {
+  return Number(execFileSync("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", file], { encoding: "utf8" })).toFixed(2);
+}
+
+function loopTwice(file: string) {
+  const out = `${tmpdir()}/aura-loop-twice-${process.pid}.mp3`;
+  execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-i", file, "-filter_complex", "[0:a]asplit[a][b];[a][b]concat=n=2:v=0:a=1", "-b:a", "160k", out]);
+  return readFileSync(out);
 }
 
 const args = process.argv.slice(2);

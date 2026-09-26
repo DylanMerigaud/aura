@@ -2,6 +2,7 @@
 # encodes samples/music/<track>/c<N>.mp3 and writes c<N>.json with the manifest fields and the music gate checks.
 # In point rule: the first downbeat whose 2 bar mean energy reaches 60 percent of the track's loudest
 # 2 bar window, so the shipped file starts on the full groove; the cut lands 10 ms before that downbeat.
+# The title loop is cut instead to 16 whole bars on a downbeat with 5 ms edge fades (loop_cut).
 # Usage: python3 scripts/process-music-v3.py <track> <n> [<n> ...]
 import json
 import os
@@ -12,7 +13,7 @@ import librosa
 import numpy as np
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-TARGET = {"level1": (100, 40.0), "level2": (104, 40.0), "boss3": (138, 40.0), "victory": (130, 12.0)}
+TARGET = {"title": (123, 30.0), "level1": (100, 40.0), "level2": (104, 40.0), "boss3": (138, 40.0), "victory": (130, 12.0)}
 SR = 22050
 
 
@@ -62,13 +63,16 @@ def in_point(y, sr, hint, clip):
     return 0.0, vals
 
 
-def analyze(path, bpm_req, dur_req):
+def analyze(path, bpm_req, dur_req, fixed=None):
     y, sr = librosa.load(path, sr=SR, mono=True)
     dur = len(y) / sr
     env = librosa.onset.onset_strength(y=y, sr=sr)
     vals, bt = tempo_grid(y, sr, bpm_req)
     bpm = vals[1]
-    agree = max(vals) - min(vals) < 1.0
+    if fixed:
+        _, bt = librosa.beat.beat_track(onset_envelope=env, sr=sr, bpm=fixed, units="time")
+        vals, bpm = vals + [fixed], fixed
+    agree = max(vals) - min(vals) < 1.0 if not fixed else len({round(v / fixed * 3) for v in vals[:3]}) == 1 and all(min(abs(v / fixed - r) for r in (2 / 3, 1)) < 0.02 for v in vals[:3])
     frames = librosa.onset.onset_detect(onset_envelope=env, sr=sr, backtrack=True)
     ot = librosa.frames_to_time(frames, sr=sr)
     fb = float(bt[0]) if len(bt) else 0.0
@@ -136,26 +140,86 @@ def analyze(path, bpm_req, dur_req):
     }
 
 
+def fold_bpm(env, t, hint):
+    """The tamborzao's 3-3-2 kick pattern pulls librosa's trackers to two thirds of the tempo (84 for 126), so the title
+    tempo is the sharpest onset fold within 7 percent of the request, at 0.05 BPM steps."""
+    best = (0.0, hint)
+    for bpm in np.arange(hint * 0.93, hint * 1.07, 0.05):
+        h, _ = np.histogram((t * bpm / 60) % 1, bins=96, weights=env)
+        if h.max() / h.mean() > best[0]:
+            best = (h.max() / h.mean(), float(bpm))
+    return best[1]
+
+
+def loop_cut(y, sr, hint, bars=16):
+    """Title loop: a whole number of bars (16, about 31 s at 123 BPM) cut exactly on a downbeat of the refined grid,
+    so the end joins the start on the beat. Grid: librosa BPM refined by the onset fold (scripts/analyze-music.py),
+    beat phase from the fold's strongest bin, downbeat = the beat phase (of 4) with the strongest summed onsets.
+    Window: among the downbeats where the loop still fits, the one whose seam matches best (log mel distance between
+    the last beat and the beat before the start, the join the ear hears) plus the steadiest energy."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("am", os.path.join(ROOT, "scripts", "analyze-music.py"))
+    am = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(am)
+    hop = 64
+    env = librosa.onset.onset_strength(y=y, sr=sr, hop_length=hop)
+    t = librosa.frames_to_time(np.arange(len(env)), sr=sr, hop_length=hop)
+    bpm = am.refine_bpm(y, sr, fold_bpm(env, t, hint))
+    spb = 60 / bpm
+    h, _ = np.histogram((t / spb) % 1, bins=96, weights=env)
+    ph = (np.argmax(h) + 0.5) / 96 * spb
+    dur = len(y) / sr
+    beats = np.arange(ph, dur, spb)
+    at = lambda b: env[min(len(env) - 1, int(b * sr / hop))]
+    j = max(range(4), key=lambda k: sum(at(b) for b in beats[k::4]))
+    downs = beats[j::4]
+    length = bars * 4 * spb
+    mel = librosa.power_to_db(librosa.feature.melspectrogram(y=y, sr=sr, n_mels=64))
+    mt = librosa.frames_to_time(np.arange(mel.shape[1]), sr=sr)
+    rms = librosa.feature.rms(y=y)[0]
+    seg = lambda a, b: mel[:, (mt >= a) & (mt < b)].mean(1)
+    best = None
+    for d in downs:
+        if d - spb < 0.5 or d + length > dur - 0.5:
+            continue
+        seam = float(np.abs(seg(d + length - spb, d + length) - seg(d - spb, d)).mean())
+        w = rms[(mt >= d) & (mt < d + length)]
+        step = max(1, int(8 * spb * sr / 512))
+        low = min(w[i:i + step].mean() for i in range(0, max(1, len(w) - step), max(1, step // 4))) / (rms.max() or 1)
+        score = low * 10 - seam
+        if best is None or score > best[0]:
+            best = (score, float(d), seam, float(low))
+    return best[1], length, bpm, round(best[2], 2), round(best[3], 3)
+
+
 def process(track, n):
     bpm_req, secs = TARGET[track]
     base = os.path.join(ROOT, "samples", "music", track)
     raw = os.path.join(base, "raw", f"c{n}.mp3")
     y, sr = librosa.load(raw, sr=SR, mono=True)
     raw_dur = len(y) / sr
-    ip, _ = in_point(y, sr, bpm_req, False)
-    if track != "victory":
-        ip = best_window(y, sr, bpm_req, secs, ip)
-    length = min(secs, raw_dur - ip)
-    fade = 0.25 if track != "victory" else 0.6
+    loop = None
+    if track == "title":
+        ip, length, refined, seam, low = loop_cut(y, sr, bpm_req)
+        loop = {"bars": 16, "refined_bpm": refined, "seam_mel_db": seam, "weakest_2_bars": low}
+        fade = 0.005
+    else:
+        ip, _ = in_point(y, sr, bpm_req, False)
+        if track != "victory":
+            ip = best_window(y, sr, bpm_req, secs, ip)
+        length = min(secs, raw_dur - ip)
+        fade = 0.25 if track != "victory" else 0.6
     out = os.path.join(base, f"c{n}.mp3")
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-ss", f"{ip:.3f}", "-t", f"{length:.3f}", "-i", raw,
-                    "-af", f"afade=t=in:d=0.01,afade=t=out:st={length - fade:.3f}:d={fade}", "-b:a", "160k", out], check=True)
-    a = analyze(out, bpm_req, secs)
+                    "-af", f"afade=t=in:d={min(fade, 0.01)},afade=t=out:st={length - fade:.3f}:d={fade}", "-b:a", "160k", out], check=True)
+    a = analyze(out, bpm_req, secs, loop["refined_bpm"] if loop else None)
     a.update({"raw_duration_s": round(raw_dur, 2), "raw_in_point_s": round(ip, 3), "in_point_s": 0.0, "bpm_requested": bpm_req})
+    if loop:
+        a["loop"] = loop
     json.dump(a, open(os.path.join(base, f"c{n}.json"), "w"))
     c = a["checks"]
     print(track, f"c{n}", "raw", a["raw_duration_s"], "cut at", ip, "bpm", a["bpm_methods"], "fb", a["first_beat_s"], "gate", a["gate_passed"], "/5",
-          "e4", c["energy_first_4s"]["value"], "drop", c["drop_before_12s"]["value"], "gaps", c["no_long_silent_gap"]["value"])
+          "e4", c["energy_first_4s"]["value"], "drop", c["drop_before_12s"]["value"], "gaps", c["no_long_silent_gap"]["value"], "loop", loop)
 
 
 if __name__ == "__main__":

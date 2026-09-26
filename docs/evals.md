@@ -14,8 +14,10 @@ refresh it.
 - **music mood judge** (`scripts/judge-music-v3.ts`, the music lane): per Lyria 3 Pro candidate,
   `gemini-3.1-pro-preview` listens to the file (audio input, structured JSON) and scores 1 to 5 against
   Dylan's rejection note for that track (funk and bass weight for level1, an audible sidechain pump
-  for level2, intensity for the boss's phase two, raw samba batucada for victory), beat clarity, and
-  loop quality (levels) or ending quality (victory); ship at 4 and up. Two independent passes per
+  for level2, intensity for the boss's phase two, raw samba batucada for victory, "THE TITLE MUSIC IS
+  FUNK" for the title loop: unmistakable, confident Brazilian funk), beat clarity, and loop quality
+  (levels), ending quality (victory) or the loop seam (title, heard played twice back to back so the
+  join is audible); ship at 4 and up. Two independent passes per
   candidate, one ledger row per axis and pass (id `<track>-c<N>`). `scripts/board-music-v3.py` ranks the
   five candidates per track on `samples/music/BOARD.md` (mean of both passes, 0.5 off for intelligible
   words, a lull in the game's own analysis, or a BPM off the request by over 8 percent) and
@@ -41,7 +43,7 @@ refresh it.
 
 | kind   | pass | fail | gates checked |
 |--------|-----:|-----:|----------------|
-| music  |   35 |    5 | energy ramp, drop timing, silence gaps, bpm, duration |
+| music  |  200 |   55 | energy ramp, drop timing, silence gaps, bpm, duration; mood judge (note, beat clarity, loop, ending or loop seam) |
 | pacing |   48 |   20 | latest run only (2026-09-26 11:10 UTC), see "Mechanical gates" |
 | animation | 112 |  32 | latest run only (2026-09-26 11:10 UTC), see "Mechanical gates" |
 | text   |  209 |   35 | punch, references, clean, french_flavor, distinct_voice, variety |
